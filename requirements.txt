@@ -1,0 +1,7 @@
+# As versões da build de referência: com elas, a saída sai igual byte a byte.
+numpy==2.5.3
+scipy==1.18.1
+pillow==12.3.0
+matplotlib==3.11.2
+quadprog==0.1.13
+# e, sem as dependências dele (pede um quadprog antigo): pip install --no-deps trajectory-planning-helpers==0.79

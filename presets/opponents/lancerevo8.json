@@ -1,0 +1,16 @@
+{
+  "car": "LANCEREVO8",
+  "vinyl_optional": true,
+  "paint": "f0f0f0",
+  "vinyl": "LIGHTNG_001",
+  "vinyl_colors": [
+    "d01010",
+    "101010",
+    "202020"
+  ],
+  "rims": [
+    "RACINGHART",
+    "STYLE01",
+    "17_24"
+  ]
+}

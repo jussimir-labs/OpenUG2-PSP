@@ -1,0 +1,16 @@
+{
+  "car": "SUPRA",
+  "vinyl_optional": true,
+  "paint": "e0a010",
+  "vinyl": "STRIPES_001",
+  "vinyl_colors": [
+    "101010",
+    "202020",
+    "ffffff"
+  ],
+  "rims": [
+    "VOLK",
+    "STYLE01",
+    "18_25"
+  ]
+}
