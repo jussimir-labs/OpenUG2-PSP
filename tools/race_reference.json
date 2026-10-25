@@ -1,0 +1,11 @@
+{
+ "_": [
+  "Stretches of a course measured on the original game: where its rivals drive,",
+  "in game axes (x, y, z up; m, the body's centre), every 10 m of y. convert_races.py",
+  "lays the course along them between the course points nearest their ends, where",
+  "the original's route choice (RacerWalk) is not enough. The 4083's (University Hill:",
+  "PS2 PAL SLES-52725 in PCSX2, quick race forward, 3 rivals at medium, the mean of",
+  "their bodies at EE RAM 0x7ad874, 0x7b30f4, 0x7bd354) left once RacerWalk laid the",
+  "course within 0.8 m of it (the east carriageway of the dual ramp; git aa9acb1)."
+ ]
+}

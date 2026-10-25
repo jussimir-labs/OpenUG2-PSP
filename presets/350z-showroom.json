@@ -1,0 +1,34 @@
+{
+  "source": "GLOBALB.BUN preset DDAY_PLAYER_CAR (chunk 0x30220): Rachel's 350Z, its slots read by tools/preset_dump.py",
+  "car": "350Z",
+  "paint": "144e0e",
+  "window_tint": 2,
+  "kit": "KIT00",
+  "widebody": "KITW02",
+  "hood": "STYLE07",
+  "carbon_hood": true,
+  "headlight": "STYLE02",
+  "brakelight": "STYLE04",
+  "spoiler": "SPOILER_STYLE02",
+  "exhaust": "EXHAUST_STYLE08_LEVEL1",
+  "rims": [
+    "RACINGHART",
+    "STYLE07",
+    "20_26"
+  ],
+  "vinyl": "ART_F_6",
+  "vinyl_remap": false,
+  "decals": {
+    "LEFT_QUARTER": [
+      "HKS"
+    ],
+    "RIGHT_QUARTER": [
+      "SPARCO"
+    ]
+  },
+  "light_lod": {
+    "350Z_KITW02_BODY": 2,
+    "SPOILER_STYLE02": 2,
+    "RACINGHART_STYLE07_20_26": 1
+  }
+}

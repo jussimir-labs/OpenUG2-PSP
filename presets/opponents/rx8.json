@@ -1,0 +1,16 @@
+{
+  "car": "RX8",
+  "vinyl_optional": true,
+  "paint": "c01818",
+  "vinyl": "TRIBAL_066",
+  "vinyl_colors": [
+    "101010",
+    "303030",
+    "f0f0f0"
+  ],
+  "rims": [
+    "OZ",
+    "STYLE04",
+    "18_25"
+  ]
+}

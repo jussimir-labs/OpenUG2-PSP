@@ -1,0 +1,8 @@
+{
+ "candidate": "4t",
+ "eboot_sha256": "66830f6a95335787fe8a66a22b8c3f7234c3c21dd7506dc360e1f2a397c19656",
+ "eboot_bytes": 3722199,
+ "source_commit": "012f87de7f95",
+ "files": 161,
+ "bytes": 2119246883
+}

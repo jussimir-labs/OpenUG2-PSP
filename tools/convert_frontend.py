@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""The frontend's 3D scene behind the menus -> showroom.n2sc for the PSP.
+
+FRONTEND\\PLATFORMS\\SHOWROOM.BIN is the street the original's main and
+quick race menus stand in: red shopfronts, a hazard-striped floor, the
+car on a tread-plate turntable. Its solids (chunk 0x80134000, as the
+world's: prelit vertices, BGRA colour, UV) and textures (flat TPK) are
+the scene; this keeps BACKDROP, BACKDROP_FLOOR, PLATFORMBASE and the
+turntable DISC01 (DISC02/03 are its copies), in GU space (x = game y, y =
+game z up, z = game x; the turntable's centre at the origin, the floor at
+y 0). The platform carries three turntables 120 degrees apart; the menus'
+car stands on the one at game (0, 5.438), as the PS2's RAM places it (the
+car's matrix, the cameras of its reflection): the rest of the street is
+moved by that much, so the platform's other wells stay where they belong
+(they showed as a second striped rim behind the car); the other two wells
+get the turntable too, empty. When the car arrives the PS2 turns the
+platform a third of a turn, bringing its turntable from the right. Triangles
+longer than a few metres are split: the GE drops the ones that cross the
+near plane.
+
+showroom.n2sc: 'N2SC', u32 version 1, u32 textures, u32 batches; a
+texture: u16 w, u16 h, 12 pad, 1024-byte CLUT (RGBA), w*h swizzled T8 indices; a
+batch: u16 texture, u16 flags (1 alpha-tested, 2 blended, 3 added; 4 the
+turntable's glossy top, over the car's reflection; 8 the platform and its
+three turntables, which turn when the menus' car arrives), u32 vertices,
+then triangles as vertices of 24 bytes: f32 u, v, u32 colour (ABGR), f32
+x, y, z.
+"""
+import argparse
+import math
+from pathlib import Path
+import struct
+
+from n2formats import archived, FlatTPK
+import n2world
+from convert_hud import texture_blob
+
+ROOT = Path(__file__).resolve().parents[1]
+KEEP = {'BACKDROP': 6.0, 'BACKDROP_FLOOR': 2.5, 'PLATFORMBASE': 2.0, 'DISC01': 1.5}   # object: split length (m)
+DISC_AT = 5.438   # game y of the menus' turntable on the platform (PS2 RAM)
+SPIN = {'PLATFORMBASE', 'DISC01'}   # the platform and its turntables turn together (flag 8)
+# The vertices' alpha and the floor's and turntable's texture alpha are not
+# transparency on the Xbox (the turntable's is 0): the gloss of the
+# original's reflections. Those draw opaque; the drop shadow (SHD_) goes,
+# the PSP draws its own; glows and lights add (their dark texels add
+# nothing: blended, the flares over the street were black cards); the rest
+# with holes in their alpha (fences, the skyline) are cut out.
+GLOSS = {'SHR_SUBDISK', 'SHRM_ROAD'}
+
+
+def scene(game, name='SHOWROOM'):
+    d = archived(game, f'FRONTEND/PLATFORMS/{name}.BIN')
+    objs = n2world.section_objects(d)
+    tpk = FlatTPK(d)
+    textures, tex_of, batches = [], {}, []
+    for o in objs.values():
+        if o.name not in KEEP:
+            continue
+        for ids, key in o.subs:
+            if key not in tex_of:
+                t = tpk.get(key)
+                if t is None:
+                    continue
+                a = t.rgba()[3::4]
+                holes = sum(1 for v in a if v < 16) / len(a)
+                mode = (-1 if t.name.startswith('SHD_') else 0 if t.name in GLOSS
+                        else 3 if t.name.startswith('SFX_') or t.name == 'LIGHT' else 1 if holes > .05 else 0)
+                if t.name == 'SHR_SUBDISK':
+                    mode |= 4   # the turntable's top: glossy, over the car's reflection
+                tex_of[key] = (len(textures), mode)
+                textures.append(texture_blob(t, 128))
+            ti, mode = tex_of[key]
+            if mode < 0:
+                continue
+            tris = []
+            for i in range(0, len(ids), 3):
+                tri = []
+                for j in ids[i:i + 3]:
+                    x, y, z, c, u, v = o.verts[j]
+                    if o.name != 'DISC01':
+                        y -= DISC_AT   # the street around the turntable the car stands on
+                    tri.append((y, z, x, (c >> 16) & 255, (c >> 8) & 255, c & 255, 255, u, v))
+                tris += n2world.tessellate(tuple(tri), KEEP[o.name])
+            spin = 8 if o.name in SPIN else 0
+            batches.append((ti, mode | spin, tris))
+            if o.name == 'DISC01':   # the other two wells' turntables, empty
+                for turn in (120, 240):
+                    batches.append((ti, mode | spin, [tuple(well(v, turn) for v in t) for t in tris]))
+    return textures, batches
+
+
+def well(v, degrees):
+    """A vertex of the menus' turntable turned about the platform's centre
+    (GU x -DISC_AT, z 0: the street is moved by DISC_AT) onto another well."""
+    c, s = math.cos(math.radians(degrees)), math.sin(math.radians(degrees))
+    gx, gy, gz = v[0] + DISC_AT, v[1], v[2]
+    return (c * gx + s * gz - DISC_AT, gy, -s * gx + c * gz) + tuple(v[3:])
+
+
+def write(textures, batches, path):
+    out = bytearray(struct.pack('<4s3I', b'N2SC', 1, len(textures), len(batches)))
+    for w, h, blob in textures:
+        out += struct.pack('<2H12x', w, h) + blob   # 16 bytes: the CLUT and the indices 16-aligned for the GE
+    for ti, flags, tris in batches:
+        out += struct.pack('<2HI', ti, flags, 3 * len(tris))
+        for tri in tris:
+            for gx, gy, gz, r, g, b, a, u, v in tri:
+                col = min(255, int(a)) << 24 | min(255, int(b)) << 16 | min(255, int(g)) << 8 | min(255, int(r))
+                out += struct.pack('<2fI3f', u, v, col, gx, gy, gz)
+    path.write_bytes(out)
+    return len(out)
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
+    args = ap.parse_args()
+    textures, batches = scene(args.game)
+    size = write(textures, batches, args.out / 'showroom.n2sc')
+    print('showroom.n2sc', dict(textures=len(textures), batches=len(batches),
+                                triangles=sum(len(t) for _, _, t in batches), bytes=size))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,16 @@
+{
+  "car": "SKYLINE",
+  "vinyl_optional": true,
+  "paint": "1d3f9e",
+  "vinyl": "FLAME_014",
+  "vinyl_colors": [
+    "f0f0f0",
+    "2060ff",
+    "101010"
+  ],
+  "rims": [
+    "ENKEI",
+    "STYLE08",
+    "18_25"
+  ]
+}

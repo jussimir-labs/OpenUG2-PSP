@@ -1,0 +1,16 @@
+{
+  "car": "ECLIPSE",
+  "vinyl_optional": true,
+  "paint": "18a0c0",
+  "vinyl": "WILD_042",
+  "vinyl_colors": [
+    "f8f8f8",
+    "0a0a40",
+    "ff8000"
+  ],
+  "rims": [
+    "MOMO",
+    "STYLE03",
+    "17_24"
+  ]
+}
