@@ -1,3 +1,5 @@
+> Candidata atual: **14 / 8c51055e**. Áudio de pneus/frenagem dos rivais de corrida e free roam implementado e verificado em headless; audição física ainda pendente. As provas e7ce citadas abaixo são históricas da RC13.
+
 # Beta fechado: escopo e limitações
 
 A candidata 13 (`e7ce75f8`) tem provas locais no PPSSPP e testes nativos, descritos nas [notas](NOTAS-NOTURNAS.md). A referência dos arquivos confere identidade; não aprova toda a jogabilidade, todos os aparelhos nem o desempenho.

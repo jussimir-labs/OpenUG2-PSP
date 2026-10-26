@@ -19,3 +19,8 @@ Neons dos rivais do Free Roam usam a tabela original por nível; no nível 0, 90
 Veja as [notas](NOTAS-NOTURNAS.md). [English](../ROADMAP.md).
 
 - [x] Completar um Drift4312 de três voltas com controles normais, preservando a derrota em quarto, pontuação e provas de pausa/menu/música.
+
+## Candidata 14
+
+- [x] Implementar os emissores de pneus/frenagem dos rivais de corrida e free roam; provas headless dirigidas concluídas.
+- [ ] Conferir por audição e controles no PSP, mantendo relatos abertos.

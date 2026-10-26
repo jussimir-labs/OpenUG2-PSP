@@ -1,0 +1,344 @@
+{
+  "schema": 1,
+  "candidate": "closed-beta-20261026-beta01-original13",
+  "status": "LOCAL_SCOPED_QUALIFICATION_NOT_GLOBAL_OR_HARDWARE_APPROVAL",
+  "eboot_sha256": "e7ce75f8b2e35949fdd04525baf9d6a114c177d822cfbe2e4189f20f7e68fa63",
+  "build": {
+    "source_commit": "5a3e4729d57e728f620da7adca1b4f1b97ae6b69",
+    "flags": [
+      "PGO=use",
+      "LTO=1",
+      "RELEASE=0",
+      "PSP_LARGE_MEMORY=1"
+    ],
+    "pgo_profiles": 63,
+    "pgo_unchanged": true,
+    "hot_ld_unchanged": true,
+    "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a"
+  },
+  "package_identity": {
+    "xbox": {
+      "physical_files": 162,
+      "pack_sha256": "4a64400f70336b035cd03488bb920a928bf3779370acdad65a8f6fe8d5817940",
+      "data_id": "78eb",
+      "expected_equals_observed": true
+    },
+    "ps2": {
+      "physical_files": 159,
+      "pack_sha256": "d9d09a8de65a597dc424648b61c8378021c6cab7425a056d97cb28eef0447aed",
+      "data_id": "4111",
+      "expected_equals_observed": true
+    }
+  },
+  "human_drift_domain": {
+    "configuration": "29 supported US source car records, performance parts, classification, original special Drift and final Nitro data",
+    "runtime_cases": [
+      {
+        "event": 4312,
+        "transmission": "automatic",
+        "run": "e29633fdd607463fb4fb912ab2607f67",
+        "qualified_excerpt": true,
+        "max_game_clock_s": 8.099994659423828,
+        "raw_status": "FAILED_NO_BLIND_RETRY",
+        "source_fixture_unchanged": true
+      },
+      {
+        "event": 4312,
+        "transmission": "manual",
+        "run": "5a6dd1d97d294ecba27ca7eb278d7261",
+        "qualified_excerpt": true,
+        "max_game_clock_s": 9.700016021728516,
+        "raw_status": "FAILED_NO_BLIND_RETRY",
+        "source_fixture_unchanged": true
+      },
+      {
+        "event": 4174,
+        "transmission": "automatic",
+        "run": "240d7be2b7da4859a8ae5f9396f83c78",
+        "qualified_excerpt": true,
+        "max_game_clock_s": 8.433332443237305,
+        "raw_status": "FAILED_NO_BLIND_RETRY",
+        "source_fixture_unchanged": true
+      }
+    ],
+    "custom_dyno_and_special_presets": "previous handling model selected before the entire event",
+    "contacts": "existing 2D horizontal adaptation",
+    "not_qualified": [
+      "all29 cars driven",
+      "all upgrade combinations",
+      "full original trajectory parity",
+      "wild/extreme and hydraulics branches"
+    ]
+  },
+  "functional_reconciliation": {
+    "raw_failures_preserved": true,
+    "cause": "The harness used positive original_last_steps as a prerequisite for release. Cleanup is idempotently called more than once; original_release always assigns the current zeroed state to that private diagnostic counter on the later call. All three runs reached Main with prepared0/initialized0/status0; manual and city additionally observed road/catalog pointers0 and road_bytes0. The actual false raw assertion is retained; no game rerun/source or binary change is used to reconcile it.",
+    "owner_disabled_all_three": true,
+    "freed_pointers_observed": "manual and city; not recorded by automatic run",
+    "no_new_run_used_for_reconciliation": true
+  },
+  "existing_native_SAVE_and_first_new_process_load": {
+    "status": "TWO_SOURCE_NATIVE_SAVE_AND_FIRST_NEW_PROCESS_LOAD_PASS",
+    "sources": {
+      "xbox": {
+        "expected_earned_state": {
+          "money": 250,
+          "rep": 200,
+          "races": 1
+        },
+        "source_native_unchanged": true,
+        "seconds": 36.071,
+        "save_run": "d984df7c76bd4eed8869e16a5ece2da3",
+        "reopen_run": "2a7e892735f04b2bbe04512dd66db269",
+        "save_status": [
+          {
+            "label": "saved",
+            "t": 7.48,
+            "save_status": 1
+          },
+          {
+            "label": "street",
+            "t": 17.86
+          }
+        ],
+        "reopen": [
+          {
+            "label": "reopened",
+            "t": 5.58,
+            "career_load_status": 1
+          }
+        ],
+        "pack_activation": {
+          "on_card": 1,
+          "entries": 751,
+          "cwd": "ms0:/PSP/GAME/NFSU2VIEW"
+        },
+        "passed": true
+      },
+      "ps2": {
+        "expected_earned_state": {
+          "money": 250,
+          "rep": 300,
+          "races": 1
+        },
+        "source_native_unchanged": true,
+        "seconds": 36.625,
+        "save_run": "1a99fa8bdc1d43bd955b1623d60d50c3",
+        "reopen_run": "367a6c06e39e46cea8e2afd3b94859ba",
+        "save_status": [
+          {
+            "label": "saved",
+            "t": 7.35,
+            "save_status": 1
+          },
+          {
+            "label": "street",
+            "t": 18.11
+          }
+        ],
+        "reopen": [
+          {
+            "label": "reopened",
+            "t": 5.37,
+            "career_load_status": 1
+          }
+        ],
+        "pack_activation": {
+          "on_card": 1,
+          "entries": 754,
+          "cwd": "ms0:/PSP/GAME/NFSU2VIEW"
+        },
+        "passed": true
+      }
+    },
+    "scope": "Existing earned fixtures, native SAVE through normal menus and first new-process load. No fresh career/full race prize is implied. Physical card untouched."
+  },
+  "natural_xbox4101": {
+    "passed": true,
+    "run": "0f201a2a5bdf49bfb23f9296c2a2423e",
+    "event": 4101,
+    "simulation_seconds": 139.16761779785156,
+    "finish_order": [
+      0,
+      1,
+      3,
+      2
+    ],
+    "ai_resets": 0,
+    "player_resets": 0,
+    "career_before": {
+      "money": 0,
+      "rep": 0,
+      "races": 0
+    },
+    "career_after": {
+      "money": 250,
+      "rep": 300,
+      "races": 1
+    },
+    "earned_money": 250,
+    "earned_rep": 300,
+    "native_SAVE": true,
+    "cold_run": "2431fdb7e3154106ba998a4eabb58aa7",
+    "cold_passed": true,
+    "cold_state": {
+      "money": 250,
+      "rep": 300,
+      "races": 1
+    },
+    "cold_all_kept_equal": true,
+    "new_DATA_BIN_sha256": "48d86eb4c8c5ed4a29062bfa3b2d2d64010e4cf69bf794c175b75eaf4ee7ba3f",
+    "no_forced_win_or_game_state_injection": true,
+    "scope": "One natural full Xbox sprint/reward/SAVE and unique new-process load; not all career or all modes."
+  },
+  "movies": {
+    "xbox": 28,
+    "ps2": 28,
+    "qualification": "structural availability through canonical packed views; skip retained; no complete playback approval"
+  },
+  "single_calibrated_scene": {
+    "event": 4312,
+    "frames": 1200,
+    "frames_within_two_vblanks_percent": 99.42,
+    "slower_frames": 7,
+    "scope": "one scripted scene, no baseline A/B/global30fps/device approval"
+  },
+  "open_reporter_validation": [
+    "EA TRAX #1",
+    "Drift cuts/clicks #2",
+    "pause loop #3",
+    "braking sound #4",
+    "music after Drift #5"
+  ],
+  "not_approved": [
+    "new physical PSP or Memory Stick run",
+    "physical savedata behavior",
+    "PSP1000/PSP2000/Go",
+    "global30fps",
+    "full visual or original-game parity",
+    "complete new career",
+    "all audio families or target-device listening",
+    "original PS2USA disc-image identity"
+  ],
+  "historical_scope": "bf7f human PSP3000/card observations apply only to that executable; c25 and other prior candidates remain separate evidence.",
+  "publication_status": "staged locally; not published or installed",
+  "project_evidence_receipts": [
+    "release-build-10-original-drift/BUILD.json",
+    "ORIGINAL10-FUNCTIONAL-RECONCILIATION.json",
+    "night-native-save-cold-10/RESULT.json",
+    "BETA13-REFERENCE-IDENTITY-REVIEW.json",
+    "ORIGINAL10-MOVIE-VIEW-QUALIFICATION.json",
+    "night-original-calibrated-10/RESULT.json",
+    "night-original-calibrated-10/END-QUALIFICATION.json"
+  ],
+  "new_proof_run_ids": {
+    "natural4101": "0f201a2a5bdf49bfb23f9296c2a2423e",
+    "cold_after_natural4101": "2431fdb7e3154106ba998a4eabb58aa7"
+  },
+  "complete_normal_drift4312": {
+    "event": 4312,
+    "transmission": "automatic",
+    "car": "stock206",
+    "run": "e539cbb63eaf4d96a76980a6e6be7200",
+    "passed": true,
+    "normal_controls_only": true,
+    "laps": 3,
+    "simulation_seconds": 123.43179321289062,
+    "banked_score": 1880.0,
+    "drifts": 7,
+    "finish_order": [
+      3,
+      2,
+      1,
+      0
+    ],
+    "player_place": 4,
+    "genuine_loss_preserved": true,
+    "player_resets": 0,
+    "ai_resets": 0,
+    "Core_errors": 0,
+    "NaNs": 0,
+    "checks": {
+      "pause": true,
+      "complete3laps": true,
+      "positive_banked_score": true,
+      "owner_released": true,
+      "menu_music": true,
+      "resumed": true
+    },
+    "source_native_unchanged": true,
+    "private_native_unchanged": true,
+    "scope": "One complete normal-input Drift event and natural score, not a win, allcars/alltracks originalparity, performance or hardware approval. PCM captured; no new physical listening approval."
+  },
+  "audio_pcm_full_drift": {
+    "run": "e539cbb63eaf4d96a76980a6e6be7200",
+    "scope": "SHORT_WINDOW_OFFLINE_PCM_ANALYSIS_NOT_GLOBAL_AUDIO_ABSENCE_APPROVAL",
+    "format": {
+      "PCM": 1,
+      "channels": 2,
+      "rate": 44100,
+      "bits": 16,
+      "duration_audio_seconds": 195.1402494331066
+    },
+    "windows": {
+      "driving-before-pause": {
+        "start_audio_seconds": 80.61324263038549,
+        "end_audio_seconds": 83.61324263038549,
+        "frames": 132300,
+        "peak_normalized": 0.55908203125,
+        "RMS_normalized": 0.1467740191316485,
+        "RMS_dBFS": -16.66701626528578,
+        "zero_sample_share": 7.180650037792895e-05,
+        "near_full_scale_sample_count": 0,
+        "maximum_same_channel_adjacent_difference": 0.09033203125,
+        "adjacent_difference_above_0_6_count": 0,
+        "pcm_sha256": "9be85fe458c905759f48d1dc7d46b1f374317dec9af11d77031d53fa5adcafe2"
+      },
+      "pause-interior": {
+        "start_audio_seconds": 86.87303854875283,
+        "end_audio_seconds": 87.87303854875283,
+        "frames": 44100,
+        "peak_normalized": 3.0517578125e-05,
+        "RMS_normalized": 2.1264706245164094e-05,
+        "RMS_dBFS": -93.44681224675881,
+        "zero_sample_share": 0.514467120181406,
+        "near_full_scale_sample_count": 0,
+        "maximum_same_channel_adjacent_difference": 3.0517578125e-05,
+        "adjacent_difference_above_0_6_count": 0,
+        "pcm_sha256": "6fd237591c070aab8c6849229b2553af5e6820eac37b470b34a209a7f413e4db"
+      },
+      "menu-tail": {
+        "start_audio_seconds": 192.1402494331066,
+        "end_audio_seconds": 194.1402494331066,
+        "frames": 88200,
+        "peak_normalized": 0.351104736328125,
+        "RMS_normalized": 0.11278770208176771,
+        "RMS_dBFS": -18.954765029960043,
+        "zero_sample_share": 0.0001417233560090703,
+        "near_full_scale_sample_count": 0,
+        "maximum_same_channel_adjacent_difference": 0.196807861328125,
+        "adjacent_difference_above_0_6_count": 0,
+        "pcm_sha256": "f6b9f055c0d014d2fec7693dc5309fecfb4334f510ceec8d299a97dea9dc2932"
+      }
+    },
+    "game_observations": {
+      "pause_GINgain0": true,
+      "music_blocks_main": [
+        817,
+        830
+      ],
+      "music_shown_main": [
+        34,
+        34
+      ]
+    },
+    "limitations": [
+      "Only three short PCM windows analyzed; no replay or new game process",
+      "Sample derivative/clipping statistics do not classify an audible click source",
+      "No family-isolated AEMS/GIN/tyre tracks or subjective all-race crackle absence approval",
+      "Raw RIFF header overdeclares file length after controlled termination; one repaired full copy only, original untouched"
+    ],
+    "raw_PCM_preserved": true,
+    "RIFF_header_sizes_repaired_in_one_private_copy_only": true
+  }
+}

@@ -19,3 +19,8 @@ Free Roam rival neon uses the original upgrade-level probability table; level 0 
 See [nightly notes](NIGHTLY_NOTES.md). [Português](ptbr/ROADMAP.md).
 
 - [x] Complete one normal-control three-lap Drift4312 event, preserve its fourth-place loss, banked score and pause/menu/music evidence.
+
+## Candidate 14 delta
+
+- [x] Add original AI mono tyre/braking emitters to racing and free-roam rivals; directed headless tests passed.
+- [ ] Confirm the new8c51executable by listening and playing on the target PSP. Previous e7ce proofs remain historical; reports #1–#5 stay open.

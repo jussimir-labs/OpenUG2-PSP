@@ -1,6 +1,6 @@
 # Closed beta: scope and known issues
 
-Candidate 13 (`e7ce75f8`) has local PPSSPP and native host evidence, detailed in [nightly notes](NIGHTLY_NOTES.md). Matching a generated-file reference verifies file identity; it does not approve all gameplay, devices or performance.
+Candidate 14 (`8c51055e`) has local PPSSPP and native host evidence, detailed in [nightly notes](NIGHTLY_NOTES.md). Matching a generated-file reference verifies file identity; it does not approve all gameplay, devices or performance.
 
 ## Reports still open
 
@@ -9,7 +9,7 @@ Please recheck these on the new executable and report the device, source, car, t
 - [EA TRAX badge/cap (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1): draw order and circular proportions were corrected and reviewed locally. Confirm the result in play.
 - [Cuts/clicks during Drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2): separate bank ownership and complete long-loop cursors repair confirmed defects. The exact audible symptom still needs reporter listening; its hardware cause is not fully isolated.
 - [Loop during pause (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3): local pause tests muted engine requests; environment cleanup and pending limiter ramps were corrected. These findings do not identify every sound in the original report.
-- [Braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4): acceleration and tyre-frame inputs are corrected. The human Drift path now supplies native wheel/body state; other handling paths retain port estimates. Listening and all-branch sound parity remain pending.
+- [Braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4): acceleration and tyre-frame inputs are corrected. The human Drift path now supplies native wheel/body state; other handling paths retain port estimates. Racing and free-roam rival emitters are now implemented and passed directed headless checks. Listening and all-branch sound parity remain pending.
 - [Music after Drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5): return-to-menu recovery passed in current bounded runs. Please verify it on your device.
 
 ## Handling and progress
@@ -22,7 +22,7 @@ Please recheck these on the new executable and report the device, source, car, t
 
 ## Devices, source and presentation
 
-- **Hardware:** no run or installation of e7ce on a PSP or Memory Stick. Earlier bf7f PSP-3000/card observations remain historical. PSP-1000, PSP-2000, Go and physical save behavior remain unqualified.
+- **Hardware:** no run or installation of 8c51 on a PSP or Memory Stick. Earlier bf7f PSP-3000/card observations remain historical; RC13 emulated career/save proofs belong to e7ce. PSP-1000, PSP-2000, Go and physical save behavior remain unqualified.
 - **Performance:** one calibrated Drift scene is recorded separately; global 30 fps and all-device memory/performance are not approved.
 - **Visuals:** tone, materials, UVs, visibility/culling and doors still need review. Free Roam rivals already receive neon through the original upgrade-level probability table; some cars correctly have no neon. PRNG, pack choice and rendering retain adaptations.
 - **Movies/audio:** 28 movies are structurally present per source. Full playback, every audio family and target-device listening are not approved by this check. Skip remains available.

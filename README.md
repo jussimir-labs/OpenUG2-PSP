@@ -14,11 +14,11 @@ prebuilt.
 Please do not share this repository or the folder it builds: access is
 personal.
 
-## Candidate 13 at a glance
+## Candidate 14 at a glance
 
-This kit contains executable **e7ce75f8**. Human Drift now uses original-derived vehicle rules for the supported source configurations; custom dyno and special preset cars keep the previous model for the whole event. Local evidence includes three short Drift excerpts, private native SAVE/new-process checks from both sources, and one full naturally won Xbox 4101 race with its reward saved and restored in a fresh process.
+This kit contains executable **8c51055e**. Racing and free-roam rivals now have their own tyre/braking sounds. The 4u configuration is retained. Directed headless audio tests passed; previous normal-control Drift/career/save evidence belongs to RC13 e7ce and remains separately documented.
 
-These are scoped local checks. The new executable has no PSP/Memory Stick approval, complete-career or global-30-fps approval, and the audio/EA TRAX reports remain open for tester confirmation. Read [nightly notes](NIGHTLY_NOTES.md) and [known issues](KNOWN_ISSUES.md) before testing. The interface defaults to English; select Português for Portuguese. English files are in the root and Portuguese documentation/launchers in `ptbr/`.
+This candidate has no physical PSP/Memory Stick, complete-career or 30 fps across all races approval. Audio and EA TRAX reports remain open for tester confirmation. Read [nightly notes](NIGHTLY_NOTES.md) and [known issues](KNOWN_ISSUES.md). English files are in the root; Portuguese documentation/launchers are in `ptbr/`.
 
 ## What you need
 
