@@ -3,3 +3,5 @@
 *.command text eol=lf
 *.PBP binary
 *.png binary
+
+*.pdf binary

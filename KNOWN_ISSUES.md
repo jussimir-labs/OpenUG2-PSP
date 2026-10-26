@@ -28,3 +28,16 @@ to the previous RELEASE03 executable. No complete career is approved.
 
 Reports should identify the exact executable, device, source, track and steps.
 For generator errors include relatorio.json and the failing step's log.
+
+## Reports from the current Memory Stick test
+
+These remain open, with examples and evidence in GitHub:
+
+- [EA TRAX logo opacity and outline (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1).
+- [Engine cuts/clicks in drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2). The audit found sample-bank lifetime and loop-cursor defects; their exact contribution to the heard symptom still needs isolation.
+- [Engine loop while paused (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3). Not reproduced in the directed local pause state check.
+- [Apparently missing braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4). Ordinary braking is absent from one tyre-audio input; the reported case still needs comparison.
+- [Music not returning after drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5). Local evidence showed ambience retaining the music stream after returning to the menu.
+
+No gameplay fix or replacement executable is included in this documentation
+and browser-generator update. See the [audio audit](docs/audits/audio.md).
