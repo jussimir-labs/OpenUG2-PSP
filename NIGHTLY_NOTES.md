@@ -1,77 +1,36 @@
-# Overnight candidate: 26 October 2026
+# Candidate 13: 26 October 2026
 
-Local candidate, not published or physically approved.
+This kit is staged locally for closed-beta testing. It has not been published, installed on a PSP, or approved on physical hardware.
 
-- Executable: `c25f117241edea5fd66bb090303b23b8579cbda245df9cd7fc95234957434274`.
-- Source: `8f7ec4df13f1f54cf086cfbb8ed9316498eea43d`.
-- Configuration: 4u PGO=use, LTO=1, RELEASE=0, PSP_LARGE_MEMORY=1;
-  the same 63 training profiles and hot.ld are preserved.
-- Data: no reconversion; the 161-file Xbox and 158-file PS2 references change
-  only EBOOT. Old packages and executables remain preserved separately.
+- Executable SHA256: `e7ce75f8b2e35949fdd04525baf9d6a114c177d822cfbe2e4189f20f7e68fa63` (`e7ce75f8`).
+- Build source: `5a3e4729d57e728f620da7adca1b4f1b97ae6b69`.
+- Configuration: 4u PGO=use, LTO=1, RELEASE=0, PSP_LARGE_MEMORY=1. The same 63 PGO profiles and `hot.ld` are retained; there was no new training.
+- Generated packages: Xbox 162 files, data ID `78eb`; PS2 159 files, data ID `4111`. The original physics library and two road sidecars are now produced from your game files. Existing converted assets were reused for local packaging; no full reconversion was run during this qualification.
 
-## Included corrections
+## What changed
 
-EA TRAX draws its opaque EA Games badge above the dark panel and keeps the
-left cap circular. Turbo and tyre sample banks have separate ownership and
-confirmed mixer acknowledgement before replacement; long drift loops keep
-their complete sample lengths. Returning from the street releases ambience
-before requesting menu music. Inactive updates stop environment loops.
+Human-controlled Drift now uses an original-derived vehicle model with source wheel, suspension, engine, clutch, drivetrain, steering and body rules. Its configuration comes from the supported 29 US car records, performance parts and nitrous data. This describes the supported configuration domain; it does not mean that all 29 cars and every upgrade combination have been driven and approved.
 
-Tyre audio uses body linear acceleration, tyre-frame contact velocity and
-longitudinal grip demand. Original-derived braking gates and release smoothing
-are retained. Grip demand remains a port estimate, not a full wheel solver.
-Drift steering now receives angular acceleration rather than angular velocity.
-Pending engine-limiter ramps are canceled on pause so they cannot restore stale
-limiter targets after resuming at low RPM.
+Custom dyno sliders and special preset cars use the previous handling model for the whole event. The game chooses that before starting the event; it does not switch handling models in the middle of a failed physics step. Horizontal contacts remain a 2D port adaptation. Wild/extreme and hydraulics behavior is not fully qualified. This is not full original-game parity.
 
-## Exact-current-executable evidence
+The EA TRAX badge/circular cap, separate turbo/tyre audio banks, complete long-loop cursors, menu-music recovery, braking-audio inputs and pause/limiter fixes are retained. Reports #1–#5 remain open for the reporter to check on this executable, especially by listening on the target device.
 
-One directed PPSSPP run used normal menu/buttons, stock 206 and Freemont 4011.
-Straight braking reduced speed from 14.9835 to 0.38615 m/s in 1.533 s with zero
-steering. A valid skid_lock sample had positive gain and an advancing cursor.
-Pause froze the race clock and silenced GIN/AEMS and tyre requests; resume
-restored engine output. Return to Main Menu selected track 34 and music blocks
-advanced from 167 to 187. Press START and the corrected EA badge were reviewed
-in the title/menu captures.
+## Checks on this exact executable
 
-The harness initially treated mus_want=-1 as a failure. That field is a consumed
-pending request; mus_shown=34 identifies the playing track. Source review and
-advancing blocks reconciled this assertion offline. The raw failure is retained;
-there was no rerun. The automatic transmission did not enter the limiter, so
-its specific pause/resume regression remains a native host proof only.
+Three short PPSSPP runs used normal menus and controls: Stadium Drift 2 (4312) with automatic and manual transmission, and city Drift 4174. They demonstrated acceleration, finite body state, pause/resume and return to the menu with music. The manual run completed a first-to-second shift (native gear indices 2→3). These are bounded excerpts, not complete Drift races or comparisons with every original trajectory.
 
-## Immediately preceding executable: separate evidence
+The raw reports retain a failed cleanup assertion that required a positive private step counter. Repeated cleanup cleared that diagnostic counter; observed ownership was disabled on return to Main. Manual and city runs also recorded cleared asset pointers. The functional observations were reconciled offline, without rerunning or changing the game to hide the failed assertion. An earlier boot attempt used the wrong emulated filesystem prefix for packed data; the qualified runs used the normal `ms0:/PSP/GAME/NFSU2VIEW` layout.
 
-Executable 73972acf, before the two-flag limiter correction, passed normal drift
-4312, braking, pause/resume, return to Main Menu and recovery from active street
-ambience. It also passed native SAVE and first new-process load with private
-existing earned fixtures from both data sources: Xbox money250/rep200/races1,
-PS2 money250/rep300/races1. Original seeds remained unchanged. A separate host
-fixture-injection assertion was reconciled without repeating SAVE or driving.
+Native SAVE followed by the first load in a new process passed with private existing earned fixtures from both data sources: Xbox $250/REP 200/one race and PS2 $250/REP 300/one race. The original fixtures were preserved.
 
-Three calibrated mixer diagnostics on 73972acf acknowledged 300 buffers each,
-including complete 113376- and 69120-sample loops. Conservative full-rate totals
-were 2.430/2.496/2.427 ms, with no over-buffer or over-10-ms count. late=2 in each
-case remains recorded. These are not whole-game 30 fps or zero-audible-gap proofs.
+A separate Xbox career run completed the full 4101 sprint naturally in 139.1676 simulation seconds, finishing first with order [0,1,3,2] and no recorded player or AI resets. Money rose from $0 to $250, REP from 0 to 300, and completed races from 0 to 1. Native SAVE was followed by one fresh process, which restored that exact newly earned state. No forced win, shortened race, or game-state injection was used. This validates that race/reward/save sequence; it does not approve a complete new career or all race modes.
 
-Binary comparison confines the current change to engsnd_player, its jump table
-and embedded build identifier. Save, car, mixer and movie code bytes are unchanged.
-This scopes reuse of prior evidence; it does not invent exact-current-executable
-SAVE, calibrated-performance or hardware passes. Native audio regressions,
-movie/audio host checks and both sources' 28-movie structural checks passed.
+All 28 movies are structurally present for each source. Skipping movies remains available. This is not a complete playback or physical audio check. One calibrated 1200-frame Drift diagnostic recorded 99.42% of frames within two vblanks, with seven slower frames/hitches; it is a single scene, not global 30 fps or hardware approval.
 
-## Still open
+## Still to verify
 
-Full drift vehicle physics remains adapted. For the matched 1.2 s maneuver,
-original yaw was 79.431 degrees, the older port 68.147, and protected 73972acf
-70.025. The isolated original-state steering oracle improved from 2.6998 to
-0.4774 degrees RMS; this does not prove whole-car parity. The original wheel,
-clutch and body model is being investigated natively and is not integrated.
+No e7ce hardware or Memory Stick run has been performed. Historical PSP-3000/card observations belong to their earlier executable. PSP-1000, PSP-2000, Go, physical saves, full visual parity, all-car/all-track handling, a complete career and global performance remain unapproved. The original PS2 USA disc image remains unverified; the retained 179-input comparison used reconstructed-source evidence. Tunnel Construction/drag 4401 rival recovery remains deferred. See [known issues](KNOWN_ISSUES.md).
 
-No new executable was installed on or run on the PSP. Earlier human PSP-3000
-and Memory Stick evidence applies only to bf7f. Complete races, natural rewards,
-a complete new career, PSP-1000/other devices, global 30 fps, full visual parity
-and the original PS2 USA image remain unapproved. The 4401 opponent issue stays
-deferred. Hardware audio reports remain open for reporter validation.
+The portable [qualification receipt](docs/qualification/OVERNIGHT-QUALIFICATION.json) separates current evidence from historical and untested scope. [Português](ptbr/NOTAS-NOTURNAS.md).
 
-Português: [notas da candidata](ptbr/NOTAS-NOTURNAS.md).
+A final single run on the same executable completed all three laps of automatic Stadium Drift 2 (4312) through normal controls in 123.4318 simulation seconds, banking 1,880 points across seven drifts. The player finished fourth: the genuine loss is preserved. No player/AI reset, NaN or Core error was recorded. Pause/resume, released event assets and return to Main with advancing music passed. Native files stayed unchanged. This qualifies that complete event and its score, not a Drift win, all-car handling parity or physical audio.

@@ -120,6 +120,7 @@ def steps(game_dir, movies=True, jobs=4):
     add('céu', 10, 'tools/convert_sky.py')
     add('panoramas', 20, 'tools/convert_vista.py')
     add('física', 10, 'tools/convert_physics.py')
+    add('fontes originais da física', 2, 'tools/convert_original_data.py', '--game', str(game_dir))
     add('áudio', 300, 'tools/convert_audio.py')
     if movies:
         add('filmes', 600, 'tools/convert_movies.py', '--missing')
@@ -171,6 +172,12 @@ def recipe_problems():
     for name, _, command in steps(Path('game/xbox/NFSUNDER')):
         tool=command[0][1] if isinstance(command[0],tuple) else command[0]
         if not (HERE/tool).is_file():problems.append(f'conversor ausente para {name}: {tool}')
+    # New source-data producers are stdlib-only; their canonical tables and
+    # standalone archive reader must be present before any expensive stage.
+    for name in ('export_physics.py', 'export_road.py', 'source_data.py',
+                 'nitro_constants.json', 'road_constants.json'):
+        if not (HERE / 'tools' / name).is_file():
+            problems.append(f'fonte da física original ausente: tools/{name}')
     for name in ('AL_RX8','CALEB_GTO','MARCUS_CELICA','NIGEL_3000GT','NIKKI_MUSTANGGT','SCOTT_TT','TOM_G35'):
         if not (HERE/'presets/rivals'/f'{name}.json').is_file():problems.append(f'carro da carreira ausente: presets/rivals/{name}.json')
     return problems
@@ -378,7 +385,7 @@ def compare(game, manifest_path):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('iso', nargs='?', type=Path, help='a ISO do jogo (sem ela, a ferramenta pergunta)')
-    ap.add_argument('--saida', type=Path, default=HERE / 'saida', help='pasta de saída (padrão: saida/ ao lado desta ferramenta)')
+    ap.add_argument('--saida', type=Path, default=HERE / 'output', help='pasta de saída (padrão: output/ ao lado desta ferramenta)')
     ap.add_argument('--fonte', choices=sorted(SOURCES), help='de qual console é a ISO (padrão: reconhecida pela ISO)')
     ap.add_argument('--jobs', type=int, choices=range(1, 17), default=4, metavar='1..16', help='máximo de processos nas conversões paralelas (padrão: 4)')
     ap.add_argument('--do-zero', action='store_true', help='recomeça tudo, sem aproveitar as etapas já feitas')

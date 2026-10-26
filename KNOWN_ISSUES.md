@@ -1,44 +1,34 @@
-# Closed beta: validation scope and known issues
+# Closed beta: scope and known issues
 
-The overnight candidate keeps the 4u PGO/LTO configuration and includes directed
-fixes for EA TRAX, audio lifetime and long loops, music recovery, braking audio
-inputs, pause/resume state and the drift steering acceleration input. See
-[NIGHTLY_NOTES.md](NIGHTLY_NOTES.md) for the exact executable and evidence.
-Matching a generated-file manifest checks identity; it is not full game approval.
+Candidate 13 (`e7ce75f8`) has local PPSSPP and native host evidence, detailed in [nightly notes](NIGHTLY_NOTES.md). Matching a generated-file reference verifies file identity; it does not approve all gameplay, devices or performance.
 
-## Reports under verification
+## Reports still open
 
-The GitHub examples stay open for reporter validation on the new executable:
+Please recheck these on the new executable and report the device, source, car, track and steps. Code corrections do not close a reporter's observation automatically.
 
-- [EA TRAX badge and outline (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1): corrected draw order and circular cap; before/after and integrated menu pixels reviewed locally.
-- [Cuts/clicks during drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2): separate turbo/tyre bank ownership and complete long-loop cursors fix confirmed defects. Their contribution to the reported engine symptom has not been isolated on hardware.
-- [Loop while paused (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3): directed local tests observed zero engine gain during pause. Environment loops are stopped on inactive updates. A separate limiter-state defect after resume is corrected. These findings do not identify every sound heard in the original hardware report.
-- [Braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4): the original-derived controller now receives linear acceleration, tyre-frame movement and longitudinal grip demand, with brake-release smoothing retained. Grip demand remains a port estimate; full per-wheel physics parity is not established.
-- [Music after drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5): street ambience ownership is released before requesting menu music; local return-to-menu recovery was demonstrated.
+- [EA TRAX badge/cap (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1): draw order and circular proportions were corrected and reviewed locally. Confirm the result in play.
+- [Cuts/clicks during Drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2): separate bank ownership and complete long-loop cursors repair confirmed defects. The exact audible symptom still needs reporter listening; its hardware cause is not fully isolated.
+- [Loop during pause (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3): local pause tests muted engine requests; environment cleanup and pending limiter ramps were corrected. These findings do not identify every sound in the original report.
+- [Braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4): acceleration and tyre-frame inputs are corrected. The human Drift path now supplies native wheel/body state; other handling paths retain port estimates. Listening and all-branch sound parity remain pending.
+- [Music after Drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5): return-to-menu recovery passed in current bounded runs. Please verify it on your device.
 
-## Remaining limitations
+## Handling and progress
 
-- **Drift handling:** the steering unit error is corrected, but the vehicle force
-  model remains adapted. In the matched 1.2 s maneuver, original yaw was 79.431°,
-  the old port 68.147°, and the protected overnight candidate 70.025°.
-  Steering-controller agreement alone does not prove whole-car parity.
-- **Tunnel Construction/drag 4401:** opponents can get stuck and repeatedly
-  recover. This was deliberately deferred; no fix is claimed.
-- **Hardware and performance:** the new executable has no physical runtime or
-  Memory Stick approval. The earlier human PSP-3000 title/brief Freemont/menu
-  check and card installation apply only to executable bf7f. PSP-1000, PSP-2000,
-  Go and global 30 fps remain unapproved.
-- **PSPLink:** the earlier bf7f stop required human recovery. No general cause
-  for the older RELEASE03 Bus error or PSPLink shutdown has been proved fixed.
-- **Visuals:** tone, materials and visibility still require review.
-- **PS2 source:** 179 USA input files were checked through a reconstructed image;
-  the original USA disc image remains unverified. Other revisions are refused.
-  See [source differences](tools/PS2_SOURCE.md).
+- **Human Drift:** the original-derived Core is integrated for the supported 29 US source car records, performance parts and nitrous. Local driving covered short stock-206 excerpts on 4312 automatic/manual and 4174. All-car, all-upgrade and whole-track original parity are not approved. Historical yaw comparisons from older candidates do not measure this new executable.
+- **Custom dyno and special presets:** these select the previous handling model for the entire event before it starts. Five legacy sliders are not guessed into the original tuning format. There is no mid-race fallback from a refused Core step.
+- **Contacts and special behavior:** horizontal collisions remain a 2D port adaptation. Wild/extreme, hydraulics and other unqualified branches remain limits.
+- **Career/SAVE:** current private tests include existing earned fixtures from Xbox and PS2, plus one naturally won full Xbox 4101 race, its $250/REP 300 reward, native SAVE and one cold process restoring the new state. This is not a complete-career, all-race or physical-save approval. Your existing saves are not automatically replaced by the generator.
+- **4401:** rivals may get stuck and repeatedly recover in Tunnel Construction/drag. This remains deliberately deferred.
 
-Directed SAVE and first new-process load proofs use private copies of existing
-native career fixtures from both sources. Historical airport/350Z, initial 206,
-first garage, full races and natural-win reward proofs belong to their recorded
-executables. This candidate does not inherit a complete-career approval.
+## Devices, source and presentation
 
-Every report should identify the executable, device, source, car, track and exact
-steps. For generator failures, attach relatorio.json and the failing step log.
+- **Hardware:** no run or installation of e7ce on a PSP or Memory Stick. Earlier bf7f PSP-3000/card observations remain historical. PSP-1000, PSP-2000, Go and physical save behavior remain unqualified.
+- **Performance:** one calibrated Drift scene is recorded separately; global 30 fps and all-device memory/performance are not approved.
+- **Visuals:** tone, materials, UVs, visibility/culling and doors still need review. Free Roam rivals already receive neon through the original upgrade-level probability table; some cars correctly have no neon. PRNG, pack choice and rendering retain adaptations.
+- **Movies/audio:** 28 movies are structurally present per source. Full playback, every audio family and target-device listening are not approved by this check. Skip remains available.
+- **PS2 USA image:** SLUS_210.65 source support and retained 179-file checks do not verify the original disc image; that image remains unknown. PAL/other revisions are refused. See [source differences](tools/PS2_SOURCE.md).
+- **PSPLink:** historical bf7f stopping required human recovery. No general PSPLink shutdown/older Bus error fix is claimed.
+
+For generator failures, attach `relatorio.json` and the failing step log. The [illustrated reporting guide](docs/bug-reporting-guide-EN.pdf) is unchanged. [Português](ptbr/LIMITACOES.md).
+
+A final single run on the same executable completed all three laps of automatic Stadium Drift 2 (4312) through normal controls in 123.4318 simulation seconds, banking 1,880 points across seven drifts. The player finished fourth: the genuine loss is preserved. No player/AI reset, NaN or Core error was recorded. Pause/resume, released event assets and return to Main with advancing music passed. Native files stayed unchanged. This qualifies that complete event and its score, not a Drift win, all-car handling parity or physical audio.

@@ -16,6 +16,12 @@ PSP (`eboot/EBOOT.PBP`) já vem compilado.
 Por favor, não compartilhe este repositório nem a pasta gerada: o acesso é
 pessoal.
 
+## Candidata 13 em poucas palavras
+
+Este kit traz o executável **e7ce75f8**. O Drift humano usa regras derivadas do original nas configurações suportadas; dyno personalizado e presets especiais mantêm o modelo anterior durante o evento inteiro. As provas locais incluem três trechos curtos de Drift, SAVE/processo novo privados das duas fontes e uma vitória natural completa na Xbox 4101, com o prêmio salvo e restaurado em um processo frio.
+
+São conferências locais com escopo definido. Não há aprovação deste executável no PSP/Memory Stick, de carreira completa ou de 30 fps globais. Os relatos de áudio/EA TRAX continuam abertos para confirmação dos testadores. Leia [NOTAS-NOTURNAS.md](NOTAS-NOTURNAS.md) e [LIMITACOES.md](LIMITACOES.md). A interface abre em inglês; selecione Português. Arquivos em português ficam em `ptbr/`.
+
 ## Do que você precisa
 
 - **A ISO do Xbox** de *Need for Speed Underground 2* (versão americana,
@@ -107,7 +113,7 @@ de Windows.
 5. Após o sucesso, use **Abrir pasta gerada**. O auxiliar não apaga pastas
    existentes do usuário nem saves, e não copia nada para o PSP. Faça a
    instalação separadamente, conforme a seção abaixo. Os exemplos dela
-   usam a saída padrão `saida`; substitua pela pasta escolhida se for outra.
+   usam a saída padrão `output`; substitua pela pasta escolhida se for outra.
 
 Use **Baixar registros** ao relatar um problema e preserve os registros de
 cada etapa em `<saída>/registros/`. Para interromper, clique em **Cancelar
@@ -127,14 +133,16 @@ As opções avançadas por linha de comando continuam disponíveis na raiz:
 
 1. Ligue o PSP ao computador pelo cabo USB e, no XMB, abra
    *Ajustes > Conexão USB*.
-2. Copie a pasta:
+2. Faça a cópia manualmente. Confira o volume de destino do cartão e faça
+   backup de `PSP/SAVEDATA` antes. O comando macOS abaixo atualiza os arquivos
+   alterados; não acrescente `--fresh` automaticamente.
    - **macOS:** não copie pelo Finder (ele deixa um arquivo `._` ao lado de
      cada um, e o jogo fica mais lento no cartão). No Terminal, dentro desta
      pasta, rode:
      ```sh
-     .venv/bin/python tools/ms_package.py push /Volumes/<nome do cartão> saida --fresh
+     .venv/bin/python tools/ms_package.py push /Volumes/<nome do cartão> output
      ```
-   - **Windows e Linux:** copie a pasta `saida/PSP` para a raiz do cartão,
+   - **Windows e Linux:** copie a pasta `output/PSP` para a raiz do cartão,
      juntando com a pasta `PSP` que já existe lá.
 3. Ejete o cartão e saia da Conexão USB (botão O).
 4. No XMB, em *Jogo > Memory Stick*, abra **NFSU2 PSP**.
@@ -150,8 +158,10 @@ Os saves ficam em *Dados salvos* do XMB e sobrevivem a uma nova cópia.
 | `arquivos extraídos diferem do jogo esperado` | outra região ou versão; por enquanto, só a NTSC-U |
 | `falta preparar o computador` | rode `sh ./setup.sh` e siga o que ele pedir |
 | `pouco espaço em disco` | libere espaço ou use `--saida` num disco com mais espaço |
-| `a etapa "…" falhou` | rode de novo; se repetir, mande a pasta `saida/registros` |
+| `a etapa "…" falhou` | rode de novo; se repetir, mande a pasta `output/registros` |
 
 ## Créditos e licenças
 
 Veja [TERCEIROS.md](TERCEIROS.md) e a pasta [`licenses/`](../licenses/).
+
+A prova atual também inclui um Drift4312 completo de três voltas: 1.880 pontos, sete drifts e quarto lugar (derrota real), com pausa/retomada e retorno ao menu/música. Veja as notas noturnas para o escopo.

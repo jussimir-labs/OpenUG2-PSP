@@ -14,6 +14,12 @@ prebuilt.
 Please do not share this repository or the folder it builds: access is
 personal.
 
+## Candidate 13 at a glance
+
+This kit contains executable **e7ce75f8**. Human Drift now uses original-derived vehicle rules for the supported source configurations; custom dyno and special preset cars keep the previous model for the whole event. Local evidence includes three short Drift excerpts, private native SAVE/new-process checks from both sources, and one full naturally won Xbox 4101 race with its reward saved and restored in a fresh process.
+
+These are scoped local checks. The new executable has no PSP/Memory Stick approval, complete-career or global-30-fps approval, and the audio/EA TRAX reports remain open for tester confirmation. Read [nightly notes](NIGHTLY_NOTES.md) and [known issues](KNOWN_ISSUES.md) before testing. The interface defaults to English; select Português for Portuguese. English files are in the root and Portuguese documentation/launchers in `ptbr/`.
+
 ## What you need
 
 - **The Xbox ISO** of *Need for Speed Underground 2* (US, NTSC-U), dumped
@@ -96,7 +102,7 @@ Windows configuration.
 5. Use **Open generated folder** after success. The helper does not erase
    existing user folders or saves, and does not copy anything to the PSP.
    Follow the installation section below separately. Its examples use the
-   default `saida` output; substitute your chosen output folder if different.
+   default `output` output; substitute your chosen output folder if different.
 
 Use **Download logs** when reporting a problem, and keep the step logs in
 `<output>/registros/`. To interrupt, click **Cancel process** and wait for the
@@ -116,14 +122,16 @@ Advanced command-line options remain available from the repository root:
 
 1. Connect the PSP over USB and, in the XMB, open
    *Settings > USB Connection*.
-2. Copy the folder:
+2. Copy the folder manually. Check the destination card volume and back up
+   `PSP/SAVEDATA` first. The macOS command below updates changed files; do not
+   add `--fresh` automatically.
    - **macOS:** do not copy with the Finder (it leaves a `._` file beside
      each one, and the game gets slower on the card). In Terminal, in this
      folder, run:
      ```sh
-     .venv/bin/python tools/ms_package.py push /Volumes/<card name> saida --fresh
+     .venv/bin/python tools/ms_package.py push /Volumes/<card name> output
      ```
-   - **Windows and Linux:** copy `saida/PSP` to the card's root, merging
+   - **Windows and Linux:** copy `output/PSP` to the card's root, merging
      it with the `PSP` folder already there.
 3. Eject the card and leave USB Connection (the O button).
 4. In the XMB, under *Game > Memory Stick*, open **NFSU2 PSP**.
@@ -133,3 +141,5 @@ Saves live in the XMB's *Saved Data* and survive a new copy.
 ## Credits and licences
 
 See [THIRD_PARTY.md](THIRD_PARTY.md) and the `licenses/` folder.
+
+Current completion evidence also includes one full three-lap Drift4312 event: 1,880 points, seven drifts and fourth place (a real loss), with pause/resume and menu/music recovery. See the nightly notes for scope.

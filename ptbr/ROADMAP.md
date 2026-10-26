@@ -1,20 +1,21 @@
 # Roadmap do beta fechado
 
-Os relatos continuam abertos para confirmação no novo executável. Correção de
-código marcada abaixo não significa aprovação de todos os aparelhos ou sintomas.
+A candidata 13 está pronta para retorno dirigido dos testadores, com [escopo e limitações](LIMITACOES.md) explícitos. As implementações marcadas não encerram relatos no GitHub nem aprovam todos os aparelhos.
 
-- [x] Corrigir ordem do logo e proporções circulares do card EA TRAX; comparação visual local passou.
-- [x] Separar bancos de turbo/pneus, aguardar confirmação do mixer e suportar os loops longos completos de drift.
-- [x] Liberar a ambiência ao voltar ao menu; recuperação local da música demonstrada.
-- [x] Parar loops de ambiente na pausa e cancelar rampas pendentes do limitador ao retomar; regressão nativa passou.
-- [x] Corrigir aceleração, referência dos pneus e demanda longitudinal no som de frenagem, preservando o decaimento ao soltar o freio.
-- [x] Usar aceleração angular, em vez de velocidade angular, na direção do drift.
-- [ ] Confirmar os relatos físicos de áudio com a nova candidata, separando motor GIN/AEMS, marchas, pneus e ambiente.
-- [ ] Completar a comparação do modelo original de forças do drift; investigação nativa isolada, sem declarar paridade completa.
-- [ ] Validar o novo executável no aparelho sob autorização específica, sem alterar saves físicos automaticamente.
-- [ ] Corrigir recuperações repetidas de rivais na 4401; trabalho adiado por decisão humana.
-- [ ] Continuar validação PSP-1000/demais aparelhos,30 fps globais, carreira completa, visual e ISO PS2 USA original.
+- [x] Corrigir ordem do logo/borda circular EA TRAX e preservar a comparação visual local. [#1](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1)
+- [x] Corrigir a posse dos bancos de turbo/pneus e os cursores de loops completos; preservar as provas nativas. [#2](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2)
+- [x] Manter correções de pausa/limitador, frenagem e música do menu; trechos atuais cobrem pausa/retomada/retorno. [#3](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3), [#4](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4), [#5](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5)
+- [x] Integrar o Drift humano derivado do original e os produtores de configuração/pista; dyno personalizado/presets especiais mantêm o modelo anterior durante o evento inteiro.
+- [x] Qualificar três trechos de Drift por controles normais, SAVE/frio privados das duas fontes e uma vitória natural completa Xbox 4101/prêmio/SAVE/frio na e7ce.
+- [x] Conferir identidade dos pacotes e presença estrutural dos 28 filmes por fonte; preservar os dois PDFs ilustrados.
+- [ ] Obter confirmação visual/auditiva dos testadores na e7ce; manter relatos #1–#5 abertos até haver prova para encerramento.
+- [ ] Ampliar comparações originais por carro, peças, pista e ramos especiais sem transformar trechos atuais em paridade global.
+- [ ] Qualificar aparelho, Memory Stick, saves físicos e PSP-1000/demais modelos em testes autorizados separadamente.
+- [ ] Resolver recuperações de rivais na 4401, ainda adiadas.
+- [ ] Continuar carreira completa, desempenho global, tom/materiais/UV/visibilidade/portas e imagem original PS2 USA.
 
-Os rivais do Free Roam já recebem e desenham neon conforme a tabela de
-probabilidades do original. No nível 0, 90% podem ficar sem neon. PRNG, packs e
-renderização têm adaptações do port; não é aprovação visual nova.
+Neons dos rivais do Free Roam usam a tabela original por nível; no nível 0, 90% das escolhas podem ficar sem neon. PRNG, packs e desenho mantêm adaptações. Isso não aprova paridade visual completa.
+
+Veja as [notas](NOTAS-NOTURNAS.md). [English](../ROADMAP.md).
+
+- [x] Completar um Drift4312 de três voltas com controles normais, preservando a derrota em quarto, pontuação e provas de pausa/menu/música.

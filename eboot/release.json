@@ -1,10 +1,10 @@
 {
-  "candidate": "closed-beta-20261026-beta01-night12",
-  "candidate_id": "local-night12-source8f7ec4-not-published",
-  "eboot_sha256": "c25f117241edea5fd66bb090303b23b8579cbda245df9cd7fc95234957434274",
-  "eboot_bytes": 3904935,
-  "build_id": "8f7ec4df1",
-  "source_commit": "8f7ec4df13f1f54cf086cfbb8ed9316498eea43d",
+  "candidate": "closed-beta-20261026-beta01-original13",
+  "candidate_id": "local-original13-source5a3e4729d-not-published",
+  "eboot_sha256": "e7ce75f8b2e35949fdd04525baf9d6a114c177d822cfbe2e4189f20f7e68fa63",
+  "eboot_bytes": 4051967,
+  "build_id": "5a3e4729d",
+  "source_commit": "5a3e4729d57e728f620da7adca1b4f1b97ae6b69",
   "build_flags": [
     "PGO=use",
     "LTO=1",
@@ -15,37 +15,55 @@
     "xbox",
     "ps2"
   ],
-  "publication_status": "LOCAL_PROTECTED_CANDIDATE_NOT_PUBLISHED",
-  "quality_approval": "exact-current-directed-straight-brake-pause-menu-passed; prior7397-native-save-cold-and-mixer-evidence-scoped-by-binary-delta; no-hardware-approval",
+  "publication_status": "STAGED_LOCAL_ONLY_NOT_PUBLISHED_OR_INSTALLED",
+  "quality_approval": "scoped-local-current-executable complete4312Drift, excerpts, two-source existing-fixture nativeSAVE/cold and naturalXbox4101 reward/SAVE/cold; no newhardware or globalparity approval",
   "known_issues": [
-    "drift-full-physics-parity-incomplete",
-    "hardware-validation-of-new-executable-pending",
-    "reported-audio-symptom-physical-validation-pending",
-    "drag-4401-rival-recovery-loop",
-    "tone-and-visibility-review-incomplete",
-    "psp1000-and-global30fps-unapproved",
-    "ps2-original-disc-image-unverified",
-    "psplink-stop-historical-manual-recovery"
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery"
   ],
-  "reference_scope": "File identity of qualified closedbeta baseline only. Does not clear gameplay/source/device/visual limitations.",
+  "reference_scope": "Current e7ce executable plus canonical source-data packages: Xbox162/data78eb and PS2159/data4111. File identity only; known gameplay/source/device/visual limitations remain.",
   "files_by_source": {
-    "xbox": 161,
-    "ps2": 158
+    "xbox": 162,
+    "ps2": 159
   },
-  "source_main_sha256": "29a93c4248e989debb1cf3fa2866cd5a3e5f8f657a0d85b78ad6755e8db666db",
-  "source_c_h_manifest_sha256": "fe154b05f64407fe12bf72e3e2f491223d7f61c698f9632c70bba20727c64cbf",
-  "runtime_build_id_note": "Embedded8f7ec4df1 identifies source8f7ec4df13f1f54cf086cfbb8ed9316498eea43d; authoritative executable identity is SHA256 above.",
+  "source_main_sha256": "1412358f05a341ede50fd083ded5d6de16d7f38c45d856e021ae0717d728543f",
+  "runtime_build_id_note": "Frozen build10 source5a3e4729d with original-derived human Drift. Exact executable SHA256 is authoritative.",
   "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
-  "functional_scope": "Exactc25f: extended-memory PPSSPP title, normal4011 straight braking, pause/resume and menu; limiter resume native host regression. Immediate predecessor7397: normal4312 drift/ambience release and two-source nativeSAVE/cold, plus three calibrated mixer diagnostics. Binary delta review scopes reuse of unchanged paths; does not invent exactc25f save/performance/hardware passes.",
+  "functional_scope": "Three short normal-control Drift excerpts:4312 automatic/manual and4174city; manual first-to-second shift completed. Pause/resume/menu/music qualified with raw diagnostic cleanup failures preserved/reconciled. Two-source existing earned-fixture native SAVE/first new-process load passed. One full natural Xbox4101 win in139.1676simulation seconds, $250/REP300/races1, nativeSAVE and unique cold2431fdb7e3154106ba998a4eabb58aa7 restored exact new state. No complete-career or physical-save approval. A separate normal-control full3lap4312 automatic event finished in123.4318s with1880points/7drifts,4thplace genuine loss; pause/resume/menu/music passed, no reset/NaN/Coreerror. Not a Drift win or global parity.",
   "psplink_cleanup": "Historical bf7f PSPLink stop required manual recovery; no new physical job.",
-  "historical_hardware_scope": "The human PSP3000 title/brief4011/return and card installation were for bf7f only; no new executable installed or run on hardware.",
-  "previous_eboot_sha256": "bf7f21e3fcf743ac23121df8d01e54eabab9bb3db2213dd53b81874089cbe861",
-  "elf_sha256": "5df60ba021c4979399818156f8841bc42ffe6b37817a8bf25dd5686db43eda52",
-  "prx_sha256": "957fa78c267803c204766acf7120464102c783038be3592e55c9724f2271faf9",
+  "historical_hardware_scope": "Only historicalbf7f had human PSP3000 title/brief4011/return and card installation. No e7ce/c25 hardware or card run.",
+  "previous_eboot_sha256": "c25f117241edea5fd66bb090303b23b8579cbda245df9cd7fc95234957434274",
+  "elf_sha256": "f7d2b3bde61841e2a8c7b807f95d411718f9ca473a8bb852220effab6989af65",
+  "prx_sha256": "82c3f057f4d5c3fd32c7d07dd43f0df4c4fb10c4e056517732d3ef6ebadd4cfa",
   "qualification_receipts": [
+    "release-build-10-original-drift/BUILD.json",
+    "ORIGINAL10-FUNCTIONAL-RECONCILIATION.json",
+    "night-native-save-cold-10/RESULT.json",
+    "BETA13-REFERENCE-IDENTITY-REVIEW.json",
+    "ORIGINAL10-MOVIE-VIEW-QUALIFICATION.json",
+    "night-original-calibrated-10/RESULT.json",
+    "night-original-calibrated-10/END-QUALIFICATION.json"
+  ],
+  "qualification_receipt": "docs/qualification/OVERNIGHT-QUALIFICATION.json",
+  "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a",
+  "pgo_profile_count": 63,
+  "source_data_ids": {
+    "xbox": "78eb",
+    "ps2": "4111"
+  },
+  "historical_receipts": [
     "release-build-08-night-limiter/BUILD.json",
     "release-build-08-night-limiter/BINARY-DELTA.json",
     "night-straight-brake-08/RECONCILED.json",
     "OVERNIGHT-20261026.json"
-  ]
+  ],
+  "historical_receipts_note": "Previous candidate receipts retained as history; they do not independently qualify the current e7ce executable.",
+  "source_snapshot_reference": "release-build-10-original-drift/source/psp-viewer; BUILD.json is authoritative. No predecessor C/H manifest digest is carried forward."
 }

@@ -49,8 +49,8 @@ def validate_paths(iso, output, root=ROOT):
         raise UserError('Choose a complete US Underground 2 .iso file.')
     if out == root or out in root.parents or disc == out or out in disc.parents:
         raise UserError('Choose an output folder separate from the tool and ISO.')
-    if root in out.parents and out.relative_to(root).parts[0] != 'saida':
-        raise UserError('Inside the tool, use only the default saida folder. Otherwise choose an external output folder.')
+    if root in out.parents and out.relative_to(root).parts[0] not in {'output', 'saida'}:
+        raise UserError('Inside the tool, use output (or the existing saida folder). Otherwise choose an external output folder.')
     if out.exists():
         if not out.is_dir():
             raise UserError('The output must be a folder.')
@@ -165,7 +165,7 @@ class Application:
         self.duration = None
         self.data = dict(status='idle', stage='preparation', progress=None, progress_kind='none',
                          message='Choose your ISO to get started.', logs=[], job={}, preflight=None,
-                         result=None, busy=False, can_resume=False, default_output=str(root / 'saida'))
+                         result=None, busy=False, can_resume=False, default_output=str(root / 'output'))
         self.data['build'] = json.loads((root / 'eboot/release.json').read_text())
         self.log_path = root / '.tools/browser-generator.log'
 
