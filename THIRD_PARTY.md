@@ -19,6 +19,7 @@ nem com a Sony.
 | dentro do EBOOT: zlib | Jean-loup Gailly, Mark Adler | zlib | sim (`licenses/zlib.txt`) |
 | `tools/`, `build_game.py`, `sources/`, `presets/` | o projeto | do projeto | decisão do autor |
 | `third_party/xdvdfs/xdvdfs.py` (leitor do disco do Xbox) | xboxrecomp, de sp00nz, no [nfsu2-sw](https://github.com/antoxa2584x/nfsu2-sw) | MIT | sim, com a licença ao lado |
+| `tools/vendor/utk/` | Andrew D’Addesio, adaptação vgmstream fixada em `PROVENANCE.json` | domínio público/Unlicense e aviso permissivo do vgmstream preservados ao lado | sim, com ambos os avisos; apenas conversão offline |
 | `art/reference/psp-controls/psp-isolated-v1.png` | imagem do projeto de um PSP-3000, para a tela de controles | do projeto | sim |
 | `manifests/*.json`, `sources/xbox-files.json` | SHA-256 dos arquivos do disco e do pacote | só hashes | sim |
 | `tools/race_reference.json` | trechos de corrida medidos jogando o original | dados de medida do projeto | sim |

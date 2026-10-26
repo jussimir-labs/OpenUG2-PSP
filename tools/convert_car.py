@@ -10,6 +10,7 @@ import argparse
 import collections
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import struct
@@ -18,6 +19,7 @@ import n2feng
 from n2formats import *  # noqa: F401,F403  (tests import names through here)
 from n2formats import (FlatTPK, SlotTPK, archived, car_record, envmap_faces,
                        game_hash, lod_family, parts)
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 CAR_IDS = {'240SX': 0, '350Z': 1}
@@ -312,7 +314,9 @@ class Textures:
 def vinyl_index(game, car):
     """name -> key for CARS/<car>/VINYLS.BIN. Names live inside each
     compressed slot, so the index is built once and cached locally."""
-    cache = ROOT / '.tools/cache' / f'{car}-vinyls.json'
+    import n2formats
+    plat = '' if n2formats.PLATFORM == 'xbox' else f'-{n2formats.PLATFORM}'   # each disc its own index
+    cache = ROOT / '.tools/cache' / f'{car}{plat}-vinyls.json'
     store = SlotTPK(archived(game, f'CARS/{car}/VINYLS.BIN'))
     if cache.exists():
         index = json.loads(cache.read_text())
@@ -378,9 +382,29 @@ def composite_skin(textures, game, car, preset, size=256):
 
 # ------------------------------------------------------------------- assembly
 
+def lamp_textures(textures, car, preset):
+    """The lamps' generic texture keys -> the car's own art, as the game's
+    replacement table (CarRenderInfo, UsedCarTextureAddToTable): a lamp
+    part's TEXTURE_NAME (<CAR>_<KIT or STYLE>_HEADLIGHT, _BRAKELIGHT) with
+    _OFF, its glass with _GLASS_OFF, the centre lamp the car's
+    <CAR>_CENTRE_BRAKELIGHT_OFF. The game draws the _OFF art lit or not
+    (no _ON art is used: the lit look is the flares'). A key whose art the
+    car lacks stays as it is (the flat lens)."""
+    h = n2feng.bin_hash
+    hl = f"{car}_{preset.get('headlight', 'KIT00')}_HEADLIGHT"
+    bl = f"{car}_{preset.get('brakelight', 'KIT00')}_BRAKELIGHT"
+    pairs = {'HEADLIGHT_LEFT': hl + '_OFF', 'HEADLIGHT_RIGHT': hl + '_OFF',
+             'HEADLIGHT_GLASS_LEFT': hl + '_GLASS_OFF', 'HEADLIGHT_GLASS_RIGHT': hl + '_GLASS_OFF',
+             'BRAKELIGHT_LEFT': bl + '_OFF', 'BRAKELIGHT_RIGHT': bl + '_OFF',
+             'BRAKELIGHT_GLASS_LEFT': bl + '_GLASS_OFF', 'BRAKELIGHT_GLASS_RIGHT': bl + '_GLASS_OFF',
+             'BRAKELIGHT_CENTRE': f'{car}_CENTRE_BRAKELIGHT_OFF', 'BRAKELIGHT_GLASS_CENTRE': f'{car}_CENTRE_BRAKELIGHT_OFF'}
+    return {h(g): h(r) for g, r in pairs.items() if textures.get(h(r)) is not None}
+
+
 class Builder:
-    def __init__(self, textures, paint, window=None):
+    def __init__(self, textures, paint, window=None, lamps=None):
         self.textures, self.paint = textures, paint
+        self.lamps = lamps or {}  # the lamps' generic keys -> the car's art (lamp_textures)
         self.window = window      # the windows' tint (RGBA), None: the stock glass
         self.slot = 0             # customisation slot of the parts being added
         self.meshes = []          # (vertex bytes list, indices, texref, colour, flags, uvscale)
@@ -389,6 +413,7 @@ class Builder:
     def material(self, mat, tex, library=False, carbon_hood=False):
         """-> (texref or None, RGBA colour, flags, uv scale)."""
         white = (255, 255, 255, 255)
+        tex = self.lamps.get(tex, tex)
         if mat in (CARSKIN, SKIRTSKIN):
             if carbon_hood and mat == CARSKIN:
                 return CARBONFIBRE_TEX, white, F_CARBON, 3.0
@@ -427,6 +452,8 @@ class Builder:
             return None, (40, 40, 42, 255), F_MATTE, 1.0
         if mat == CALIPER:
             return resolved, (230, 40, 40, 255), 0, 1.0
+        if mat in (BRAKELIGHT, LENS):   # the lamp's own art (lamp_textures), lit by its own light
+            return resolved, white, F_EMISSIVE, 1.0
         return resolved, white, flags, 1.0
 
     def add(self, part, xform, mirror=False, library=False, carbon_hood=False, wheel=None):
@@ -523,7 +550,7 @@ def assemble(game, preset, lod, strict=False):
     families = choose_car_parts(all_parts, car, preset)
     # window_tint: the garage's tint level (1..3, the viewer's GARAGE_TINTS),
     # as the PS2's DDAY_PLAYER_CAR, its cabin unseen behind dark glass
-    b = Builder(textures, paint, WINDOW_TINTS.get(preset.get('window_tint', 0)))
+    b = Builder(textures, paint, WINDOW_TINTS.get(preset.get('window_tint', 0)), lamp_textures(textures, car, preset))
     report = []
     hood_owner = preset.get('hood', 'KIT00')
     coarser = preset.get('light_lod', {}) if lod and not strict else {}   # family -> level of detail in the light pack (60 Hz on the street)
@@ -692,7 +719,7 @@ def add_decals(b, game, car, preset):
         shape = cg.DECAL_ZONES[z][1]
         wide = int(m.group(1)) if m and zone in ('LEFT_DOOR', 'RIGHT_DOOR', 'LEFT_QUARTER', 'RIGHT_QUARTER') else 0
         head = f'{car}_WIDE{wide}_DECAL_' if wide else f'{car}_DECAL_'
-        n = cg.DECAL_SLOTS[z][0]   # the medium layout: told from the small by its slot count (names cut at 27)
+        n = cg.DECAL_SLOTS[z][1 if zone in preset.get('decal_small', ()) else 0]   # the medium layout or the small: told apart by their slot counts (names cut at 27)
         place = next((p for p in every if p.name.startswith(head) and p.name[len(head):].startswith(zone[:27 - len(head)])
                       and len({t for _, t, _ in p.subs}) == n and any(t == cg.DUMMY_DECAL1 for _, t, _ in p.subs)), None)
         if place is None or len(arts) > n:
@@ -880,13 +907,34 @@ def save_lods(path, levels, used, pack_bytes, base):
                 triangles={level: sum(len(m[1]) // 3 for m in ms) for level, ms in levels})
 
 
+def sphere_face(t, face, size):
+    """A cube face (D3D's axes, Y up) sampled from a sphere map seen down
+    -Z, its top the cube's +Y: the PS2 keeps the showroom's reflection as
+    one sphere map where the Xbox has the six faces."""
+    src, out = t.rgba(), bytearray(size * size * 4)
+    for j in range(size):
+        for i in range(size):
+            s_, t_ = (2 * i + 1) / size - 1, (2 * j + 1) / size - 1
+            d = {'XPOS': (1, -t_, -s_), 'XNEG': (-1, -t_, s_), 'YPOS': (s_, 1, t_), 'YNEG': (s_, -1, -t_),
+                 'ZPOS': (s_, -t_, 1), 'ZNEG': (-s_, -t_, -1)}[face]
+            n = math.sqrt(sum(c * c for c in d))
+            x, y, z = (c / n for c in d)
+            m = 2 * math.sqrt(x * x + y * y + (z + 1) ** 2) or 1e-6
+            u, v = min(t.w - 1, max(0, int((x / m + .5) * t.w))), min(t.h - 1, max(0, int((-y / m + .5) * t.h)))
+            out[(j * size + i) * 4:(j * size + i) * 4 + 4] = src[(v * t.w + u) * 4:(v * t.w + u) * 4 + 4]
+    return out
+
+
 def save_envmap(path, game, name='SHOWROOM', size=64):
     """N2EV: magic, face size, then XPOS XNEG YPOS YNEG ZPOS ZNEG RGBA8888."""
     faces = envmap_faces(archived(game, f'FRONTEND/ENVMAPS/{name}.BIN'))
     out = bytearray(struct.pack('<4sI', b'N2EV', size) + bytes(8))
     for face in ('XPOS', 'XNEG', 'YPOS', 'YNEG', 'ZPOS', 'ZNEG'):
-        t = faces[face]
-        rgba, w, h = box_downscale(t.rgba(), t.w, t.h, size)
+        if face not in faces and len(faces) == 1:   # the PS2's one sphere map (CARSELECTENVMAP)
+            rgba = sphere_face(next(iter(faces.values())), face, size)
+        else:
+            t = faces[face]
+            rgba, w, h = box_downscale(t.rgba(), t.w, t.h, size)
         for i in range(3, len(rgba), 4):
             rgba[i] = 255
         out.extend(rgba)
@@ -898,7 +946,7 @@ def save_envmap(path, game, name='SHOWROOM', size=64):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--preset', type=Path, default=ROOT / 'presets/350z-showroom.json')
-    parser.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(parser)
     parser.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     parser.add_argument('--skin-png', type=Path, help='grava a skin composta (debug)')
     parser.add_argument('--tag', help='grava só a versão leve como <tag>.n2pv (oponentes)')
@@ -929,7 +977,10 @@ def main():
             elif ref == CARBONFIBRE_TEX:
                 texdata[ref] = carbon_tile(textures.get(ref))
             else:
-                texdata[ref] = to_clut8(textures.get(ref), 128)
+                # the lamps' art on the street: 64 texels at most (a lamp
+                # ~30 px on screen; its 128 x 64 cost the GE's first read
+                # 32 us a frame for the player's car, the calibrated 4101)
+                texdata[ref] = to_clut8(textures.get(ref), 64 if lod == 1 and ref in b.lamps.values() else 128)
         pack = args.out / (f'{label}.n2pv' if args.tag else f'car-{label}.n2pv')
         info = save_pack(pack, meshes, texdata, CAR_IDS.get(car, 0), extra)
         used = info.pop('used')

@@ -68,6 +68,7 @@ import struct
 
 from n2formats import archived, chunks
 from n2routes import name_hash
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 STAGES = 6           # bar-free<n>.n2cy's: the career's stages 0-4, 5 the last (and no career)
@@ -395,7 +396,7 @@ def stage_barriers(game, stage, track='L4RA'):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     net = Net(args.game)

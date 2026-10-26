@@ -1,0 +1,99 @@
+name: Relatar um bug
+description: Encontrou um problema no beta? Conte o caminho e envie as evidências.
+title: "[BUG] "
+body:
+  - type: markdown
+    attributes:
+      value: "Um problema por relato. Foto ou vídeo ajudam; L + R + SELECT grava um arquivo técnico, não uma imagem. Consulte o manual em docs/manual-reportar-bugs.pdf."
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do beta
+      description: Copie o nome do pacote recebido. Não precisa calcular hash.
+      placeholder: NFSU2-PSP-beta01-gerador-4u.zip
+    validations:
+      required: true
+  - type: dropdown
+    id: aparelho
+    attributes:
+      label: Onde você jogou?
+      options:
+        - PSP-1000
+        - PSP-2000
+        - PSP-3000
+        - PSP Go
+        - PPSSPP
+        - Outro / não sei
+    validations:
+      required: true
+  - type: dropdown
+    id: fonte
+    attributes:
+      label: Fonte usada para gerar o jogo
+      options:
+        - Xbox americano (NTSC-U)
+        - PS2 americano (NTSC-U)
+        - Não sei
+    validations:
+      required: true
+  - type: input
+    id: local
+    attributes:
+      label: Modo, pista ou tela e carro
+      placeholder: Quick Race / Circuit / Freemont / Peugeot 206
+    validations:
+      required: true
+  - type: textarea
+    id: aconteceu
+    attributes:
+      label: O que aconteceu?
+      placeholder: Descreva o problema que você viu, sem precisar descobrir a causa.
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: O que você esperava?
+      placeholder: Como deveria funcionar?
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Como repetir?
+      description: Escreva os passos na ordem, desde abrir o jogo.
+      value: "1. Abri o jogo pelo XMB.
+2. 
+3. "
+    validations:
+      required: true
+  - type: dropdown
+    id: frequencia
+    attributes:
+      label: Quantas vezes aconteceu?
+      options:
+        - Sempre que tentei
+        - Às vezes
+        - Uma vez / não repeti
+    validations:
+      required: true
+  - type: textarea
+    id: evidencias
+    attributes:
+      label: Evidências
+      description: Arraste fotos JPG/PNG, vídeo curto e o ZIP do bug-N.n2bug para este campo. Espere o envio terminar. Se não houver arquivo técnico, informe isso.
+      placeholder: Foto ou vídeo e, se disponível, bug-3.n2bug dentro de um ZIP.
+  - type: textarea
+    id: ambiente
+    attributes:
+      label: Informações adicionais
+      description: Firmware/CFW, cartão e configurações, se souber. Pode escrever não sei.
+  - type: checkboxes
+    id: conferencias
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Procurei relatos parecidos e consultei as limitações conhecidas.
+          required: true
+        - label: Este relato trata de um único problema.
+          required: true

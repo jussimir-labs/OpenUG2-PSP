@@ -31,6 +31,7 @@ import n2feng as fe
 import convert_physics
 from n2formats import FlatTPK, SlotTPK, archived, chunks, decompress
 import ps2_buttons
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 FONT_CHUNKS = {'CONDUITMDITC_TT14I.FFN': 'conduitmditc_tt14i', 'FONT_CONDUITMDITCTT38BI.FFN': 'font_conduitmditctt38bi',
@@ -85,7 +86,7 @@ class Sources:
 class Font:
     def __init__(self, raw, page):
         b = raw[0x200:]
-        if b[:4] != b'FNTX':
+        if b[:4] not in (b'FNTX', b'FNTS'):   # the PS2's says FNTS, the rest the same
             raise ValueError('not an FNTX font')
         count = struct.unpack_from('<H', b, 10)[0]
         table = struct.unpack_from('<I', b, 0x14)[0]
@@ -951,18 +952,32 @@ def quick_race_tracks(game):
 NAME_LEN = 32   # "Bayview Speedway Track 1" is 24: the old 24 bytes cut its number
 
 
+def track_lengths(game):
+    """The distance the original shows for each event (the quick race's
+    track select, UIQRTrackSelect::RefreshHeader, and the career's event
+    screen, PlayableEvent): its TrackInfo's +0x98, whole metres. A
+    nominal figure, not the course's: the airport's drags 4221-4223 read
+    1609 m (a mile) and run their markers' 1609; the rail yard's 4211 and
+    4212 read 1711 and run 1609; the freeway drags 4401, 4402 and 4404
+    read 2361, 2466 and 3065, more than their catalog's whole outlines."""
+    out = {}
+    for r in track_info_records(game):
+        out.setdefault(struct.unpack_from('<h', r, 0x8a)[0], struct.unpack_from('<i', r, 0x98)[0])
+    return out
+
+
 def track_maps(game, ids, table, path):
     """maps.n2tx: every event's name (TRACK_NAME_<id>), whether the quick
     race lists it (quick_race_tracks) and its track map, if it has one
     (TRACKS\\TRACKMAP<id>.BIN: the city map with the route drawn in, the
     picture the quick race and the event dialogs show), 256 x 256 T8:
-    'N2T2', u32 count, count x (u32 event id, u32 offset (0: no map),
+    'N2T3', u32 count, count x (u32 event id, u32 offset (0: no map),
     char name[32], u8 route box x0,y0,x1,y1 in map pixels: the white
     line's bounds, which the quick race's track screen frames as the
     PS2's, u8 flags: 1 in the quick race, u8 pad, u16 its place in the
-    quick race's list), then 1024-byte CLUT + 256 x 256 swizzled indices
-    each."""
-    quick = quick_race_tracks(game)
+    quick race's list, u32 the distance shown, m (track_lengths; 0 none)),
+    then 1024-byte CLUT + 256 x 256 swizzled indices each."""
+    quick, lengths = quick_race_tracks(game), track_lengths(game)
     blobs = []
     for eid in ids:
         try:
@@ -983,12 +998,13 @@ def track_maps(game, ids, table, path):
         w, h, blob = texture_blob(t, MAP_SIZE)
         assert (w, h) == (MAP_SIZE, MAP_SIZE)
         blobs.append((eid, blob, box))
-    out = bytearray(struct.pack('<4sI', b'N2T2', len(blobs)))
-    at = len(out) + (16 + NAME_LEN) * len(blobs)
+    out = bytearray(struct.pack('<4sI', b'N2T3', len(blobs)))
+    at = len(out) + (20 + NAME_LEN) * len(blobs)
     at += -at % 16
     for eid, blob, box in blobs:
         name = table.get(fe.bin_hash(f'TRACK_NAME_{eid}'), str(eid)).encode('latin-1', 'replace')[:NAME_LEN - 1]
-        out += struct.pack(f'<2I{NAME_LEN}s4B2BH', eid, at if blob else 0, name, *box, int(eid in quick), 0, quick.get(eid, 0xffff))
+        out += struct.pack(f'<2I{NAME_LEN}s4B2BHI', eid, at if blob else 0, name, *box, int(eid in quick), 0, quick.get(eid, 0xffff),
+                           max(0, lengths.get(eid, 0)))
         at += len(blob) if blob else 0
     out += bytes(-len(out) % 16)
     for _, blob, _ in blobs:
@@ -1199,6 +1215,18 @@ def style_table(globalb, table, path):
 # u32 the help's text label, flags, ...) from UI_Main.fng on; the text has
 # the pad's tokens, one action a line.
 HELP_FIRST = 0x393590   # the record of UI_Main.fng in the USA Xbox default.xbe (the table runs on both sides)
+
+
+def help_first(exe):
+    """The help table's UI_Main.fng record: of the words pointing at that
+    name, the one with the most .fng packages named every 28 bytes round it
+    (HELP_FIRST on the Xbox; the PS2's executable has it elsewhere)."""
+    def fng(at):
+        return 0 <= at <= len(exe.b) - 4 and exe.cstr(struct.unpack_from('<I', exe.b, at)[0]).lower().endswith('.fng')
+    score, best = max((sum(fng(r + 28 * k) for k in range(-10, 11)), r) for r in exe.refs('UI_Main.fng'))
+    if score >= 8:
+        return best
+    raise ValueError(f'{exe.path.name}: the help table (UI_Main.fng) not found')
 # the PSP's icons for the tokens: the stick and the pad's (Left/Right: the
 # pad's arrows, Up/Down its up-and-down); the right stick has no PSP twin
 HELP_ICONS = {'$JOY_EVENT_FENG_PAD_LEFT$': 'PS2_DPADL', '$JOY_EVENT_FENG_PAD_UP$': 'PS2_DPADUPDOWN',
@@ -1217,17 +1245,12 @@ def help_texts(game, table, path, language=None):
     actions split by '|', the tokens as the menus' icon codes (ICON_CODE).
     language: another language's table (help_<xx>.txt), the lines the
     English keeps, by their place in the text."""
-    x = (game.parent / 'default.xbe').read_bytes()
-    base, nsec, sh = struct.unpack_from('<I', x, 0x104)[0], struct.unpack_from('<I', x, 0x11c)[0], struct.unpack_from('<I', x, 0x120)[0]
-    secs = [struct.unpack_from('<5I', x, sh - base + 56 * i)[1:5] for i in range(nsec)]
-    def cstr(v):
-        for va, vs, ra, rs in secs:
-            if va <= v < va + rs:
-                o = ra + v - va
-                return x[o:x.index(b'\0', o)].decode('latin-1')
-        return ''
+    import n2exe, n2source
+    exe = n2exe.Exe(n2source.executable(game))
+    x, cstr = exe.b, exe.cstr
+    first = help_first(exe)
     helps = {}
-    for p in range(HELP_FIRST - 28 * 80, HELP_FIRST + 28 * 200, 28):   # the table runs on both sides of UI_Main's
+    for p in range(max(0, first - 28 * 80), min(len(x) - 12, first + 28 * 200), 28):   # the table runs on both sides of UI_Main's
         name, _, label = struct.unpack_from('<3I', x, p)
         fng = cstr(name)
         if not fng.lower().endswith('.fng'):
@@ -1295,14 +1318,21 @@ def gps_arrow(game, src, path):
         leaves = {t: d[o:o + s] for t, o, s in ck(d, p, p + n) if not t & 0x80000000}
         if unpad(leaves[0x134011])[164:].split(b'\0')[0] != b'MARKER_GPS_AID':
             continue
-        vb, ib, sb = (unpad(leaves[t]) for t in (0x134b01, 0x134b03, 0x134b02))
-        verts = [struct.unpack_from('<3fI2f', vb, 24 * i) for i in range(len(vb) // 24)]
-        ids = struct.unpack(f'<{len(ib) // 2}H', ib)
         keys = [a for a, _ in struct.iter_unpack('<II', leaves[0x134012])]
-        out = bytearray(b'N2GP' + struct.pack('<II', 2, len(sb) // 64))
-        for at in range(0, len(sb), 64):
-            w = struct.unpack_from('<16I', sb, at)
-            count, ti, first = w[6], w[7], w[9]
+        if 0x134a02 in leaves:      # the PS2's VIF strips
+            from n2formats import ps2_world
+            verts, psubs = ps2_world(leaves)
+            ids, draws = [], []
+            for sub, ti in psubs:
+                draws.append((len(sub), ti, len(ids)))
+                ids += sub
+        else:
+            vb, ib, sb = (unpad(leaves[t]) for t in (0x134b01, 0x134b03, 0x134b02))
+            verts = [struct.unpack_from('<3fI2f', vb, 24 * i) for i in range(len(vb) // 24)]
+            ids = struct.unpack(f'<{len(ib) // 2}H', ib)
+            draws = [(w[6], w[7], w[9]) for w in (struct.unpack_from('<16I', sb, at) for at in range(0, len(sb), 64))]
+        out = bytearray(b'N2GP' + struct.pack('<II', 2, len(draws)))
+        for count, ti, first in draws:
             tpk = next(t for t in src.flat if keys[ti] in t.records)
             blend = tpk.records[keys[ti]][1][0x32]   # the record's AlphaBlendType (convert_world.draw_mode)
             mode = 2 if blend == 2 else 1 if blend else 0   # eSetBlendMode: 2 SrcAlpha+One, 1 SrcAlpha+InvSrcAlpha
@@ -1313,7 +1343,7 @@ def gps_arrow(game, src, path):
                 abgr = argb & 0xff00ff00 | (argb >> 16 & 0xff) | (argb & 0xff) << 16
                 out += struct.pack('<2fI3f', u, v, abgr, x, y, z)
         path.write_bytes(out)
-        return len(sb) // 64
+        return len(draws)
     raise SystemExit('MARKER_GPS_AID not found')
 
 
@@ -1387,7 +1417,7 @@ def eboot_art(src, out):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--preview', type=Path, help='render the INIT state to a PNG (640x480) and stop')
     ap.add_argument('--package', default='HUD_SingleRace.fng', help='--preview: any FEng package')

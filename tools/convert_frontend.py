@@ -34,6 +34,7 @@ import struct
 from n2formats import archived, FlatTPK
 import n2world
 from convert_hud import texture_blob
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 KEEP = {'BACKDROP': 6.0, 'BACKDROP_FLOOR': 2.5, 'PLATFORMBASE': 2.0, 'DISC01': 1.5}   # object: split length (m)
@@ -113,7 +114,7 @@ def write(textures, batches, path):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     textures, batches = scene(args.game)

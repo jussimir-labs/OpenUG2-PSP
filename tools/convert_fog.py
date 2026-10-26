@@ -24,6 +24,7 @@ from pathlib import Path
 import struct
 
 from parammaps import maps, name_hash, write_layer
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYERS = ('Normal Fog', 'Night Normal Fog', 'Night Raining Fog', 'Sunrise Screen Tint', 'Night Screen Tint', 'Fog Blend Distance')
@@ -32,7 +33,7 @@ TRACKS = ('L4RA', 'L4RB', 'L4RC', 'L4RD', 'L4RF', 'L4RG')
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     a = ap.parse_args()
     for track in TRACKS:

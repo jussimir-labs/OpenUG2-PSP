@@ -76,6 +76,7 @@ import n2world as nw
 import n2cy_patch   # the barriers' collision as patches on the track's
 from n2cy_bounds import with_bounds   # the loader's per-batch boxes and triangles, at each blob's end
 import tristrip
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 CELL = 64.0
@@ -847,7 +848,7 @@ def gather_instances(stream, skip):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', default='L4RA', help='L4RA the city (city.n2cy); L4RB-L4RG the drag, drift, Street X and URL '
                                                    'tracks (track-<name>.n2cy)')

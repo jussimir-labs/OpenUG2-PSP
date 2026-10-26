@@ -65,6 +65,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 G = 9.8
@@ -346,7 +347,7 @@ def lap_time(line, circuit, v):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--only', type=int, nargs='*', help='event ids (a trial: the output has only those)')
     args = ap.parse_args()

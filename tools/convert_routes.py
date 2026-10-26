@@ -38,6 +38,7 @@ import struct
 
 from n2city import CityCollision
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 WELD = 9.0
@@ -114,7 +115,7 @@ def heights(route, city):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', default='L4RA', help='L4RA the city (roads.n2rd); another: roads-<track>.n2rd')
     args = ap.parse_args()

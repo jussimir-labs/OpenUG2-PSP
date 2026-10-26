@@ -1,0 +1,24 @@
+{
+  "source": "GLOBALB.BUN preset NIGEL_3000GT (chunk 0x30220): a career rival of the last stage (tools/preset_dump.py --convert)",
+  "preset": "NIGEL_3000GT",
+  "car": "3000GT",
+  "paint": "121219",
+  "window_tint": 3,
+  "neon": "GREEN",
+  "kit": "KIT10",
+  "rear_bumper": "KIT04",
+  "skirt": "KIT09",
+  "hood": "STYLE08",
+  "headlight": "STYLE05",
+  "brakelight": "STYLE06",
+  "spoiler": "SPOILER_STYLE16",
+  "roof": "ROOF_STYLE12_OFFSET",
+  "exhaust": "EXHAUST_STYLE07_LEVEL1",
+  "rims": [
+    "LOWENHART",
+    "STYLE01",
+    "19_25"
+  ],
+  "vinyl": "STREETREAPER",
+  "vinyl_remap": false
+}

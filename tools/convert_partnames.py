@@ -22,6 +22,7 @@ from pathlib import Path
 import struct
 
 from partsdb import Parts
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 KINDS = (1, 2, 6, 7, 9, 11, 12, 14, 15, 16)   # front and rear bumpers, wide body, roof scoops, hoods, skirts, spoilers, head and tail lights, exhaust tips
@@ -29,7 +30,7 @@ KINDS = (1, 2, 6, 7, 9, 11, 12, 14, 15, 16)   # front and rear bumpers, wide bod
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     a = ap.parse_args()
     parts = Parts(a.game)

@@ -1,0 +1,36 @@
+{
+  "source": "GLOBALB.BUN preset CALEB_GTO (chunk 0x30220): a career rival of the last stage (tools/preset_dump.py --convert)",
+  "preset": "CALEB_GTO",
+  "car": "GTO",
+  "paint": "121219",
+  "window_tint": 3,
+  "neon": "RED PULSE",
+  "kit": "KIT16",
+  "rear_bumper": "KIT18",
+  "skirt": "KIT27",
+  "hood": "STYLE01",
+  "headlight": "STYLE05",
+  "brakelight": "STYLE06",
+  "spoiler": "SPOILER_STYLE02",
+  "roof": "ROOF_STYLE04",
+  "exhaust": "EXHAUST_STYLE10_LEVEL1",
+  "rims": [
+    "LOWENHART",
+    "STYLE01",
+    "20_26"
+  ],
+  "vinyl": "STREETREAPER",
+  "vinyl_remap": false,
+  "decals": {
+    "LEFT_QUARTER": [
+      "EUROLITE_WHITE"
+    ],
+    "RIGHT_QUARTER": [
+      "ALPINE_WHITE",
+      "GREDDY_WHITE"
+    ]
+  },
+  "decal_small": [
+    "RIGHT_QUARTER"
+  ]
+}

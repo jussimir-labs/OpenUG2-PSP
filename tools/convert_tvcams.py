@@ -63,6 +63,7 @@ import numpy as np
 
 from n2formats import archived, chunks
 import convert_nis as nis
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 WORLDS = (('L4RA', 'races.n2rc'), ('L4RD', 'races-L4RD.n2rc'), ('L4RG', 'races-L4RG.n2rc'))
@@ -209,7 +210,7 @@ def on_course(circ, pts, route):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     keys, tracks, cats, grps, spans, lines, points, line_of = [], [], [], [], [], [], [], {}

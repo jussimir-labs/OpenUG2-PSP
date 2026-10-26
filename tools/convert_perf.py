@@ -51,6 +51,7 @@ import struct
 
 import convert_physics as cp
 from n2formats import archived
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 GEARBOX = (0x2c0, 0x460, 0x4a0, 0x4e0)
@@ -116,7 +117,7 @@ def shop_parts(game, globalb):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     globalb = archived(args.game, 'GLOBAL/GLOBALB.BUN')

@@ -58,6 +58,7 @@ import convert_city as cc
 import convert_world as cw
 import n2world as nw
 from n2formats import chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 CATEGORIES = ['NONE', 'GARBAGE_BAG', 'SHOPPING_CART', 'METAL_FENCE', 'TRAFFIC_CONE', 'WATER_DRUM', 'OIL_DRUM',
@@ -116,7 +117,7 @@ def model_blob(obj, tex_index, tex_flags):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     stream = nw.Stream(args.game)

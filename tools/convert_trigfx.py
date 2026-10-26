@@ -48,6 +48,7 @@ import struct
 
 from convert_hud import load
 from n2formats import FlatTPK, chunks, game_hash
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 GROUPS = ('XEE_EVENT_CIRCUIT', 'XEE_EVENT_DRAG', 'XEE_EVENT_STREET', 'XEE_EVENT_DRIFT', 'XEE_EVENT_SPRINT', 'XEE_EVENT_URL',
@@ -110,7 +111,7 @@ def rgba4444(tex):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     a = ap.parse_args()
     globalb = load(a.game, 'GLOBAL/GLOBALB.LZC')

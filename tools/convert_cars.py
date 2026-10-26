@@ -3,7 +3,7 @@
 
 For each car (tools/convert_physics.py playable(): GLOBALB 0x34600 records
 with car index 0-30, less the two the US release hides) a stock preset
-(KIT00, the car's own wheels, one paint) through tools/convert_car.py:
+(KIT00, the car's own wheels, its stock paint) through tools/convert_car.py:
 car-<MODEL>.n2pv (light, the street) and car-<MODEL>-detail.n2pv (the
 garage). Then cars.n2cl, what the menus and the career need:
 
@@ -42,7 +42,8 @@ garage). Then cars.n2cl, what the menus and the career need:
 cars.n2cl: 'N2CL', u32 version 1, u32 count, count x 80 bytes:
   char model[16], char label[28], char short[12] (CAR_NAME_<MODEL>), u32 logo (bin hash of SECONDARY_LOGO_<MODEL>,
   23 chars), u8 unlock stage, u8 events needed in it (flag 2: the row to
-  win), u8 flags (1 open from the start, 2 by the unlocking race), u8 pad, f32 acceleration, top speed, handling (0..1),
+  win), u8 flags (1 open from the start, 2 by the unlocking race), u8 the stock paint's place in the paint grid + 1
+  (stock_paints), f32 acceleration, top speed, handling (0..1),
   f32 top speed m/s.
 """
 import argparse
@@ -57,17 +58,14 @@ import tempfile
 import car_ratings
 import convert_career
 import convert_hud
+import convert_paints
 import convert_physics
 import n2feng as fe
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 # One stock paint per car (the preset's base colour; the vinyl-free skin).
-PAINTS = ['c81e1e', '1e50b4', 'e6e6e6', 'd2a01e', 'b41e1e', '141414', 'f0c800', '1e1e28', '8c8c96', 'aa1414',
-          '286eaa', '1e7846', 'b4b4be', 'e65a0a', '323c50', 'dcdcdc', 'c8a014', '7814a0', '1e8cc8', 'b9b9c3',
-          '0a0a0a', 'a01e3c', 'd75f0f', '2850a0', 'e6c81e', '3c3c46', '14a050', 'c81e64', '1e1e8c']
-# as the PS2's quick race shows them (the parts table's paint colours)
-STOCK_PAINT = {'PEUGOT': '35669e'}   # GLOSS_L2_COLOR03 (R 53, G 102, B 158)
 FIX_LABEL = {'TIBURON': 'Tiburon'}    # the table's CAR_NAME_TIBURON says "Hyundai"
 TOP_350Z = 61.0
 
@@ -131,6 +129,24 @@ def write_bars(globalb, recs, names, path):
     return {n: car_ratings.stock_bars(recs[n], pk, rng) for n in names}
 
 
+def stock_paints(globalb, recs, names):
+    """Each car's stock paint, the game's (RideInfo::SetStockParts: the
+    BASE_PAINT slot from the car record's +0x84C, a paint part's hash):
+    its place in the paint grid (tools/convert_paints.py, the shop's order)
+    and its colour. The 206's is GLOSS_L2_COLOR03, R 53 G 102 B 158, as the
+    PS2's quick race shows it."""
+    grid = convert_paints.paints(globalb)
+    parts = next(globalb[p:p + n] for t, p, n in chunks(globalb) if t == 0x34604)
+    where = {struct.unpack_from('<I', parts, 14 * i)[0]: (k, rgb) for k, (_, i, rgb, *_) in enumerate(grid)}
+    out = {}
+    for n in names:
+        h = struct.unpack_from('<I', recs[n], 0x84C)[0]
+        if h not in where:
+            raise ValueError(f'{n}: stock paint {h:08x} not in the paint grid')
+        out[n] = where[h]
+    return out
+
+
 def build_table(game, out):
     globalb = archived(game, 'GLOBAL/GLOBALB.BUN')
     recs = convert_physics.records(globalb)
@@ -141,6 +157,7 @@ def build_table(game, out):
     for e in port:
         per_stage[e['stage']] = per_stage.get(e['stage'], 0) + 1
     labels = convert_hud.strings(game)
+    stock = stock_paints(globalb, recs, cars)
     rows = []
     for k, name in enumerate(cars):
         r = recs[name]
@@ -167,7 +184,7 @@ def build_table(game, out):
         length, width, height = prof['body']
         rows.append(dict(model=name, label=display_name(maker, model), short=model, stage=stage, need=need, flags=flags,
                          power_mass=power / pt['mass'], top=(power / (width * height)) ** (1 / 3),
-                         grip=prof['lat'] * prof['steer'] / prof['mass'] ** .3, paint=STOCK_PAINT.get(name, PAINTS[k % len(PAINTS)])))
+                         grip=prof['lat'] * prof['steer'] / prof['mass'] ** .3, paint='%02x%02x%02x' % stock[name][1], stock_paint=stock[name][0]))
     def norm(key):
         lo, hi = min(x[key] for x in rows), max(x[key] for x in rows)
         return {x['model']: .15 + .85 * (x[key] - lo) / (hi - lo) for x in rows}
@@ -180,7 +197,7 @@ def build_table(game, out):
                  handling=round(hand[x['model']], 3), top_ms=round(TOP_350Z * x['top'] / top_350z, 1))
         logo = fe.bin_hash(('SECONDARY_LOGO_' + x['model'])[:23])
         blob += struct.pack('<16s28s12sI4B4f', x['model'].encode(), x['label'].encode()[:27], x['short'].encode()[:11], logo, x['stage'], x['need'],
-                            x['flags'], 0, x['acceleration'], x['top_speed'], x['handling'], x['top_ms'])
+                            x['flags'], x['stock_paint'] + 1, x['acceleration'], x['top_speed'], x['handling'], x['top_ms'])
     (out / 'cars.n2cl').write_bytes(blob)
     return rows
 
@@ -199,7 +216,7 @@ def convert(game, out, row):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--table-only', action='store_true', help='only cars.n2cl (packs already converted)')
     args = ap.parse_args()

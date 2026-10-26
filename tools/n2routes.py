@@ -45,12 +45,14 @@ import struct
 from n2formats import archived, chunks
 
 
-def read_routes(game, track='L4RA'):
+def read_routes(game, track='L4RA', name='ROUTESFREEROAM.BIN'):
     """{route number: [point dicts]}: x, y, flags, wl, wr (m), dx, dy,
     offset (the racing line's, m to the right of the route's way), lines
     (the 10 driving lines' offsets, m to the right of each one's way) and
-    lanes (the route's 8 lane slots, True where the lane exists)."""
-    d = archived(game, f'TRACKS/ROUTES{track}/ROUTESFREEROAM.BIN')
+    lanes (the route's 8 lane slots, True where the lane exists). name: the
+    free roam's file, or an event's own (ROUTES<id>F.BIN, the routes its
+    racers drive)."""
+    d = archived(game, f'TRACKS/ROUTES{track}/{name}')
     leaf = [d[p:p+n] for t, p, n in chunks(d) if t == 0x34121][0]
     routes, at = {}, 8
     while at + 140 <= len(leaf):
@@ -100,10 +102,11 @@ def route_for(events, route, eid):
     return eid not in off and (not kept or eid in kept)
 
 
-def read_signposts(game, track='L4RA'):
+def read_signposts(game, track='L4RA', name='ROUTESFREEROAM.BIN'):
     """[sign dicts]: new_route, new_point, old_route, old_point, flags,
-    racer_type, traffic_type, backwards (bit 18), flip (bit 23)."""
-    d = archived(game, f'TRACKS/ROUTES{track}/ROUTESFREEROAM.BIN')
+    racer_type, traffic_type, backwards (bit 18), flip (bit 23). name: as
+    read_routes'."""
+    d = archived(game, f'TRACKS/ROUTES{track}/{name}')
     leaf = [d[p:p+n] for t, p, n in chunks(d) if t == 0x34122][0]
     out = []
     for at in range(4, len(leaf) - 31, 32):

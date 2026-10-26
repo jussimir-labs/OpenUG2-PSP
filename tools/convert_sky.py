@@ -18,6 +18,7 @@ import convert_car as c
 import convert_world as cw
 from n2formats import SlotTPK, archived
 import n2world as nw
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 SKYDOME = 0xbe43edbb
@@ -27,7 +28,7 @@ TIMES = {'sky.n2pv': 'NIGHT', 'sky-sunrise.n2pv': 'SUNRISE', 'sky-sunset.n2pv': 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     stream = nw.Stream(args.game)

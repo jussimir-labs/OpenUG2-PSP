@@ -47,6 +47,7 @@ import struct
 from n2formats import archived
 import convert_career
 import parammaps
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYERS = ('Ambience', 'Reverb', 'Wind')
@@ -54,17 +55,19 @@ FX_SIZE = {0: 4, 1: 8, 3: 4, 6: 4, 7: 8, 9: 4}
 TUNNELS = (5, 6, 7, 20)
 
 
+def exe_of(game):
+    """The executable with the tables the PS2 fills in code run (the
+    audio's initialiser holds the zones and the reverb rows too)."""
+    import n2exe
+    from convert_audio import SOUND_ANCHORS
+    return n2exe.of(game, SOUND_ANCHORS)
+
+
 def xbe_tables(xbe):
     """(ambient zone -> event, the 12 reverb rows, the 12 preset names)"""
-    b = xbe.read_bytes()
-    base, count, at = struct.unpack_from('<I', b, 0x104)[0], *struct.unpack_from('<2I', b, 0x11c)
-    secs = [struct.unpack_from('<5I', b, at - base + 56 * k)[1:] for k in range(count)]
-
-    def va(off):
-        return next(v + off - r for v, vs, r, n in secs if r <= off < r + n)
-
-    def raw(v):
-        return next((r + v - a for a, vs, r, n in secs if a <= v < a + n), None)
+    import n2exe
+    exe = xbe if isinstance(xbe, n2exe.Exe) else n2exe.Exe(xbe)
+    b, va, raw = exe.b, exe.va, exe.raw
     # gnAmbientZoneCrossMap: 31 pairs (event, event + 1), or (-1, -1)
     zones = None
     for o in range(0, len(b) - 248, 4):
@@ -88,7 +91,7 @@ def xbe_tables(xbe):
         o = raw(struct.unpack_from('<I', b, ref + 4 * k)[0])
         names.append(b[o:b.index(b'\0', o)].decode())
     if not zones or not rows:
-        raise ValueError('ambience or reverb table not found in default.xbe')
+        raise ValueError(f'ambience or reverb table not found in {exe.path.name}')
     return zones, rows, names
 
 
@@ -139,7 +142,7 @@ def tunnels(game):
 
 def build(game):
     from convert_audio import pathfinder_ambience
-    zones, rows, names = xbe_tables(game.parent / 'default.xbe')
+    zones, rows, names = xbe_tables(exe_of(game))
     streams = pathfinder_ambience(game)
     maps = parammaps.maps(game)
     out = struct.pack('<4s2I', b'N2ES', 1, len(LAYERS))
@@ -169,7 +172,7 @@ def build(game):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     a = ap.parse_args()
     blob, report = build(a.game)

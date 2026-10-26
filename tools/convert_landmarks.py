@@ -273,5 +273,7 @@ if __name__=='__main__':
     ap.add_argument('--buildings',action='store_true',help="--lod: the city's big buildings too (selected())")
     ap.add_argument('--towers',type=float,default=0,help='--lod: only the buildings this many metres tall or more (tower())')
     a=ap.parse_args()
+    import os, n2formats, n2source   # the disc's own layouts (the PS2's: tools/n2source.py), the workers too
+    n2formats.PLATFORM=os.environ['NFSU2_PLATFORM']=n2source.platform(a.game)
     if a.lod:print(json.dumps(build_lod(a.game,a.city,a.out,a.bbox,a.cluster,a.cluster_up,not a.textured,a.tile,a.buildings,a.towers),indent=2))
     else:print(json.dumps(build(a.game,a.city,a.out,a.bbox,a.track),indent=2))

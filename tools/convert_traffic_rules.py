@@ -46,6 +46,7 @@ from pathlib import Path
 from n2formats import archived, chunks
 import convert_career
 from convert_traffic import MODELS
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 FMT_TRACK = '<H8b2B2f'    # 2 + 8 + 2 + 8 = 20 bytes
@@ -121,7 +122,7 @@ def models(globalb):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     g = archived(args.game, 'GLOBAL/GLOBALB.BUN')

@@ -18,6 +18,7 @@ import struct
 from convert_car import psp_swizzle, to_clut8, write_png
 from n2formats import FlatTPK, SlotTPK, archived, chunks
 import n2world as nw
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 SKIP = ('ZPM_', 'PAN_', 'ANM_JUMBO', 'SFX_', 'SKYDOME', 'SKY_', 'XO_VISTA_SPOTLIGHT')  # race props, panoramas, flybys, sky (drawn apart), vista beams
@@ -66,7 +67,9 @@ def scroll_flags(tpk, key):
 
 def object_index(stream):
     """key -> section holding that model. Built once, cached locally."""
-    cache = ROOT / f'.tools/cache/{getattr(stream, "name", "L4RA")}-objects.json'
+    import n2formats
+    plat = '' if n2formats.PLATFORM == 'xbox' else f'-{n2formats.PLATFORM}'   # each disc its own index
+    cache = ROOT / f'.tools/cache/{getattr(stream, "name", "L4RA")}{plat}-objects.json'
     if cache.exists():
         return {int(k, 16): v for k, v in json.loads(cache.read_text()).items()}
     index = {}
@@ -636,7 +639,7 @@ def place_start(point, grid):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--centre', type=float, nargs=2, default=(1700.0, -800.0), help='game X Y (default: airport)')
     ap.add_argument('--radius', type=float, default=320.0)

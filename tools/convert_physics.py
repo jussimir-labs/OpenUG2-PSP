@@ -60,6 +60,7 @@ from pathlib import Path
 import struct
 
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 TRAFFIC = ['4DR_SEDAN', '4DR_SEDAN02', 'COUPE', 'HATCHBACK', 'HATCHBACK02', 'SUV', 'TAXI', 'TAXI02',
@@ -190,7 +191,7 @@ def chase_cameras(r, ids=(0, 1)):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--preset', type=Path, default=ROOT / 'presets/350z-showroom.json')
     args = ap.parse_args()

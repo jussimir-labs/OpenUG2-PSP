@@ -15,6 +15,7 @@ import math
 from pathlib import Path
 import struct
 from n2formats import archived, chunks
+import n2source
 
 MAX_SHOPS, MAX_POINTS = 32, 16
 SHOP_KINDS = {'CARLOT01', 'PERFSHOP01', 'PARTSSHOP01', 'PAINTSHOP01', 'AUDIOSHOP01', 'CRIB01'}
@@ -103,7 +104,7 @@ def write(game,names,out):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game',type=Path,default=Path(__file__).resolve().parents[1]/'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--career',type=Path,required=True)
     ap.add_argument('--out',type=Path,required=True)
     a=ap.parse_args();r=write(a.game,career_shop_names(a.career.read_bytes()),a.out)

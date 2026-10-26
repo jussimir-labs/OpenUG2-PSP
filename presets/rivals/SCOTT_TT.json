@@ -1,0 +1,24 @@
+{
+  "source": "GLOBALB.BUN preset SCOTT_TT (chunk 0x30220): a career rival of the last stage (tools/preset_dump.py --convert)",
+  "preset": "SCOTT_TT",
+  "car": "TT",
+  "paint": "121219",
+  "window_tint": 2,
+  "neon": "RED",
+  "kit": "KIT13",
+  "rear_bumper": "KIT19",
+  "skirt": "KIT18",
+  "hood": "STYLE08",
+  "headlight": "STYLE05",
+  "brakelight": "STYLE05",
+  "spoiler": "SPOILER_STYLE22",
+  "roof": "ROOF_STYLE01_DUAL",
+  "exhaust": "EXHAUST_STYLE07_LEVEL1",
+  "rims": [
+    "LOWENHART",
+    "STYLE01",
+    "20_26"
+  ],
+  "vinyl": "STREETREAPER",
+  "vinyl_remap": false
+}

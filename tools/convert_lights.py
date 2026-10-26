@@ -47,7 +47,8 @@ RemoveCentreBrakeWithCustomSpoiler's car types), u16 0, lamps x 16 bytes
 u8 0; s16 x, y, z in mm, car space GU; s8 direction x y z x127; 5
 bytes 0). Names: the car's model (stock, KIT00), MODEL/H/STYLEnn and
 MODEL/B/STYLEnn (the garage's head and tail lights), traffic-MODEL,
-opp-NAME (the presets/opponents), rachel (presets/350z-showroom.json).
+opp-NAME (the presets/opponents and presets/rivals), rachel
+(presets/350z-showroom.json).
 """
 import argparse
 import collections
@@ -63,6 +64,7 @@ import convert_traffic
 import convert_world as cw
 import n2world as nw
 from n2formats import FlatTPK, archived, chunks, lod_family, parts, unpad
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 TRACKS = ('L4RA', 'L4RB', 'L4RC', 'L4RD', 'L4RF', 'L4RG')
@@ -228,7 +230,7 @@ def atlas(game):
         if (w, h) != (64, height):
             raise ValueError(f'flare texture {key:08x}: {w}x{h}')
         to4444(rgba, out, row * 64 * 2)
-    t = tpk.by_name('HEADLIGHTS')
+    t = tpk.by_name('HEADLIGHTS') or tpk.by_name('HEADLIGHTSPSX')   # the PS2's cookie has its own name
     rgba, w, h = cc.box_downscale(t.rgba(), t.w, t.h, 64)
     if (w, h) != (64, 32):
         raise ValueError(f'HEADLIGHTS: {w}x{h}')
@@ -263,6 +265,7 @@ def build_lamps(game):
         n += 1
         report[f'traffic-{model}'] = len(lamps)
     presets = [(f'opp-{p.stem}', p) for p in sorted((ROOT / 'presets/opponents').glob('*.json'))]
+    presets += [(f'opp-{p.stem}', p) for p in sorted((ROOT / 'presets/rivals').glob('*.json'))]   # the career's preset rivals (Caleb and his crew)
     presets.append(('rachel', ROOT / 'presets/350z-showroom.json'))
     for name, path in presets:
         preset = json.loads(path.read_text())
@@ -277,7 +280,7 @@ def build_lamps(game):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', action='append', help='only these worlds (default: all)')
     ap.add_argument('--no-cars', action='store_true', help='the worlds only')
