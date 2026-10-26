@@ -65,6 +65,7 @@ import convert_physics
 import n2feng as fe
 import partsdb
 from n2formats import archived, car_record, lod_family, parts
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 # the table's categories (psp-viewer/garage.h GCAT_*: kit is the front bumper)
@@ -193,8 +194,8 @@ def option_blobs(game, car, cat, name, lod):
                 texdata[ref] = (16, 8, bytes(1024), bytes(128), 1.0)
             elif ref == cc.CARBONFIBRE_TEX:
                 texdata[ref] = cc.carbon_tile(textures.get(ref))
-            else:
-                texdata[ref] = cc.to_clut8(textures.get(ref), 128)
+            else:   # (a shop's lamps on the street: 64 texels, as convert_car's)
+                texdata[ref] = cc.to_clut8(textures.get(ref), 64 if lod and ref in b.lamps.values() else 128)
         tmp = Path(os.environ.get('TMPDIR', '/tmp')) / f'opt-{os.getpid()}.n2pv'
         cc.save_pack(tmp, meshes, texdata, 0)
         out[c] = tmp.read_bytes()
@@ -320,19 +321,29 @@ def convert_car(game, out, car):
 
 NEON_MARKERS = (('ENGINE_NEON_START_%d', 'ENGINE_NEON_END_%d'), ('MARKER_TRUNK_NEON_START_%d', 'MARKER_TRUNK_NEON_END_%d'),
                 ('CABIN_NEON_START_%d', 'CABIN_NEON_END_%d'))
+# the underglow's, on the stock body's parts (CarRenderInfo's constructor:
+# the front bumper's FRONT_NEON_n_, the skirts' SIDE_NEON_n_, the rear
+# bumper's REAR_NEON_n_, n 0-2, START and END; a wide body kit's own are
+# its body's)
+UNDER_MARKERS = (('FRONT_BUMPER', 'FRONT_NEON_%d_'), ('SKIRT', 'SIDE_NEON_%d_'), ('REAR_BUMPER', 'REAR_NEON_%d_'))
 
 
 def neon_tubes(game, out, cars):
-    """neon.n2nn: the engine's, trunk's and cabin's neon tubes, from the cars'
-    markers (an upgraded engine's, a trunk layout's, the base's): 'N2NN', u32
-    version 1, u32 cars; cars x (char model[16], u8 tubes engine, trunk,
-    cabin, 0; tubes x f32 start x, y, z, end x, y, z (GU, as the packs))."""
+    """neon.n2nn: the engine's, trunk's, cabin's and underglow's neon tubes,
+    from the cars' markers (an upgraded engine's, a trunk layout's, the
+    base's; the underglow's the stock front bumper's, skirts' and rear
+    bumper's): 'N2NN', u32 version 2, u32 cars; cars x (char model[16], u8
+    tubes engine, trunk, cabin, underglow; tubes x f32 start x, y, z, end x,
+    y, z (GU, as the packs)). Version 1 had no underglow (its 4th count 0)."""
     blob = bytearray()
     for car in cars:
-        marks = {}
+        marks, under = {}, {}
         for p in parts(archived(game, f'CARS/{car}/GEOMETRY.BIN'), lambda n: n.startswith(car + '_')):
             for k, m in p.sockets.items():
                 marks.setdefault(k, m[12:15])
+            for part, _ in UNDER_MARKERS:
+                if p.name == f'{car}_KIT00_{part}_A':
+                    under[part] = {k: m[12:15] for k, m in p.sockets.items()}
         tubes = []
         for start, end in NEON_MARKERS:
             row = []
@@ -342,9 +353,17 @@ def neon_tubes(game, out, cars):
                     break
                 row.append([a[1], a[2], a[0], b[1], b[2], b[0]])   # Xbox x forward, y lateral, z up -> GU
             tubes.append(row)
-        blob += struct.pack('<16s4B', car.encode(), *(len(r) for r in tubes), 0)
+        row = []
+        for part, name in UNDER_MARKERS:
+            m = under.get(part, {})
+            for i in range(3):
+                a, b = m.get(fe.bin_hash(name % i + 'START')), m.get(fe.bin_hash(name % i + 'END'))
+                if a is not None and b is not None:
+                    row.append([a[1], a[2], a[0], b[1], b[2], b[0]])
+        tubes.append(row)
+        blob += struct.pack('<16s4B', car.encode(), *(len(r) for r in tubes))
         blob += b''.join(struct.pack('<6f', *t) for r in tubes for t in r)
-    (out / 'neon.n2nn').write_bytes(struct.pack('<4s2I', b'N2NN', 1, len(cars)) + blob)
+    (out / 'neon.n2nn').write_bytes(struct.pack('<4s2I', b'N2NN', 2, len(cars)) + blob)
 
 
 def carbon_pack(game, out):
@@ -378,12 +397,16 @@ def write_options(path, packs, pads={}):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--cars', help='comma-separated models (default: the fleet)')
     ap.add_argument('--jobs', type=int, default=8)
     ap.add_argument('--decals', action='store_true', help='the decals alone: their art and the table, the cars as garage.json has them')
+    ap.add_argument('--neon', action='store_true', help='neon.n2nn alone (the neon tubes), the cars as garage.json has them')
     args = ap.parse_args()
+    if args.neon:
+        neon_tubes(args.game, args.out, list(json.loads((args.out / 'garage.json').read_text())))
+        return
     cars = args.cars.split(',') if args.cars else convert_physics.playable(
         convert_physics.records(archived(args.game, 'GLOBAL/GLOBALB.BUN')))
     table = args.out / 'garage.json'

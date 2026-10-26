@@ -1,8 +1,39 @@
 {
- "candidate": "4t",
- "eboot_sha256": "cbc1f7606482e42e252244268dd21a4a6172577188160d31e07593f522077c4d",
- "eboot_bytes": 3431274,
- "source_commit": "012f87de7f95",
- "files": 161,
- "bytes": 2119246883
+  "candidate": "closed-beta-20261025-beta01-4u",
+  "candidate_id": "local-beta01-4u-titlefix-not-published",
+  "eboot_sha256": "c34edd611f60021496f88106e87b616bae5df6c6712ba32dea85762cf923df48",
+  "eboot_bytes": 3570682,
+  "build_id": "e0697840c",
+  "source_commit": "c97c452028a0e56a5272375ef136fe2dc201843e",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "supported_sources": [
+    "xbox",
+    "ps2"
+  ],
+  "publication_status": "LOCAL_PACKAGE_NOT_PUBLISHED",
+  "quality_approval": "limited-functional-checks-passed; cleanup-confirmed-after-human-recovery; not-full-game-or-device-approval",
+  "known_issues": [
+    "drag-4401-rival-recovery-loop",
+    "tone-and-visibility-review-incomplete",
+    "psp1000-and-global30fps-unapproved",
+    "ps2-original-disc-image-unverified",
+    "card-installation-and-physical-native-save-not-tested",
+    "psplink-stop-required-manual-recovery"
+  ],
+  "reference_scope": "File identity of qualified closedbeta baseline only. Does not clear gameplay/source/device/visual limitations.",
+  "files_by_source": {
+    "xbox": 161,
+    "ps2": 158
+  },
+  "source_main_sha256": "a3df0483dcf4a7b850c08e9f6c2f59b9de5d4649305d06ecb83dbff045252084",
+  "source_c_h_manifest_sha256": "3a98496d2bc1c89694fc5394a26d97a53ae57201553c5cc2b1a679efec37d890",
+  "runtime_build_id_note": "Embedded e0697840c retained by frozen source build; exact executable identity is the SHA256 above.",
+  "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
+  "functional_scope": "PPSSPP: title, 4011 prefix, native save/cold both sources and new-profile dialog flow. Human PSP3000 host0: title, brief Freemont drive and return to menu. Postread not independent menu confirmation; cleanup confirmed after human PSPLink reopening. No full race or physical native save test on this executable.",
+  "psplink_cleanup": "Ordinary stop and HostCmd rescue did not confirm reconnection; human reopened PSPLink; game out, host0 restoration and lease release then confirmed. No root cause inferred."
 }

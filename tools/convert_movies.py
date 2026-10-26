@@ -45,6 +45,7 @@ import tempfile
 
 import mac_slots
 from n2formats import game_hash
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 W, H, PICTURE_W, RATE, MP3_KBPS, VERSION = 480, 272, 363, 44100, 128, 3
@@ -56,10 +57,17 @@ X264 = ('bframes=0:ref=1:weightp=0:8x8dct=0:keyint=150:aud=1:nal-hrd=vbr:vbv-max
 AU_MAX = 64 * 1024   # movie.c's AVC_MAX
 
 
+def movie_ext(game):
+    """The movies' extension: the Xbox's VP6, the PS2's MPC (EA's MPEG-2,
+    512 x 192 for the whole 4:3 picture, EA ADPCM R3 stereo at 32 kHz:
+    ffmpeg reads both; the PS2's 192 lines stretch to the 272)."""
+    return 'MPC' if n2source.platform(game) == 'ps2' else 'VP6'
+
+
 def disc_entry(game, name):
-    """MOVIES\\<NAME>.VP6's ZDIR entry, None when the disc has no such movie."""
+    """MOVIES\\<NAME>.VP6's ZDIR entry (.MPC on the PS2), None when the disc has no such movie."""
     z = (game / 'ZDIR.BIN').read_bytes()
-    return next((e for e in struct.iter_unpack('<6I', z) if e[0] == game_hash(f'MOVIES/{name}.VP6')), None)
+    return next((e for e in struct.iter_unpack('<6I', z) if e[0] == game_hash(f'MOVIES/{name}.{movie_ext(game)}')), None)
 
 
 def catalog(game):
@@ -123,7 +131,7 @@ def jpegli_frames(src, tmp):
 
 def convert(game, out, name, helper, h264=False):
     with tempfile.TemporaryDirectory(prefix='nfsu2-movie-') as tmp:
-        src = Path(tmp) / f'{name}.vp6'
+        src = Path(tmp) / f'{name}.{movie_ext(game).lower()}'
         src.write_bytes(movie_file(game, name))
         pad = (W - PICTURE_W) // 2
         frames = [(f, False) for f in jpegli_frames(src, tmp)] if not h264 else None
@@ -137,7 +145,11 @@ def convert(game, out, name, helper, h264=False):
         if h264 and (not frames or not frames[0][1] or max(len(f) for f, _ in frames) > AU_MAX):
             raise SystemExit(f'{name}: the H.264 stream does not start on an IDR frame or has an access unit past {AU_MAX} bytes')
         raw, mp3 = Path(tmp) / 'sound.raw', Path(tmp) / 'sound.mp3'
-        info = subprocess.run([str(helper), str(src), str(raw), str(RATE)], capture_output=True, text=True)
+        if movie_ext(game) == 'MPC':   # the PS2's sound: EA ADPCM R3, through ffmpeg
+            info = subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(src), '-vn', '-ac', '2',
+                                   '-ar', str(RATE), '-f', 's16le', str(raw)], capture_output=True, text=True)
+        else:
+            info = subprocess.run([str(helper), str(src), str(raw), str(RATE)], capture_output=True, text=True)
         samples, sound = 0, b''
         if info.returncode == 0 and raw.exists() and raw.stat().st_size:
             samples = raw.stat().st_size // 4
@@ -236,7 +248,7 @@ def triggers(game, out, movies):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--only', nargs='*', help='these movies only (default: the catalog\'s on the disc)')
     ap.add_argument('--missing', action='store_true', help='only the movies not yet converted')

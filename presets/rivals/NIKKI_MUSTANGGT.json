@@ -1,0 +1,22 @@
+{
+  "source": "GLOBALB.BUN preset NIKKI_MUSTANGGT (chunk 0x30220): a career rival of the last stage (tools/preset_dump.py --convert)",
+  "preset": "NIKKI_MUSTANGGT",
+  "car": "MUSTANGGT",
+  "paint": "121219",
+  "window_tint": 3,
+  "neon": "YELLOW PULSE",
+  "kit": "KIT00",
+  "widebody": "KITW02",
+  "hood": "STYLE04",
+  "headlight": "STYLE12",
+  "brakelight": "STYLE06",
+  "spoiler": "SPOILER_STYLE19",
+  "exhaust": "EXHAUST_STYLE07_LEVEL1",
+  "rims": [
+    "LOWENHART",
+    "STYLE01",
+    "20_26"
+  ],
+  "vinyl": "STREETREAPER",
+  "vinyl_remap": false
+}

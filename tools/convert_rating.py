@@ -31,7 +31,7 @@ reached and, a hidden one, found; the value its name's hash, GLOBALB
 record), its URL races won (0x111110, 10) and its sponsor's races won
 (0x111190, 4: the contract's 3); level 4 the unique parts' showcase.
 
-rating.n2vr: 'N2VR', u32 version 5; every entry four u16, the part's
+rating.n2vr: 'N2VR', u32 version 6; every entry four u16, the part's
 points, its price (0 none in the table: the port's own price stays), its
 level (4 a unique part: opened by its showcase, free) and when it opens
 (type << 12 | stage << 8 | count, a shop's: 1 << 12 | its index in
@@ -46,7 +46,9 @@ career.n2cr's shops; 0 from the start);
     decal zone's layout, a decal, the window tints 1-3, the carbon hood,
     trunk, doors and kit; then the performance shop's packages (psp-viewer
     perf.h's 9 categories x levels 1-3: their opening alone; the category's
-    kind by 0x112ea0).
+    kind by 0x112ea0);
+  then (version 6) u32 presets, each char name[32] and u32 its points
+    (preset_points: Rachel's 350Z, DDAY_PLAYER_CAR).
 """
 import argparse
 import json
@@ -59,6 +61,7 @@ import convert_vinyls
 import n2feng as fe
 import partsdb
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 CATS = convert_garage.CATS
@@ -72,6 +75,68 @@ PAINT_KIND = {'GLOSS': 37, 'METAL': 38, 'PEARL': 39}   # the base paint by its B
 VINYL_KIND = (41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 56, 57, 58, 59, 65, 66, 67, 60, 61, 64, 62, 55, 63, 68)
 PERF_KIND = (6, 5, 4, 1, 9, 3, 8, 2, 7, 10)   # 0x34A15's category: its kind (0x112ea0)
 UNIQUE = {11: 400, 12: 400, 13: 400, 34: 400, 74: 400, 75: 400, 22: 1000, 62: 100}   # level 4 (0x112500)
+# A preset car's points (Rachel's 350Z, which the garage never builds): the
+# game sums, over the car's 170 slots, each fitted part's points by the
+# slot's kind and the part's level (GameCube StarGazerGuide::GetNumberOfStars,
+# PlayerCareerState::GetCarPartRep). The slot's kind, as the game's table
+# holds it once filled (InitUnlockablesMap), 0 none; the base paint (63) by
+# its brand, a vinyl layer (64-67) by its group (VINYL_KIND), a carbon
+# hood, roof, spoiler or mirror (the part's CARBONFIBRE) by SLOT_CARBON, a
+# hood of group 5 the HOOD_GROUP5 kind, a spinner wheel its own. Skipped:
+# the vinyl colours (78-92), the rear wheel (30) and, under a wide body kit
+# of level > 0, the bumpers and the skirt (1, 2, 11).
+SLOT_UNLOCK = ([0, 18, 17, 19, 19, 0, 22, 20, 0, 11, 0, 16, 12, 0, 15, 14, 21] + [0] * 12 + [13, 13, 33, 19, 0, 30] + [31] * 12
+               + [0] * 5 + [76] * 7 + [0] * 9 + [40, 80, 79, 78, 82, 77, 81, 83, 84] + [0] * 16 + [85, 0, 0, 86] + [76] * 56
+               + [32, 25, 26, 27, 28, 27, 24, 35, 36, 29, 23, 23, 23, 23, 0, 0, 0])
+assert len(SLOT_UNLOCK) == 170
+SLOT_CARBON = {9: 75, 7: 70, 12: 74, 32: 69}
+CARBONFIBRE, SPINNER_SLOT, SPINNER_MODEL = 0x721aff7c, 29, 0xc8d1a75e
+PRESETS = ('DDAY_PLAYER_CAR',)       # rating.n2vr's presets: Rachel's 350Z (the prologue's car)
+
+
+def preset_points(game, rows, name):
+    """The points of a preset car (GLOBALB 0x30220, tools/preset_dump.py)
+    the game's way; None without it."""
+    import preset_dump as pd
+    table = pd.PartsTable(game)
+    raw = table.block[0x34604]
+    flags = {}
+    for o in range(14, len(raw) - 13, 14):
+        key, kind, fl = struct.unpack_from('<IBB', raw, o)
+        flags.setdefault((key, kind), fl)
+    pre = next((p for p in pd.presets(table) if p['name'] == name), None)
+    if pre is None:
+        return None
+
+    def part(slot):
+        v = pre['slots'][slot]
+        return None if v in (0, 1) else table.find(slot, v, pre['car'])   # (1: the stock part, level 0, no points)
+    wide = part(6)
+    wide_on = wide is not None and wide['level'] > 0
+    total = 0
+    for slot in range(170):
+        if 78 <= slot <= 92 or slot == 30 or (wide_on and slot in (1, 2, 11)):
+            continue
+        q = part(slot)
+        if q is None:
+            continue
+        fl = flags.get((q['key'], q['kind']), q['level'] << 5)
+        level, group = fl >> 5, fl & 31
+        attrs = dict(table.attributes(q))
+        if slot == 63:
+            kind = PAINT_KIND.get(table.name(attrs.get(fe.bin_hash('BRAND_NAME'), 0)), PAINT_KIND['METAL'])
+        elif 63 < slot <= 67:
+            kind = VINYL_KIND[group] if group < len(VINYL_KIND) else 0
+        elif attrs.get(CARBONFIBRE, 0):
+            kind = SLOT_CARBON.get(slot, 0)
+        elif slot == SPINNER_SLOT and attrs.get(0xebb03e66, 0) == SPINNER_MODEL:
+            kind = KIND['spinner']
+        elif slot == 9 and group == 5:
+            kind = HOOD_GROUP5
+        else:
+            kind = SLOT_UNLOCK[slot]
+        total += rows.points(kind, level) if kind else 0
+    return total
 
 
 class Rows:
@@ -116,7 +181,7 @@ class Rows:
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     a = ap.parse_args()
     world = json.loads((a.out / 'career-world.json').read_text())
@@ -179,7 +244,7 @@ def main():
         for c in CATS:
             cars += b''.join(struct.pack('<4H', *x) for x in per[c])
         report[model] = {c: [x[0] for x in per[c]] for c in CATS}
-    out = struct.pack('<4sI', b'N2VR', 5) + struct.pack('<I', len(garage)) + cars
+    out = struct.pack('<4sI', b'N2VR', 6) + struct.pack('<I', len(garage)) + cars
     # the rims' library, in rims.n2rm's order (a spinner: its wheel and its spinning part)
     rm = (a.out / 'rims.n2rm').read_bytes()
     ncars, nrims = struct.unpack_from('<II', rm, 8)
@@ -216,9 +281,12 @@ def main():
     # the performance packages: perf.h's categories (convert_perf's
     # SHOP_CATEGORY: 0x34A15's) and the kind of each (0x112ea0)
     out += pack([(0, 0, lv, rows.opens.get((PERF_KIND[c], lv), 0)) for c in convert_perf.SHOP_CATEGORY for lv in (1, 2, 3)])
+    # the preset cars' points (Rachel's 350Z: the career's prologue car)
+    presets = [(n, preset_points(a.game, rows, n)) for n in PRESETS]
+    out += struct.pack('<I', len(presets)) + b''.join(n.encode()[:31].ljust(32, b'\0') + struct.pack('<I', p or 0) for n, p in presets)
     (a.out / 'rating.n2vr').write_bytes(out)
     (a.out / 'rating.json').write_text(json.dumps(dict(cars=report, rims=[x[0] for x in rims], vinyls=len(vin), consts=consts), indent=1))
-    print(f'rating.n2vr: {len(garage)} cars, {len(rims)} rims, {len(vin)} vinyls, {len(neons)} neons, {len(body)} paints, consts {consts}')
+    print(f'rating.n2vr: {len(garage)} cars, {len(rims)} rims, {len(vin)} vinyls, {len(neons)} neons, {len(body)} paints, consts {consts}, presets {presets}')
 
 
 if __name__ == '__main__':

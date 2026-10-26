@@ -29,6 +29,7 @@ import struct
 import convert_car as c
 import convert_world as cw
 import n2world as nw
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 # the hill rings round the whole map (up to 1.4 km high): the original's
@@ -49,7 +50,7 @@ def gather(stream):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--size', type=int, default=128, help='texture limit (pixels)')
     args = ap.parse_args()

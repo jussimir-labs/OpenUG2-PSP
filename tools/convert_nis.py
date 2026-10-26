@@ -46,6 +46,8 @@ import numpy as np
 
 from n2formats import archived, chunks, game_hash, unpad, FlatTPK
 from convert_car import to_clut8
+import n2source
+from n2formats import ps2_skinned
 
 ROOT = Path(__file__).resolve().parents[1]
 INTROS = (1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 19, 20, 21, 22, 24, 25, 26, 27)   # the scenes the game can choose (tools/convert_intro_nis.py)
@@ -236,12 +238,38 @@ def bank(blob):
 GAME_TO_GU = (1, 2, 0)    # GU x, y, z = game y, z, x
 
 
+PS2_SKIPPED = []   # the PS2's models left out (models(): not the skinned layout)
+
+
 def models(data):
     out = {}
     for tag, p, n in chunks(data):
         if tag != 0x80134010:
             continue
         leaves = {t: data[o:o + s] for t, o, s in chunks(data, p, p + n) if not t & 0x80000000}
+        if 0x134a02 in leaves:   # the PS2's skinned VIF batches (n2formats.ps2_skinned)
+            h = unpad(leaves[0x134011])
+            key, = struct.unpack_from('<I', h, 0x10)
+            name = h[164:].split(b'\0')[0].decode()
+            tex = [a for a, _ in struct.iter_unpack('<II', leaves[0x134012])]
+            try:
+                pverts, psubs = ps2_skinned(leaves)
+            except ValueError as e:   # not a skinned model's layout (a rigid prop): left out, as the Xbox's other strides
+                if name not in PS2_SKIPPED:
+                    PS2_SKIPPED.append(name)
+                    print(f'convert_nis: {name}: {e}', file=sys.stderr)
+                continue
+            # each submesh its own bone list, the vertices' bones as indices into it
+            V, subs = list(pverts), []
+            for ids, ti in psubs:
+                used = sorted({pverts[i][2][k] for i in ids for k in range(3) if pverts[i][1][k] > 0})
+                slot = {b: k for k, b in enumerate(used)}
+                for i in set(ids):
+                    pos, w, bones, uv, nrm = pverts[i]
+                    V[i] = (pos, w, tuple(slot.get(b, 0) for b in bones), uv, nrm)
+                subs.append((tuple(ids), tex[ti] if ti < len(tex) else tex[0], used))
+            out[key] = dict(name=name, key=key, verts=V, subs=subs)
+            continue
         if 0x134b01 not in leaves:
             continue
         hb = unpad(leaves[0x134b00])
@@ -509,7 +537,7 @@ def convert(game, n, out):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--only', type=int, nargs='*')
     args = ap.parse_args()

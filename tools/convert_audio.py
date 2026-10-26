@@ -21,8 +21,10 @@
   it (sceMp3), off the CPU. 27 tracks are the EA Trax songs
   (RMS -9 to -13 dBFS); the other 16, 10-20 dB quieter, are the city's
   and the shops' ambiences (see pathfinder_ambience),
-  which the playlist skips (gain 0). Songs get a gain to a common -10 dBFS
-  RMS. The 8 ambiences of the city's zones (about two minutes each) are kept,
+  which the playlist skips (gain 0). Songs play at their own level, as the
+  original's music channel plays them: one gain for all, the mean of the
+  gains that would bring each to -10 dBFS RMS (the PS2's music against its
+  engine, measured, agrees with that mean). The 8 ambiences of the city's zones (about two minutes each) are kept,
   at 64 kbit/s (44.1 kHz kept: LAME would go down to 24), made to loop
   without a seam: resampled to 44.1 kHz as
   three copies end to end (the middle one free of the resampler's edges),
@@ -52,6 +54,7 @@ import tempfile
 
 import mac_slots
 from n2formats import archived, game_hash
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 IMA_STEP = [7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41, 45, 50, 55, 60, 66, 73, 80, 88, 97,
@@ -239,36 +242,10 @@ SND_CAR = {0: 22, 1: 10, 2: 6, 3: 0, 4: 19, 5: 5, 6: 23, 7: 7, 8: 14, 9: 21, 10:
 SHIFT_FIELDS = 'ifiiiiif' 'iiiiiii' 'f' 'iiiiii' 'f'
 
 
-class Xbe:
-    """default.xbe's data by virtual address."""
-    def __init__(self, path):
-        self.b = b = path.read_bytes()
-        base, count, at = struct.unpack_from('<I', b, 0x104)[0], *struct.unpack_from('<2I', b, 0x11c)
-        self.secs = [struct.unpack_from('<5I', b, at - base + 56 * k)[1:] for k in range(count)]
-
-    def raw(self, v):
-        return next((r + v - a for a, vs, r, n in self.secs if a <= v < a + n), None)
-
-    def va(self, off):
-        return next(a + off - r for a, vs, r, n in self.secs if r <= off < r + n)
-
-    def cstr(self, v):
-        o = self.raw(v)
-        return self.b[o:self.b.index(b'\0', o)].decode() if o is not None else ''
-
-    def ref(self, text):
-        """The first word pointing at the string text (a table's first row)."""
-        v = struct.pack('<I', self.va(self.b.index(text.encode() + b'\0')))
-        for at in range(0, len(self.b) - 3, 4):
-            if self.b[at:at + 4] == v:
-                return at
-        raise ValueError(f'default.xbe: nothing points at {text}')
-
-    def find(self, values, fmt):
-        at = self.b.find(struct.pack(f'<{len(values)}{fmt}', *values))
-        if at < 0:
-            raise ValueError(f'default.xbe: {values} not found')
-        return at
+from n2exe import Exe as Xbe   # the executable's data by virtual address (default.xbe or the PS2's SLUS_210.65)
+import n2exe
+# the strings the sound tables point at: the PS2 fills those tables in code
+SOUND_ANCHORS = ('GIN_HondaS2000_Church.gin', 'GEAR_SML_Base.abk', 'TURBO_SML1_0_MB.abk', 'SWTN_CAR_00_MB.abk')
 
 
 def sound_tables(xbe):
@@ -378,11 +355,18 @@ def aems_bank(game, n):
     loops = []
     for i in range(1, count):
         f = pt_header(d, bnk + 0x14 + 4 * i + struct.unpack_from('<I', d, bnk + 0x14 + 4 * i)[0])
+        if f['platform'] == 5:      # the PS2's VAG loops, as XA for the port's mixer
+            pcm = stream_pcm(d, bnk, f, f'CAR_{n:02d}')
+            xa = encode_xa(pcm)
+            loops.append((f.get(0x84, 24000), len(pcm), xa, len(xa), decode_xa(xa, 0, len(xa), len(pcm), [0, 0])))
+            continue
         if f.get(0xA0) != 10:
             raise ValueError(f'CAR_{n:02d} loop {i}: codec {f.get(0xA0)}')
         at, ns, rate = bnk + f[0x88], f[0x85], f.get(0x84, 24000)
         loops.append((rate, ns, at, xa_bytes(d, at, ns), decode_xa(d, at, len(d), ns, [0, 0])))
-    if len(loops) not in (7, 8):   # 7: no limiter loop (CAR_02)
+    if len(loops) == 6 and d[4] == 1:   # the PS2's banks (ABKC v1) have no limiter loop: CAR_02's six, its last twice
+        loops.append(loops[-1])
+    if len(loops) not in (7, 8):   # 7: no limiter loop (CAR_02, and every bank of the PS2's)
         raise ValueError(f'CAR_{n:02d}: {len(loops)} loops')
     # the three points: the group of three revs (the other holds its mid and high again)
     trio = next((sorted(g) for g in groups if len([v for v in g if v > 1]) == 3), None)
@@ -396,7 +380,7 @@ def aems_bank(game, n):
     data, table = bytearray(), b''
     for (rate, ns, at, size, _), r in zip(loops, revs):
         table += struct.pack('<2If2I', rate, ns, r, len(data), size)
-        data += d[at:at + size]
+        data += at if isinstance(at, bytes) else d[at:at + size]   # (the PS2's: the XA itself)
     return head + table + data, dict(points=trio, revs=[round(r) for r in revs], bytes=len(data))
 
 
@@ -450,7 +434,7 @@ def car_sound(game, out):
     char bank[24], f32 spool, blow-off 1, blow-off 2/3 volumes, the top
     pressure, its fall; u32 sweeteners (43), char bank[16], f32 x 2; f32
     rivals' revs steps[9], downshift revs[9], Doppler[6]."""
-    t = sound_tables(Xbe(game.parent / 'default.xbe'))
+    t = sound_tables(n2exe.of(game, SOUND_ANCHORS))
     types = car_types(game)
     blob = struct.pack('<4s2I', b'N2CS', 1, len(types))
     for k, name in enumerate(types):
@@ -501,7 +485,7 @@ def pt_header(b, at):
     """'PT' + u16 platform, then TLVs: u8 tag, u8 length, big-endian value."""
     if b[at:at+2] != b'PT':
         raise ValueError('missing PT header')
-    p, fields = at + 4, {}
+    p, fields = at + 4, {'platform': struct.unpack_from('<H', b, at + 2)[0]}
     while p < len(b):
         tag = b[p]
         p += 1
@@ -538,6 +522,93 @@ def decode_ima(data, nsamples):
     return out[:nsamples]
 
 
+VAG_COEF = ((0, 0), (60, 0), (115, -52), (98, -55), (122, -60))
+
+
+def decode_vag(data, nsamples):
+    """PS2 SPU ADPCM (the PS2 disc's banks, PT platform 5 with no codec
+    field): 16-byte frames of 28 samples, u8 filter << 4 | shift, u8
+    flags, 14 bytes of nibbles low first."""
+    out, h1, h2 = [], 0, 0
+    for at in range(0, len(data) - 15, 16):
+        f0, f1 = VAG_COEF[min(data[at] >> 4, 4)]
+        shift = data[at] & 15
+        for b in data[at + 2:at + 16]:
+            for nib in (b & 15, b >> 4):
+                v = ((nib << 12) - (0x10000 if nib & 8 else 0)) >> shift
+                v = max(-32768, min(32767, v + ((h1 * f0 + h2 * f1 + 32) >> 6)))
+                h1, h2 = v, h1
+                out.append(v)
+        if len(out) >= nsamples:
+            break
+    return out[:nsamples]
+
+
+def encode_xa(pcm):
+    """EA-XA v2 frames (decode_xa's), for the PS2's VAG banks the port
+    plays as XA: per 28 samples the filter and shift with the least error."""
+    out, p1, p2 = bytearray(), 0, 0
+    for at in range(0, len(pcm), 28):
+        x = list(pcm[at:at + 28]) + [0] * max(0, at + 28 - len(pcm))
+        best = None
+        for ci in range(4):
+            q1, q2, peak = p1, p2, 0
+            for v in x:   # the residual's size with the ideal history, for the shift
+                peak = max(peak, abs(v * 256 - q1 * XA1[ci] - q2 * XA2[ci]))
+                q1, q2 = v, q1
+            shift = 8
+            while shift < 20 and (peak >> shift) > 7:
+                shift += 1
+            for sh in {shift, max(8, shift - 1)}:
+                q1, q2, err, nibs = p1, p2, 0, []
+                for v in x:
+                    pred = q1 * XA1[ci] + q2 * XA2[ci] + 0x80
+                    n = max(-8, min(7, round((v * 256 - pred) / (1 << sh))))
+                    y = max(-32768, min(32767, ((n << sh) + pred) >> 8))
+                    err += (y - v) ** 2
+                    nibs.append(n & 15)
+                    q1, q2 = y, q1
+                if best is None or err < best[0]:
+                    best = (err, ci, sh, nibs, q1, q2)
+        _, ci, sh, nibs, p1, p2 = best
+        out.append(ci << 4 | (20 - sh))
+        out += bytes(nibs[k] << 4 | nibs[k + 1] for k in range(0, 28, 2))
+    return bytes(out)
+
+
+def stream_pcm(d, base, f, path):
+    """One bank stream's samples, mono: Xbox IMA (codec 0x14), EA-XA (10)
+    or, on the PS2's platform 5 without a codec, VAG; a stream of more
+    channels is their mean (channel n's data at PT field 0x88 + n)."""
+    codec, ns, ch = f.get(0xA0, 0), f.get(0x85, 0), f.get(0x82, 1)
+    chans = []
+    for c in range(ch):
+        data = d[base + f.get(0x88 + c, 0):]
+        if codec == 0x14:
+            chans.append(decode_ima(data, ns))
+        elif codec == 10:
+            chans.append(decode_xa(d, base + f.get(0x88 + c, 0), len(d), ns, [0, 0]))
+        elif f.get('platform') == 5 and codec in (0, 5):
+            chans.append(decode_vag(data, ns))
+        else:
+            raise ValueError(f'{path}: codec {codec:#x} not handled for SFX')
+    return [sum(v) // len(v) for v in zip(*chans)] if len(chans) > 1 else chans[0]
+
+
+def resample(pcm, src, dst):
+    """Linear resampling (the PS2's banks to the rate a table needs)."""
+    if src == dst or not pcm:
+        return list(pcm)
+    n = max(1, len(pcm) * dst // src)
+    out = []
+    for i in range(n):
+        x = i * src / dst
+        k = int(x)
+        a, b = pcm[min(k, len(pcm) - 1)], pcm[min(k + 1, len(pcm) - 1)]
+        out.append(int(a + (b - a) * (x - k)))
+    return out
+
+
 def bank_streams(game, path):
     d = archived(game, path)
     if d[:4] != b'ABKC':
@@ -554,7 +625,11 @@ def bank_streams(game, path):
             streams.append(None)
             continue
         f = pt_header(d, slot + off)
-        codec, rate, ns = f.get(0xA0, 0), f.get(0x84, 24000), f.get(0x85, 0)
+        rate = f.get(0x84, 24000)
+        if f['platform'] == 5:      # the PS2's: VAG, its channels mixed down
+            streams.append((rate, stream_pcm(d, bnk, f, path), 1))
+            continue
+        codec, ns = f.get(0xA0, 0), f.get(0x85, 0)
         data = d[bnk + f.get(0x88, 0):]
         if codec == 0x14:
             pcm = decode_ima(data, ns)
@@ -679,6 +754,46 @@ def speech(game, out):
                 raise ValueError(f'speech bank {b} line {i}: no SCHl at {start:#x}')
             samples = pt_header(big, start + 8)[0x85]
             lines_of[ev].append((start, samples, b, np, *(list(rec[2:]) + [0] * 4)[:4]))
+    source_codec = 'EA-XA'
+    if n2source.platform(game) == 'ps2':
+        # The runtime's speech contract stays mono EA-XA/32 kHz. Decode the
+        # PS2's version-3 MicroTalk (with PCM blocks) entirely offline.
+        from n2microtalk import Decoder
+        converted, cache = bytearray(), {}
+        with Decoder() as decoder:
+            for event_lines in lines_of.values():
+                for i, line in enumerate(event_lines):
+                    start, ns, *params = line
+                    if start not in cache:
+                        fields = pt_header(big, start + 8)
+                        if fields.get('platform') != 5 or fields.get(0xA0) != 4 or fields.get(0x80) != 3 or fields.get(0x82, 1) != 1:
+                            raise ValueError(f'unsupported PS2 speech header at {start:#x}: {fields}')
+                        rate = fields.get(0x84, 22050)
+                        at = start
+                        while True:
+                            if at + 8 > len(big):
+                                raise ValueError('truncated PS2 speech block')
+                            size = struct.unpack_from('<I', big, at + 4)[0]
+                            if size < 8 or at + size > len(big):
+                                raise ValueError('invalid PS2 speech block size')
+                            end = big[at:at + 4] == b'SCEl'
+                            at += size
+                            if end:break
+                        pcm = resample(decoder.decode(big[start:at], ns), rate, 32000)
+                        xa = decoder.encode_xa(pcm)
+                        offset = len(converted)
+                        converted += struct.pack('<4sI', b'SCHl', 8)
+                        # Blocks stay far below audio.c SP_BLOCK/SP_SAMPLES.
+                        for frame in range(0, (len(pcm) + 27)//28, 64):
+                            chunk = xa[frame*15:(frame+64)*15]
+                            samples = min(64*28, len(pcm)-frame*28)
+                            converted += struct.pack('<4s3I', b'SCDl', 16+len(chunk), samples, 0) + chunk
+                        converted += struct.pack('<4sI', b'SCEl', 8)
+                        cache[start] = (offset, len(pcm))
+                    event_lines[i] = (*cache[start], *params)
+        (out / 'speech.big').write_bytes(converted)
+        size = len(converted)
+        source_codec = 'PS2 MicroTalk v3/22050 Hz -> EA-XA/32000 Hz (offline)'
     blob, table, n = bytearray(), bytearray(), 0
     for k in range(nev):
         table += struct.pack('<16s2H', names[k].encode(), n, len(lines_of[k]))
@@ -686,7 +801,7 @@ def speech(game, out):
             blob += struct.pack('<2I6B2x', *line)
         n += len(lines_of[k])
     (out / 'speech.n2sp').write_bytes(struct.pack('<4s3I', b'N2SP', 1, nev, n) + table + blob)
-    return dict(events={names[k]: len(lines_of[k]) for k in range(nev)}, lines=n, bytes=size,
+    return dict(events={names[k]: len(lines_of[k]) for k in range(nev)}, lines=n, bytes=size, source_codec=source_codec,
                 seconds=round(sum(line[1] for v in lines_of.values() for line in v) / 32000))
 
 
@@ -710,6 +825,19 @@ def skid_banks(game, out):
     return len(SKID_BANKS)
 
 
+# The PS2's banks that differ from the Xbox's order: ROADNOISE has no
+# slot 4 (the Xbox's 1.05 s noise; its neighbour 3 plays instead), the
+# later ones one lower.
+PS2_SLOTS = {r'SOUND\IG_GLOBAL\ROADNOISE_00_MB.abk': lambda s: s if s < 4 else 3 if s == 4 else s - 1}
+
+
+def ps2_slot(game, path, index):
+    import n2source
+    if n2source.platform(game) == 'ps2' and path in PS2_SLOTS:
+        return PS2_SLOTS[path](index)
+    return index
+
+
 def write_sfx(game, out):
     """sfx.n2sf: the SFX table's one-shots and loops (a loop made seamless)."""
     blob, entries, cache = bytearray(), [], {}
@@ -718,10 +846,13 @@ def write_sfx(game, out):
         if path not in cache:
             cache[path] = bank_streams(game, path)
         streams = cache[path]
+        index = ps2_slot(game, path, index)
         rate, pcm, ch = streams[index]
+        if rate < 4000:     # the PS2's spark chatter: 84 samples "at 100 Hz", no sound of its own (a gap: silence)
+            rate, pcm = 22050, [0] * 2205
         if ch != 1:
             raise ValueError(f'{name}: {ch} channels; the mixer plays mono SFX only')
-        if down:   # every down-th sample, each the mean of its group (a box filter against the fold-back)
+        if down and (rate // down[0] >= 16000 or n2source.platform(game) != 'ps2'):   # every down-th sample, each the mean of its group (a box filter against the fold-back); the PS2's lower rates kept
             k = down[0]
             pcm = [sum(pcm[i:i + k]) // k for i in range(0, len(pcm) - k + 1, k)]
             rate //= k
@@ -775,6 +906,11 @@ def stitch_bank(game, path, rate=None):
         off = struct.unpack_from('<I', bank, bnk + 0x14 + 4 * i)[0]
         f = pt_header(bank, bnk + 0x14 + 4 * i + off)
         ns, ch = f[0x85], f.get(0x82, 1)
+        if f['platform'] == 5:      # the PS2's VAG: decoded, at the collision bank's rate, IMA again
+            rate = rate or f[0x84]
+            pcm = resample(stream_pcm(bank, bnk, f, path), f[0x84], rate)
+            samples.append((encode_ima(pcm), len(pcm)))
+            continue
         if f.get(0xA0) != 0x14 or (rate and f[0x84] != rate):
             raise ValueError(f'stitch.n2st: {path} slot {i} not 36 kHz Xbox IMA')
         rate = f[0x84]
@@ -832,7 +968,7 @@ def write_stitches(game, out):
                     layers += layer
                 stitches.append((len(layers) // 16 - n, n, head[3], head[1]))
                 head = None
-    xbe = Xbe(game.parent / 'default.xbe')
+    xbe = n2exe.of(game, SOUND_ANCHORS)
     ncoll = sum(1 for st in stitches if st[2] == 0)
     trims = struct.unpack_from(f'<{ncoll}h', xbe.b, xbe.find((23197,) * 6 + (19518, 13045, 16422, 14636, 26028), 'h'))
     trims += (WOOSH_TRIM,) * (len(stitches) - ncoll)
@@ -916,10 +1052,11 @@ def write_driveby(game, out):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--sfx', action='store_true', help='sfx.n2sf alone')
     ap.add_argument('--music', action='store_true', help='music.mp3 and music.idx alone')
+    ap.add_argument('--music-gains', action='store_true', help='music.idx\'s gains alone, in place (the songs at their own level)')
     ap.add_argument('--cars', action='store_true', help='the cars\' engines alone (carsnd.n2cs, engine-*, aems-*, gear-*, turbo-*)')
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
@@ -929,6 +1066,9 @@ def main():
         return
     if args.music:
         print(json.dumps(music(args.game, args.out)))
+        return
+    if args.music_gains:
+        print(json.dumps(music_gains(args.out)))
         return
     if args.cars:
         print(json.dumps(car_sound(args.game, args.out)))
@@ -997,6 +1137,22 @@ def encode_loop(tool, sch, at, tmp, edge=4096):
     return mp3, edge + CODEC_DELAY, loop
 
 
+def music_gains(out):
+    """music.idx's gains (the module's doc) set in place, without encoding
+    the songs again: every song's to the mean of the songs'."""
+    p = out / 'music.idx'
+    b = bytearray(p.read_bytes())
+    assert b[:4] == b'N2M3'
+    n = struct.unpack_from('<I', b, 4)[0]
+    at = 8 + 8 * n
+    gains = struct.unpack_from(f'<{n}f', b, at)
+    songs = [g for g in gains if g]
+    mean = sum(songs) / max(1, len(songs))
+    struct.pack_into(f'<{n}f', b, at, *[mean if g else 0. for g in gains])
+    p.write_bytes(bytes(b))
+    return dict(songs=len(songs), gain=round(mean, 4), was=[round(min(songs), 4), round(max(songs), 4)])
+
+
 def music(game, out):
     """music.mp3 and music.idx (the module's doc)."""
     z = (game / 'ZDIR.BIN').read_bytes()
@@ -1022,8 +1178,10 @@ def music(game, out):
     gains = [10 ** ((MUSIC_TARGET - r) / 20) if r > SONG_RMS else 0. for r in levels]
     from convert_envsound import xbe_tables   # the city's zones (0-21; the shops' are the frontend's, not played)
     events = pathfinder_ambience(game)
-    ambient = sorted({events[e] for e in xbe_tables(game.parent / 'default.xbe')[0][:22] if e in events})
+    from convert_envsound import exe_of
+    ambient = sorted({events[e] for e in xbe_tables(exe_of(game))[0][:22] if e in events})
     song_gain = sum(gains) / max(1, sum(1 for g in gains if g))
+    gains = [song_gain if g else 0. for g in gains]   # one gain: each song at its own level
     with tempfile.TemporaryDirectory(prefix='nfsu2-music-') as tmp:
         tmp = Path(tmp)
         (tmp / 'music.sch').write_bytes(data)

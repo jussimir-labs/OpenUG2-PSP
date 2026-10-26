@@ -31,7 +31,9 @@ import argparse
 from pathlib import Path
 import struct
 
-from n2formats import archived, decode_texture, jdlz
+import n2formats
+from n2formats import archived, decode_texture, decompress
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 COVER = (0, 0, 336, 440)     # the cover in a 512x512 layer
@@ -44,15 +46,20 @@ FILES = ('FRONTEND/MAGAZINES_STREAMING_HIGH.BIN',   # the studio covers' magazin
 
 
 def blocks(game):
-    """(key, name, the unpacked block) of each texture of the streamed TPKs."""
+    """(key, name, the unpacked block, its record's key offset) of each
+    texture of the streamed TPKs. The record sits at the block's end less
+    the table's header size, + 0x6c (the PS2's + 0x54, a slot TPK's)."""
     for f in FILES:
         s = archived(game, f)
         at = s.index(struct.pack('<I', 0x33310003)) + 8
         n = struct.unpack_from('<I', s, at - 4)[0] // 24
         for i in range(n):
-            key, off, size, unpacked = struct.unpack_from('<4I', s, at + 24 * i)
-            d = jdlz(s[off:off + size], unpacked)
-            yield key, d[-0xB8:][0x0C:0x24].split(b'\0')[0].decode(), d
+            key, off, size, unpacked, hfe = struct.unpack_from('<5I', s, at + 24 * i)
+            d = decompress(s[off:off + size], unpacked)
+            p = unpacked - hfe + (0x54 if n2formats.PLATFORM == 'ps2' else 0x6c)
+            if struct.unpack_from('<I', d, p)[0] != key:
+                raise ValueError(f'{f}: texture {key:08x} without its record')
+            yield key, d[p - 0x18:p].split(b'\0')[0].decode(), d, p
 
 
 def names(game):
@@ -60,7 +67,7 @@ def names(game):
     their key and by their name's bin hash."""
     from n2feng import bin_hash
     out = {}
-    for key, name, _ in blocks(game):
+    for key, name, *_ in blocks(game):
         out[key] = out[bin_hash(name)] = name
     return out
 
@@ -69,14 +76,14 @@ def textures(game):
     """{name: RGBA Image} of the streamed TPK."""
     from PIL import Image   # (here: tools/convert_career.py reads the names without it)
     out = {}
-    for key, name, d in blocks(game):
+    for key, name, d, p in blocks(game):
         if name in out:
             continue   # (BB's mastheads in both files: the first's)
-        info = d[-0xB8:][0x24:]
-        w, h = struct.unpack_from('<HH', info, 0x20)
-        pal = d[w * h:w * h + 1024] if info[0x26] not in (0x20, 0x22, 0x24, 0x26) else b''   # a P8's palette after its pixels
+        info = d[p:]
+        img_off, pal_off = struct.unpack_from('<2I', info, 12)
+        pal = d[pal_off - img_off:pal_off - img_off + 1024] if struct.unpack_from('<I', info, 24)[0] else b''   # a P8's palette after its pixels
         try:
-            t = decode_texture(name, key, info, d[:-0xB8], pal)
+            t = decode_texture(name, key, info, d[:p], pal)
         except ValueError:
             continue
         im = Image.frombytes('RGBA', (t.w, t.h), bytes(t.pixels)) if not t.palette else None
@@ -118,7 +125,7 @@ def image(im):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     a = ap.parse_args()
     tex = textures(a.game)

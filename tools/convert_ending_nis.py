@@ -61,6 +61,7 @@ import numpy as np
 from n2formats import archived, chunks, FlatTPK
 from convert_car import to_clut8
 import convert_nis as nis
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENES = (1, 2, 3, 4)
@@ -397,7 +398,7 @@ def scene_block(size, data, cars, cams, evs):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     scene_of = {nis.h33(f'EndingNis{n:02d}'): n for n in SCENES}

@@ -43,6 +43,7 @@ import mac_slots
 import n2feng as fe
 from n2formats import archived
 import partsdb
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 VINYL = 50                     # the parts table's type of a vinyl
@@ -132,7 +133,7 @@ def convert_car(game, out, car, items):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--car', action='append', help='only these cars (default: the fleet, as tools/convert_garage.py)')
     args = ap.parse_args()

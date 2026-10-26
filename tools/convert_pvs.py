@@ -55,6 +55,7 @@ import struct
 
 import convert_world as cw
 import n2world as nw
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 CELL = 64.0
@@ -130,7 +131,7 @@ def build(game, archive):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     blob, report = build(args.game, args.out / 'city.n2cy')

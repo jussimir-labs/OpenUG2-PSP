@@ -17,7 +17,7 @@ Layouts verified on the USA Xbox disc:
 import math
 import struct
 
-from n2formats import archived, chunks, game_hash, u32, unpad
+from n2formats import archived, chunks, game_hash, ps2_world, u32, unpad
 
 DRIVABLE = 0x400000
 
@@ -73,6 +73,12 @@ def section_objects(data):
         h = unpad(leaves[0x134011])
         flags, key = struct.unpack_from('<2I', h, 0x0c)
         name = h[164:].split(b'\0')[0].decode('ascii', 'replace')
+        if 0x134a02 in leaves:      # the PS2's VIF strips, prelit throughout
+            verts, psubs = ps2_world(leaves)
+            tex = [a for a, b in struct.iter_unpack('<II', leaves[0x134012])] if 0x134012 in leaves else []
+            subs = [(tuple(ids), tex[ti] if tex else 0) for ids, ti in psubs if ids]
+            out[key] = WorldObject(name, key, flags, verts, subs)
+            continue
         if 0x134b01 not in leaves:
             continue
         vb, ib, sb = [unpad(leaves[t]) for t in (0x134b01, 0x134b03, 0x134b02)]

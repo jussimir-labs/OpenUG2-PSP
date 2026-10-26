@@ -32,7 +32,9 @@ diffuse Min and Max differ in hue.
 
 paints.n2pt: 'N2PT', u32 version 1, u32 paints, u32 materials; paints x 8
 bytes (u8 r, g, b, category 0 Gloss 1 Metallic 2 Pearlescent; u16
-material, u16 0); materials x 28 f32 (the order above).
+material, u16 the part's level in the parts table, 1-3: the level
+BuildRandomSkin draws a rival's paint by; files before it 0); materials x
+28 f32 (the order above).
 """
 import argparse
 import json
@@ -41,6 +43,7 @@ import struct
 
 from n2feng import bin_hash
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 PAINT_TYPE = 48
@@ -60,7 +63,7 @@ def materials(globalb):
 
 
 def paints(globalb):
-    """[(category, part index, (r, g, b), material hash)] in grid order."""
+    """[(category, part index, (r, g, b), material hash, level)] in grid order."""
     sub = {tag: globalb[p:p + n] for tag, p, n in chunks(globalb) if tag in (0x34604, 0x34605, 0x3460c)}
     parts, attrs, lists = sub[0x34604], sub[0x34605], sub[0x3460c]
     attr = [struct.unpack_from('<2I', attrs, 8 * i) for i in range(len(attrs) // 8)]
@@ -73,14 +76,14 @@ def paints(globalb):
     want = {bin_hash(name): cat for cat, (name, _) in enumerate(CATEGORIES)}
     found = [[] for _ in CATEGORIES]
     for i in range(len(parts) // 14):
-        h, kind, _, _, _, own, _ = struct.unpack_from('<IBBHHHH', parts, 14 * i)
+        h, kind, flags, _, _, own, _ = struct.unpack_from('<IBBHHHH', parts, 14 * i)
         if kind != PAINT_TYPE:
             continue
         a = attributes(own)
         cat = want.get(a.get(brand))
         if cat is None or red not in a:
             continue
-        found[cat].append((cat, i, (a[red], a[green], a[blue]), a.get(MATERIAL_KEY, 0)))
+        found[cat].append((cat, i, (a[red], a[green], a[blue]), a.get(MATERIAL_KEY, 0), flags >> 5))
     out = []
     for cat, (name, count) in enumerate(CATEGORIES):
         if len(found[cat]) < count:
@@ -91,23 +94,23 @@ def paints(globalb):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     globalb = archived(args.game, 'GLOBAL/GLOBALB.BUN')
     mats = materials(globalb)
     rows = paints(globalb)
-    used = sorted({m for *_, m in rows if m in mats})
+    used = sorted({m for _, _, _, m, _ in rows if m in mats})
     index = {m: k for k, m in enumerate(used)}
     blob = bytearray(struct.pack('<4s3I', b'N2PT', 1, len(rows), len(used)))
-    for cat, _, rgb, m in rows:
-        blob += struct.pack('<4BHH', *rgb, cat, index.get(m, 0xffff), 0)
+    for cat, _, rgb, m, level in rows:
+        blob += struct.pack('<4BHH', *rgb, cat, index.get(m, 0xffff), level)
     for m in used:
         blob += struct.pack('<28f', *mats[m][1])
     (args.out / 'paints.n2pt').write_bytes(blob)
     report = dict(paints=len(rows), materials=len(used),
-                  rows=[dict(category=CATEGORIES[cat][0], part=i, rgb=rgb, material=mats.get(m, ('?',))[0])
-                        for cat, i, rgb, m in rows])
+                  rows=[dict(category=CATEGORIES[cat][0], part=i, rgb=rgb, material=mats.get(m, ('?',))[0], level=level)
+                        for cat, i, rgb, m, level in rows])
     (args.out / 'paints.json').write_text(json.dumps(report, indent=1) + '\n')
     print(len(rows), 'paints,', len(used), 'materials')
 

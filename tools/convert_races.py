@@ -43,6 +43,7 @@ import struct
 from n2city import CityCollision
 from n2formats import archived, chunks
 import n2routes
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -70,6 +71,28 @@ def path_exists(game, track, eid):
     from n2formats import game_hash
     z = (game / 'ZDIR.BIN').read_bytes()
     return game_hash(f'TRACKS/ROUTES{track}/PATHS{eid}.BIN') in {e[0] for e in struct.iter_unpack('<6I', z)}
+
+
+OUTLINE_MISS = 50.0     # m: a closed track's course this far off a point of its outline missed part of the race
+                        # (the drifts that drive well miss its coarse corners by 4-35 m; the 4306, 103)
+OUTLINE_KEEP = 15.0     # m: its event's routes within this of every point keep to it
+
+
+def off_outline(ev, line):
+    """The farthest a point of the event's outline lies off a line (game X, Y)."""
+    def seg(p, a, b):
+        ux, uy = b[0] - a[0], b[1] - a[1]
+        l2 = ux * ux + uy * uy
+        t = 0.0 if l2 < 1e-9 else max(0.0, min(1.0, ((p[0] - a[0]) * ux + (p[1] - a[1]) * uy) / l2))
+        return math.hypot(p[0] - a[0] - ux * t, p[1] - a[1] - uy * t)
+    ring = list(line) + list(line[:1])
+    return max(min(seg(q[:2], ring[k], ring[k + 1]) for k in range(len(ring) - 1)) for q in ev['outline'])
+
+
+def route_file_exists(game, track, name):
+    from n2formats import game_hash
+    z = (game / 'ZDIR.BIN').read_bytes()
+    return game_hash(f'TRACKS/ROUTES{track}/{name}') in {e[0] for e in struct.iter_unpack('<6I', z)}
 
 
 def read_roads(path):
@@ -944,14 +967,15 @@ def follow_reference(pts, gates, ref, city):
     return pts[:i0] + new + pts[i1 + 1:], sorted(set(gate(g) for g in gates)), len(new)
 
 
-def read_route_net(game, track):
-    """The free-roam routes and their signposts as RacerWalk drives them
-    (n2routes): ({route: [(x, y, racing line offset m, dx, dy)]},
-    {(route, point): [[new route, new point, backwards, flip, type]]})."""
+def read_route_net(game, track, name='ROUTESFREEROAM.BIN'):
+    """The free-roam routes (or an event's own, name) and their signposts
+    as RacerWalk drives them (n2routes): ({route: [(x, y, racing line
+    offset m, dx, dy)]}, {(route, point): [[new route, new point,
+    backwards, flip, type]]})."""
     routes = {r: [(p['x'], p['y'], p['offset'], p['dx'], p['dy']) for p in pts]
-              for r, pts in n2routes.read_routes(game, track).items()}
+              for r, pts in n2routes.read_routes(game, track, name).items()}
     signs = collections.defaultdict(list)
-    for s in n2routes.read_signposts(game, track):
+    for s in n2routes.read_signposts(game, track, name):
         newr, newp, oldr, oldp = s['new_route'], s['new_point'], s['old_route'], s['old_point']
         if newr in routes and oldr in routes and newp < len(routes[newr]) and oldp < len(routes[oldr]) and newr != oldr:
             signs[(oldr, oldp)].append([newr, newp, s['backwards'], s['flip'], s['racer_type']])
@@ -1094,6 +1118,84 @@ class RacerWalk:
                 break
             state = self.step(state)
         return prev
+
+
+def event_lap(walk, pts, circuit, city, reach=15.0, step=5.0):
+    """A closed track's lap along its event's own routes (ROUTES<id>F.BIN,
+    the routes the race loads for its racers): from the route point nearest
+    the course's start that runs its way, over each "always" sign the
+    racers meet and on along the routes otherwise (RacerWalk.step), on the
+    routes' own line (their middle: off it, the racing line's offset took
+    the 4306 off its spiral ramp, where no ground carries the course to its
+    decks) every step metres, back to where it began. The heights: the
+    course's own nearest, on the collision's nearest layer (follow_ground
+    lays them again from the start marker).
+    (pts, how the old course's points map onto it), or None when the walk
+    does not close the lap."""
+    prog = CourseProgress(pts, circuit)
+    p, _ = prog.at(0.0)
+    q, _ = prog.at(15.0)
+    h = (q[0] - p[0], q[1] - p[1])
+    hl = math.hypot(*h) or 1.0
+    seed = None
+    for r, rp in walk.routes.items():
+        for k, (x, y, _, dx, dy) in enumerate(rp):
+            d = math.hypot(x - p[0], y - p[1])
+            c = (dx * h[0] + dy * h[1]) / hl
+            if d < reach and abs(c) > .7 and (seed is None or d < seed[0]):
+                seed = (d, (r, k, c > 0))
+    if seed is None:
+        return None
+    state, seen, line, run = seed[1], set(), [], 0.0
+    while state is not None and state not in seen:
+        seen.add(state)
+        here = walk.xy(state)
+        if line:
+            a = line[-1]
+            n = int(math.dist(a, here) // step)
+            line += [(a[0] + (here[0] - a[0]) * m / (n + 1), a[1] + (here[1] - a[1]) * m / (n + 1)) for m in range(1, n + 1)]
+            run += math.dist(a, here)
+        line.append(here)
+        if run > 3 * prog.length:
+            return None
+        state = walk.step(state)
+    if state != seed[1] or len(line) < 3:
+        return None
+    out, s = [], 0.0
+    for x, y in line:
+        s, _ = prog.project((x, y), s, back=40.0, fwd=prog.length)
+        k = min(range(len(pts)), key=lambda j: math.dist((pts[j][2], pts[j][0]), (x, y)))
+        hgt = pts[k][1]
+        ls = city.layers(x, y)
+        out.append((y, min(ls, key=lambda v: abs(v - hgt)) if ls else hgt, x))
+    return out
+
+
+def simplify_course(pts, gates, flat=.5, rise=.25):
+    """The course's points (GU x, y, z) less those its line passes within
+    flat metres across and rise metres in height of (Douglas-Peucker), the
+    gates' and the first kept; (points, gates on them)."""
+    keep = {0, len(pts) - 1} | set(gates)
+
+    def off(p, a, b):
+        dx, dz = b[0] - a[0], b[2] - a[2]
+        l2 = dx * dx + dz * dz
+        t = 0.0 if l2 < 1e-9 else max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[2] - a[2]) * dz) / l2))
+        across = math.hypot(p[0] - a[0] - dx * t, p[2] - a[2] - dz * t)
+        return max(across / flat, abs(p[1] - (a[1] + (b[1] - a[1]) * t)) / rise)
+    marks = sorted(keep)
+    todo = list(zip(marks, marks[1:]))
+    while todo:
+        i, j = todo.pop()
+        if j - i < 2:
+            continue
+        k = max(range(i + 1, j), key=lambda m: off(pts[m], pts[i], pts[j]))
+        if off(pts[k], pts[i], pts[j]) > 1:
+            keep.add(k)
+            todo += [(i, k), (k, j)]
+    order = sorted(keep)
+    where = {old: new for new, old in enumerate(order)}
+    return [pts[k] for k in order], sorted(where[g] for g in gates)
 
 
 class CourseProgress:
@@ -2173,7 +2275,7 @@ def lay_course(ev, nodes, links, usable, city, free_count, city_track, barriers=
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', default='L4RA', help='L4RA the city (races.n2rc); another: races-<track>.n2rc')
     ap.add_argument('--only', help='comma-separated event ids (a trial run: the output has only those)')
@@ -2286,6 +2388,23 @@ def main():
                 if axis:
                     pts, gates, _ = axis
                     walked = len(pts)
+            if not city_track and ev['circuit'] and not axis:
+                # The lap along the event's own routes where the course misses
+                # its outline (the map's drawing of the race) and the routes
+                # keep to it: the Parkade's 4306, laid over the roads of the
+                # floor below, cut a corner of the map 104 m off it, through a
+                # wall on the decks; its routes pass within 9 m of every point.
+                own = f"ROUTES{ev['id']}F.BIN"
+                # (judged on the course without its backtracks, as it will be
+                # raced)
+                clean = drop_backtracks(list(pts), list(gates), ev['circuit'])[0]
+                if route_file_exists(args.game, args.track, own) and off_outline(ev, [(q[2], q[0]) for q in clean]) > OUTLINE_MISS:
+                    lap = event_lap(RacerWalk(*read_route_net(args.game, args.track, own),
+                                              n2routes.read_event_barriers(args.game, args.track, ev['id'])),
+                                    pts, ev['circuit'], city)
+                    if lap and off_outline(ev, [(q[2], q[0]) for q in lap]) <= OUTLINE_KEEP:
+                        gates = sorted(set(min(range(len(lap)), key=lambda j: math.dist(lap[j], pts[g])) for g in gates))
+                        pts, walked = lap, len(lap)
             if not city_track:
                 pts, gates, back = drop_backtracks(pts, gates, ev['circuit'])
                 start = marker(marks, 'ForwardStartLine') or marker(marks, 'ForwardStartingPosition')
@@ -2300,6 +2419,14 @@ def main():
                 elif anchor:
                     # the lines across the spiral's well, round the ramp instead
                     pts, gates, threaded = thread_ramps(pts, gates, ev['circuit'], city)
+                if walked and not axis:
+                    # Drag lanes/availability are sampled at these points too.
+                    # Keep their dense route axis: simplifying only its centre
+                    # discards short lane closures and stretches lane changes.
+                    # the lap from its routes (event_lap), a point every 5 m:
+                    # only its turns and its changes of slope kept (the 4306's
+                    # 453 points, 4.5 KB more of races-L4RC.n2rc)
+                    pts, gates = simplify_course(pts, gates)
                 cut += back
                 # On the ground, every closed track's course again: the runway
                 # drags now lay out on the free roam's links (not the channel

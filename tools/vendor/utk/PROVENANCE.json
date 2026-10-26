@@ -1,0 +1,28 @@
+{
+  "author": "Andrew D\u2019Addesio",
+  "upstream": "vgmstream/vgmstream",
+  "revision": "f4ac1437d461027d1c48466c2404e4cfffb85405",
+  "authorization": "Jussimir autorizou download e integra\u00e7\u00e3o em 25/10/2026 neste chat",
+  "files": {
+    "utkdec.c": {
+      "url": "https://raw.githubusercontent.com/vgmstream/vgmstream/f4ac1437d461027d1c48466c2404e4cfffb85405/src/coding/libs/utkdec.c",
+      "bytes": 21001,
+      "sha256": "6c4c91723e9283d5fd7ae194e2e5449010cf235b5e01a9ba0e089c6636213ead"
+    },
+    "utkdec.h": {
+      "url": "https://raw.githubusercontent.com/vgmstream/vgmstream/f4ac1437d461027d1c48466c2404e4cfffb85405/src/coding/libs/utkdec.h",
+      "bytes": 1948,
+      "sha256": "c3a9527a14e61c4e929a75bdead74e7e1050759a0a2bbe5e874bc6d79fc974c1"
+    },
+    "UNLICENSE": {
+      "url": "https://raw.githubusercontent.com/daddesio/utkencode/e0b13fac7a75fc5ef16851c165d3f31f0fe220b1/UNLICENSE",
+      "bytes": 1211,
+      "sha256": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c"
+    },
+    "VGMSTREAM-COPYING": {
+      "url": "https://raw.githubusercontent.com/vgmstream/vgmstream/f4ac1437d461027d1c48466c2404e4cfffb85405/COPYING",
+      "bytes": 1314,
+      "sha256": "fcc26d35c4c4365e31f21734f846e4ee362ff0b57ba696085605a7b4768d8763"
+    }
+  }
+}

@@ -86,6 +86,10 @@ u8 tournament group (0 = none). Entries are in career order. Then:
     2 the preset's, 3 the stage's ramp), i8 x5 the fixed rating (0..10),
     u8 pad x2; u32 6, 6 x 12 bytes the stages' ramps: i16 races, u8 pad
     x2, f32 the rating at the start, at the end;
+  (version 11) u32 n, n x 56 bytes the career's preset cars (presets/rivals:
+    char pack[24] opp-NAME, char model[16] its car, char neon[16] its
+    underglow by the garage's name, "" none); u32 count, count x 8 bytes per row: u8 x5 each rival's
+    preset (0xff: a RANDOM car), u8 pad x3;
   u32 size, the text block (zero-terminated strings).
 """
 import argparse
@@ -96,6 +100,7 @@ import statistics
 import struct
 
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 TYPES = ['circuito', 'sprint', 'street x', 'url', 'drag', 'drift']
@@ -120,7 +125,8 @@ def career_races(globalb):
         # 1, 2 and 3; 0: none, or the hash at +0x10 of the race won first),
         # an SUV race at +0x0D, the rivals at +0x40 (12 bytes each: their
         # name in the career's string pool, how their performance is set
-        # at +2 and its rating at +3), how many at +0x7C, hidden
+        # at +2 and its rating at +3, its car at +4: the hash of RANDOM or
+        # of a preset's name), how many at +0x7C, hidden
         # until found at +0x7F
         rivals = min(r[0x7C], 5)
         name = struct.unpack_from('<H', r, 0)[0]
@@ -130,7 +136,8 @@ def career_races(globalb):
                         hash=struct.unpack_from('<I', r, 0x08)[0], req=r[0x0C], need=struct.unpack_from('<I', r, 0x10)[0],
                         suv=int(r[0x0D] == 1), hidden=int(r[0x7F] != 0), rivals=rivals,
                         rival_names=[struct.unpack_from('<H', r, 0x40 + 12 * i)[0] for i in range(rivals)],
-                        rival_perf=[(r[0x42 + 12 * i], struct.unpack_from('<b', r, 0x43 + 12 * i)[0]) for i in range(rivals)]))
+                        rival_perf=[(r[0x42 + 12 * i], struct.unpack_from('<b', r, 0x43 + 12 * i)[0]) for i in range(rivals)],
+                        rival_cars=[struct.unpack_from('<I', r, 0x44 + 12 * i)[0] for i in range(rivals)]))
     return out
 
 
@@ -519,6 +526,22 @@ def career_world(game, globalb, rows, races):
     out += struct.pack('<I', len(ramps))
     for v in ramps:
         out += struct.pack('<h2xff', *v)
+    # version 11: the rivals in a preset car of the original (Caleb and his
+    # crew, the last stage's finals: AddCareerEventAIOpponents fills them
+    # with RideInfo::FillWithPreset), their packs and neons
+    from n2feng import bin_hash
+    presets = [json.loads(f.read_text()) for f in sorted((ROOT / 'presets/rivals').glob('*.json'))]
+    by_hash, random = {bin_hash(p['preset']): i for i, p in enumerate(presets)}, bin_hash('RANDOM')
+    out += struct.pack('<I', len(presets))
+    for p in presets:
+        out += struct.pack('<24s16s16s', f"opp-{p['preset']}".encode(), p['car'].encode(), p.get('neon', '').encode())
+    out += struct.pack('<I', len(rows))
+    for x in rows:
+        cars = x['record']['rival_cars']
+        for c in cars:
+            if c != random and c not in by_hash:
+                raise ValueError(f"{x['record']['name']}: rival num preset 0x{c:08x} sem arquivo em presets/rivals")
+        out += struct.pack('<5B3x', *([0xff if c == random else by_hash[c] for c in cars] + [0xff] * 5)[:5])
     text.extend(bytes((-len(text)) % 4))
     out += struct.pack('<I', len(text)) + bytes(text)
     report = dict(stages=stages, rules=rules, sponsors=sponsors, covers=covers, shops=shops, tips=[dict(sms=sms[v['sms']]['name'], pos=v['pos']) for v in tips], cash=cash, shows=shows,
@@ -584,13 +607,9 @@ def racer_names(xbe):
     racers, from the Xbox default.xbe (a pointer array to the strings, found
     by one of them, "Lola"; the PS2's first quick race after the boot names
     its three Lola, Clarence and Audrey, the 50th, 29th and 10th)."""
-    b = xbe.read_bytes()
-    base, count, at = struct.unpack_from('<I', b, 0x104)[0], *struct.unpack_from('<2I', b, 0x11c)
-    secs = [struct.unpack_from('<5I', b, at - base + 56 * k)[1:] for k in range(count)]   # vaddr, vsize, raw, size
-    def va(off):
-        return next(v + off - r for v, vs, r, n in secs if r <= off < r + n)
-    def raw(v):
-        return next((r + v - a for a, vs, r, n in secs if a <= v < a + n), None)
+    import n2exe
+    exe = n2exe.Exe(xbe)
+    b, va, raw = exe.b, exe.va, exe.raw
     def text(v):
         o = raw(v)
         if o is None or not 0x41 <= b[o] <= 0x5a:   # a capital first
@@ -608,7 +627,7 @@ def racer_names(xbe):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     globalb = archived(args.game, 'GLOBAL/GLOBALB.BUN')
@@ -621,7 +640,7 @@ def main():
     for x in rows:
         if x['reward'] == 1:
             x['flags'] |= 8      # a sponsor race: its purse goes to the signed sponsor's contract
-    out = struct.pack('<4s2I', b'N2CA', 10, len(rows))
+    out = struct.pack('<4s2I', b'N2CA', 11, len(rows))
     for x in rows:
         out += struct.pack('<HBBiBBBB', x['id'], x['stage'], x['type'], x['money'], x['reward'], x['laps'], x['flags'],
                            x['group'])
@@ -640,7 +659,7 @@ def main():
                    kind=x['reward'], secret=bool(x['record']['hidden']), suv=bool(x['record']['suv']), rivals=x['record']['rivals'])
               for x in rows]
     (args.out / 'career.json').write_text(json.dumps(report, indent=1) + '\n')
-    names = racer_names(args.game.parent / 'default.xbe')
+    names = racer_names(n2source.executable(args.game))
     (args.out / 'names.txt').write_text('\n'.join(names) + '\n')   # the AI racers' names, a line each
     print(len(rows), 'rows;', sum(1 for x in rows if x['flags'] & 1), 'with approximated money;',
           sum(1 for x in rows if x['flags'] & 4), 'on tracks;', max((x['group'] for x in rows), default=0), 'tournaments; first:',

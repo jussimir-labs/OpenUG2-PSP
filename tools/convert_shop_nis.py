@@ -41,6 +41,7 @@ from n2formats import archived, chunks, unpad
 import convert_career as cc
 import convert_ending_nis as ce
 import convert_nis as nis
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENES = ('ShopEnter1', 'ShopExit1')
@@ -115,7 +116,7 @@ def shops(game):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     groups = camera_groups(args.game)

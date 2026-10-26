@@ -26,6 +26,7 @@ from pathlib import Path
 import struct
 
 from n2formats import archived
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -63,7 +64,7 @@ def region_set(game, name):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     a = ap.parse_args()
     bounds, nodes, regions, per, tree, values = region_set(a.game, 'Rain')

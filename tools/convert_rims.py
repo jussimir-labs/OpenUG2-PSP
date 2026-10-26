@@ -40,6 +40,7 @@ import convert_car as cc
 import convert_physics
 import mac_slots
 from n2formats import archived, car_record, lod_family, parts
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 # the brands' folders: the cars' shop's in its order, then the SUVs' own
@@ -143,7 +144,7 @@ def write_styles(game, out_dir):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--styles', action='store_true', help='the styles\' names alone (rimstyles.n2rs)')
     args = ap.parse_args()

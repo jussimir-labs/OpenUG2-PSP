@@ -51,6 +51,7 @@ import convert_city as cc
 import convert_world as cw
 import n2world as nw
 from convert_car import to_clut8
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 SHELL = 256.0          # m a tile
@@ -220,7 +221,7 @@ def write(blobs, sources, tex_flags, path):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--bbox', type=float, nargs=4, help='limit to game X0 Y0 X1 Y1 (testing)')
     ap.add_argument('--cluster', type=float, default=CLUSTER, help='vertex clustering grid (m); 0: the meshes whole')

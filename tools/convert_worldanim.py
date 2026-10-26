@@ -57,6 +57,7 @@ from convert_car import to_clut8
 from convert_nis import _blocks, deltaq, elf_data, h33, translations
 from n2formats import archived, chunks, unpad
 import n2world as nw
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 KINDS = (('JumboPlane', 1), ('Graffiti', 2), ('DragTrams', 2), ('Spotlight', 3), ('Crane', 4), ('Sail', 5))
@@ -424,7 +425,7 @@ def convert(game, track, out_dir, verbose=True):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', nargs='*', default=['L4RA', 'L4RB', 'L4RD', 'L4RG'])
     args = ap.parse_args()

@@ -2,10 +2,17 @@
 
 Format research: OpenUG2/src/nfsu2.h (public domain). Xbox layouts were
 verified against this project's USA disc; do not silently treat PC as Xbox.
+
+The PS2 disc (SLUS_210.65) shares the container and most chunks; its own
+layouts (CLUT textures, VIF meshes) are read when PLATFORM is 'ps2', which
+tools/n2source.py sets from the disc a converter was given.
 """
 import math
+import os
 import re
 import struct
+
+PLATFORM = os.environ.get('NFSU2_PLATFORM', 'xbox')   # n2source sets both, the workers a converter spawns inherit it
 
 
 def u32(d, p=0):
@@ -293,6 +300,8 @@ class Texture:
 def decode_texture(name, key, info, image, palette_bytes):
     """info: bytes starting at the texture key. Shared by slot and flat TPKs.
     key+0x14 size, +0x20 w/h, +0x26 format."""
+    if PLATFORM == 'ps2':
+        return decode_ps2_texture(name, key, info, image, palette_bytes)
     w, h = struct.unpack_from('<HH', info, 0x20)
     fmt = info[0x26]
     if not (4 <= w <= 1024 and 4 <= h <= 1024 and w & (w-1) == h & (h-1) == 0):
@@ -314,9 +323,73 @@ def decode_texture(name, key, info, image, palette_bytes):
     raise ValueError(f'unsupported texture format {fmt:#x} ({name})')
 
 
+
+def ps2_unswizzle8(idx, w, h):
+    """A PS2 8-bit texture as the game uploads it, PSMT8 written as PSMCT32
+    (w/2 x h/2): its 16x16 blocks hold columns of 16x4 texels, rows paired
+    and every other column pair shifted by 4. Returns row-major indices."""
+    if w < 16 or h < 4:
+        return bytes(idx[:w*h])
+    out = bytearray(w * h)
+    for y in range(h):
+        block_row = (y & ~0xf) * w
+        shift = (((y + 2) >> 2) & 1) * 4
+        col = ((((y & ~3) >> 1) + (y & 1)) & 7) * w * 2
+        byte = (y >> 1) & 1
+        for x in range(w):
+            out[y*w + x] = idx[block_row + (x & ~0xf) * 2 + col + ((x + shift) & 7) * 4 + byte + ((x >> 2) & 2)]
+    return bytes(out)
+
+
+PS2_CLUT8 = [(i & ~0x18) | ((i & 8) << 1) | ((i & 16) >> 1) for i in range(256)]
+
+
+def decode_ps2_texture(name, key, info, image, palette_bytes):
+    """PS2 TPK record (the Xbox's fields, but its own +0x0c..+0x2a): +0x14
+    pixel bytes, +0x18 palette bytes, +0x20 w/h, +0x26 bits per texel (4,
+    8; 0x81 an 8-bit one too; 0x20 RGBA), u16 +0x28 palette entries, one
+    level only (no mips). 4- and 8-bit texels are stored swizzled the
+    PSMT8 way (a 4-bit one 32 or wider with each byte's two texels
+    spread first),
+    256-entry palettes in the GS's CSM1 order; colours RGBA with alpha
+    0x80 = opaque, doubled here. Returns P8 Textures (fmt 0x100 | bits)
+    with a 256-entry RGBA palette, or RGBA for 0x20."""
+    w, h = struct.unpack_from('<HH', info, 0x20)
+    fmt, colours = info[0x26], struct.unpack_from('<H', info, 0x28)[0]
+    size = u32(info, 0x14)
+    if not (1 <= w <= 1024 and 1 <= h <= 1024 and w & (w-1) == h & (h-1) == 0):
+        raise ValueError(f'invalid PS2 texture dimensions ({name})')
+    def alpha(c):
+        return bytes((c[0], c[1], c[2], min(255, c[3] * 2)))
+    if fmt == 0x20:
+        if len(image) < w * h * 4:
+            raise ValueError(f'truncated PS2 texture ({name})')
+        px = bytearray(image[:w*h*4])
+        px[3::4] = bytes(min(255, a * 2) for a in px[3::4])
+        return Texture(name, key, w, h, 0x120, bytes(px))
+    if fmt == 4:
+        if size < w * h // 2 or colours != 16 or len(palette_bytes) < 64:
+            raise ValueError(f'invalid PS2 4-bit texture ({name})')
+        idx = bytearray(w * h)
+        idx[0::2] = bytes(b & 15 for b in image[:w*h//2])
+        idx[1::2] = bytes(b >> 4 for b in image[:w*h//2])
+        pal = b''.join(alpha(palette_bytes[i*4:i*4+4]) for i in range(16)) + bytes(4 * 240)
+    elif fmt in (8, 0x80, 0x81):
+        if size < w * h or colours != 256 or len(palette_bytes) < 1024:
+            raise ValueError(f'invalid PS2 8-bit texture ({name})')
+        idx = image[:w*h]
+        pal = b''.join(alpha(palette_bytes[j*4:j*4+4]) for j in PS2_CLUT8)
+    else:
+        raise ValueError(f'unsupported PS2 texture format {fmt:#x} ({name})')
+    if fmt == 4 and w < 32:    # a 4-bit one narrower than 32 is stored as it is
+        return Texture(name, key, w, h, 0x100 | fmt, bytes(idx), pal)
+    return Texture(name, key, w, h, 0x100 | fmt, ps2_unswizzle8(idx, w, h), pal)
+
+
 class SlotTPK:
     """Car-style TPK: every texture compressed separately (0x33310003 table).
-    The info header sits at dec-HeaderFromEnd+0x6c (PC uses +0x88)."""
+    The info header sits at dec-HeaderFromEnd+0x6c (PC uses +0x88, the
+    PS2 +0x54)."""
     def __init__(self, data):
         self.data = data
         leaves = {t: data[p:p+n] for t, p, n in chunks(data) if not t & 0x80000000}
@@ -333,9 +406,9 @@ class SlotTPK:
     def raw(self, key):
         off, enc, dec, hfe = self.slots[key]
         raw = decompress(self.data[off:off+enc], dec)
-        p = dec - hfe + 0x6c
+        p = dec - hfe + (0x54 if PLATFORM == 'ps2' else 0x6c)   # the PS2's header 0x18 bytes earlier
         if p + 0x34 > dec or u32(raw, p) != key:
-            raise ValueError('Xbox texture header mismatch')
+            raise ValueError(f'{PLATFORM} texture header mismatch')
         return raw, p
 
     def name(self, key):
@@ -396,6 +469,233 @@ class FlatTPK:
 
 # ------------------------------------------------------------------- geometry
 
+# ------------------------------------------------------------- PS2 meshes
+
+def vif_unpacks(d):
+    """The UNPACKs of a VIF stream, split at each MSCAL (one batch the
+    VU1 draws): [[(vn, vl, num, addr, data)...]...]. vn 0-3 = S, V2, V3,
+    V4; vl 0-2 = 32, 16, 8 bits."""
+    out, cur, p = [], [], 0
+    while p + 4 <= len(d):
+        w = u32(d, p)
+        p += 4
+        cmd, num, imm = w >> 24, (w >> 16) & 0xff, w & 0xffff
+        if cmd & 0x60 == 0x60:
+            vn, vl, n = (cmd >> 2) & 3, cmd & 3, num or 256
+            if vl == 3:
+                raise ValueError('VIF V4-5 unpack in a mesh')
+            size = ((32 >> vl) * (vn + 1) * n + 31) // 32 * 4
+            cur.append((vn, vl, n, imm & 0x3ff, d[p:p+size]))
+            p += size
+        elif cmd in (0x14, 0x15, 0x17):          # MSCAL, MSCALF, MSCNT: the batch is drawn
+            out.append(cur)
+            cur = []
+        elif cmd == 0x20:                        # STMASK
+            p += 4
+        elif cmd in (0x30, 0x31):                # STROW, STCOL
+            p += 16
+        elif cmd in (0x50, 0x51):                # DIRECT
+            p += (imm or 65536) * 16
+        elif cmd == 0x4a:                        # MPG
+            p += (num or 256) * 8
+    if cur:
+        raise ValueError('VIF stream ends without MSCAL')
+    return out
+
+
+def _unpacked(vn, vl, n, data):
+    count = n * (vn + 1)
+    return struct.unpack_from('<%d%s' % (count, 'fhb'[vl]), data)
+
+
+def ps2_adc(n, g):
+    """The vertices of a batch that start a strip again (the GS's ADC, no
+    triangle drawn), from the batch's flag words (its qword at VU address
+    1, word 1 being the 0.0002 position scale). The words a vertex's bit
+    lands in follow the batch's 4-vertex blocks B, as the shipped data
+    holds them: v <= 14 at bit 14 - v of word 0 (word 3 for B = 4, word
+    2 for B = 8), later ones at bit 4B + 1 - v of word 3. The 16th
+    vertex of an 8-block batch has no bit of its own (ps2_mesh() finds it
+    from the batch's triangle count)."""
+    blocks, out = (n + 3) // 4, set()
+    for v in range(n):
+        if blocks <= 3:
+            w, b = 0, 14 - v
+        elif blocks == 4:
+            w, b = 3, 14 - v
+        elif v <= 14:
+            w, b = (2 if blocks >= 8 else 0), 14 - v
+        elif blocks >= 8 and v == 15:
+            continue
+        else:
+            w, b = 3, 4 * blocks + 1 - v
+        if 0 <= b < 32 and g[w] >> b & 1:
+            out.add(v)
+    return out
+
+
+def ps2_batch(ops):
+    """One batch's vertices: n, positions, UVs, RGBA colours (or None),
+    normals (or None), its ADC flag words. VU addresses: 0 header (n), 1
+    flags, 2-3 bounding box, 4 the culling cone (moving parts), 5-28
+    positions, 29-44 UVs, 45-76 colours, 77- normals. Positions: u16 x
+    the flags' word 1 (0.0002 on the cars, 1/256 on the city's big
+    pieces) plus the box's minimum truncated less 1, per axis; positions
+    and normals in 4-vertex blocks of 4 x, 4 y, 4 z; UVs 1/4096, a block
+    being u0 v0 v1 u1 u2 v2 v3 u3; colours a vertex each, 0x80 = 1.0."""
+    by = {}
+    for vn, vl, num, addr, data in ops:
+        by.setdefault(addr, []).append((vn, vl, num, data))
+    n = by[0][0][3][0]
+    g = struct.unpack_from('<4I', by[1][0][3])
+    scale = struct.unpack_from('<f', by[1][0][3], 4)[0]
+    box = _unpacked(*by[2][0][:3], by[2][0][3])
+    base = [math.trunc(c) - 1 for c in box[:3]]
+
+    def stream(lo, hi):
+        vals = []
+        for addr in sorted(a for a in by if lo <= a < hi):
+            for vn, vl, num, data in by[addr]:
+                vals.append((vn + 1, vl, _unpacked(vn, vl, num, data)))
+        return vals
+
+    pos = []
+    for comps, vl, v in stream(5, 29):
+        for blk in range(len(v) // (3 * comps)):
+            xs, ys, zs = (v[(blk * 3 + k) * comps:(blk * 3 + k + 1) * comps] for k in range(3))
+            if vl == 0:          # f32 positions (a few city pieces): as they are
+                pos += list(zip(xs, ys, zs))
+            else:
+                pos += [((xs[i] & 0xffff) * scale + base[0], (ys[i] & 0xffff) * scale + base[1], (zs[i] & 0xffff) * scale + base[2])
+                        for i in range(comps)]
+    if len(pos) < n:
+        raise ValueError(f'PS2 batch: {len(pos)} positions for {n} vertices')
+    uvs = [x for _, _, v in stream(29, 45) for x in v]
+    uv = []
+    for i in range(n):
+        b, k = divmod(i, 4)
+        blk = uvs[b * 8:b * 8 + 8]
+        uv.append((blk[(0, 3, 4, 7)[k]] / 4096, blk[(1, 2, 5, 6)[k]] / 4096))
+    cols = [x for _, _, v in stream(45, 77) for x in v]
+    rgba = [tuple(c & 0xff for c in cols[i * 4:i * 4 + 4]) for i in range(n)] if len(cols) >= 4 * n else None
+    nv = [x for _, _, v in stream(77, 1024) for x in v]
+    normals = None
+    if len(nv) >= 12 * ((n - 1) // 4) + 9:
+        normals = []
+        for i in range(n):
+            b, k = divmod(i, 4)
+            normals.append(tuple(nv[b * 12 + 4 * a + k] / 127 for a in range(3)))
+    return n, pos[:n], uv, rgba, normals, g
+
+
+def ps2_mesh(leaves):
+    """A PS2 object (0x134a00-a02) as the Xbox reader gives it: vertices
+    (x, y, z, u, v, nx, ny, nz), colours (RGBA) and submeshes
+    (indices, texture index, material index). 0x134a01 holds 16 bytes a
+    batch: u8 vertices @+2, u8 triangles @+3, u8 submesh @+13, texture
+    @+14, material @+15. Each batch is a triangle strip; a vertex flagged
+    by ps2_adc() starts it again, and the winding alternates from there.
+    The prelit colours keep the Xbox's scale (its 0..255 equals the PS2's
+    value up to 0x80; the PS2 clips the brighter ~20% of the city's
+    vertices at 128, the Xbox goes on to 255); alpha 0x80 = 255."""
+    table = unpad(leaves[0x134a01])
+    batches = vif_unpacks(unpad(leaves[0x134a02]))
+    if len(table) < 16 * len(batches):
+        raise ValueError('PS2 mesh: fewer batch records than batches')
+    verts, colours, subs = [], [], {}
+    for bi, ops in enumerate(batches):
+        rec = table[bi * 16:bi * 16 + 16]
+        n, pos, uv, rgba, normals, g = ps2_batch(ops)
+        if n != rec[2]:
+            raise ValueError(f'PS2 mesh: batch of {n} vertices, its record says {rec[2]}')
+        adc = ps2_adc(n, g)
+        tris = [v for v in range(2, n) if v not in adc]
+        if len(tris) == rec[3] + 1 and n > 16 and 15 not in adc:   # the 8-block batches' 16th vertex
+            adc.add(15)
+            tris = [v for v in range(2, n) if v not in adc]
+        if len(tris) != rec[3]:
+            raise ValueError(f'PS2 mesh: {len(tris)} triangles in a batch, its record says {rec[3]}')
+        first = len(verts)
+        for i in range(n):
+            nx, ny, nz = normals[i] if normals else (0.0, 0.0, 1.0)
+            verts.append((*pos[i], *uv[i], nx, ny, nz))
+            colours.append((*rgba[i][:3], min(255, rgba[i][3] * 2)) if rgba else (255, 255, 255, 255))
+        ids = subs.setdefault(rec[13], [[], rec[14], rec[15]])[0]
+        start = 0
+        for v in range(n):
+            if v in adc and (v == 0 or v - 1 not in adc):
+                start = v
+            if v >= 2 and v not in adc:
+                a, b, c = first + v - 2, first + v - 1, first + v
+                ids += (a, b, c) if (v - start) % 2 == 0 else (b, a, c)
+    return verts, colours, [tuple(subs[k]) for k in sorted(subs)]
+
+
+def ps2_skinned(leaves):
+    """A PS2 skinned model (the NIS people): vertices ((x, y, z), (w0, w1,
+    w2), (bone, bone, bone), (u, v), normal) with the skeleton's bone
+    numbers, and submeshes (indices, texture index). Positions and UVs are
+    f32 whose low byte carries the skinning: x, y, z's the three bones
+    (x 4), u's and v's the first two weights (/255, the third the rest).
+    The strips and the normals as ps2_mesh's."""
+    table = unpad(leaves[0x134a01])
+    verts, subs = [], {}
+    for bi, ops in enumerate(vif_unpacks(unpad(leaves[0x134a02]))):
+        rec = table[bi * 16:bi * 16 + 16]
+        by = {}
+        for vn, vl, num, addr, data in ops:
+            by.setdefault(addr, []).append((vn, vl, num, data))
+        n = by[0][0][3][0]
+        g = struct.unpack_from('<4I', by[1][0][3])
+
+        def words(lo, hi):
+            out = []
+            for addr in sorted(a for a in by if lo <= a < hi):
+                for vn, vl, num, data in by[addr]:
+                    if vl != 0:
+                        raise ValueError('PS2 skinned batch: not f32')
+                    out.append((vn + 1, struct.unpack_from(f'<{num * (vn + 1)}I', data)))
+            return out
+        pos = []
+        for comps, v in words(5, 29):
+            for blk in range(len(v) // (3 * comps)):
+                xs, ys, zs = (v[(blk * 3 + k) * comps:(blk * 3 + k + 1) * comps] for k in range(3))
+                pos += list(zip(xs, ys, zs))
+        uvw = [x for _, v in words(29, 45) for x in v]
+        nv = [x for _, _, _, d in (o for a in sorted(by) if a >= 77 for o in by[a]) for x in struct.unpack(f'<{len(d)}b', d)]
+        f32 = lambda w: struct.unpack('<f', struct.pack('<I', w & ~0xff))[0]
+        first = len(verts)
+        for i in range(n):
+            b, k = divmod(i, 4)
+            blk = uvw[b * 8:b * 8 + 8]
+            uw, vw = blk[(0, 3, 4, 7)[k]], blk[(1, 2, 5, 6)[k]]
+            w0, w1 = (uw & 0xff) / 255, (vw & 0xff) / 255
+            normal = tuple(nv[b * 12 + 4 * a + k] / 127 for a in range(3)) if len(nv) >= b * 12 + 12 else (0.0, 0.0, 1.0)
+            verts.append((tuple(f32(c) for c in pos[i]), (w0, w1, max(0.0, 1 - w0 - w1)), tuple((c & 0xff) >> 2 for c in pos[i]),
+                          (f32(uw), f32(vw)), normal))
+        adc = ps2_adc(n, g)
+        tris = [v for v in range(2, n) if v not in adc]
+        if len(tris) == rec[3] + 1 and n > 16 and 15 not in adc:
+            adc.add(15)
+        ids = subs.setdefault(rec[13], [[], rec[14]])[0]
+        start = 0
+        for v in range(n):
+            if v in adc and (v == 0 or v - 1 not in adc):
+                start = v
+            if v >= 2 and v not in adc:
+                a, b_, c = first + v - 2, first + v - 1, first + v
+                ids += (a, b_, c) if (v - start) % 2 == 0 else (b_, a, c)
+    return verts, [tuple(subs[k]) for k in sorted(subs)]
+
+
+def ps2_world(leaves):
+    """A PS2 world object as the Xbox's prelit layout: vertices (x, y, z,
+    0xAARRGGBB, u, v) and submeshes (indices, texture index)."""
+    verts, colours, subs = ps2_mesh(leaves)
+    out = [(x, y, z, a << 24 | r << 16 | g << 8 | b, u, v) for (x, y, z, u, v, *_), (r, g, b, a) in zip(verts, colours)]
+    return out, [(ids, ti) for ids, ti, mi in subs]
+
+
 class Part:
     """One 0x80134010 object. verts: (x,y,z,u,v,nx,ny,nz) in Xbox car space
     (X forward, Y lateral/left, Z up). subs: (indices, texkey, matkey)."""
@@ -417,7 +717,19 @@ def parts(data, accept=lambda name: True):
             continue
         leaves = {t: data[o:o+s] for t, o, s in chunks(data, p, p+n) if not t & 0x80000000}
         name = unpad(leaves[0x134011])[164:].split(b'\0')[0].decode('ascii')
-        if not accept(name) or 0x134b01 not in leaves:
+        if not accept(name):
+            continue
+        if 0x134a02 in leaves:      # the PS2's: VIF strips (ps2_mesh)
+            tex = [a for a, b in struct.iter_unpack('<II', leaves[0x134012])]
+            mats = [a for a, b in struct.iter_unpack('<II', leaves[0x134013])] if 0x134013 in leaves else []
+            verts, _, psubs = ps2_mesh(leaves)
+            if not verts:
+                skipped.append((name, 'empty'))
+                continue
+            subs = [(tuple(ids), tex[ti], mats[mi] if mi < len(mats) else 0) for ids, ti, mi in psubs if ids]
+            yield Part(name, verts, subs, sockets_of(leaves, name))
+            continue
+        if 0x134b01 not in leaves:
             continue
         vb, ib, sb = [unpad(leaves[t]) for t in (0x134b01, 0x134b03, 0x134b02)]
         if not vb and not ib:
@@ -444,15 +756,20 @@ def parts(data, accept=lambda name: True):
             subs.append((ids[first:first+count], tex[ti], mats[mi]))
         if len(ids) - expected >= 3:
             raise ValueError(f'unclaimed indices: {name}')
-        sockets = {}
-        if 0x13401a in leaves:
-            s = unpad(leaves[0x13401a])
-            for at in range(0, len(s) - 79, 80):
-                m = struct.unpack_from('<16f', s, at + 16)
-                if abs(m[15] - 1) > 1e-3 or any(abs(m[i]) > 1e-3 for i in (3, 7, 11)):
-                    raise ValueError(f'invalid socket matrix: {name}')
-                sockets[u32(s, at)] = m
-        yield Part(name, verts, subs, sockets)
+        yield Part(name, verts, subs, sockets_of(leaves, name))
+
+
+def sockets_of(leaves, name):
+    """A part's sockets (0x13401a, the same on both discs): key -> matrix."""
+    sockets = {}
+    if 0x13401a in leaves:
+        s = unpad(leaves[0x13401a])
+        for at in range(0, len(s) - 79, 80):
+            m = struct.unpack_from('<16f', s, at + 16)
+            if abs(m[15] - 1) > 1e-3 or any(abs(m[i]) > 1e-3 for i in (3, 7, 11)):
+                raise ValueError(f'invalid socket matrix: {name}')
+            sockets[u32(s, at)] = m
+    return sockets
 
 
 def lod_family(name):

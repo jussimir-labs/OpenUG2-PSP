@@ -15,6 +15,7 @@ import struct
 
 import convert_car as c
 from n2formats import FlatTPK, SlotTPK, archived, chunks, game_hash, lod_family, parts
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 MODELS = ['4DR_SEDAN', '4DR_SEDAN02', 'COUPE', 'HATCHBACK', 'HATCHBACK02', 'SUV', 'TAXI', 'TAXI02',
@@ -126,7 +127,7 @@ def save(path, meshes, textures, skins, far=()):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     args = ap.parse_args()
     textures = TrafficTextures(args.game)

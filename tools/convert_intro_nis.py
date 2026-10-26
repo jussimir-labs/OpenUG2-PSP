@@ -80,6 +80,7 @@ import argparse
 
 from n2formats import game_hash
 from convert_audio import pt_header
+import re
 import struct
 import sys
 from pathlib import Path
@@ -87,6 +88,8 @@ from pathlib import Path
 from n2formats import archived, chunks
 import convert_nis as nis
 import convert_ending_nis as en
+import n2exe
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 START_MARKERS = {'ForwardStartLine': 0, 'BackwardStartLine': 2, 'ForwardStartingPosition': 4,
@@ -173,13 +176,18 @@ def xbe_offset(b, va):
 
 
 def flare_map(xbe):
-    """{model name: tip A, base A, tip B, base B (12 floats)}."""
-    b = xbe.read_bytes()
+    """{model name: tip A, base A, tip B, base B (12 floats)}. The table
+    is the first word pointing at a FLAG_GIRL_MODEL_ name (FLAREMAP_AT on
+    the Xbox)."""
+    import n2exe
+    exe = n2exe.Exe(xbe)
+    b = exe.b
+    names = sorted(set(m.group().decode() for m in re.finditer(rb'FLAG_GIRL_MODEL_[0-9A-Z_]+', b)))
+    first = min(r for n in names for r in exe.refs(n))
     out = {}
     for k in range(4):
-        at = FLAREMAP_AT + 52 * k
-        o = xbe_offset(b, struct.unpack_from('<I', b, at)[0])
-        name = b[o:b.index(b'\0', o)].decode()
+        at = first + 52 * k
+        name = exe.cstr(struct.unpack_from('<I', b, at)[0])
         if not name.startswith('FLAG_GIRL_MODEL_'):
             raise ValueError(f'default.xbe {at:#x}: not FlagGirlFlareMap')
         out[name] = struct.unpack_from('<12f', b, at + 4)
@@ -219,7 +227,7 @@ def nis_audio(game, out, cand, endings):
     want = {'NIS_Select_Start': ('Start', lambda p: (p[0], p[1]) in start_ok and p[2] in (0, 2)),
             'NIS_Select_End': ('End', lambda p: (p[0], p[1]) in end_ok)}
     lines = {'Start': [], 'End': []}
-    big = bytearray()
+    big, rates = bytearray(), set()
     with (game / f'ZZDATA{arc}.BIN').open('rb') as f:
         def read(at, n):
             f.seek(sector * 2048 + at)
@@ -241,8 +249,9 @@ def nis_audio(game, out, cand, endings):
                 if head[:4] != b'SCHl':
                     raise ValueError(f'NISAUDIO bank {b} line {i}: no SCHl at {at:#x}')
                 fields = pt_header(head, 8)
-                if fields.get(0x82, 1) != 2 or fields.get(0x84) != 36000:
-                    raise ValueError(f'NISAUDIO bank {b} line {i}: not stereo at 36 kHz')
+                if fields.get(0x82, 1) != 2 or fields.get(0x84) not in (32000, 36000):
+                    raise ValueError(f'NISAUDIO bank {b} line {i}: not stereo at 36 kHz (the PS2\'s: 32)')
+                rates.add(fields[0x84])
                 p = at + struct.unpack_from('<I', head, 4)[0]
                 while True:   # to its end block
                     tag, n = struct.unpack('<4sI', read(p, 8))
@@ -258,7 +267,12 @@ def nis_audio(game, out, cand, endings):
         for line in lines[name]:
             blob += struct.pack('<2I6B2x', *line)
         n += len(lines[name])
-    (out / 'nis.n2sp').write_bytes(struct.pack('<4s3I', b'N2SP', 1, 2, n) + table + blob)
+    if len(rates) > 1:
+        raise ValueError(f'NISAUDIO: streams at {sorted(rates)} Hz')
+    rate = rates.pop() if rates else 36000
+    # version 1 at the Xbox's 36 kHz; 2 adds the rate (the PS2's 32 kHz)
+    head = struct.pack('<4s3I', b'N2SP', 1, 2, n) if rate == 36000 else struct.pack('<4s4I', b'N2SP', 2, 2, n, rate)
+    (out / 'nis.n2sp').write_bytes(head + table + blob)
     return dict(start=len(lines['Start']), end=len(lines['End']), mb=round(len(big) / 1e6, 1))
 
 
@@ -266,15 +280,49 @@ REV_AT = 0x387958   # default.xbe: the first table, RevDynoEnter
 REV_STEPS = (72, 39, 26, 30, 27, 22, 19, 67, 56, 34, 30, 29, 47, 27, 24)
 
 
-def rev_patterns(xbe):
-    b = xbe.read_bytes()
-    at, tables = REV_AT, []
+def rev_at(exe):
+    """The rev patterns' first table and the tables' alignment (REV_AT and
+    8 on the Xbox): where all 15 tables read as rev patterns, one after
+    the other, each aligned in memory."""
+    b = exe.b
+
+    def nxt(at, steps, align):
+        v = exe.va(at)
+        return at + ((v + 4 * (steps + 1) + align - 1) & ~(align - 1)) - v
+
+    def ok(at, steps):
+        return at + 4 * (steps + 1) <= len(b) and all(1000 <= r <= 10000 and a <= 100 and not pad
+                                                      for r, a, pad in struct.iter_unpack('<HBB', b[at:at + 4 * (steps + 1)]))
+
+    def chain(at, align):
+        for steps in REV_STEPS:
+            if not ok(at, steps):
+                return False
+            at = nxt(at, steps, align)
+        return True
+    if b[:4] == b'XBEH' and chain(REV_AT, 8):
+        return REV_AT, 8
+    for at in range(0, len(b) - 4 * 73, 4):
+        r, = struct.unpack_from('<H', b, at)
+        if 1000 <= r <= 10000 and ok(at, REV_STEPS[0]):
+            for align in (8, 4, 16):
+                if chain(at, align):
+                    return at, align
+    raise ValueError('the rev patterns (RevDynoEnter...) not found in the executable')
+
+
+def rev_patterns(exe):
+    """revpat.n2rp from the executable (n2exe.Exe; the PS2's fills the
+    tables in the sound tables' initialiser)."""
+    b = exe.b
+    (at, align), tables = rev_at(exe), []
     for steps in REV_STEPS:
         t = [struct.unpack_from('<HBB', b, at + 4 * k) for k in range(steps + 1)]
         if any(not 1000 <= r <= 10000 or a > 100 or pad for r, a, pad in t):
-            raise ValueError(f'default.xbe {at:#x}: not a rev pattern')
+            raise ValueError(f'{exe.path.name} {at:#x}: not a rev pattern')
         tables.append(t)
-        at = (at + 4 * (steps + 1) + 7) & ~7
+        v = exe.va(at)
+        at += ((v + 4 * (steps + 1) + align - 1) & ~(align - 1)) - v
     out = bytearray(struct.pack('<4sI', b'N2RP', 16))
     for t in [tables[0]] + tables:   # pattern 0 and 1: the first
         out += struct.pack('<I', len(t) - 1) + b''.join(struct.pack('<HBB', *e) for e in t)
@@ -283,7 +331,7 @@ def rev_patterns(xbe):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--no-people', action='store_true', help='leave the nis-<NN>.n2ni as they are')
     ap.add_argument('--no-sound', action='store_true', help='leave nis.big and nis.n2sp as they are')
@@ -302,7 +350,7 @@ def main():
     only = career_restricted(args.game)
     blob += struct.pack('<I', len(only)) + b''.join(struct.pack('<HBx', ev, st) for ev, st in only)
     blob += struct.pack('<I', len(marks)) + b''.join(struct.pack('<H2B3fH2x', *m) for m in marks)
-    flares = flare_map(args.game.parent / 'default.xbe')
+    flares = flare_map(n2source.executable(args.game))
     index, blocks = [], []
     for n in scenes:
         data = archived(args.game, f'NIS/Scene_IntroNis{n:02d}_BundleB.bun')
@@ -337,7 +385,8 @@ def main():
         at += len(block)
     blob += b''.join(blocks)
     (args.out / 'intro.n2in').write_bytes(bytes(blob))
-    (args.out / 'revpat.n2rp').write_bytes(rev_patterns(args.game.parent / 'default.xbe'))
+    from convert_audio import SOUND_ANCHORS
+    (args.out / 'revpat.n2rp').write_bytes(rev_patterns(n2exe.of(args.game, SOUND_ANCHORS)))
     if not args.no_sound:
         ends = {(c[0], c[1]) for c in en.candidates(args.game, {nis.h33(f'EndingNis{k:02d}'): k for k in en.SCENES})[0]}
         print(dict(sound=nis_audio(args.game, args.out, cand, ends)))

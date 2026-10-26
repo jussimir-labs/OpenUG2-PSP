@@ -44,6 +44,7 @@ from pathlib import Path
 import struct
 
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -147,7 +148,7 @@ def lane_bytes(pt, slot):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', default='L4RA')
     args = ap.parse_args()

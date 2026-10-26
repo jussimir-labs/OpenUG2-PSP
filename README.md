@@ -1,3 +1,7 @@
+## Bug reports
+
+Read [the illustrated reporting guide](docs/manual-reportar-bugs.pdf) and open [an issue](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
+
 # NFSU2 PSP: closed beta
 
 *(Português: [LEIA-ME.md](LEIA-ME.md))*
@@ -15,15 +19,18 @@ personal.
 - **The Xbox ISO** of *Need for Speed Underground 2* (US, NTSC-U), dumped
   from your disc. The tool checks the ISO's hash or, for an image in
   another layout (a full dump, a rebuilt xiso), the game's 185 files one
-  by one. Building from the **PS2** disc is in the works.
+  by one. The American **PS2 NTSC-U disc (SLUS_210.65)** is also integrated for validation; PAL/European revisions are refused. See `tools/PS2_SOURCE.md` for source differences. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for this candidate’s validation scope and limitations.
 - **A PSP with custom firmware** (ARK-4/ARK-5 or similar) that runs
-  homebrew from the Memory Stick. The beta is measured on the
-  **PSP-3000**. The PSP-2000 and Go use the same memory profile; the
-  PSP-1000 runs a compact profile, still lightly tested.
+  homebrew from the Memory Stick. Development uses a **PSP-3000**. This
+  executable passed directed tests in extended-memory PPSSPP and a human
+  PSP-3000 host0 title/driving/menu check. PSPLink cleanup required manual
+  recovery and is complete; card installation, physical saves, PSP-2000, Go and PSP-1000 remain
+  unqualified. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - **A Memory Stick** (or a microSD in an adapter) with **2.2 GB free**.
 - **A Mac** (Apple Silicon or Intel), or a PC with **Linux**, or with
   **Windows and WSL**. It needs **12 GB free** on disk and about
-  **1h30** the first time (depending on the computer).
+  **1h30 for Xbox or 3h30 for PS2** on the reference Mac, depending on
+  the computer and processing queue.
 
 ## 1. Build the game
 
@@ -64,10 +71,13 @@ The tool prints each step with a percentage. It:
 3. converts the city, tracks, cars, screens, audio and movies (about 80
    steps);
 4. assembles the card's folder in **`saida/PSP/GAME/NFSU2VIEW`**;
-5. checks the result against the reference build (each file's hash).
+5. checks each generated file against the reference for the same source and
+   executable. Missing references or mismatches return an error and keep
+   diagnostic files. This checks output identity; the game’s known limitations
+   remain listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 
 It writes only inside `saida/`. If it stops halfway (out of space, the
-computer turned off), run it again: finished steps are not redone.
+computer turned off), run it again: finished steps are reused only with the same ISO, source, executable, converter sources and options. A changed recipe requires a new output folder or `--do-zero`.
 `--do-zero` starts over. Each step's log is in `saida/registros/`; send
 those with your report if something fails.
 

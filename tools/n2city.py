@@ -56,9 +56,9 @@ class CityCollision:
 
     def _grid(self, b):
         """A collision blob's layers: low, high, wall bits, middle, second middle."""
-        if not b:
-            return None
         n = int(self.cell)
+        if not b or len(b) < 16 + 5 * n * n:   # none, or an empty barrier patch over a cell the archive leaves empty
+            return None
         base, unit = struct.unpack_from('<2f', b, 0)
         h = lambda o: tuple(None if v == -32768 else base + v * unit for v in struct.unpack_from(f'<{n*n}h', b, 16 + o))
         none = (None,) * (n * n)
@@ -185,7 +185,9 @@ class CityCollision:
         for k in range(n + 1):
             t = k / n
             x, y, z = ax + (bx - ax) * t, ay + (by - ay) * t, az + (bz - az) * t
-            if over._cell(int(x // over.cell), int(y // over.cell)) and over.blocked(x, y, z) and not base.blocked(x, y, z):
+            # the overlay's cell through this archive's lookup: a barrier's
+            # cell may be a patch on the track's (tools/n2cy_patch.py), not a grid
+            if over._raw(int(x // over.cell), int(y // over.cell)) and self.blocked(x, y, z) and not base.blocked(x, y, z):
                 return True
         return False
 

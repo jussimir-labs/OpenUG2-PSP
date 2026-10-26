@@ -1,0 +1,23 @@
+{
+  "source": "GLOBALB.BUN preset TOM_G35 (chunk 0x30220): a career rival of the last stage (tools/preset_dump.py --convert)",
+  "preset": "TOM_G35",
+  "car": "G35",
+  "paint": "121219",
+  "window_tint": 3,
+  "neon": "BLUE PULSE",
+  "kit": "KIT23",
+  "rear_bumper": "KIT09",
+  "skirt": "KIT01",
+  "hood": "STYLE12",
+  "headlight": "STYLE05",
+  "brakelight": "STYLE07",
+  "spoiler": "SPOILER_STYLE37",
+  "exhaust": "EXHAUST_STYLE07_LEVEL1",
+  "rims": [
+    "LOWENHART",
+    "STYLE01",
+    "20_26"
+  ],
+  "vinyl": "STREETREAPER",
+  "vinyl_remap": false
+}

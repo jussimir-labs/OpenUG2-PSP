@@ -54,6 +54,7 @@ import racing_line as rl
 from convert_races import segments_cross
 from n2city import CityCollision
 from n2formats import archived, chunks
+import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 REACH = 2000.0      # m a way out is followed looking for the course
@@ -307,7 +308,7 @@ def build_fork(fork, runline, raw_run, circuit, routes, speeds_run, cls_tables, 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--game', type=Path, default=ROOT / 'game/xbox/NFSUNDER')
+    n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--only', type=int, nargs='*')
     args = ap.parse_args()

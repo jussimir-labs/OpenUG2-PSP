@@ -1,3 +1,7 @@
+## Como reportar bugs
+
+Veja o [manual visual em PDF](docs/manual-reportar-bugs.pdf), consulte o [roadmap](ROADMAP.md) e abra um [relato de bug](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
+
 # NFSU2 PSP: beta fechado
 
 *(English: [README.md](README.md))*
@@ -16,15 +20,18 @@ pessoal.
   NTSC-U), tirada do seu disco. A ferramenta confere o hash da ISO, ou,
   se a imagem for de outro formato (um dump completo, uma xiso refeita),
   confere os 185 arquivos do jogo um a um.
-  A conversão a partir do disco do **PS2** está em preparação.
+  Também há uma fonte **PS2 americana NTSC-U (SLUS_210.65)**. ISOs europeias e outras revisões são recusadas. A fonte PS2 usa somente os arquivos desse disco; diferenças conhecidas estão em `tools/PS2_SOURCE.md`. As 857 falas MicroTalk foram convertidas offline e conferidas estruturalmente; a conferência das falas durante o jogo ainda é parcial. Veja também [LIMITACOES.md](LIMITACOES.md).
 - **Um PSP com firmware customizado** (ARK-4/ARK-5 ou similar) que rode
-  homebrew do Memory Stick. O beta é medido no **PSP-3000**. No PSP-2000
-  e no Go o jogo usa o mesmo perfil de memória; no PSP-1000 ele roda num
-  perfil compacto, ainda pouco testado.
+  homebrew do Memory Stick. O desenvolvimento usa o **PSP-3000**. Esta
+  build passou nos testes dirigidos no PPSSPP e na checagem humana de
+  título, condução e menu no PSP-3000 via host0. O encerramento PSPLink exigiu
+  recuperação manual, já concluída. Instalação, save físico, PSP-2000, Go e
+  PSP-1000 ainda não foram aprovados. Veja [LIMITACOES.md](LIMITACOES.md).
 - **Um Memory Stick** (ou microSD no adaptador) com **2,2 GB livres**.
 - **Um Mac** (Apple Silicon ou Intel) ou um PC com **Linux**, ou com
   **Windows e o WSL**. Precisa de **12 GB livres** no disco e de cerca de
-  **1h30** na primeira vez (o tempo exato depende do computador).
+  **1h30 para Xbox ou 3h30 para PS2** na primeira vez neste Mac de
+  referência; o tempo depende do computador e da fila de processamento.
 
 ## 1. Gerar o jogo
 
@@ -65,10 +72,13 @@ A ferramenta mostra cada etapa com a porcentagem. Ela:
 3. converte a cidade, as pistas, os carros, as telas, o áudio e os filmes
    (cerca de 80 etapas);
 4. monta a pasta do cartão em **`saida/PSP/GAME/NFSU2VIEW`**;
-5. confere o resultado contra a build de referência (hash de cada arquivo).
+5. confere os arquivos contra a referência da mesma fonte e executável.
+   Divergência ou referência ausente retorna erro e preserva o diagnóstico.
+   Essa conferência verifica a geração dos arquivos; as limitações conhecidas
+   do jogo continuam descritas em [LIMITACOES.md](LIMITACOES.md).
 
 Ela só escreve dentro de `saida/`. Se parar no meio (falta de espaço,
-computador desligado), rode de novo: o que já foi feito não se repete.
+computador desligado), rode de novo: as etapas já feitas só são reutilizadas com a mesma ISO, fonte, executável, conversores e opções. Uma mudança exige outra saída ou `--do-zero`.
 `--do-zero` recomeça do começo. Cada etapa tem seu registro em
 `saida/registros/`; se der erro, mande esses registros com o relato.
 

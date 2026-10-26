@@ -1,0 +1,23 @@
+{
+  "source": "GLOBALB.BUN preset MARCUS_CELICA (chunk 0x30220): a career rival of the last stage (tools/preset_dump.py --convert)",
+  "preset": "MARCUS_CELICA",
+  "car": "CELICA",
+  "paint": "121219",
+  "window_tint": 3,
+  "neon": "WHITE",
+  "kit": "KIT00",
+  "widebody": "KITW02",
+  "hood": "STYLE16",
+  "headlight": "STYLE05",
+  "brakelight": "STYLE06",
+  "spoiler": "SPOILER_STYLE09",
+  "roof": "ROOF_STYLE04_OFFSET",
+  "exhaust": "EXHAUST_STYLE10_LEVEL1",
+  "rims": [
+    "LOWENHART",
+    "STYLE01",
+    "19_25"
+  ],
+  "vinyl": "STREETREAPER",
+  "vinyl_remap": false
+}

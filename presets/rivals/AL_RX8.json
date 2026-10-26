@@ -1,0 +1,23 @@
+{
+  "source": "GLOBALB.BUN preset AL_RX8 (chunk 0x30220): a career rival of the last stage (tools/preset_dump.py --convert)",
+  "preset": "AL_RX8",
+  "car": "RX8",
+  "paint": "121219",
+  "window_tint": 3,
+  "neon": "GOLD PULSE",
+  "kit": "KIT00",
+  "widebody": "KITW02",
+  "hood": "STYLE07",
+  "headlight": "STYLE05",
+  "brakelight": "STYLE06",
+  "spoiler": "SPOILER_STYLE39",
+  "roof": "ROOF_STYLE11",
+  "exhaust": "EXHAUST_STYLE10_LEVEL1",
+  "rims": [
+    "LOWENHART",
+    "STYLE01",
+    "20_26"
+  ],
+  "vinyl": "STREETREAPER",
+  "vinyl_remap": false
+}
