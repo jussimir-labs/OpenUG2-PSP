@@ -1,10 +1,10 @@
 ## Bug reports
 
-Read [the illustrated reporting guide](docs/manual-reportar-bugs.pdf) and open [an issue](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
+Read [the illustrated English guide](docs/bug-reporting-guide-EN.pdf) ([Português](ptbr/manual-reportar-bugs.pdf)), review the [roadmap](ROADMAP.md), and open [an issue](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
 
 # NFSU2 PSP: closed beta
 
-*(Português: [LEIA-ME.md](LEIA-ME.md))*
+*(Português: [LEIA-ME.md](ptbr/LEIA-ME.md))*
 
 A fan-made native port of *Need for Speed Underground 2* to the PSP. This
 repository holds **no game data**: you build the game from **your own
@@ -34,54 +34,82 @@ personal.
 
 ## 1. Build the game
 
+Download and extract the complete repository (*Code > Download ZIP*, or
+`git clone`). Open the launcher for your system; it starts a local helper
+and opens the generator in your browser.
+
 ### macOS
 
-1. Get the repository (*Code > Download ZIP*, or `git clone`).
-2. Double-click **`Gerar-jogo.command`**. If macOS refuses to open it,
-   right-click it, choose *Open* and confirm.
-3. The first time, it sets the computer up (`setup.sh`): it asks for
-   [Homebrew](https://brew.sh) and Apple's tools (`xcode-select --install`)
-   if missing, asks before installing programs (ffmpeg, lame, cmake…) and
-   builds the movies' encoder. Its Python modules go to `.venv/`, inside
-   this folder.
-4. Drag the ISO onto the window and press Enter.
+Double-click [Generate-game.command](Generate-game.command) in the repository
+root. If macOS blocks it, right-click, choose *Open* and confirm.
+
+Python 3.9 or newer is needed to open the interface. Conversion requires
+Python 3.12 or newer and its dependencies; the setup script uses Python
+3.12/3.13 or `uv` to create `.venv/`. Install [Homebrew](https://brew.sh) and
+Apple's command-line tools (`xcode-select --install`) before preparing the
+converters. The launcher does not bundle these system requirements.
 
 ### Linux
 
+From the repository root, run:
+
 ```sh
-sh ./gerar-jogo.sh /path/to/your.iso
+sh ./generate-game.sh
 ```
 
-The first time it runs `setup.sh`, which uses `apt` (Debian, Ubuntu); on other distributions it prints
-the packages to install.
+Python 3.9+ opens the interface; conversion needs Python 3.12+ and the
+converter dependencies. On Debian/Ubuntu, setup uses `apt-get` and may
+require administrator access. On other distributions, install the equivalent
+packages listed by setup. The optional `zenity` or `kdialog` package enables
+the native file picker; otherwise paste the full paths into the form.
 
 ### Windows
 
-Windows goes through WSL (the Linux that comes with it). Once, open
-PowerShell as administrator, run `wsl --install` and restart. Then drag
-the ISO onto **`Gerar-jogo.bat`** (or double-click it and drag the ISO
-onto the window).
+Install and initialize WSL with a Linux distribution first. Then double-click
+[Generate-game.bat](Generate-game.bat) in the repository root. It opens the
+same browser interface through WSL; the Linux Python and dependency
+requirements above apply inside that distribution. Python, WSL and system
+packages are not bundled, and this does not establish validation on every
+Windows configuration.
 
-### What happens
+### Generate from the browser
 
-The tool prints each step with a percentage. It:
+1. If prerequisites are missing, click **Prepare this computer**. The local
+   helper downloads and installs converter dependencies and builds the movie
+   encoder. Python modules go in `.venv/` and local tools in `.tools/`.
+   System packages may require separate installation or administrator access;
+   follow the requirements shown if preparation stops.
+2. Choose your ISO and output folder, or paste their full paths. The folder
+   picker creates `NFSU2-PSP` inside the selected folder; a typed output path
+   is used as entered. Use a new folder with at least 12 GB free. Leave source
+   detection on **Automatic** unless you need to select Xbox or PS2 explicitly.
+3. Click **Generate PSP game**. The helper identifies the source, checks the
+   ISO and original files, then converts the assets and assembles
+   `<output>/PSP/GAME/NFSU2VIEW`. The browser workflow includes all **28
+   movies** and has no option to omit them. Your ISO stays on your computer;
+   it is not uploaded.
+4. Follow the stages and logs. A successful result requires matching the
+   reference for the same source and executable. A mismatch or missing
+   reference remains a diagnostic result, with files preserved. This checks
+   file identity; the beta's [known issues](KNOWN_ISSUES.md) remain valid.
+5. Use **Open generated folder** after success. The helper does not erase
+   existing user folders or saves, and does not copy anything to the PSP.
+   Follow the installation section below separately. Its examples use the
+   default `saida` output; substitute your chosen output folder if different.
 
-1. checks the ISO;
-2. extracts the disc's files;
-3. converts the city, tracks, cars, screens, audio and movies (about 80
-   steps);
-4. assembles the card's folder in **`saida/PSP/GAME/NFSU2VIEW`**;
-5. checks each generated file against the reference for the same source and
-   executable. Missing references or mismatches return an error and keep
-   diagnostic files. This checks output identity; the game’s known limitations
-   remain listed in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Use **Download logs** when reporting a problem, and keep the step logs in
+`<output>/registros/`. To interrupt, click **Cancel process** and wait for the
+converters to stop. Compatible partial stages can be resumed only with the
+same ISO, source, executable, converters and options. If the recipe changes,
+choose a new output folder; the browser does not erase an old output to start
+over.
 
-It writes only inside `saida/`. If it stops halfway (out of space, the
-computer turned off), run it again: finished steps are reused only with the same ISO, source, executable, converter sources and options. A changed recipe requires a new output folder or `--do-zero`.
-`--do-zero` starts over. Each step's log is in `saida/registros/`; send
-those with your report if something fails.
+Closing the browser tab does not stop the local helper or an active job.
+When no job is running, click **Close helper** to shut it down; reopen
+the launcher to use it again.
 
-More options: `.venv/bin/python build_game.py --help`.
+Advanced command-line options remain available from the repository root:
+`.venv/bin/python build_game.py --help`.
 
 ## 2. Install on the PSP
 

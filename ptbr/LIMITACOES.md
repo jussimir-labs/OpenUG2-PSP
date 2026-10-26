@@ -19,7 +19,7 @@ A identidade conferida pelo gerador não aprova todas as corridas ou aparelhos.
 - **Visual:** diferenças de tom, materiais e visibilidade permanecem em revisão.
 - **Fonte PS2:** os 179 arquivos americanos foram conferidos a partir de uma
   ISO reconstruída. A ISO original USA continua sem conferência. Outras regiões
-  e revisões são recusadas. Veja [tools/PS2_SOURCE.md](tools/PS2_SOURCE.md).
+  e revisões são recusadas. Veja [tools/PS2_SOURCE.md](../tools/PS2_SOURCE.md).
 
 Neste executável passaram no PPSSPP: texto do título, trecho inicial da 4011,
 save nativo e reabertura com dados Xbox e PS2 usando perfis de teste existentes.
@@ -33,3 +33,18 @@ completa desses percursos neste executável. Nenhuma carreira inteira foi aprova
 
 Para relatar falhas, informe o SHA da build, aparelho/emulador, fonte Xbox/PS2,
 pista e passos. Para o gerador, inclua relatorio.json e os registros da etapa.
+
+## Relatos no teste atual pelo Memory Stick
+
+Continuam abertos: [card EA TRAX (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1),
+[motor com estalos no drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2),
+[motor em loop na pausa (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3),
+[som de frenagem ausente (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4) e
+[música após drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5).
+
+A auditoria encontrou defeitos de vida útil de bancos de som e de tamanho do
+cursor dos loops, candidatos aos estalos. A retenção de ambiência no menu foi
+reproduzida localmente; o motor contínuo na pausa não foi reproduzido. O sinal
+de slip dos pneus não representa o freio comum, mas a causa do caso humano
+não está comprovada. Nenhuma correção de gameplay nem novo executável foi
+incluído nesta atualização do gerador e da documentação.

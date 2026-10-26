@@ -1,44 +1,43 @@
-# Terceiros e direitos
+# Third parties and rights
 
-Este repositório não contém nenhum dado do jogo. Tudo o que o jogo
-mostra e toca (cidade, carros, texturas, sons, músicas, filmes, telas) é
-convertido pela ferramenta a partir da ISO do próprio jogador, no
-computador dele. *Need for Speed* e *Need for Speed Underground 2* são
-marcas da Electronic Arts. Este é um projeto de fã, sem ligação com a EA
-nem com a Sony.
+This repository contains no game data. Everything the game displays and
+plays (city, cars, textures, sounds, music, movies, screens) is converted
+by the tool from the player's own ISO, on their own computer.
+*Need for Speed* and *Need for Speed Underground 2* are Electronic Arts
+trademarks. This is a fan project with no affiliation with EA or Sony.
 
-## O que está neste repositório
+## What is in this repository
 
-| Item | Origem | Licença | Redistribuir |
+| Item | Origin | License | Redistribution |
 |---|---|---|---|
-| `eboot/EBOOT.PBP` | o jogo do port, compilado | código do projeto, mais as bibliotecas da linha abaixo | sim, com os avisos de `licenses/` |
-| dentro do EBOOT: física portada do [OpenUG2](https://github.com/whoismept/OpenUG2) (`physics_ug2.c`) | OpenUG2 contributors | MIT | sim, com o aviso (`licenses/OpenUG2.txt`) |
-| dentro do EBOOT: ORCA portado do [RVO2](https://github.com/snape/RVO2) | Univ. of North Carolina | Apache 2.0 | sim, com a licença (`licenses/RVO2-Apache-2.0.txt`) |
-| dentro do EBOOT: [PSPSDK](https://github.com/pspdev/pspsdk) (libpspgu, libpspaudio, libpspmp3, libpspjpeg…) | pspdev | BSD | sim, com o aviso (`licenses/PSPSDK.txt`) |
-| dentro do EBOOT: newlib (libc, libm) | vários | BSD e similares | sim, com os avisos (`licenses/newlib.txt`) |
-| dentro do EBOOT: zlib | Jean-loup Gailly, Mark Adler | zlib | sim (`licenses/zlib.txt`) |
-| `tools/`, `build_game.py`, `sources/`, `presets/` | o projeto | do projeto | decisão do autor |
-| `third_party/xdvdfs/xdvdfs.py` (leitor do disco do Xbox) | xboxrecomp, de sp00nz, no [nfsu2-sw](https://github.com/antoxa2584x/nfsu2-sw) | MIT | sim, com a licença ao lado |
-| `tools/vendor/utk/` | Andrew D’Addesio, adaptação vgmstream fixada em `PROVENANCE.json` | domínio público/Unlicense e aviso permissivo do vgmstream preservados ao lado | sim, com ambos os avisos; apenas conversão offline |
-| `art/reference/psp-controls/psp-isolated-v1.png` | imagem do projeto de um PSP-3000, para a tela de controles | do projeto | sim |
-| `manifests/*.json`, `sources/xbox-files.json` | SHA-256 dos arquivos do disco e do pacote | só hashes | sim |
-| `tools/race_reference.json` | trechos de corrida medidos jogando o original | dados de medida do projeto | sim |
+| `eboot/EBOOT.PBP` | the compiled port | project code, plus the libraries listed below | yes, with the notices in `licenses/` |
+| inside the EBOOT: physics ported from [OpenUG2](https://github.com/whoismept/OpenUG2) (`physics_ug2.c`) | OpenUG2 contributors | MIT | yes, with the notice (`licenses/OpenUG2.txt`) |
+| inside the EBOOT: ORCA ported from [RVO2](https://github.com/snape/RVO2) | Univ. of North Carolina | Apache 2.0 | yes, with the license (`licenses/RVO2-Apache-2.0.txt`) |
+| inside the EBOOT: [PSPSDK](https://github.com/pspdev/pspsdk) (libpspgu, libpspaudio, libpspmp3, libpspjpeg…) | pspdev | BSD | yes, with the notice (`licenses/PSPSDK.txt`) |
+| inside the EBOOT: newlib (libc, libm) | various | BSD and similar | yes, with the notices (`licenses/newlib.txt`) |
+| inside the EBOOT: zlib | Jean-loup Gailly, Mark Adler | zlib | yes (`licenses/zlib.txt`) |
+| `tools/`, `build_game.py`, `sources/`, `presets/` | the project | project license | at the author's discretion |
+| `third_party/xdvdfs/xdvdfs.py` (Xbox disc reader) | xboxrecomp, by sp00nz, in [nfsu2-sw](https://github.com/antoxa2584x/nfsu2-sw) | MIT | yes, with the accompanying license |
+| `tools/vendor/utk/` | Andrew D’Addesio, vgmstream adaptation pinned in `PROVENANCE.json` | public domain/Unlicense and the permissive vgmstream notice preserved alongside it | yes, with both notices; offline conversion only |
+| `art/reference/psp-controls/psp-isolated-v1.png` | project image of a PSP-3000 for the controls screen | project license | yes |
+| `manifests/*.json`, `sources/xbox-files.json` | SHA-256 hashes of disc and package files | hashes only | yes |
+| `tools/race_reference.json` | race segments measured while playing the original | project measurement data | yes |
 
-Os formatos dos arquivos do jogo foram lidos com a ajuda das notas
-públicas do OpenUG2, do [nfsu2-re](https://github.com/yugecin/nfsu2-re) e
-do [FEngLib](https://github.com/NFSTools/FEngLib); nenhum código deles
-está nos conversores.
+The game file formats were read with the help of public notes from
+OpenUG2, [nfsu2-re](https://github.com/yugecin/nfsu2-re), and
+[FEngLib](https://github.com/NFSTools/FEngLib); none of their code is
+included in the converters.
 
-## O que o jogador instala (não vem no repositório)
+## What the player installs (not included in the repository)
 
-| Item | Para quê | Licença |
+| Item | Purpose | License |
 |---|---|---|
-| Python 3.12, numpy, scipy, Pillow, matplotlib | os conversores | PSF, BSD, HPND |
-| [trajectory_planning_helpers](https://github.com/TUMFTM/trajectory_planning_helpers) (TUM) | as linhas de corrida dos rivais | LGPL-3.0 |
-| quadprog | dependência do anterior | GPL-2.0 ou posterior |
-| ffmpeg, lame | áudio e filmes | LGPL/GPL |
-| [jpegli](https://github.com/google/jpegli) (`cjpegli`, compilado pelo `setup.sh`) | os quadros dos filmes | BSD-3 |
+| Python 3.12, numpy, scipy, Pillow, matplotlib | the converters | PSF, BSD, HPND |
+| [trajectory_planning_helpers](https://github.com/TUMFTM/trajectory_planning_helpers) (TUM) | rival racing lines | LGPL-3.0 |
+| quadprog | dependency of the above | GPL-2.0 or later |
+| ffmpeg, lame | audio and movies | LGPL/GPL |
+| [jpegli](https://github.com/google/jpegli) (`cjpegli`, compiled by `setup.sh`) | movie frames | BSD-3 |
 
-Nada disso é copiado para o repositório nem para o pacote do PSP: os
-programas rodam no computador do jogador e só os arquivos convertidos vão
-para o cartão.
+None of these are copied into the repository or the PSP package: the
+programs run on the player's computer, and only the converted files go
+onto the memory card.

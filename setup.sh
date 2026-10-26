@@ -12,6 +12,7 @@ cd "$here"
 JPEGLI_COMMIT=031a0077f5799a6041004267fc12b956c1f52a20
 
 ask() {   # ask "pergunta": 0 for yes (always no without a terminal)
+  [ "${NFSU2_SETUP_APPROVED:-0}" = 1 ] && return 0
   [ -t 0 ] || return 1
   printf '%s [s/N] ' "$1"
   read -r answer || return 1
