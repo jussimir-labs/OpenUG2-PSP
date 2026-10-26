@@ -1,10 +1,10 @@
 {
-  "candidate": "closed-beta-20261025-beta01-4u",
-  "candidate_id": "local-beta01-4u-titlefix-not-published",
-  "eboot_sha256": "bf7f21e3fcf743ac23121df8d01e54eabab9bb3db2213dd53b81874089cbe861",
-  "eboot_bytes": 3861607,
-  "build_id": "e0697840c",
-  "source_commit": "c97c452028a0e56a5272375ef136fe2dc201843e",
+  "candidate": "closed-beta-20261026-beta01-night12",
+  "candidate_id": "local-night12-source8f7ec4-not-published",
+  "eboot_sha256": "c25f117241edea5fd66bb090303b23b8579cbda245df9cd7fc95234957434274",
+  "eboot_bytes": 3904935,
+  "build_id": "8f7ec4df1",
+  "source_commit": "8f7ec4df13f1f54cf086cfbb8ed9316498eea43d",
   "build_flags": [
     "PGO=use",
     "LTO=1",
@@ -15,25 +15,37 @@
     "xbox",
     "ps2"
   ],
-  "publication_status": "LOCAL_PACKAGE_NOT_PUBLISHED",
-  "quality_approval": "limited-functional-checks-passed; cleanup-confirmed-after-human-recovery; not-full-game-or-device-approval",
+  "publication_status": "LOCAL_PROTECTED_CANDIDATE_NOT_PUBLISHED",
+  "quality_approval": "exact-current-directed-straight-brake-pause-menu-passed; prior7397-native-save-cold-and-mixer-evidence-scoped-by-binary-delta; no-hardware-approval",
   "known_issues": [
+    "drift-full-physics-parity-incomplete",
+    "hardware-validation-of-new-executable-pending",
+    "reported-audio-symptom-physical-validation-pending",
     "drag-4401-rival-recovery-loop",
     "tone-and-visibility-review-incomplete",
     "psp1000-and-global30fps-unapproved",
     "ps2-original-disc-image-unverified",
-    "card-installation-and-physical-native-save-not-tested",
-    "psplink-stop-required-manual-recovery"
+    "psplink-stop-historical-manual-recovery"
   ],
   "reference_scope": "File identity of qualified closedbeta baseline only. Does not clear gameplay/source/device/visual limitations.",
   "files_by_source": {
     "xbox": 161,
     "ps2": 158
   },
-  "source_main_sha256": "a3df0483dcf4a7b850c08e9f6c2f59b9de5d4649305d06ecb83dbff045252084",
-  "source_c_h_manifest_sha256": "3a98496d2bc1c89694fc5394a26d97a53ae57201553c5cc2b1a679efec37d890",
-  "runtime_build_id_note": "Embedded e0697840c retained by frozen source build; exact executable identity is the SHA256 above.",
+  "source_main_sha256": "29a93c4248e989debb1cf3fa2866cd5a3e5f8f657a0d85b78ad6755e8db666db",
+  "source_c_h_manifest_sha256": "fe154b05f64407fe12bf72e3e2f491223d7f61c698f9632c70bba20727c64cbf",
+  "runtime_build_id_note": "Embedded8f7ec4df1 identifies source8f7ec4df13f1f54cf086cfbb8ed9316498eea43d; authoritative executable identity is SHA256 above.",
   "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
-  "functional_scope": "PPSSPP: title, 4011 prefix, native save/cold both sources and new-profile dialog flow. Human PSP3000 host0: title, brief Freemont drive and return to menu. Postread not independent menu confirmation; cleanup confirmed after human PSPLink reopening. No full race or physical native save test on this executable.",
-  "psplink_cleanup": "Ordinary stop and HostCmd rescue did not confirm reconnection; human reopened PSPLink; game out, host0 restoration and lease release then confirmed. No root cause inferred."
+  "functional_scope": "Exactc25f: extended-memory PPSSPP title, normal4011 straight braking, pause/resume and menu; limiter resume native host regression. Immediate predecessor7397: normal4312 drift/ambience release and two-source nativeSAVE/cold, plus three calibrated mixer diagnostics. Binary delta review scopes reuse of unchanged paths; does not invent exactc25f save/performance/hardware passes.",
+  "psplink_cleanup": "Historical bf7f PSPLink stop required manual recovery; no new physical job.",
+  "historical_hardware_scope": "The human PSP3000 title/brief4011/return and card installation were for bf7f only; no new executable installed or run on hardware.",
+  "previous_eboot_sha256": "bf7f21e3fcf743ac23121df8d01e54eabab9bb3db2213dd53b81874089cbe861",
+  "elf_sha256": "5df60ba021c4979399818156f8841bc42ffe6b37817a8bf25dd5686db43eda52",
+  "prx_sha256": "957fa78c267803c204766acf7120464102c783038be3592e55c9724f2271faf9",
+  "qualification_receipts": [
+    "release-build-08-night-limiter/BUILD.json",
+    "release-build-08-night-limiter/BINARY-DELTA.json",
+    "night-straight-brake-08/RECONCILED.json",
+    "OVERNIGHT-20261026.json"
+  ]
 }

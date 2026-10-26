@@ -1,3 +1,5 @@
+> Revisão noturna: veja [NOTAS-NOTURNAS.md](NOTAS-NOTURNAS.md). A candidata atual ainda não foi instalada nem testada no PSP; provas físicas históricas não se transferem automaticamente.
+
 ## Como reportar bugs
 
 Veja o [manual visual em PDF](manual-reportar-bugs.pdf) ([English](../docs/bug-reporting-guide-EN.pdf)), consulte o [roadmap](ROADMAP.md) e abra um [relato de bug](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
@@ -23,10 +25,11 @@ pessoal.
   Também há uma fonte **PS2 americana NTSC-U (SLUS_210.65)**. ISOs europeias e outras revisões são recusadas. A fonte PS2 usa somente os arquivos desse disco; diferenças conhecidas estão em [tools/PS2_SOURCE.md](../tools/PS2_SOURCE.md). As 857 falas MicroTalk foram convertidas offline e conferidas estruturalmente; a conferência das falas durante o jogo ainda é parcial. Veja também [LIMITACOES.md](LIMITACOES.md).
 - **Um PSP com firmware customizado** (ARK-4/ARK-5 ou similar) que rode
   homebrew do Memory Stick. O desenvolvimento usa o **PSP-3000**. Esta
-  build passou nos testes dirigidos no PPSSPP e na checagem humana de
-  título, condução e menu no PSP-3000 via host0. O encerramento PSPLink exigiu
-  recuperação manual, já concluída. Instalação, save físico, PSP-2000, Go e
-  PSP-1000 ainda não foram aprovados. Veja [LIMITACOES.md](LIMITACOES.md).
+  candidata noturna passou em testes dirigidos no PPSSPP, mas ainda não
+  foi instalada nem testada no aparelho. As provas humanas e a instalação
+  anteriores pertencem à build bf7f. PSP-2000, Go, PSP-1000 e comportamento
+  do save físico continuam sem aprovação. Veja [NOTAS-NOTURNAS.md](NOTAS-NOTURNAS.md)
+  e [LIMITACOES.md](LIMITACOES.md).
 - **Um Memory Stick** (ou microSD no adaptador) com **2,2 GB livres**.
 - **Um Mac** (Apple Silicon ou Intel) ou um PC com **Linux**, ou com
   **Windows e o WSL**. Precisa de **12 GB livres** no disco e de cerca de

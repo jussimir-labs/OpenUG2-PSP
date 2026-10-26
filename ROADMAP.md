@@ -1,44 +1,23 @@
 # Closed beta roadmap
 
-Open work items. This list does not represent completed fixes.
+The reported issues remain open while the reporter verifies the new executable.
+A checked source change is not a claim that every device or symptom is approved.
+See [known issues](KNOWN_ISSUES.md) and [nightly notes](NIGHTLY_NOTES.md).
 
-- [ ] **Engine sound loops while paused ([#3](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3)).** The hardware report remains open. Engine gain reached zero when paused in the local run; this neither reproduces nor invalidates the reported symptom on the device.
-- [ ] **Braking sound appears to be missing ([#4](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4)).** Compare the regular brake and handbrake, wheel state and original game. The port's slip input does not represent regular braking; the cause of the user's case is still unproved.
+- [x] Correct EA TRAX badge draw order and circular-cap proportions; local visual comparison passed. [Report #1](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1).
+- [x] Separate turbo/tyre sample storage, confirm mixer acknowledgement before replacement, and support the complete long drift loops. Native memory/cursor tests passed. [Report #2](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2).
+- [x] Release street ambience on return to Main Menu; local menu music recovery passed. [Report #5](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5).
+- [x] Stop environment loops on pause and cancel pending limiter ramps so they cannot restore stale targets after resume. Native regression passed. [Report #3](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3).
+- [x] Correct the skid controller's acceleration units, tyre-frame motion and longitudinal grip demand; retain original brake-release smoothing. [Report #4](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4).
+- [x] Feed angular acceleration to the original-derived drift steering controller, instead of angular velocity.
+- [ ] Confirm the exact hardware audio reports with the new executable; retain family-specific evidence for GIN, AEMS, shifts, tyres and environment.
+- [ ] Complete the original vehicle-force model comparison for drift. The native mathematical investigation is separate from the protected candidate; no full handling parity is claimed.
+- [ ] Validate the new executable on hardware within a separately authorized scope; do not replace or modify physical saves automatically.
+- [ ] Fix Tunnel Construction 4401 opponent recovery loops; this work remains deliberately deferred.
+- [ ] Continue PSP-1000/other-device, global 30 fps, complete-career, visibility/material and original PS2 USA image validation.
 
-- [ ] **Drift: engine crackles/cuts ([#2](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2)) and music fails to return ([#5](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5)).**
-  Reported on October 25, 2026 while testing the beta from the Memory Stick:
-  the engine sound cut/crackled and background music also became stuck after
-  a drift. Both issues remain open. Ambience persisting on return to the menu
-  was reproduced locally; the engine crackles still have no demonstrated
-  cause. Investigate the mixer/output and the transition between EA TRAX and
-  ambience, distinguishing intentional muting during drift from music that
-  remains stuck afterward.
-  Acceptance: reproduce with an identified car, track and executable,
-  identify the subsystem, and validate the engine and music recovery across
-  repeated transitions.
-
-- [ ] **Drift: audit handling equivalence with the original.**
-  The port uses PlayerSteering and mode tuning derived from the original,
-  but also includes drift_grip, an adjustment of up to 10% after sustained
-  steering, calibrated against PS2 measurements, and an adapted physics model.
-  Do not claim full parity. Compare PlayerSteering,
-  RidePhysicsInfo/CompleatCarPhysicsInfo::TuneForDrift and the original data;
-  document reproduced rules, approximations and fields not implemented.
-  See the [source comparison audit](docs/audits/original-rules.md).
-
-- [ ] **EA TRAX card: EA Games logo opacity and circular outline ([#1](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1)).**
-  Jussimir reported on October 25, 2026 that the logo looks dark/transparent
-  and the left edge is too elliptical. Compare against the supplied visual
-  reference: preserve the circular logo and its correct opacity, with the
-  card's outline following the circle. This visual issue remains open,
-  without a fix in this executable or an attributed technical cause.
-  Close only after comparing the same elements at equivalent scale and
-  proportions and validating the logo, alpha and edge without regressing the
-  text or the rest of the card.
-  Evidence: [port image](docs/bug-evidence/ea-trax-port.png) and
-  [reference](docs/bug-evidence/ea-trax-referencia.png) in this beta repository.
-
-- [ ] **Tunnel Construction (4401):** fix stuck opponents and repeated recovery. This known limitation was deferred to the roadmap.
-- [ ] Continue validating performance, devices, visibility and the original PS2 source, within the scope described in [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+Free Roam rivals already receive and render neon using the original upgrade-level
+probability table. At level 0, 90% can have no neon. PRNG, car-pack selection and PSP
+rendering contain port adaptations; this is not a new visual parity approval.
 
 Português: [ROADMAP.md](ptbr/ROADMAP.md).

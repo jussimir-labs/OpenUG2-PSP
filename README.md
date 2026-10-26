@@ -22,10 +22,11 @@ personal.
   by one. The American **PS2 NTSC-U disc (SLUS_210.65)** is also integrated for validation; PAL/European revisions are refused. See `tools/PS2_SOURCE.md` for source differences. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for this candidate’s validation scope and limitations.
 - **A PSP with custom firmware** (ARK-4/ARK-5 or similar) that runs
   homebrew from the Memory Stick. Development uses a **PSP-3000**. This
-  executable passed directed tests in extended-memory PPSSPP and a human
-  PSP-3000 host0 title/driving/menu check. PSPLink cleanup required manual
-  recovery and is complete; card installation, physical saves, PSP-2000, Go and PSP-1000 remain
-  unqualified. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+  overnight executable passed directed tests in extended-memory PPSSPP;
+  it has not been installed or tested on hardware. Earlier human PSP-3000
+  and Memory Stick results apply only to the previous executable. PSP-2000,
+  Go, PSP-1000 and physical-save behavior remain unqualified. See
+  [NIGHTLY_NOTES.md](NIGHTLY_NOTES.md) and [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 - **A Memory Stick** (or a microSD in an adapter) with **2.2 GB free**.
 - **A Mac** (Apple Silicon or Intel), or a PC with **Linux**, or with
   **Windows and WSL**. It needs **12 GB free** on disk and about
