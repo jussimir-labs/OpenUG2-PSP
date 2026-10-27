@@ -25,7 +25,7 @@ case "$(uname -s)" in MINGW*|MSYS*) SUFFIX=.exe; EXTRA=(--target-os=mingw32 --ar
 )
 (
  cd "$CACHE/lame-4.0"
- ./configure --disable-shared --enable-static --disable-decoder LDFLAGS="$LDFLAGS_EXTRA"
+ ac_cv_prog_cc_c23=no ./configure --disable-shared --enable-static --disable-decoder CFLAGS="-O3 -std=gnu17 -include locale.h -Wno-implicit-function-declaration" LDFLAGS="$LDFLAGS_EXTRA"
  make -j "$JOBS"
  cp "frontend/lame$SUFFIX" "$OUT/"
 )
