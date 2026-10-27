@@ -16,7 +16,7 @@ CLI: `nfsu2-generator[.exe] serve`, `serve --no-browser`, `serve --port 4173`, o
 Use `./nfsu2-generator` on Mac. Ctrl+C stops the helper and conversion. Closing only the tab
 does not stop a job. **Close helper** is available once a conversion has ended/cancelled.
 
-Windows x64 requires Windows 10 2004+ or 11. Mac packages target macOS 13+ and are separate
+Windows x64 requires Windows 10 2004+ or 11. Mac packages target macOS 15+ and are separate
 for Apple Silicon and Intel. Windows ARM, Linux native packaging, commercial code signing,
 and notarization are outside this implementation. Normal OS trust prompts can still appear.
 

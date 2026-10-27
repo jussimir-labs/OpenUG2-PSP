@@ -241,6 +241,9 @@ def build_identity(digest, source, args, release):
             if path.is_file() and '__pycache__' not in path.parts and path.name != '.DS_Store':
                 inputs[path.relative_to(HERE).as_posix()] = sha256(path)
     inputs['build_game.py'] = sha256(Path(__file__))
+    if native_runtime.bundled():
+        # A resumed output must use the exact included binaries/libraries too.
+        inputs['native-bundle.json'] = sha256(Path(os.environ['NFSU2_BUNDLE_ROOT']) / 'bundle.json')
     return {'schema': 2, 'iso_sha256': digest, 'source': source.name,
             'candidate': release['candidate'], 'eboot_sha256': release['eboot_sha256'],
             'movies': not args.sem_filmes, 'jobs': getattr(args, 'jobs', 4),

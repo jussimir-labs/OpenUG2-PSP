@@ -31,7 +31,7 @@ Your ISO stays on your computer.
   compatibility with every device and firmware is not guaranteed.
 - At least **2.2 GB free on the Memory Stick** and **12 GB free on the computer**, in addition
   to your existing ISO. Back up your saves before replacing game files.
-- **Windows 10 version 2004 or later / Windows 11 (x64)**, or **macOS 13 or later**
+- **Windows 10 version 2004 or later / Windows 11 (x64)**, or **macOS 15 or later**
   with the matching Apple Silicon or Intel package. Windows ARM and Linux native packages
   are not included in this release. The original source kit remains available for Linux.
   **You do not need to install Python, WSL, Homebrew, a compiler, or conversion libraries.**

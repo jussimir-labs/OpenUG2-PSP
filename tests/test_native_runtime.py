@@ -40,17 +40,51 @@ class RuntimeTests(unittest.TestCase):
                 )
                 run.assert_not_called()
 
+    def test_resume_rejects_changed_native_runtime(self):
+        import argparse
+        import build_game
+
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp).resolve()
+            root = base / "tool"
+            root.mkdir()
+            source = root / "build_game.py"
+            source.write_text("# unchanged source")
+            manifest = root / "bundle.json"
+            manifest.write_text('{"runtime":"first"}')
+            args = argparse.Namespace(
+                sem_filmes=False, jobs=4, aceitar_iso_desconhecida=False
+            )
+            console = argparse.Namespace(name="xbox")
+            release = {"candidate": "fixture", "eboot_sha256": "fixed-game"}
+            with (
+                patch.object(build_game, "HERE", root),
+                patch.object(build_game, "__file__", str(source)),
+                patch.dict(os.environ, NFSU2_BUNDLE_ROOT=str(root)),
+            ):
+                first = build_game.build_identity("same-iso", console, args, release)
+                output = base / "output"
+                build_game.prepare_out(output, False, first)
+                retained = output / "unique-result"
+                retained.write_text("keep")
+                manifest.write_text('{"runtime":"updated"}')
+                second = build_game.build_identity("same-iso", console, args, release)
+                with self.assertRaises(build_game.Failure):
+                    build_game.prepare_out(output, False, second)
+                self.assertEqual(retained.read_text(), "keep")
+
     @unittest.skipUnless(os.name == "nt", "Windows verbatim paths")
     def test_verbatim_paths_keep_tool_folder_protected(self):
         import generator
+
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp).resolve() / 'tool'
+            root = Path(tmp).resolve() / "tool"
             root.mkdir()
-            iso = root.parent / 'fixture.iso'
-            iso.write_bytes(b'fixture')
-            verbatim = Path('\\\\?\\' + str(root))
+            iso = root.parent / "fixture.iso"
+            iso.write_bytes(b"fixture")
+            verbatim = Path("\\\\?\\" + str(root))
             self.assertEqual(runtime.local_path(verbatim), runtime.local_path(root))
-            for output in [root, root / 'tools/nested']:
+            for output in [root, root / "tools/nested"]:
                 with self.assertRaises(generator.UserError):
                     generator.validate_paths(str(iso), str(output), verbatim)
 
