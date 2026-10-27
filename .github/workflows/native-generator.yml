@@ -27,6 +27,7 @@ jobs:
         with:
           python-version: '3.12'
       - uses: msys2/setup-msys2@v2
+        id: msys2
         if: runner.os == 'Windows'
         with:
           msystem: MINGW64
@@ -60,9 +61,14 @@ jobs:
       - name: Package Windows
         if: runner.os == 'Windows'
         shell: pwsh
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
         run: |
-          $env:PATH = "C:\msys64\mingw64\bin;" + $env:PATH
-          $env:CC = "C:\msys64\mingw64\bin\gcc.exe"
+          # setup-msys2 installs under RUNNER_TEMP, not the image's C:\msys64.
+          $mingw = Join-Path $env:MSYS2_LOCATION "mingw64\bin"
+          $env:PATH = "$mingw;" + $env:PATH
+          $env:CC = Join-Path $mingw "gcc.exe"
+          if (-not (Test-Path $env:CC)) { throw "MinGW gcc not found at $env:CC" }
           python native/build_bundle.py --output native/dist/NFSU2-Generator-${{ matrix.target }} --tools native/tools --helper native/target/release/nfsu2-generator.exe
       - name: Package macOS
         if: runner.os == 'macOS'
