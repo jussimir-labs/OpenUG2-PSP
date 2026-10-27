@@ -39,6 +39,7 @@ def fixture_probe(root):
   ppm=tmp/'imagem ação.ppm';jpg=tmp/'imagem ação.jpg';im.save(ppm)
   execute('cjpegli',ppm,jpg,'-p','0','--chroma_subsampling=420','-d','1.0')
   with Image.open(jpg)as result:assert result.size==(32,32)
+  jpg_data=jpg.read_bytes()
   def chunk(tag,data=b''):return tag+struct.pack('<I',8+len(data))+data
   samples=pcm[:28];frame=b'\xee'+b'\0'*4+struct.pack('>28h',*samples)
   sound=chunk(b'SCDl',struct.pack('>III',28,0,len(frame))+frame+frame)+chunk(b'SCEl')
@@ -48,10 +49,23 @@ def fixture_probe(root):
   header=b'GSTR'+b'\0'*4+b'\x82\x01\x02\x84\x02\x7d\x00\xff'
   movie=tmp/'filme ação.vp6';out=tmp/'áudio ação.raw';movie.write_bytes(chunk(b'SCHl',header)+sound)
   execute('movie_audio',movie,out,32000)
-  assert len(out.read_bytes())==28*4,'Movie audio size differs'
+  movie_data=out.read_bytes()
+  assert len(movie_data)==28*4,'Movie audio size differs'
   bad=subprocess.run([str(n.binary('mt2pcm')),'28'],input=b'invalid\r\n\x1a',capture_output=True,timeout=10)
   assert bad.returncode!=0,'Truncated MicroTalk stream was accepted'
- return {'xaencode_sha256':hashlib.sha256(encoded).hexdigest(),'ffmpeg_pcm_sha256':hashlib.sha256(resampled).hexdigest(),'lame_mp3_sha256':hashlib.sha256(mp3).hexdigest(),'eaxa_pcm_sha256':hashlib.sha256(decoded).hexdigest(),'synthetic_fixtures_only':True}
+  # Exercise final RC21 packaging with synthetic data and the actual frozen EBOOT.
+  import data_id,ms_package
+  from unittest.mock import patch
+  stage=tmp/'stage';stage.mkdir();(stage/'fixture.n2ph').write_bytes(b'N2PH synthetic fixture\0\x0a\x1a')
+  store=tmp/'hash-cache';store.mkdir()
+  with patch.object(data_id,'store',return_value=store):
+   ident=data_id.write(stage,stage)
+   assert (stage/'data-id.txt').read_bytes()==(ident+'\n').encode(),'Windows newline translation changed game data'
+   ms_package.make(tmp/'output',stage,root/'eboot/EBOOT.PBP',[],patch_bars=False,pack=True,release=True)
+   final=tmp/'output/PSP/GAME/NFSU2VIEW'
+   data_id.normalize_package(final,owned=True)
+   pack_digest=hashlib.sha256((final/'pack.n2pk').read_bytes()).hexdigest()
+ return {'xaencode_sha256':hashlib.sha256(encoded).hexdigest(),'ffmpeg_pcm_sha256':hashlib.sha256(resampled).hexdigest(),'lame_mp3_sha256':hashlib.sha256(mp3).hexdigest(),'eaxa_pcm_sha256':hashlib.sha256(decoded).hexdigest(),'jpeg_sha256':hashlib.sha256(jpg_data).hexdigest(),'movie_pcm_sha256':hashlib.sha256(movie_data).hexdigest(),'pack_sha256':pack_digest,'synthetic_fixtures_only':True}
 
 
 def test(root,archive=False):

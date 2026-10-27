@@ -47,6 +47,12 @@ jobs:
       - name: Build native tools (macOS)
         if: runner.os == 'macOS' && steps.tools.outputs.cache-hit != 'true'
         run: bash native/build_tools.sh native/tools native/.cache/tools
+      - name: Save compiled native tools
+        if: steps.tools.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: native/tools
+          key: ${{ steps.tools.outputs.cache-primary-key }}
       - name: Native Rust tests and release build
         run: |
           cargo test --locked --manifest-path native/Cargo.toml

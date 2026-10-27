@@ -56,8 +56,7 @@ def vendor_macos(package, originals):
   links=subprocess.check_output(['otool','-L',str(src)],text=True).splitlines()
   links=[line for line in links if line.startswith('\t')]
   own=subprocess.run(['otool','-D',str(src)],capture_output=True,text=True).stdout.splitlines()
-  links=[line for line in links if line.startswith('\t')]
-  own=set(s.strip() for s in own)
+  own=set(s.strip() for s in own if s.strip() and not s.endswith(':'))
   if own:run(['install_name_tool','-id','@rpath/'+dest.name,dest],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   raw=subprocess.check_output(['otool','-l',str(src)],text=True).splitlines();rpaths=[]
   for i,line in enumerate(raw):
@@ -185,6 +184,14 @@ def build(args):
   command=[cc,'-O2','-std=c11','-o',str(bin_dir/(name+ext)),*[str(ROOT/'tools'/f)for f in files],'-lm']
   if os.name=='nt':command+=['-static','-static-libgcc']
   run(command)
+ # Keep exact copyright/license notices for every statically linked Rust crate.
+ metadata=json.loads(subprocess.check_output(['cargo','metadata','--locked','--format-version','1','--manifest-path',str(ROOT/'native/Cargo.toml')],text=True))
+ for package in metadata['packages']:
+  source=Path(package['manifest_path']).parent
+  directory=out/'runtime/licenses/rust'/(package['name']+'-'+package['version'])
+  for pattern in ['LICENSE*','COPYING*','COPYRIGHT*','NOTICE*']:
+   for notice in source.glob(pattern):
+    if notice.is_file():directory.mkdir(parents=True,exist_ok=True);shutil.copy2(notice,directory/notice.name)
  helper=Path(args.helper).resolve();shutil.copy2(helper,out/('nfsu2-generator'+ext))
  if tool_dir:
   for directory in ['licenses','sources']:

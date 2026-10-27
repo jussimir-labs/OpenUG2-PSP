@@ -660,7 +660,7 @@ def main():
               for x in rows]
     (args.out / 'career.json').write_text(json.dumps(report, indent=1) + '\n')
     names = racer_names(n2source.executable(args.game))
-    (args.out / 'names.txt').write_text('\n'.join(names) + '\n')   # the AI racers' names, a line each
+    (args.out / 'names.txt').write_text('\n'.join(names) + '\n', encoding='utf-8', newline='\n')   # the AI racers' names, a line each
     print(len(rows), 'rows;', sum(1 for x in rows if x['flags'] & 1), 'with approximated money;',
           sum(1 for x in rows if x['flags'] & 4), 'on tracks;', max((x['group'] for x in rows), default=0), 'tournaments; first:',
           [(x['id'], x['stage'], x['money']) for x in rows[:6]])

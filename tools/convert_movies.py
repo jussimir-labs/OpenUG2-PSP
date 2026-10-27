@@ -243,7 +243,7 @@ def triggers(game, out, movies):
     once = [l for l in lines if l.split()[0] in ('post', 'place')]
     order = [next((l for l in lines if l.split()[-1] == m and (l in once or m in ('SCENE10', 'SCENE09'))), None) for m in LEGACY]
     lines = [l for l in order if l] + [l for l in lines if l not in order]
-    (out / 'movies.txt').write_text('\n'.join(lines) + '\n')
+    (out / 'movies.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8', newline='\n')
     return lines
 
 
