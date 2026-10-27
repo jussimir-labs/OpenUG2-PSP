@@ -73,6 +73,9 @@ def test(root,archive=False):
   fixture=subprocess.run([root/manifest['python'],root/'native/test_bundle.py','--fixture-probe',root],env=env,capture_output=True,text=True,encoding='utf-8',timeout=120)
   assert fixture.returncode==0,fixture.stdout+fixture.stderr
   results['converters']=json.loads(fixture.stdout.strip().splitlines()[-1])
+  tests=subprocess.run([root/manifest['python'],'-m','unittest','discover','-s',str(root/'tests'),'-v'],cwd=root,env=env,capture_output=True,text=True,encoding='utf-8',timeout=90)
+  assert tests.returncode==0,tests.stdout+tests.stderr
+  results['python_tests']=tests.stderr.strip().splitlines()[-4:]
   proc=subprocess.Popen([exe,'serve','--no-browser','--port','0'],env=clean,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8')
   url=None
   for line in proc.stdout:

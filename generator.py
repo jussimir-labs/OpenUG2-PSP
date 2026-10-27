@@ -247,13 +247,18 @@ class Application:
                 self.log(line)
             return proc.wait()
         finally:
-            if self.windows_job:
+            with self.lock:
+                job = self.windows_job
+            if job:
                 try:
-                    self.windows_job.stop()
+                    job.stop()
                 finally:
-                    self.windows_job.close(); self.windows_job = None
+                    job.close()
+                    with self.lock:
+                        self.windows_job = None
             elif self.cancelled.is_set():
                 self.stop_group(proc.pid)
+            proc.stdout.close()
             with self.lock:
                 self.process = None
                 self.process_group = None
@@ -356,11 +361,11 @@ class Application:
 
     def signal_process(self, sig):
         with self.lock:
-            proc, group = self.process, self.process_group
+            proc, group, job = self.process, self.process_group, self.windows_job
         if group:
             try:
-                if self.windows_job:
-                    self.windows_job.stop()
+                if job:
+                    job.stop()
                 elif os.name != 'nt':
                     os.killpg(group, sig)
                 else:
@@ -496,13 +501,13 @@ def main():
         result = probe(); print(json.dumps(result, ensure_ascii=False)); return 0 if result['ready'] else 1
     config = ROOT / '.tools'
     config.mkdir(exist_ok=True)
-    lease = (config / 'browser-generator.lock').open('a+')
+    lease = (config / 'browser-generator.lock').open('a+b')
     if os.name != 'nt':
         os.chmod(lease.name, 0o600)
     try:
         lock_file(lease)
     except BlockingIOError:
-        lease.seek(0)
+        lease.seek(1)  # Byte zero is locked; Windows byte-range locks are mandatory.
         previous = json.loads(lease.read())
         if not args.no_browser:
             open_browser(previous['url'])
@@ -512,7 +517,7 @@ def main():
     app = Application()
     server = ThreadingHTTPServer(('127.0.0.1', args.port), handler_for(app, token))
     url = 'http://127.0.0.1:' + str(server.server_port) + '/#token=' + token
-    lease.seek(0); lease.truncate(); lease.write(json.dumps(dict(url=url, pid=os.getpid()))); lease.flush()
+    lease.seek(0); lease.truncate(); lease.write(b'\0' + json.dumps(dict(url=url, pid=os.getpid())).encode('utf-8')); lease.flush()
     print('NFSU2_GENERATOR_URL=' + url, flush=True)
     print('NFSU2 PSP — local generator opened in your browser. Keep this window open during conversion.', flush=True)
     if not args.no_browser:

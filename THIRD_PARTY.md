@@ -28,7 +28,7 @@ OpenUG2, [nfsu2-re](https://github.com/yugecin/nfsu2-re), and
 [FEngLib](https://github.com/NFSTools/FEngLib); none of their code is
 included in the converters.
 
-## What the player installs (not included in the repository)
+## Tools included in native generator downloads
 
 | Item | Purpose | License |
 |---|---|---|
@@ -36,8 +36,16 @@ included in the converters.
 | [trajectory_planning_helpers](https://github.com/TUMFTM/trajectory_planning_helpers) (TUM) | rival racing lines | LGPL-3.0 |
 | quadprog | dependency of the above | GPL-2.0 or later |
 | ffmpeg, lame | audio and movies | LGPL/GPL |
-| [jpegli](https://github.com/google/jpegli) (`cjpegli`, compiled by `setup.sh`) | movie frames | BSD-3 |
+| [jpegli](https://github.com/google/jpegli) (`cjpegli`, precompiled in the native package) | movie frames | BSD-3 |
 
-None of these are copied into the repository or the PSP package: the
-programs run on the player's computer, and only the converted files go
-onto the memory card.
+These tools run on the player's computer from the native download's private `runtime/`
+folder. Only converted game files go onto the memory card. Runtime binaries are release
+assets, not Git objects. Licenses bundled with CPython and Python wheel distributions
+are retained; FFmpeg, LAME and jpegli sources, build instructions and notices accompany
+the native-tools distribution in `runtime/sources/` and `runtime/licenses/`.
+The original RC21 source-only ZIP downloads/builds these dependencies during setup.
+
+The Rust supervisor uses serde/serde_json (MIT/Apache-2.0), sha2 (MIT/Apache-2.0),
+ctrlc (MIT/Apache-2.0), libc (MIT/Apache-2.0) and windows-sys (MIT/Apache-2.0).
+Exact crate versions are locked in `native/Cargo.lock`; source and license notices
+are retained in the source distribution. The supervisor does not link game data.

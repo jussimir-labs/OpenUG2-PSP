@@ -34,12 +34,18 @@ jobs:
           install: >-
             git make tar curl mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
             mingw-w64-x86_64-ninja perl
+      - name: Cached native tools
+        uses: actions/cache@v4
+        id: tools
+        with:
+          path: native/tools
+          key: native-tools-${{ matrix.target }}-${{ hashFiles('native/build_tools.sh', 'native/utf8.manifest') }}
       - name: Build native tools (Windows)
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && steps.tools.outputs.cache-hit != 'true'
         shell: msys2 {0}
         run: bash native/build_tools.sh native/tools native/.cache/tools
       - name: Build native tools (macOS)
-        if: runner.os == 'macOS'
+        if: runner.os == 'macOS' && steps.tools.outputs.cache-hit != 'true'
         run: bash native/build_tools.sh native/tools native/.cache/tools
       - name: Native Rust tests and release build
         run: |

@@ -3,9 +3,12 @@
 Welcome to the first closed beta of the native PSP port of *Need for Speed Underground 2*.
 Thank you for helping test it on real devices.
 
-**Start here:** download **NFSU2-PSP-Closed-Beta-1-RC21.zip** from the
-[RC21 release](https://github.com/jussimir/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21),
-extract the complete folder, and follow the steps below. The same kit handles Xbox and PS2 sources.
+**Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
+and follow the steps below. Native packages are built by the
+[Native browser generator workflow](https://github.com/jussimir/pessoal-nfsu2-psp-beta/actions/workflows/native-generator.yml).
+Windows x64, Apple Silicon and Intel Mac use separate downloads. The original
+[RC21 source kit](https://github.com/jussimir/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21)
+remains available with its older setup requirements.
 Please keep this beta and its generated files within the selected test group.
 
 This kit contains the prebuilt PSP executable and a local game-data generator.
@@ -28,29 +31,31 @@ Your ISO stays on your computer.
   compatibility with every device and firmware is not guaranteed.
 - At least **2.2 GB free on the Memory Stick** and **12 GB free on the computer**, in addition
   to your existing ISO. Back up your saves before replacing game files.
-- macOS, Linux, or Windows with an initialized **WSL Linux distribution**.
-  Python 3.9+ opens the interface; conversion requires Python 3.12+ and the setup dependencies.
+- **Windows 10 version 2004 or later / Windows 11 (x64)**, or **macOS 13 or later**
+  with the matching Apple Silicon or Intel package. Windows ARM and Linux native packages
+  are not included in this release. The original source kit remains available for Linux.
+  **You do not need to install Python, WSL, Homebrew, a compiler, or conversion libraries.**
   Reference conversion times were about 1.5 hours for Xbox and 3.5 hours for PS2; your computer may differ.
 
 ## 1. Open the generator
 
 Keep the extracted kit together; do not run a launcher from inside the ZIP.
 
-| Computer | Launcher |
-| --- | --- |
-| macOS | Double-click `Generate-game.command` |
-| Linux | Run `sh ./generate-game.sh` from the kit folder |
-| Windows + WSL | Double-click `Generate-game.bat` after initializing WSL |
+| Computer | Download | Open |
+| --- | --- | --- |
+| Windows x64 | `NFSU2-Generator-windows-x64.zip` | Double-click `Generate-game.bat` |
+| Mac with Apple Silicon | `NFSU2-Generator-macos-arm64.zip` | Double-click `Generate-game.command` |
+| Mac with Intel processor | `NFSU2-Generator-macos-x64.zip` | Double-click `Generate-game.command` |
 
-On macOS, install Homebrew and Apple's command-line tools (`xcode-select --install`) if needed.
-The local setup installs converter dependencies in `.venv/` and tools in `.tools/`;
-some system packages require administrator permission. The setup does not bundle Python, WSL,
-Homebrew or Apple's command-line tools. If the OS blocks a launcher, review its warning and
-use the normal OS process for running a trusted local script.
+Keep the terminal window open while using the browser interface. All required conversion tools
+are included in the download. The generator verifies its files on startup and does not install
+anything on your system. If a file is missing or damaged, extract the complete download again.
+If the OS blocks the helper, review the warning and use the normal OS process for opening a
+trusted local application. Packages are not commercially signed or Apple-notarized.
 
 ## 2. Generate the game from your own ISO
 
-1. In the local browser interface, click **Prepare this computer** if dependencies are missing.
+1. The helper opens the local browser interface. **Verify included tools** checks your download if needed; there is no dependency installation step.
 2. Choose your ISO and a **new, empty output folder**. Keep source detection on **Automatic**.
    The folder picker creates `NFSU2-PSP` inside the selected folder; a typed path is used as entered.
 3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
@@ -65,7 +70,7 @@ interrupted job can resume only with the same ISO, source, executable, tools and
 When changing kit versions, use a new output folder. Close the local helper with **Close helper**
 when no conversion is running; closing the browser tab alone does not stop it.
 
-Advanced CLI: `.venv/bin/python build_game.py --help`. Some converter logs and CLI option
+Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface without opening a tab; `./nfsu2-generator doctor` checks the included tools. On Windows, use `nfsu2-generator.exe` instead. Developer/source-only CLI: use your Python environment to run `build_game.py --help`. Some converter logs and CLI option
 names are in Portuguese; the browser instructions are in English.
 
 ## 3. Install on the PSP
@@ -77,7 +82,7 @@ names are in Portuguese; the browser instructions are in English.
 3. On macOS, use the included copy helper to avoid Finder's `._` sidecar files:
 
    ```sh
-   .venv/bin/python tools/ms_package.py push "/Volumes/YOUR PSP CARD" "/path/to/output"
+   runtime/python/bin/python3 tools/ms_package.py push "/Volumes/YOUR PSP CARD" "/path/to/output"
    ```
 
    Replace both paths with your actual card and generated output. Do not add `--fresh`.
@@ -113,4 +118,6 @@ See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 These values identify the kit; you do not need to calculate hashes to report a bug.
 See [qualification scope](docs/qualification/RC21-QUALIFICATION.json) and
 [third-party notices](THIRD_PARTY.md). Portuguese historical material remains in `ptbr/`;
-the English instructions on this page are authoritative for RC21.
+the English instructions on this page are authoritative for the native packages. The original RC21 ZIP retains its original setup instructions.
+
+See [native packaging and validation](native/README.md) for the exact qualification scope. A successful tools check does not prove a complete ISO conversion on every OS.

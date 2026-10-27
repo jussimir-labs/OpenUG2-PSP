@@ -53,8 +53,10 @@ def vendor_macos(package, originals):
   dest,src=pending.pop()
   if dest in done:continue
   done.add(dest)
-  links=subprocess.check_output(['otool','-L',str(src)],text=True).splitlines()[1:]
-  own=subprocess.run(['otool','-D',str(src)],capture_output=True,text=True).stdout.splitlines()[1:]
+  links=subprocess.check_output(['otool','-L',str(src)],text=True).splitlines()
+  links=[line for line in links if line.startswith('\t')]
+  own=subprocess.run(['otool','-D',str(src)],capture_output=True,text=True).stdout.splitlines()
+  links=[line for line in links if line.startswith('\t')]
   own=set(s.strip() for s in own)
   if own:run(['install_name_tool','-id','@rpath/'+dest.name,dest],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
   raw=subprocess.check_output(['otool','-l',str(src)],text=True).splitlines();rpaths=[]
@@ -102,6 +104,7 @@ def vendor_macos(package, originals):
    lines=subprocess.check_output(['otool','-L',str(f)],text=True).splitlines()[1:]
    own=set(s.strip()for s in subprocess.run(['otool','-D',str(f)],capture_output=True,text=True).stdout.splitlines()[1:])
    for line in lines:
+    if not line.startswith('\t'):continue
     ref=line.strip().split(' (',1)[0]
     if ref in own:continue
     if ref.startswith(('/opt/','/usr/local/','/Users/')):raise RuntimeError(f'External library in bundle: {f}: {ref}')

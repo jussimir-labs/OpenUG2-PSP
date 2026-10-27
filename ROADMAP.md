@@ -15,8 +15,8 @@ test group on 27 October 2026. [Release notes](RELEASE_NOTES.md) · [Known issue
 
 ## Next validation and fixes
 
-- [ ] Ship self-contained native generator packages for Windows x64 and macOS, with bundled Python, libraries and prebuilt conversion tools. Remove manual WSL/Homebrew/compiler setup and validate complete generation on clean systems. Deferred until after the first beta rollout; RC21 uses the existing generator and documented prerequisites.
-- [ ] Confirm generation and installation on testers' macOS/Linux/Windows+WSL setups.
+- [ ] Ship self-contained native generator packages for Windows x64 and macOS, with bundled Python, libraries and prebuilt conversion tools. Remove manual WSL/Homebrew/compiler setup and validate complete generation on clean systems. Implementation resumed on 27 October at Jussimir’s request. Native packages preserve the RC21 executable and reference validation; complete ISO conversion on every OS remains a separate qualification step.
+- [ ] Confirm complete generation and installation on testers' native Windows/macOS setups, and the legacy Linux source kit.
 - [ ] Gather current-device visual/audio feedback and recheck existing reports #1–#5.
 - [ ] Extend Career, natural rewards, sponsor progression and native save/cold-load coverage.
 - [ ] Resolve Drag 4401 rival recovery.

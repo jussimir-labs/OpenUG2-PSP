@@ -13,7 +13,7 @@ fetch https://ffmpeg.org/releases/ffmpeg-8.1.2.tar.xz "$CACHE/ffmpeg.tar.xz" 464
 fetch https://downloads.sourceforge.net/project/lame/lame/4.0/lame-4.0.tar.gz "$CACHE/lame.tar.gz" 3df5124d5ad3a98312ffd7ba6a9b36230e4f8a3e66d3ce0f425e336c32d216eb
 if [ ! -d "$CACHE/ffmpeg-8.1.2" ]; then tar -xf "$CACHE/ffmpeg.tar.xz" -C "$CACHE"; fi
 if [ ! -d "$CACHE/lame-4.0" ]; then tar -xf "$CACHE/lame.tar.gz" -C "$CACHE"; fi
-SUFFIX=""; EXTRA=(); LDFLAGS_EXTRA=""
+SUFFIX=""; EXTRA=(--enable-pic); LDFLAGS_EXTRA=""
 case "$(uname -s)" in MINGW*|MSYS*) SUFFIX=.exe; EXTRA=(--target-os=mingw32 --arch=x86_64); LDFLAGS_EXTRA="-static -static-libgcc" ;; esac
 (
  cd "$CACHE/ffmpeg-8.1.2"
