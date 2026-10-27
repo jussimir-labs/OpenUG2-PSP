@@ -206,11 +206,18 @@ def vendor_windows(package):
     # The root supervisor must use only the Windows system ABI: its C runtime
     # is linked statically, so a clean Windows install needs no redistributable.
     root_imports = subprocess.check_output(
-        [objdump, "-p", str(package / "nfsu2-generator.exe")], text=True, errors="replace"
+        [objdump, "-p", str(package / "nfsu2-generator.exe")],
+        text=True,
+        errors="replace",
     )
     for line in root_imports.splitlines():
-        if "DLL Name:" in line and any(name in line.lower() for name in ["vcruntime", "msvcp", "libgcc", "libstdc++", "msys-"]):
-            raise RuntimeError("Supervisor requires an external runtime: " + line.strip())
+        if "DLL Name:" in line and any(
+            name in line.lower()
+            for name in ["vcruntime", "msvcp", "libgcc", "libstdc++", "msys-"]
+        ):
+            raise RuntimeError(
+                "Supervisor requires an external runtime: " + line.strip()
+            )
     if objdump:
         pending = list((package / "runtime/bin").glob("*.exe"))
         seen = set()
@@ -366,6 +373,14 @@ def build(args):
         ],
         env=env,
     )
+    source_archive = cache / "quadprog-0.1.13.tar.gz"
+    download(
+        "https://files.pythonhosted.org/packages/9e/60/fb9b56d425c5b3495bb92683c28f954aedb609ae62f14c81a1b5621ad759/quadprog-0.1.13.tar.gz",
+        source_archive,
+        "9d6dd32f2762f29b840fb83741d11e527ddf48745f63b79caad0e530b4a6a0ff",
+    )
+    (out / "runtime/sources").mkdir(exist_ok=True)
+    shutil.copy2(source_archive, out / "runtime/sources" / source_archive.name)
     ext = ".exe" if os.name == "nt" else ""
     originals = {}
     tool_dir = Path(args.tools).resolve() if args.tools else None
@@ -446,6 +461,10 @@ def build(args):
     }
     manifest = {
         "schema": 1,
+        "generator_commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip(),
+        "generator_version": "0.1.0",
         "platform": target,
         "python": py.relative_to(out).as_posix(),
         "candidate": json.loads((out / "eboot/release.json").read_text())["candidate"],

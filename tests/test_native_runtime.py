@@ -73,6 +73,16 @@ class RuntimeTests(unittest.TestCase):
                     build_game.prepare_out(output, False, second)
                 self.assertEqual(retained.read_text(), "keep")
 
+    @unittest.skipUnless(os.name == "nt", "Native Windows PowerShell output")
+    def test_windows_dialog_transport_preserves_unicode(self):
+        import generator
+
+        value = "C:\\Users\\ação\\my disc.iso"
+        script = "[Console]::Write('" + value + "')"
+        result = generator.powershell_output(script)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout, value)
+
     @unittest.skipUnless(os.name == "nt", "Windows verbatim paths")
     def test_verbatim_paths_keep_tool_folder_protected(self):
         import generator

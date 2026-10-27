@@ -117,6 +117,15 @@ def detect_source(iso, requested, root=ROOT):
     return source.name
 
 
+def powershell_output(script):
+    """Use UTF-8 stdout even on Windows profiles with a legacy console code page."""
+    script = '[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); ' + script
+    encoded = base64.b64encode(script.encode('utf-16le')).decode('ascii')
+    executable = str(Path(os.environ.get('SystemRoot', r'C:\Windows')) / 'System32/WindowsPowerShell/v1.0/powershell.exe') if os.name == 'nt' else 'powershell.exe'
+    return subprocess.run([executable, '-NoProfile', '-STA', '-EncodedCommand', encoded],
+                          capture_output=True, text=True, encoding='utf-8')
+
+
 def native_pick(kind):
     """An OS picker avoids copying a multi-GB ISO into a browser upload."""
     folder = kind == 'output'
@@ -132,8 +141,7 @@ def native_pick(kind):
         if not folder:
             script += '$d.Filter="ISO (*.iso)|*.iso"; '
         script += 'if($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){[Console]::Write($d.' + prop + ')}'
-        encoded = base64.b64encode(script.encode('utf-16le')).decode('ascii')
-        result = subprocess.run(['powershell.exe', '-NoProfile', '-STA', '-EncodedCommand', encoded], capture_output=True, text=True)
+        result = powershell_output(script)
     elif shutil.which('zenity'):
         args = ['zenity', '--file-selection', '--title=NFSU2 PSP']
         if folder:

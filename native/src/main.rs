@@ -165,6 +165,8 @@ fn runtime_command(root: &Path, m: &Manifest) -> Result<Command, String> {
         "NFSU2_MAC_SLOTS_DIR",
         "DYLD_LIBRARY_PATH",
         "LD_LIBRARY_PATH",
+        "WSL_DISTRO_NAME",
+        "WSL_INTEROP",
     ] {
         cmd.env_remove(key);
     }

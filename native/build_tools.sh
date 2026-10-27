@@ -18,11 +18,17 @@ case "$(uname -s)" in MINGW*|MSYS*) SUFFIX=.exe; EXTRA=(--target-os=mingw32 --ar
 (
  cd "$CACHE/ffmpeg-8.1.2"
  ./configure --disable-doc --disable-debug --disable-shared --enable-static --disable-network --disable-autodetect \
-  --disable-ffplay --disable-ffprobe --disable-x86asm --disable-encoders --enable-encoder=rawvideo,pcm_s16le \
+  --disable-everything --enable-ffmpeg --disable-ffplay --disable-ffprobe --disable-x86asm \
+  --enable-protocol=file,pipe --enable-demuxer=ea,ea_cdata,mpeg,mpegvideo,pcm_s16le,mp3 \
+  --enable-parser=mpegvideo,mpegaudio \
+  --enable-decoder=vp6,vp6f,mpeg2video,adpcm_ea,adpcm_ea_r1,adpcm_ea_r2,adpcm_ea_r3,adpcm_ea_xas,pcm_s16le,mp3float \
+  --enable-encoder=rawvideo,pcm_s16le --enable-muxer=rawvideo,pcm_s16le \
+  --enable-filter=scale,pad,fps,aresample,aformat,format,null,anull,abuffer,buffer,abuffersink,buffersink \
   --disable-hwaccels --disable-devices --extra-ldflags="$LDFLAGS_EXTRA" "${EXTRA[@]}"
  make -j "$JOBS" "ffmpeg$SUFFIX"
  cp "ffmpeg$SUFFIX" "$OUT/"
 )
+if [ "${NATIVE_FFMPEG_ONLY:-0}" = 1 ]; then exit 0; fi
 (
  cd "$CACHE/lame-4.0"
  ac_cv_prog_cc_c23=no ./configure --disable-shared --enable-static --disable-decoder CFLAGS="-O3 -std=gnu17 -include locale.h -Wno-implicit-function-declaration" LDFLAGS="$LDFLAGS_EXTRA"

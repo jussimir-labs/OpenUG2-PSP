@@ -318,6 +318,8 @@ def test(root, archive=False):
             victim.chmod(0o755)
         results.update(
             platform=manifest["platform"],
+            generator_commit=manifest.get("generator_commit"),
+            generator_version=manifest.get("generator_version"),
             eboot_sha256=manifest["files"]["eboot/EBOOT.PBP"],
             relocated_unicode_path=True,
             restricted_path=True,
@@ -351,7 +353,9 @@ def test(root, archive=False):
         ).hexdigest()
         (original / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
         zipped = original.with_suffix(".zip")
-        with zipfile.ZipFile(zipped, "w", zipfile.ZIP_DEFLATED, compresslevel=6, strict_timestamps=False) as z:
+        with zipfile.ZipFile(
+            zipped, "w", zipfile.ZIP_DEFLATED, compresslevel=6, strict_timestamps=False
+        ) as z:
             for f in sorted(original.rglob("*")):
                 if f.is_file() and ".tools" not in f.relative_to(original).parts:
                     z.write(f, original.name + "/" + f.relative_to(original).as_posix())
