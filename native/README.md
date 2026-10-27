@@ -28,8 +28,8 @@ Ninja, Make, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest t
 
 ```sh
 bash native/build_tools.sh native/tools native/.cache/tools
-cargo test --locked --manifest-path native/Cargo.toml
-cargo build --locked --release --manifest-path native/Cargo.toml
+cargo --config native/.cargo/config.toml test --locked --manifest-path native/Cargo.toml
+cargo --config native/.cargo/config.toml build --locked --release --manifest-path native/Cargo.toml
 python native/build_bundle.py --output native/dist/NFSU2-Generator-macos-arm64 \
   --tools native/tools --helper native/target/release/nfsu2-generator
 python native/test_bundle.py native/dist/NFSU2-Generator-macos-arm64 --archive
