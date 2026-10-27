@@ -351,7 +351,7 @@ def test(root, archive=False):
         ).hexdigest()
         (original / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
         zipped = original.with_suffix(".zip")
-        with zipfile.ZipFile(zipped, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
+        with zipfile.ZipFile(zipped, "w", zipfile.ZIP_DEFLATED, compresslevel=6, strict_timestamps=False) as z:
             for f in sorted(original.rglob("*")):
                 if f.is_file() and ".tools" not in f.relative_to(original).parts:
                     z.write(f, original.name + "/" + f.relative_to(original).as_posix())

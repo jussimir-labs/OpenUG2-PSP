@@ -4,7 +4,7 @@ on:
   push:
     branches: [codex/native-generator]
 permissions:
-  contents: read
+  contents: write
 jobs:
   package:
     strategy:
@@ -69,13 +69,16 @@ jobs:
         run: python native/build_bundle.py --output native/dist/NFSU2-Generator-${{ matrix.target }} --tools native/tools --helper native/target/release/nfsu2-generator
       - name: Test isolated package and archive
         run: python native/test_bundle.py native/dist/NFSU2-Generator-${{ matrix.target }} --archive
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: NFSU2-Generator-${{ matrix.target }}
-          path: |
-            native/dist/*.zip
-            native/dist/*.sha256
-            native/dist/*/native-qa.json
-          if-no-files-found: warn
-          retention-days: 14
+      - name: Store verified packages in the private draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          latest="$(gh api "repos/$GH_REPO/git/ref/heads/codex/native-generator" --jq .object.sha)"
+          if [ "$latest" != "$GITHUB_SHA" ]; then
+            echo "A newer revision exists; this build will not replace its packages."
+            exit 0
+          fi
+          cp "native/dist/NFSU2-Generator-${{ matrix.target }}/native-qa.json" "native/dist/native-qa-${{ matrix.target }}.json"
+          gh release upload native-generator-0.1.0-rc21 native/dist/*.zip native/dist/*.sha256 native/dist/native-qa-*.json --clobber
