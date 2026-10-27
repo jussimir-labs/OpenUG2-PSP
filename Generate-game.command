@@ -1,5 +1,8 @@
 #!/bin/sh
-# Open the browser generator on macOS.
 here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$here" || exit 1
-exec sh ./generate-game.sh
+if [ ! -x ./nfsu2-generator ]; then
+ echo "Download and extract the complete native macOS package from the beta release."
+ exit 1
+fi
+exec ./nfsu2-generator serve

@@ -44,13 +44,14 @@ import subprocess
 import tempfile
 
 import mac_slots
+from native_runtime import binary, helper as runtime_helper, tool as runtime_tool
 from n2formats import game_hash
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 W, H, PICTURE_W, RATE, MP3_KBPS, VERSION = 480, 272, 363, 44100, 128, 3
 FPS, JPEGLI_DISTANCE = 15, 8
-CJPEGLI = ROOT / '.tools/jpegli/build/tools/cjpegli'
+CJPEGLI = binary('cjpegli') or ROOT / '.tools/jpegli/build/tools/cjpegli'
 H264_VERSION = 2
 CRF = 23
 X264 = ('bframes=0:ref=1:weightp=0:8x8dct=0:keyint=150:aud=1:nal-hrd=vbr:vbv-maxrate=1500:vbv-bufsize=1500')
@@ -112,7 +113,7 @@ def jpegli_frames(src, tmp):
     """The picture at 15 fps, each frame a jpegli JPEG: ffmpeg's RGB frames
     one at a time through a PPM to cjpegli (sequential, 4:2:0: sceJpeg's)."""
     pad = (W - PICTURE_W) // 2
-    dec = subprocess.Popen(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-i', str(src), '-an', '-vf',
+    dec = subprocess.Popen([runtime_tool('ffmpeg'), '-hide_banner', '-loglevel', 'error', '-i', str(src), '-an', '-vf',
                             f'fps={FPS},scale={PICTURE_W}:{H}:flags=lanczos,pad={W}:{H}:{pad}:0:black',
                             '-pix_fmt', 'rgb24', '-f', 'rawvideo', '-'], stdout=subprocess.PIPE)
     ppm, jpg, frames = Path(tmp) / 'f.ppm', Path(tmp) / 'f.jpg', []
@@ -135,7 +136,7 @@ def convert(game, out, name, helper, h264=False):
         src.write_bytes(movie_file(game, name))
         pad = (W - PICTURE_W) // 2
         frames = [(f, False) for f in jpegli_frames(src, tmp)] if not h264 else None
-        video = None if not h264 else subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-i', str(src), '-an', '-vf',
+        video = None if not h264 else subprocess.run([runtime_tool('ffmpeg'), '-hide_banner', '-loglevel', 'error', '-i', str(src), '-an', '-vf',
                                 f'fps=30000/1001,scale={PICTURE_W}:{H}:flags=lanczos,pad={W}:{H}:{pad}:0:black,format=yuv420p',
                                 '-c:v', 'libx264', '-preset', 'veryslow', '-profile:v', 'main', '-level', '3.0', '-crf', str(CRF),
                                 '-x264-params', X264, '-threads', '2', '-f', 'h264', '-'],   # two threads: the queue's weight
@@ -146,14 +147,14 @@ def convert(game, out, name, helper, h264=False):
             raise SystemExit(f'{name}: the H.264 stream does not start on an IDR frame or has an access unit past {AU_MAX} bytes')
         raw, mp3 = Path(tmp) / 'sound.raw', Path(tmp) / 'sound.mp3'
         if movie_ext(game) == 'MPC':   # the PS2's sound: EA ADPCM R3, through ffmpeg
-            info = subprocess.run(['ffmpeg', '-hide_banner', '-loglevel', 'error', '-y', '-i', str(src), '-vn', '-ac', '2',
+            info = subprocess.run([runtime_tool('ffmpeg'), '-hide_banner', '-loglevel', 'error', '-y', '-i', str(src), '-vn', '-ac', '2',
                                    '-ar', str(RATE), '-f', 's16le', str(raw)], capture_output=True, text=True)
         else:
             info = subprocess.run([str(helper), str(src), str(raw), str(RATE)], capture_output=True, text=True)
         samples, sound = 0, b''
         if info.returncode == 0 and raw.exists() and raw.stat().st_size:
             samples = raw.stat().st_size // 4
-            subprocess.run(['lame', '--quiet', '-r', '-s', str(RATE / 1000), '--bitwidth', '16', '--signed', '--little-endian',
+            subprocess.run([runtime_tool('lame'), '--quiet', '-r', '-s', str(RATE / 1000), '--bitwidth', '16', '--signed', '--little-endian',
                             '-m', 'j', '-b', str(MP3_KBPS), '--cbr', str(raw), str(mp3)], check=True)
             sound = mp3.read_bytes()
     head = 40
@@ -266,7 +267,7 @@ def main():
             return h.read(8) == struct.pack('<4sI', b'N2MV', H264_VERSION if args.h264 else VERSION)
     todo = args.only or [m for m in movies if not (args.missing and current(m))]
     helper = Path(tempfile.gettempdir()) / 'nfsu2-movie-audio'
-    subprocess.run(['cc', '-O2', '-o', str(helper), str(ROOT / 'tools/movie_audio.c'), '-lm'], check=True)
+    helper = runtime_helper('movie_audio', helper, [ROOT / 'tools/movie_audio.c'])
     with concurrent.futures.ThreadPoolExecutor(max(1, (os.cpu_count() or 2) // 2)) as pool:
         # each movie's ffmpeg and encoder: two cores from the Mac's queue (tools/mac_slots.py)
         for name, frames, secs, kb in pool.map(lambda n: mac_slots.call('convert_movies', convert, args.game, args.out, n, helper,

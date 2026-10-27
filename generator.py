@@ -25,6 +25,9 @@ from urllib.parse import urlsplit
 import webbrowser
 
 ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT / 'tools'))
+import native_runtime
+from process_control import WindowsJob, lock_file
 sys.dont_write_bytecode = True
 
 
@@ -33,6 +36,8 @@ class UserError(Exception):
 
 
 def python_runtime(root=ROOT):
+    if native_runtime.bundled():
+        return sys.executable
     for candidate in (root / '.venv/bin/python', shutil.which('python3.12'),
                       shutil.which('python3.13'), shutil.which('python3'), sys.executable):
         if candidate and Path(candidate).is_file():
@@ -81,6 +86,8 @@ def probe(root=ROOT):
         except Exception as exc:
             problems.append(str(exc))
         def friendly(problem):
+            if native_runtime.bundled():
+                return 'An included converter or library is missing. Extract the complete native download again. Details: ' + problem
             if problem.startswith('faltam módulos do Python:'):
                 return 'Python conversion libraries need setup. Use Prepare this computer.'
             if problem.startswith('falta o cjpegli'):
@@ -160,6 +167,7 @@ class Application:
         self.root, self.lock = root, threading.RLock()
         self.process = None
         self.process_group = None
+        self.windows_job = None
         self.cancelled = threading.Event()
         self.started = None
         self.duration = None
@@ -224,6 +232,11 @@ class Application:
         proc = subprocess.Popen(command, cwd=self.root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                 stdin=subprocess.DEVNULL, text=True, encoding='utf-8', errors='replace',
                                 start_new_session=os.name != 'nt', env=env)
+        if os.name == 'nt':
+            try:
+                self.windows_job = WindowsJob(proc)
+            except BaseException:
+                proc.kill(); proc.wait(); raise
         with self.lock:
             self.process = proc
             self.process_group = proc.pid
@@ -234,7 +247,12 @@ class Application:
                 self.log(line)
             return proc.wait()
         finally:
-            if self.cancelled.is_set():
+            if self.windows_job:
+                try:
+                    self.windows_job.stop()
+                finally:
+                    self.windows_job.close(); self.windows_job = None
+            elif self.cancelled.is_set():
                 self.stop_group(proc.pid)
             with self.lock:
                 self.process = None
@@ -272,8 +290,8 @@ class Application:
 
     def work(self, action):
         try:
-            if action == 'prepare':
-                self.update(message='Preparing converters. The first setup may take several minutes.')
+            if action == 'prepare' and not native_runtime.bundled():
+                self.update(message='Checking the included runtime and converters.' if native_runtime.bundled() else 'Preparing converters. The first setup may take several minutes.')
                 env = dict(os.environ, NFSU2_SETUP_APPROVED='1', JPEGLI_JOBS='4')
                 code = self.run(['sh', str(self.root / 'setup.sh')], env)
                 if code:
@@ -289,9 +307,9 @@ class Application:
             if not preflight['ready']:
                 for problem in preflight.get('details', preflight['problems']):
                     self.log(problem)
-                raise UserError('Your computer needs setup. Check the requirements below and use Prepare this computer.')
+                raise UserError('The included tools are incomplete. Extract the full native download again.' if native_runtime.bundled() else 'Your computer needs setup. Check the requirements below and use Prepare this computer.')
             if action == 'prepare':
-                self.update(status='idle', message='Converters are ready. Choose your ISO and generate the game.')
+                self.update(status='idle', message='Included converters are ready. Choose your ISO and generate the game.')
                 return
             job = self.state()['job']
             source = detect_source(Path(job['iso']), job['source'], self.root)
@@ -341,7 +359,12 @@ class Application:
             proc, group = self.process, self.process_group
         if group:
             try:
-                os.killpg(group, sig) if os.name != 'nt' else proc.terminate()
+                if self.windows_job:
+                    self.windows_job.stop()
+                elif os.name != 'nt':
+                    os.killpg(group, sig)
+                else:
+                    proc.terminate()
             except ProcessLookupError:
                 pass
 
@@ -352,6 +375,8 @@ class Application:
         self.update(status='cancelling', message='Stopping safely; wait for the converters to exit…')
         self.signal_process(signal.SIGINT)
         group = self.process_group
+        if os.name == 'nt':
+            return  # TerminateJobObject has already stopped the complete tree.
         def finish():
             for sig in (signal.SIGTERM, signal.SIGKILL):
                 time.sleep(5)
@@ -468,27 +493,27 @@ def main():
     parser.add_argument('--port', type=int, default=0)
     args = parser.parse_args()
     if args.probe:
-        print(json.dumps(probe(), ensure_ascii=False)); return
-    if os.name == 'nt':
-        raise SystemExit('Use Generate-game.bat: the converters run in Windows WSL.')
-    import fcntl
+        result = probe(); print(json.dumps(result, ensure_ascii=False)); return 0 if result['ready'] else 1
     config = ROOT / '.tools'
     config.mkdir(exist_ok=True)
     lease = (config / 'browser-generator.lock').open('a+')
-    os.chmod(lease.name, 0o600)
+    if os.name != 'nt':
+        os.chmod(lease.name, 0o600)
     try:
-        fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        lock_file(lease)
     except BlockingIOError:
         lease.seek(0)
         previous = json.loads(lease.read())
         if not args.no_browser:
             open_browser(previous['url'])
-        print('The generator is already open on this computer.'); return
+        print('NFSU2_GENERATOR_URL=' + previous['url'], flush=True)
+        print('The generator is already open on this computer.'); return 0
     token = secrets.token_hex(32)
     app = Application()
     server = ThreadingHTTPServer(('127.0.0.1', args.port), handler_for(app, token))
     url = 'http://127.0.0.1:' + str(server.server_port) + '/#token=' + token
     lease.seek(0); lease.truncate(); lease.write(json.dumps(dict(url=url, pid=os.getpid()))); lease.flush()
+    print('NFSU2_GENERATOR_URL=' + url, flush=True)
     print('NFSU2 PSP — local generator opened in your browser. Keep this window open during conversion.', flush=True)
     if not args.no_browser:
         open_browser(url)
@@ -504,4 +529,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

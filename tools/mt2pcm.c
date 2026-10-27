@@ -6,9 +6,17 @@
 #include <string.h>
 #include <math.h>
 #include "vendor/utk/utkdec.h"
+#ifdef _WIN32
+#include <fcntl.h>
+#include <io.h>
+static void binary_stdio(void) { _setmode(_fileno(stdin), _O_BINARY); _setmode(_fileno(stdout), _O_BINARY); }
+#else
+static void binary_stdio(void) {}
+#endif
 static uint32_t le32(const unsigned char *p) {return p[0]|p[1]<<8|p[2]<<16|(uint32_t)p[3]<<24;}
 static void put16(int v) {putchar(v&255);putchar((unsigned)v>>8&255);}
 int main(int argc,char **argv) {
+    binary_stdio();
  if(argc!=2)return 2;
  unsigned char header[8],*data=NULL;size_t cap=0;unsigned count=0;int started=0,ended=0;
  unsigned long limit=strtoul(argv[1],NULL,10);if(!limit || limit>22050*300)return 2;

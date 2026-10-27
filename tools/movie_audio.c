@@ -13,6 +13,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+#include <fcntl.h>
+#include <io.h>
+static void binary_stdio(void) { _setmode(_fileno(stdin), _O_BINARY); _setmode(_fileno(stdout), _O_BINARY); }
+#else
+static void binary_stdio(void) {}
+#endif
 static const int XA1[4]={0,240,460,392},XA2[4]={0,0,-208,-220};
 static uint32_t be32(const unsigned char *p) { return (uint32_t)p[0]<<24|p[1]<<16|p[2]<<8|p[3]; }
 static uint32_t le32(const unsigned char *p) { return (uint32_t)p[3]<<24|p[2]<<16|p[1]<<8|p[0]; }
@@ -41,6 +48,7 @@ static int decode_xa(const unsigned char *d,int bytes,int samples,int *prev,floa
     return n;
 }
 int main(int argc,char **argv) {
+    binary_stdio();
     if(argc<3){fprintf(stderr,"usage: movie_audio in.vp6 out.raw [rate]\n");return 1;}
     int out_rate=argc>3?atoi(argv[3]):22050;
     FILE *f=fopen(argv[1],"rb");if(!f)return 1;

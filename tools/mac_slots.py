@@ -64,7 +64,10 @@ process.
 import argparse
 import contextlib
 import ctypes
-import fcntl
+try:
+    import fcntl
+except ImportError:  # Windows native bundles do not use the Mac scheduling queue.
+    fcntl = None
 import json
 import os
 from pathlib import Path
@@ -110,7 +113,7 @@ def capacity():
 
 
 def enabled():
-    return (sys.platform == 'darwin' or bool(os.environ.get('NFSU2_MAC_SLOTS_DIR'))) \
+    return fcntl is not None and (sys.platform == 'darwin' or bool(os.environ.get('NFSU2_MAC_SLOTS_DIR'))) \
         and os.environ.get('NFSU2_MAC_SLOTS', '1') != '0' and not os.environ.get(HELD)
 
 

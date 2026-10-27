@@ -53,6 +53,7 @@ from pathlib import Path
 import shutil
 import struct
 import subprocess
+from native_runtime import helper, tool as runtime_tool
 import tempfile
 
 import mac_slots
@@ -1142,11 +1143,11 @@ def encode_loop(tool, sch, at, tmp, edge=4096):
     to drop, loop samples)."""
     pcm = subprocess.run([str(tool), str(sch), str(at)], check=True, capture_output=True).stdout
     n = len(pcm) // 4
-    hi = subprocess.run(['ffmpeg', '-v', 'error', '-f', 's16le', '-ar', '32000', '-ac', '2', '-i', '-', '-ar', '44100',
+    hi = subprocess.run([runtime_tool('ffmpeg'), '-v', 'error', '-f', 's16le', '-ar', '32000', '-ac', '2', '-i', '-', '-ar', '44100',
                          '-f', 's16le', '-'], input=pcm * 3, check=True, capture_output=True).stdout
     loop = round(n * 44100 / 32000)
     seg = hi[(loop - edge) * 4:(2 * loop + edge) * 4]
-    mp3 = subprocess.run(['lame', '--quiet', '-r', '-s', '44.1', '--bitwidth', '16', '--signed', '--little-endian',
+    mp3 = subprocess.run([runtime_tool('lame'), '--quiet', '-r', '-s', '44.1', '--bitwidth', '16', '--signed', '--little-endian',
                           '--resample', '44.1', '-m', 'j', '-b', '64', '--cbr', '-t', '--noreplaygain', '-', '-'],
                          input=seg, check=True, capture_output=True).stdout
     return mp3, edge + CODEC_DELAY, loop
@@ -1201,14 +1202,14 @@ def music(game, out):
         tmp = Path(tmp)
         (tmp / 'music.sch').write_bytes(data)
         tool = tmp / 'eaxa2pcm'
-        subprocess.run(['cc', '-O2', '-o', str(tool), str(ROOT / 'tools/eaxa2pcm.c')], check=True)
+        tool = helper('eaxa2pcm', tool, [ROOT / 'tools/eaxa2pcm.c'])
 
         def encode(k):
             if k in ambient:
                 mp3, lead, loop = encode_loop(tool, tmp / 'music.sch', tracks[k], tmp)
                 return mp3, loop * 32000 // 44100, lead, loop
             pcm = subprocess.run([str(tool), str(tmp / 'music.sch'), str(tracks[k])], check=True, capture_output=True).stdout
-            mp3 = subprocess.run(['lame', '--quiet', '-r', '-s', '32', '--bitwidth', '16', '--signed', '--little-endian',
+            mp3 = subprocess.run([runtime_tool('lame'), '--quiet', '-r', '-s', '32', '--bitwidth', '16', '--signed', '--little-endian',
                                   '--resample', '44.1', '-m', 'j', '-b', '128', '--cbr', '-t', '--noreplaygain', '-', '-'],
                                  input=pcm, check=True, capture_output=True).stdout
             if mp3[:3] == b'ID3' or mp3[:2] not in (b'\xff\xfb', b'\xff\xfa'):

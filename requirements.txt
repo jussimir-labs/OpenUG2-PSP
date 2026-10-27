@@ -5,3 +5,14 @@ pillow==12.3.0
 matplotlib==3.11.2
 quadprog==0.1.13
 # Install this helper without its dependencies (it requests an older quadprog): pip install --no-deps trajectory-planning-helpers==0.79
+
+# Frozen transitive wheel versions for the portable runtime.
+contourpy==1.4.0
+cycler==0.12.1
+fonttools==4.68.0
+kiwisolver==1.5.1
+packaging==26.3
+pyparsing==3.3.3
+python-dateutil==3.0.0
+six==1.17.0
+tzdata==2026.5

@@ -73,6 +73,7 @@ class HelperTests(Fixture):
         self.out.mkdir();(self.out/'.nfsu2-psp-build').write_text('{}')
         self.assertEqual(g.validate_paths(str(self.iso),str(self.out),self.root)[1],self.out)
 
+    @unittest.skipIf(os.name == "nt", "POSIX-specific fixture; Windows tree cancellation has a native job test")
     def test_resume_cannot_follow_directory_symlinks(self):
         self.out.mkdir();(self.out/'.nfsu2-psp-build').write_text('{}')
         external=self.base/'unique-user-folder';external.mkdir();(external/'unique.txt').write_text('keep')
@@ -130,6 +131,7 @@ class HelperTests(Fixture):
         with self.assertRaises(g.UserError):self.app.launch('prepare',{})
 
     @unittest.skipIf(os.name=='nt','POSIX process group test')
+    @unittest.skipIf(os.name == "nt", "POSIX-specific fixture; Windows tree cancellation has a native job test")
     def test_cancel_reaps_orphan_converter_group(self):
         pidfile=self.base/'child-pid'
         child="import time,signal;signal.signal(signal.SIGINT,signal.SIG_IGN);time.sleep(60)"

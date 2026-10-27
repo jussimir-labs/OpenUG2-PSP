@@ -27,6 +27,8 @@ HERE = Path(__file__).resolve().parent
 sys.dont_write_bytecode = True   # (nothing written beside the tool: only in the output folder)
 sys.path.insert(0, str(HERE))
 from sources import SOURCES, SourceError  # noqa: E402
+sys.path.insert(0, str(HERE / 'tools'))
+import native_runtime
 
 EBOOT = HERE / 'eboot/EBOOT.PBP'
 RELEASE = HERE / 'eboot/release.json'
@@ -159,7 +161,7 @@ def sha256(path, label=None):
 
 
 def find_cjpegli(explicit):
-    for cand in [explicit, os.environ.get('NFSU2_CJPEGLI'), HERE / '.tools/jpegli/build/tools/cjpegli',
+    for cand in [native_runtime.binary('cjpegli'), explicit, os.environ.get('NFSU2_CJPEGLI'), HERE / '.tools/jpegli/build/tools/cjpegli',
                  HERE / '.tools/jpegli/build/tools/cjpegli.exe', shutil.which('cjpegli')]:
         if cand and Path(cand).is_file():
             return Path(cand).resolve()
@@ -175,7 +177,7 @@ def recipe_problems():
     # New source-data producers are stdlib-only; their canonical tables and
     # standalone archive reader must be present before any expensive stage.
     for name in ('export_physics.py', 'export_road.py', 'source_data.py',
-                 'nitro_constants.json', 'road_constants.json'):
+                 'nitro_constants.json', 'road_constants.json', 'native_runtime.py', 'process_control.py'):
         if not (HERE / 'tools' / name).is_file():
             problems.append(f'fonte da física original ausente: tools/{name}')
     if not (HERE / 'tools/nos_bank.py').is_file():
@@ -201,10 +203,16 @@ def preflight(args):
         problems.append(f'faltam módulos do Python: {", ".join(missing)} (rode o ./setup.sh, que os instala em .venv, e use '
                         f'o Python de lá: .venv/bin/python build_game.py).')
     for tool in ('ffmpeg', 'lame'):
-        if not shutil.which(tool):
+        if not native_runtime.binary(tool) and not shutil.which(tool):
             problems.append(f'falta o programa {tool} (macOS: brew install {tool}; Linux: apt install {tool}).')
-    if not shutil.which('cc'):
+    if not native_runtime.bundled() and not shutil.which('cc'):
         problems.append('falta um compilador C chamado cc (macOS: xcode-select --install; Linux: apt install build-essential).')
+    if native_runtime.bundled():
+        for tool in native_runtime.NAMES:
+            try:
+                native_runtime.binary(tool)
+            except RuntimeError as exc:
+                problems.append(str(exc))
     cjpegli = None
     if not args.sem_filmes:
         cjpegli = find_cjpegli(args.cjpegli)

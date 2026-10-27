@@ -6,6 +6,7 @@ The existing PSP speech reader remains EA-XA/32 kHz: conversion happens here.
 from pathlib import Path
 import subprocess
 import tempfile
+from native_runtime import helper
 
 HERE = Path(__file__).resolve().parent
 
@@ -14,9 +15,9 @@ class Decoder:
         self.tmp = tempfile.TemporaryDirectory(prefix='nfsu2-microtalk-')
         self.exe = Path(self.tmp.name)/'mt2pcm'
         try:
-            subprocess.run(['cc','-O2','-std=c11','-o',str(self.exe),str(HERE/'mt2pcm.c'),str(HERE/'vendor/utk/utkdec.c'),'-lm'],check=True)
+            self.exe=helper('mt2pcm',self.exe,[HERE/'mt2pcm.c',HERE/'vendor/utk/utkdec.c'],['-std=c11'])
             self.encoder=Path(self.tmp.name)/'xaencode'
-            subprocess.run(['cc','-O2','-std=c11','-o',str(self.encoder),str(HERE/'xaencode.c'),'-lm'],check=True)
+            self.encoder=helper('xaencode',self.encoder,[HERE/'xaencode.c'],['-std=c11'])
         except BaseException:
             self.tmp.cleanup()
             raise
