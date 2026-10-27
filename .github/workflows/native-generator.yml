@@ -32,7 +32,7 @@ jobs:
           msystem: MINGW64
           update: true
           install: >-
-            git make tar curl mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
+            git make tar curl diffutils mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
             mingw-w64-x86_64-ninja perl
       - name: Cached native tools
         uses: actions/cache@v4

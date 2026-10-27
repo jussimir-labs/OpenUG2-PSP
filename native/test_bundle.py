@@ -30,7 +30,7 @@ def fixture_probe(root):
  encoded=execute('xaencode',input=raw).stdout
  assert encoded==convert_audio.encode_xa(pcm),'EA-XA differs from the Python reference'
  with tempfile.TemporaryDirectory(prefix='native QA ação ')as tmp:
-  tmp=Path(tmp);wave=tmp/'input áudio.raw';wave.write_bytes(raw)
+  tmp=Path(tmp).resolve();wave=tmp/'input áudio.raw';wave.write_bytes(raw)
   resampled=execute('ffmpeg','-v','error','-f','s16le','-ar','32000','-ac','1','-i',wave,'-ar','44100','-f','s16le','-').stdout
   assert len(resampled)>len(raw)
   mp3=execute('lame','--quiet','-r','-s','32','--bitwidth','16','--signed','--little-endian','-m','m','-','-',input=raw).stdout

@@ -20,7 +20,7 @@ case "$(uname -s)" in MINGW*|MSYS*) SUFFIX=.exe; EXTRA=(--target-os=mingw32 --ar
  ./configure --disable-doc --disable-debug --disable-shared --enable-static --disable-network --disable-autodetect \
   --disable-ffplay --disable-ffprobe --disable-x86asm --disable-encoders --enable-encoder=rawvideo,pcm_s16le \
   --disable-hwaccels --disable-devices --extra-ldflags="$LDFLAGS_EXTRA" "${EXTRA[@]}"
- make -j "$JOBS" ffmpeg
+ make -j "$JOBS" "ffmpeg$SUFFIX"
  cp "ffmpeg$SUFFIX" "$OUT/"
 )
 (

@@ -33,3 +33,15 @@ def helper(name, destination, sources, flags=()):
 
 def tool(name):
     return str(binary(name) or name)
+
+
+def local_path(path):
+    """Canonical comparison paths, including Rust's Windows verbatim prefix."""
+    resolved = Path(path).expanduser().resolve()
+    if os.name == 'nt':
+        text = str(resolved)
+        if text.startswith('\\\\?\\UNC\\'):
+            return Path('\\\\' + text[8:])
+        if text.startswith('\\\\?\\'):
+            return Path(text[4:])
+    return resolved

@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / 'tools'))
 import native_runtime
 from process_control import WindowsJob, lock_file
+ROOT = native_runtime.local_path(ROOT)
 sys.dont_write_bytecode = True
 
 
@@ -46,10 +47,10 @@ def python_runtime(root=ROOT):
 
 
 def validate_paths(iso, output, root=ROOT):
-    root = root.resolve()
+    root = native_runtime.local_path(root)
     if not isinstance(iso, str) or not isinstance(output, str) or not iso.strip() or not output.strip():
         raise UserError('Choose your ISO and output folder.')
-    disc, out = Path(iso).expanduser().resolve(), Path(output).expanduser().resolve()
+    disc, out = native_runtime.local_path(iso), native_runtime.local_path(output)
     if not disc.is_file() or disc.suffix.lower() != '.iso':
         raise UserError('Choose a complete US Underground 2 .iso file.')
     if out == root or out in root.parents or disc == out or out in disc.parents:
