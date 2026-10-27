@@ -21,6 +21,26 @@ def fixture_probe(root):
     sys.path.insert(0, str(root / "tools"))
     import native_runtime as n
     import convert_audio
+
+    # Execute the compiled numerical libraries used by racing-line conversion.
+    # Imports alone do not exercise their BLAS/solver DLLs on a clean Windows host.
+    import numpy as np
+    from scipy import linalg
+    import quadprog
+
+    np.testing.assert_allclose(
+        np.linalg.svd(np.diag([3.0, 1.0]), compute_uv=False),
+        [3.0, 1.0],
+        rtol=0,
+        atol=1e-12,
+    )
+    np.testing.assert_allclose(
+        linalg.svdvals(np.diag([3.0, 1.0])), [3.0, 1.0], rtol=0, atol=1e-12
+    )
+    optimum = quadprog.solve_qp(
+        np.eye(2), np.array([1.0, 2.0]), np.eye(2), np.zeros(2)
+    )[0]
+    np.testing.assert_allclose(optimum, [1.0, 2.0], rtol=0, atol=1e-12)
     from PIL import Image
 
     def execute(name, *args, **kw):
@@ -151,6 +171,7 @@ def fixture_probe(root):
         "jpeg_sha256": hashlib.sha256(jpg_data).hexdigest(),
         "movie_pcm_sha256": hashlib.sha256(movie_data).hexdigest(),
         "pack_sha256": pack_digest,
+        "native_numerical_libraries": True,
         "synthetic_fixtures_only": True,
     }
 

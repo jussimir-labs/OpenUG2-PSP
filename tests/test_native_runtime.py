@@ -83,6 +83,40 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout, value)
 
+    @unittest.skipUnless(os.name == "nt", "Windows directory junctions")
+    def test_resume_rejects_windows_junction_without_touching_target(self):
+        import generator
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp).resolve()
+            root = base / "tool"
+            root.mkdir()
+            iso = base / "fixture.iso"
+            iso.write_bytes(b"fixture")
+            output = base / "output"
+            output.mkdir()
+            (output / ".nfsu2-psp-build").write_text("{}")
+            external = base / "unique"
+            external.mkdir()
+            retained = external / "keep.txt"
+            retained.write_text("keep")
+            junction = output / ".trabalho"
+            command = str(
+                Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32/cmd.exe"
+            )
+            subprocess.run(
+                [command, "/c", "mklink", "/J", str(junction), str(external)],
+                check=True,
+                capture_output=True,
+            )
+            try:
+                with self.assertRaises(generator.UserError):
+                    generator.validate_paths(str(iso), str(output), root)
+                self.assertEqual(retained.read_text(), "keep")
+            finally:
+                junction.rmdir()
+
     @unittest.skipUnless(os.name == "nt", "Windows verbatim paths")
     def test_verbatim_paths_keep_tool_folder_protected(self):
         import generator

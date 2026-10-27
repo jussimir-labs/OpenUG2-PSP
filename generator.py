@@ -64,7 +64,7 @@ def validate_paths(iso, output, root=ROOT):
             raise UserError('This folder already contains files. Choose a new folder; nothing will be deleted.')
         if (out / 'PSP').exists():
             raise UserError('This output already contains a PSP folder. Keep it and choose a new output.')
-        if any(p.is_symlink() and p.is_dir() for p in out.rglob('*')):
+        if any((p.is_symlink() or getattr(p, 'is_junction', lambda: False)()) and p.is_dir() for p in out.rglob('*')):
             raise UserError('The output contains a linked folder. Choose a new output to keep external files untouched.')
         if any(out.rglob('SAVEDATA')) or any(out.rglob('*.sav')):
             raise UserError('The output contains saves. Choose another folder; your saves will be preserved.')

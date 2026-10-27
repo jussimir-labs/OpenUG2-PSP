@@ -194,82 +194,118 @@ def vendor_macos(package, originals):
 
 
 def vendor_windows(package):
-    """MinGW helper dependencies are shipped beside every executable using them."""
-    roots = [package / "runtime/bin", package / "runtime/python"]
-    search = [
-        *roots,
-        *[Path(p) for p in os.environ.get("PATH", "").split(os.pathsep) if p],
-    ]
+    """Audit every loaded native module; never depend on CI's installed VC tools."""
+    system = set(
+        """kernel32 kernelbase user32 advapi32 msvcrt ucrtbase msvcp_win ole32 oleaut32
+        shell32 ws2_32 wsock32 bcrypt ntdll gdi32 gdi32full crypt32 cryptbase secur32
+        winmm version shlwapi imm32 comdlg32 comctl32 rpcrt4 normaliz userenv psapi
+        dbghelp imagehlp wintrust setupapi cfgmgr32 winhttp wininet urlmon netapi32
+        wtsapi32 powrprof propsys dwmapi uxtheme msimg32 opengl32 glu32 combase
+        ncrypt sspicli cabinet pdh ntmarta synchronization dnsapi iphlpapi dhcpcsvc
+        hid winspool wldap32 sensapi wsock32 oleacc usp10 avrt mswsock authz""".split()
+    )
     objdump = shutil.which("objdump")
     if not objdump:
         raise RuntimeError("Build-time objdump is required to audit Windows DLLs.")
-    # The root supervisor must use only the Windows system ABI: its C runtime
-    # is linked statically, so a clean Windows install needs no redistributable.
-    root_imports = subprocess.check_output(
-        [objdump, "-p", str(package / "nfsu2-generator.exe")],
-        text=True,
-        errors="replace",
-    )
-    for line in root_imports.splitlines():
-        if "DLL Name:" in line and any(
-            name in line.lower()
-            for name in ["vcruntime", "msvcp", "libgcc", "libstdc++", "msys-"]
-        ):
-            raise RuntimeError(
-                "Supervisor requires an external runtime: " + line.strip()
+
+    def imports(path):
+        output = subprocess.check_output(
+            [objdump, "-p", str(path)], text=True, errors="replace"
+        )
+        return [
+            line.split("DLL Name:", 1)[1].strip()
+            for line in output.splitlines()
+            if "DLL Name:" in line
+        ]
+
+    def os_owned(name):
+        low = name.lower()
+        return (
+            low.startswith(("api-ms-win-", "ext-ms-"))
+            or low.removesuffix(".dll").removesuffix(".drv") in system
+        )
+
+    root_imports = imports(package / "nfsu2-generator.exe")
+    if any(not os_owned(name) for name in root_imports):
+        raise RuntimeError(
+            "Supervisor requires a non-system runtime: " + ", ".join(root_imports)
+        )
+
+    python = package / "runtime/python"
+    bins = package / "runtime/bin"
+    private = {f.name.lower(): f for f in (package / "runtime").rglob("*.dll")}
+    paths = [Path(p) for p in os.environ.get("PATH", "").split(os.pathsep) if p]
+    redist = []
+    for prefix in [
+        os.environ.get("ProgramFiles", "C:/Program Files"),
+        os.environ.get("ProgramFiles(x86)", "C:/Program Files (x86)"),
+    ]:
+        redist.extend(
+            Path(prefix).glob(
+                "Microsoft Visual Studio/*/*/VC/Redist/MSVC/*/x64/Microsoft.VC*.CRT"
             )
-    if objdump:
-        pending = list((package / "runtime/bin").glob("*.exe"))
-        seen = set()
-        while pending:
-            exe = pending.pop()
-            if exe.name.lower() in seen:
+        )
+    if os.environ.get("VCToolsRedistDir"):
+        redist.extend(
+            Path(os.environ["VCToolsRedistDir"]).glob("x64/Microsoft.VC*.CRT")
+        )
+    redist = sorted(set(redist), reverse=True)
+    pending = [
+        package / "nfsu2-generator.exe",
+        *bins.glob("*.exe"),
+        *python.glob("*.exe"),
+        *python.rglob("*.pyd"),
+        *python.rglob("*.dll"),
+    ]
+    seen = set()
+    copied = {}
+    count = 0
+    while pending:
+        module = pending.pop()
+        if module in seen:
+            continue
+        seen.add(module)
+        count += 1
+        for name in imports(module):
+            if os_owned(name):
                 continue
-            seen.add(exe.name.lower())
-            text = subprocess.check_output(
-                [objdump, "-p", str(exe)], text=True, errors="replace"
-            )
-            for line in text.splitlines():
-                if "DLL Name:" not in line:
-                    continue
-                name = line.split("DLL Name:", 1)[1].strip()
-                # Windows 10 system ABI, not an optional redistributable.
-                if name.lower().startswith(
-                    ("api-ms-win-", "ext-ms-")
-                ) or name.lower() in {
-                    "kernel32.dll",
-                    "user32.dll",
-                    "advapi32.dll",
-                    "msvcrt.dll",
-                    "ucrtbase.dll",
-                    "ole32.dll",
-                    "shell32.dll",
-                    "ws2_32.dll",
-                    "bcrypt.dll",
-                    "ntdll.dll",
-                    "gdi32.dll",
-                    "crypt32.dll",
-                    "secur32.dll",
-                    "winmm.dll",
-                    "version.dll",
-                    "shlwapi.dll",
-                    "imm32.dll",
-                    "comdlg32.dll",
-                    "comctl32.dll",
-                }:
-                    continue
-                source = next((p / name for p in search if (p / name).is_file()), None)
-                if not source:
-                    raise RuntimeError("Missing Windows DLL: " + name)
-                target = package / "runtime/bin" / name
-                if not target.exists():
-                    shutil.copy2(source, target)
-                    pending.append(target)
-    # CPython's redistributable DLLs must be beside binaries that need them.
-    for name in ["vcruntime140.dll", "vcruntime140_1.dll"]:
-        src = package / "runtime/python" / name
-        if src.exists():
-            shutil.copy2(src, package / "runtime/bin" / name)
+            low = name.lower()
+            vc = low.startswith(("vcruntime", "msvcp140", "concrt140", "vccorlib140"))
+            source = private.get(low)
+            if source is None:
+                search = redist if vc else paths
+                source = next(
+                    (folder / name for folder in search if (folder / name).is_file()),
+                    None,
+                )
+                if source is None:
+                    raise RuntimeError(
+                        f"Missing private Windows DLL: {name} required by {module.relative_to(package)}"
+                    )
+                source = source.resolve()
+            # Put CRT/GCC dependencies next to both Python and the native tools.
+            # Wheels keep their own hashed library layouts and bootstrap loaders.
+            if vc or low not in private:
+                for folder in [python, bins]:
+                    dest = folder / name
+                    if dest.resolve() != source.resolve():
+                        shutil.copy2(source, dest)
+                    pending.append(dest)
+                    private[low] = dest
+                copied[name] = (
+                    str(source.relative_to(package))
+                    if source.is_relative_to(package)
+                    else str(source)
+                )
+    audit = {
+        "native_modules": count,
+        "copied_dll_sources": copied,
+        "system_dlls_only_outside_package": True,
+        "source": "private Python wheels / portable CPython / MinGW toolchain / Visual Studio release redistributable directory",
+    }
+    (package / "runtime/windows-library-audit.json").write_text(
+        json.dumps(audit, indent=2) + "\n"
+    )
 
 
 def windows_utf8(package):
