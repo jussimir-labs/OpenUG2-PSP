@@ -1,0 +1,33 @@
+{
+  "candidate": "closed-beta-20261027-beta01-sponsor-audio18",
+  "scope": "Expected final source-package identity, only EBOOT delta versus frozen RC17. No asset conversion or multi-GB rehash in kit staging; no quality approval by hash equality.",
+  "source_data_receipt_sha256": "90bc71ac42030ba8a58e94df7ab822cd6b3a7f9d1e8192610f4c09ee67895eba",
+  "sources": {
+    "xbox": {
+      "files": 162,
+      "packed_entries": 753,
+      "data_id": "9576",
+      "pack_sha256": "3f08a47c9837de623a5023175d6c52dc2e1f09aa1f9381c31aba674fc5062ffb",
+      "sfx_sha256": "1c393b4fa2c84fbbce962d5ffd8236b7a73cfef7337d36294b50cdca18d3f37f",
+      "changed_vs_RC17": [
+        "EBOOT.PBP"
+      ],
+      "unchanged_vs_RC17": 161,
+      "source_qualification": "ExistingXboxISOidentified"
+    },
+    "ps2": {
+      "files": 159,
+      "packed_entries": 756,
+      "data_id": "8729",
+      "pack_sha256": "d0e10e1a8715e5fcb6c860a70a5017c248bbf1a169892b1e7981d6ee8a355a5b",
+      "sfx_sha256": "b75e35b12bc9713abe4a30f196e034f7ecb8f048d50434ce55dec5ecce352c29",
+      "changed_vs_RC17": [
+        "EBOOT.PBP"
+      ],
+      "unchanged_vs_RC17": 158,
+      "source_qualification": "PS2 reconstructed ISO179files, originaldiscnotidentified"
+    }
+  },
+  "baseline_kit17_preserved": true,
+  "upstream_lineage_note": "The upstream data18 receipt retains changed/old_packed_entries fields from an older pre-NOS comparison. They are not used as delta18 proof. Full SHA256 maps independently compared with frozen RC17 differ only at EBOOT.PBP."
+}

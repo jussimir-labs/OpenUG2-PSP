@@ -1,43 +1,66 @@
-# First closed beta: known issues
+# Closed Beta 1 — RC21: known issues
 
-Executable `bf7f21e3` restores the 4u configuration, PGO and LTO. The only new
-code change restores Press START visibility. File identity is not full approval.
+RC21 was accepted by Jussimir for the first closed beta after his manual test on 27 October 2026.
+This acceptance is limited to starting the beta. It does not establish full-game completion,
+all-device compatibility, PSP-1000 support or stable 30 fps throughout the game.
 
-- **Tunnel Construction (drag 4401):** opponents can get stuck and repeatedly
-  respawn. Jussimir deferred the fix. Observed on the previous executable;
-  not retested here.
-- **Performance/devices:** global 30 fps and PSP1000, PSP-2000 and Go support
-  remain unapproved. The human PSP-3000 host0 check confirmed the title prompt,
-  brief Freemont driving and return to menu. No full race, card installation or
-  physical native-save test was performed on this executable.
-- **PSPLink:** the automatic stop required manually reopening PSPLink. Game
-  exit and session cleanup were then confirmed. The human menu report is
-  retained; the later read did not independently confirm that screen.
-  The previous executable's Bus error root cause is not proved globally fixed.
-- **Visuals:** tone, materials and visibility differences remain under review.
-- **PS2:** 179 American inputs were verified using a reconstructed image.
-  The original USA image remains unverified; other revisions are refused.
-  See [tools/PS2_SOURCE.md](tools/PS2_SOURCE.md).
+## Before testing
 
-This executable passed PPSSPP title and 4011-prefix checks, native save/cold
-with both data sources using existing fixtures, and a separate new-profile,
-career/garage save-dialog and cold-load test. The harness required termination
-of its held emulator after the first phase; the technical evidence records it.
-Earlier airport/350Z, first 206, first garage and real-win reward proofs belong
-to the previous RELEASE03 executable. No complete career is approved.
+- **Extended memory:** this executable uses `PSP_LARGE_MEMORY=1`. PSP-1000 compatibility is
+  not established. Contact the organizer if that is your only device. Other models, firmware,
+  Vita/Adrenaline and PPSSPP combinations need their own reports.
+- **Stability Control:** leave it **Off**. The On option is present but has no implemented
+  effect in this exact RC21 executable.
+- **Updates:** use a new generator output and install the complete result. RC21 changes both
+  `EBOOT.PBP` and `pack.n2pk`; an executable-only update keeps stale physics.
+- Back up your saves. Broad physical save/reload and full-career coverage remain pending.
 
-Reports should identify the exact executable, device, source, track and steps.
-For generator errors include relatorio.json and the failing step's log.
+## Gameplay and presentation
 
-## Reports from the current Memory Stick test
+- Rivals may become stuck in repeated recovery in **Tunnel Construction / Drag 4401**.
+- Suspension and handbrake changes have bounded directed checks, not an all-car/all-upgrade
+  original-physics parity approval. Human Drift uses a separate original-derived Core.
+- Custom dyno and special presets retain the earlier whole-event handling path.
+- Horizontal collisions retain a 2D adaptation; extreme behavior, hydraulics and special
+  branches remain incompletely qualified.
+- Full-career progression, natural rewards and every native save/cold-load path have not
+  been requalified on RC21. Earlier executable results remain historical.
+- Tone, materials, UVs, visibility/culling, doors and all camera profiles need broader review.
+- All 28 movies are structurally available in both source references. This does not verify
+  playback of every movie or every audio family on every device. Movie skipping remains available.
+- Global stable 30 fps and PSP-1000 memory/performance targets remain unfinished.
 
-These remain open, with examples and evidence in GitHub:
+## Existing reports to recheck on RC21
 
-- [EA TRAX logo opacity and outline (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1).
-- [Engine cuts/clicks in drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2). The audit found sample-bank lifetime and loop-cursor defects; their exact contribution to the heard symptom still needs isolation.
-- [Engine loop while paused (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3). Not reproduced in the directed local pause state check.
-- [Apparently missing braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4). Ordinary braking is absent from one tyre-audio input; the reported case still needs comparison.
-- [Music not returning after drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5). Local evidence showed ambience retaining the music stream after returning to the menu.
+Please include the device, source, car, mode/track and exact steps. Fixes in code do not
+automatically close a person's observation.
 
-No gameplay fix or replacement executable is included in this documentation
-and browser-generator update. See the [audio audit](docs/audits/audio.md).
+- [EA TRAX badge/cap (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1):
+  order, proportions and later presentation work are included; please confirm while playing.
+- [Cuts/clicks during Drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2):
+  bank lifetime and loop corrections are included; the reported audible symptom still needs listening.
+- [Loop during pause (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3):
+  pause/environment cleanup and limiter changes are included; please identify the sound and steps.
+- [Braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4):
+  braking inputs and rival emitters have fixes; target listening across handling paths remains necessary.
+- [Music after Drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5):
+  report the exact event/menu transition. Drift/Drag keep their original ambience policy.
+
+Master Volume remains the port's final-output policy; complete original mix parity is not established.
+The reverb parser now reads counted FXEDIT modules, but the port does not reproduce the complete
+original DSP graph.
+
+## Source and tooling limitations
+
+- US Xbox and PS2 SLUS_210.65 conversion paths are included. The original US PS2 disc image
+  itself is not independently verified; retained file-level evidence is distinct from disc-image
+  validation. PAL and other revisions are refused. See [source details](tools/PS2_SOURCE.md).
+- Windows requires WSL. Setup and conversion are not qualified on every Windows/Linux/macOS setup.
+- File identity against the reference verifies the generated package, not gameplay quality.
+- This release reused frozen whole-package evidence and rechecked the changed asset producers;
+  it did not repeat a complete multi-hour ISO conversion during release packaging.
+- Historical PSPLink shutdown problems are separate from the normal XMB installation instructions;
+  no general PSPLink shutdown fix is claimed here.
+
+[Instructions](README.md) · [Test checklist](docs/TESTING.md) ·
+[Qualification receipt](docs/qualification/RC21-QUALIFICATION.json)

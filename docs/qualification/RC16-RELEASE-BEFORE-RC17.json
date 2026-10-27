@@ -1,0 +1,71 @@
+{
+  "candidate": "closed-beta-20261027-beta01-nitro16",
+  "candidate_id": "local-nitro16-a2583001-scoped-headless-qualification",
+  "eboot_sha256": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+  "eboot_bytes": 4142447,
+  "build_id": "54bf0deee",
+  "source_commit": "54bf0deeec70d44fb4532ca5c511952632ea737f",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "supported_sources": [
+    "xbox",
+    "ps2"
+  ],
+  "publication_status": "LOCAL_CANDIDATE_NOT_PUBLISHED_OR_INSTALLED",
+  "quality_approval": "Directed native NOS render and normal UI/Drift/native SAVE gates qualified locally; natural fullrace cycle in progress. Manual PSP listening pending.",
+  "known_issues": [
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery",
+    "NOS/PURGE correction needs reporter listening on PSP; other camera mix profiles remain unqualified",
+    "Original USA PS2 ISO still unverified; retained179-input reconstructed-ISO evidence",
+    "4401 AI recovery remains deferred",
+    "PSP1000/global30fps/fullgame/visual-parity remain unapproved"
+  ],
+  "reference_scope": "Final postpack logical payload IDs normalized per source. File identity is separate from quality approval.",
+  "files_by_source": {
+    "xbox": 162,
+    "ps2": 159
+  },
+  "source_main_sha256": "ec0938a096fc67c3400b74c0c42f0a1c4241bb0d1f391ba5cb3f64d287c8d636",
+  "runtime_build_id_note": "Exact fixed EBOOT/source54bf; 4u configuration retained. No new physical test or card install.",
+  "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
+  "functional_scope": "Career GPS/event-icon Up/Accept/countdown/4.1s drive/Main and normal4311 NIS handoff/2.033s first motion/Main. Zero sampled handoff XZ/yaw jumps; three captures reviewed. No current fullrace/reward/SAVE or hardware approval.",
+  "psplink_cleanup": "Historical bf7f PSPLink stop required manual recovery; no new physical job.",
+  "historical_hardware_scope": "Only historicalbf7f had limited humanPSP3000/card observations. RC13e7ce, RC14 8c51 and RC15adb5 have no transferred physical/card approval.",
+  "previous_eboot_sha256": "adb5c8690f630b074ddc4b99898d22d42b9692cd6c8517fba4571bee0690d061",
+  "elf_sha256": "c426acb622b564950785494dd220be18b12d196be1eabc6b87e5221049fd9f7f",
+  "prx_sha256": "22733a003d924d522577c7d6639f8e0dcbd3e3dc6a34ee4044a1e16607ea5e13",
+  "qualification_receipts": [
+    "docs/qualification/RC16-QUALIFICATION.json",
+    "docs/qualification/RC16-GENERATOR-IDENTITY.json"
+  ],
+  "qualification_receipt": "docs/qualification/RC16-QUALIFICATION.json",
+  "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a",
+  "pgo_profile_count": 63,
+  "source_data_ids": {
+    "xbox": "9576",
+    "ps2": "8729"
+  },
+  "historical_receipts": [
+    "docs/qualification/RC14-QUALIFICATION.json",
+    "docs/qualification/RC14-RELEASE.json",
+    "docs/qualification/RC13-QUALIFICATION.json",
+    "docs/qualification/RC13-RELEASE.json"
+  ],
+  "historical_receipts_note": "Previouscandidateproofs retained as history, not transferred to new executable",
+  "source_snapshot_reference": "release-build-13-native-nos/source.tar",
+  "readiness_status": "DRAFT_PENDING_CURRENT_FULL_CYCLE_QUALIFICATION",
+  "generator_commit": "601c1219baaa98b5cc0e39b10ac878488f2f4f38",
+  "data_compatibility": "Use the complete matching generator output. This candidate changes EBOOT.PBP, pack.n2pk and sfx.n2sf; replacing EBOOT alone cannot provide native NOS banks."
+}

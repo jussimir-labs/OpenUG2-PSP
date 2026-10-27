@@ -1,10 +1,11 @@
 {
-  "candidate": "closed-beta-20261025-beta01-4u",
-  "candidate_id": "local-beta01-4u-titlefix-not-published",
-  "eboot_sha256": "bf7f21e3fcf743ac23121df8d01e54eabab9bb3db2213dd53b81874089cbe861",
-  "eboot_bytes": 3861607,
-  "build_id": "e0697840c",
-  "source_commit": "c97c452028a0e56a5272375ef136fe2dc201843e",
+  "candidate": "closed-beta-20261027-beta01-rc21",
+  "candidate_id": "closed-beta-1-rc21-42d252df",
+  "release_tag": "beta-1-rc21",
+  "eboot_sha256": "42d252dfb8a5f5f8d195027ad816ac0fa661fe3194e1de20f72a3ed29f436a95",
+  "eboot_bytes": 4211415,
+  "build_id": "cdf93ef2c7",
+  "source_commit": "cdf93ef2c7d8c66b3e40fcd612d281522c986da6",
   "build_flags": [
     "PGO=use",
     "LTO=1",
@@ -15,25 +16,36 @@
     "xbox",
     "ps2"
   ],
-  "publication_status": "LOCAL_PACKAGE_NOT_PUBLISHED",
-  "quality_approval": "limited-functional-checks-passed; cleanup-confirmed-after-human-recovery; not-full-game-or-device-approval",
+  "publication_status": "CLOSED_BETA_RELEASE",
+  "quality_approval": "Jussimir reported RC21 good enough for the first closed beta on 2026-10-27. This is a limited beta acceptance, not final release, PSP-1000, all-device, full-career or global 30fps qualification.",
   "known_issues": [
-    "drag-4401-rival-recovery-loop",
-    "tone-and-visibility-review-incomplete",
-    "psp1000-and-global30fps-unapproved",
-    "ps2-original-disc-image-unverified",
-    "card-installation-and-physical-native-save-not-tested",
-    "psplink-stop-required-manual-recovery"
+    "Extended-memory build; PSP-1000 compatibility and all-device support are not established.",
+    "Stable 30 fps throughout the game is not yet established.",
+    "Full-career completion and all save/reload paths are not qualified on RC21.",
+    "Drag 4401 rivals may become stuck in repeated recovery.",
+    "Stability Control On has no implemented effect in this executable; leave it Off.",
+    "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
+    "Custom dyno and special presets use the earlier handling path; collisions retain port adaptations.",
+    "Materials, visibility, doors, movies and all audio/camera combinations need broader testing.",
+    "The original US PS2 disc image has not been independently verified; PAL and other revisions are refused."
   ],
-  "reference_scope": "File identity of qualified closedbeta baseline only. Does not clear gameplay/source/device/visual limitations.",
+  "reference_scope": "File identity against retained RC19 complete package maps plus the exact RC21 physics/pack delta. Full ISO conversion was not repeated for release packaging; output identity does not establish gameplay quality.",
   "files_by_source": {
-    "xbox": 161,
-    "ps2": 158
+    "xbox": 162,
+    "ps2": 159
   },
-  "source_main_sha256": "a3df0483dcf4a7b850c08e9f6c2f59b9de5d4649305d06ecb83dbff045252084",
-  "source_c_h_manifest_sha256": "3a98496d2bc1c89694fc5394a26d97a53ae57201553c5cc2b1a679efec37d890",
-  "runtime_build_id_note": "Embedded e0697840c retained by frozen source build; exact executable identity is the SHA256 above.",
-  "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
-  "functional_scope": "PPSSPP: title, 4011 prefix, native save/cold both sources and new-profile dialog flow. Human PSP3000 host0: title, brief Freemont drive and return to menu. Postread not independent menu confirmation; cleanup confirmed after human PSPLink reopening. No full race or physical native save test on this executable.",
-  "psplink_cleanup": "Ordinary stop and HostCmd rescue did not confirm reconnection; human reopened PSPLink; game out, host0 restoration and lease release then confirmed. No root cause inferred."
+  "source_data_ids": {
+    "xbox": "bfaa",
+    "ps2": "804e"
+  },
+  "data_compatibility": "Use the complete RC21 generator and a new output folder. Both EBOOT.PBP and pack.n2pk differ from RC20/RC19; copying only the EBOOT leaves old physics data. Do not mix Xbox and PS2 output.",
+  "qualification_receipt": "docs/qualification/RC21-QUALIFICATION.json",
+  "elf_sha256": "c636dc599dbf9c508dd6905a49bcecdc6fa2c4fdaafa8323bae4e518db937921",
+  "prx_sha256": "372ccdae3370b07462389e5939a8de9d83c27c9ef757ba0de54fbd0fc7c683cc",
+  "debug_overlays": true,
+  "tester_invitations_sent_by_this_release": false,
+  "qualification_receipts": [
+    "docs/qualification/RC21-QUALIFICATION.json",
+    "docs/qualification/RC21-KIT-IDENTITY.json"
+  ]
 }

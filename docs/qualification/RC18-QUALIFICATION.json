@@ -1,0 +1,172 @@
+{
+  "status": "SCOPED_RC18_SOURCE_AND_HEADLESS_GATES_PASS_NOT_GLOBAL_APPROVAL",
+  "eboot_sha256": "da37c1120252916f3e70a8034d347ea111f09303237c65d495778d3882f0dfe1",
+  "source_commit": "68566e7bcb90786b18dc42494512dd1741c44f25",
+  "generator_commit": "1808daaca09629d90b6682f9dec722ff9485ef86",
+  "current_game_data_ids": {
+    "xbox": "9576",
+    "ps2": "8729"
+  },
+  "source_fixes": {
+    "sponsor": {
+      "host_cases": 12,
+      "peer": "RC18-SPONSOR-PEER.json",
+      "host": "RC18-SPONSOR-HOST.json",
+      "meaning": "Screen load failure no longer signs/saves first contract; bounded retry and explicit chosen contract retained"
+    },
+    "audio": {
+      "reproduced_old_UAF_paths": 3,
+      "positive_cases": 5,
+      "AEMS_PCM_loops": 16,
+      "PCM_samples": 361434,
+      "peer": "RC18-AUDIO-PEER.json",
+      "host": "RC18-AUDIO-OWNERSHIP.json",
+      "negative": "RC18-AUDIO-NEGATIVE.json",
+      "positive": "RC18-AUDIO-POSITIVE.json",
+      "meaning": "ACK-gated bank ownership, old bank retained on refusal; bounded XA signed-shift UB fix with PCM equality",
+      "not_cause_of_human_report_proven": true
+    }
+  },
+  "current_runtime_proofs": {
+    "streetx4602": {
+      "receipt": "docs/qualification/RC18-STREETX4602-RESULT.json",
+      "run": "56bf88c129f14940a98bacab6c572229",
+      "native_SAVE": true,
+      "stage": 1,
+      "best_events": [
+        5,
+        6
+      ],
+      "totals": {
+        "money": 500,
+        "rep": 400,
+        "races": 2
+      },
+      "three_laps": true
+    },
+    "streetx_cold": {
+      "receipt": "docs/qualification/RC18-STREETX4602-COLD.json",
+      "run": "95040f74b94649208f28ed78340b6d8b",
+      "all_kept_equal": true,
+      "no_new_SAVE": true
+    },
+    "PS2_private_native_SAVE_cold": {
+      "receipt": "docs/qualification/RC18-PS2-NATIVE-SAVE-COLD.json",
+      "passed": true,
+      "not_new_natural_PS2_race": true
+    },
+    "synthetic_sponsor_native_UI_SAVE_cold": {
+      "receipt": "docs/qualification/RC18-SPONSOR-FINAL.json",
+      "primary_run": "58c97caabdee4a35963214e6fa49aa28",
+      "cold_run": "abf883f6178c4328bf01c54fb3449065",
+      "all_kept_equal_title_and_crib": true,
+      "synthetic_five_wins_and_stage2_not_earned": true,
+      "normal_stage2_progression_approved": false
+    },
+    "normal_Focus_Rachel_audio_state": {
+      "receipt": "docs/qualification/RC18-AUDIO-INTEGRATION-QUALIFICATION.json",
+      "run": "d3e718b7fe4d4c8da277e7e9a467c4fa",
+      "families": [
+        "Focus",
+        "Rachel350Z"
+      ],
+      "normal_controls_only": true,
+      "one_process": true,
+      "game_memory_writes": 0,
+      "PCM_or_listening_approval": false
+    }
+  },
+  "pending": [],
+  "not_approved": [
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery",
+    "NOS/PURGE correction needs reporter listening on PSP; other camera mix profiles remain unqualified",
+    "Original USA PS2 ISO still unverified; retained179-input reconstructed-ISO evidence",
+    "4401 AI recovery remains deferred",
+    "PSP1000/global30fps/fullgame/visual-parity remain unapproved",
+    "Master volume remains the port final-output policy; original Master curve parity is unqualified",
+    "Reporter listening remains pending; the reproduced audio bank defects are not proven causes of the human sound report",
+    "Normal stage2 sponsor progression is not qualified by the synthetic sponsor fixture"
+  ],
+  "normal_stage2_sponsor_progression": false,
+  "real_earned_progression_scope": "Actual native first-win continuation to4602, best5+6, stage1 only",
+  "raw_receipt_label_notes": [
+    "StreetX run retains an old RC17 harness scope label, but its exact binary is da37 and its event is4602.",
+    "Cold result retains generic REAL_4101 status text; its scope/source_run/expected values establish the actual4602 reopen. Raw metadata copies remain verbatim."
+  ],
+  "copied_metadata": {
+    "RC18-SPONSOR-HOST.json": {
+      "source": "roadmap-resume-20261027/sponsor-ui/fixed-host-02/RESULT.json",
+      "sha256": "528bb6b985c98d24e0d4eba2767f89c4210bad3c3fc8b23f34b8b4e51214b3be"
+    },
+    "RC18-SPONSOR-PEER.json": {
+      "source": "roadmap-resume-20261027/sponsor-ui/PEER-REVIEW-FINAL.json",
+      "sha256": "2d90d75bb8ed1077187b48d63132b4559bbb8861354fc1c26e77e7e2d2a1bb74"
+    },
+    "RC18-AUDIO-OWNERSHIP.json": {
+      "source": "roadmap-resume-20261027/drift-audio/RESULT.json",
+      "sha256": "fb49cbb78143a4a27b4c35d7b015eaf71a9b481b20298e0fe52de1a056541c60"
+    },
+    "RC18-AUDIO-PEER.json": {
+      "source": "roadmap-resume-20261027/drift-audio/PEER-REVIEW.json",
+      "sha256": "26d17ca1c6fde19090cfe0895f129f2434490fc58e77b5d23bdc1ed519d9ff8d"
+    },
+    "RC18-AUDIO-NEGATIVE.json": {
+      "source": "roadmap-resume-20261027/drift-audio/gate/baseline-04/RESULT.json",
+      "sha256": "4a910fbbac07c75c1f04976ceec5e3ea43e3466eb39db840698d6c91ca8a233a"
+    },
+    "RC18-AUDIO-POSITIVE.json": {
+      "source": "roadmap-resume-20261027/drift-audio/gate/ack-03/RESULT.json",
+      "sha256": "ef974a459059af9fdf7c336906b154fc3738c6de46c4d6bcfeda9bbf028c084e"
+    },
+    "RC18-STREETX4602-RESULT.json": {
+      "source": "roadmap-resume-20261027/career-streetx4602-02/run/RESULT.json",
+      "sha256": "847d8759450b01abcbf209ea19a0c0224a62a4bba99d129ddbf8b97ab5dceea1"
+    },
+    "RC18-STREETX4602-COLD.json": {
+      "source": "roadmap-resume-20261027/career-streetx4602-02/cold-postwin/RESULT.json",
+      "sha256": "1eba197d25446051967ef62da6d2cd67f62e4d77bcfb12272154067757c66134"
+    },
+    "RC18-PS2-NATIVE-SAVE-COLD.json": {
+      "source": "rc18-sponsor-audio-validation/native-save-cold/ps2/RESULT.json",
+      "sha256": "0da3841e86cb0db5b6774ba88cfbea5c4f788e61324a59c96834e82547e1603c"
+    },
+    "RC18-SPONSOR-PRIMARY-PHASE.json": {
+      "source": "roadmap-resume-20261027/sponsor-integration/PRIMARY-RESULT-02.json",
+      "sha256": "793542b6f012219ebfc65a8891820752f3135bdcf8fa3927fcdbae461f3e9c34"
+    },
+    "RC18-AUDIO-INTEGRATION.json": {
+      "source": "roadmap-resume-20261027/audio-integration/RESULT.json",
+      "sha256": "6ab2c6eb9189a18a915eecfe4e7d7460cfa0386f69679df4c3ab216392504c34"
+    },
+    "RC18-AUDIO-INTEGRATION-QUALIFICATION.json": {
+      "source": "roadmap-resume-20261027/audio-integration/QUALIFICATION.json",
+      "sha256": "f31995612ffcf4034564b6e8422a982aee755289a29e5266552681aed1a98c5b"
+    },
+    "RC18-SPONSOR-FINAL.json": {
+      "source": "roadmap-resume-20261027/sponsor-integration/FINAL-RESULT.json",
+      "sha256": "838b31d0347308d751908555c635359d86e289d4cd5207919af2b492401b6d26"
+    },
+    "RC18-GATES-OWNER-REVIEW.json": {
+      "source": "roadmap-resume-20261027/CURRENT-GATES-REVIEW.json",
+      "sha256": "e74b7c272596616d8f9f914947aa05353200bc4515105bb442deffd4af06e0d6"
+    }
+  },
+  "hardware": false,
+  "installed": false,
+  "published": false,
+  "current_scoped_runtime_gates_passed": true,
+  "remaining_qualification": [
+    "Human listening/visual confirmation and target hardware",
+    "Real career progression beyond currentstage1/2earnedwins",
+    "Other camera/Master-original-curve/audio branches and full-game/global30fps coverage"
+  ],
+  "owner_review": "RC18-GATES-OWNER-REVIEW.json"
+}

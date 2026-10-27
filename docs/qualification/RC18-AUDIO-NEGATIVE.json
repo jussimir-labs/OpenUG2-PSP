@@ -1,0 +1,70 @@
+{
+  "status": "EXPECTED_UNSAFE_BASELINE_REPRODUCED",
+  "source_sha256": "ae6df874e96ee61f3203bbcca695ed97896a200ebcf789337290c6d355bc6c18",
+  "fixture_sha256": "74d07215217afcd5c54d361893708aba7a9808893e00f35b508cb60a62f19181",
+  "sanitizers": [
+    "address"
+  ],
+  "binary_sha256": "ba2bcd36d7c56d350facf88b38ae1abd12a5d8b1cce23ca55a6a59b211d760e4",
+  "assets": {
+    "engine-350Z_01d_shrt2.n2en": {
+      "bytes": 287856,
+      "sha256": "02df088e2bde268e12377520beaae1d4b6a057b07670ea1803e7e57e7b6f2b96"
+    },
+    "engine-Acura_ITR.n2en": {
+      "bytes": 333638,
+      "sha256": "dedb53058fe9bdd23ff1a3fcf7e10e3e17f1f89a8e90b3a73c067f1cbd50f8fc"
+    },
+    "aems-00.n2ab": {
+      "bytes": 108014,
+      "sha256": "5094c0aa1508cbddc6da1d9586eabdc93036e97e578efe9e9afb94bb95061fa7"
+    },
+    "aems-01.n2ab": {
+      "bytes": 89774,
+      "sha256": "e54f2194870980ee4aeff89838f65902886768b13ea5782aefb490e77dfa688b"
+    },
+    "gear-GEAR_MED_Base.n2sf": {
+      "bytes": 53690,
+      "sha256": "1c41024746b88c2c15b798e8afc1b980b37e398b9294d398bed783044846af23"
+    },
+    "gear-GEAR_MED_Lev1.n2sf": {
+      "bytes": 70416,
+      "sha256": "bfbd9b51397a4b6ba0b5edbf5591d67631550942fd6a24a47e3d25b1c1c4a5fb"
+    }
+  },
+  "rows": [
+    {
+      "mode": "engine-GIN",
+      "exit_code": -6,
+      "expected": true,
+      "ASan_UAF": true,
+      "UBSan_error": false,
+      "seconds": 0.497111708013108,
+      "stdout": "mode=1 proposed=0 reader_captured=0x105c34b54 old_allocation=0x105c34800 swap_return=1 elapsed_us=35527 mixed_before_release=0\n"
+    },
+    {
+      "mode": "AEMS",
+      "exit_code": -6,
+      "expected": true,
+      "ASan_UAF": true,
+      "UBSan_error": false,
+      "seconds": 0.1448211669921875,
+      "stdout": "mode=2 proposed=0 reader_captured=0x10143df08 old_allocation=0x101408800 swap_return=1 elapsed_us=35969 mixed_before_release=0\n"
+    },
+    {
+      "mode": "gear",
+      "exit_code": -6,
+      "expected": true,
+      "ASan_UAF": true,
+      "UBSan_error": false,
+      "seconds": 0.18217045898200013,
+      "stdout": "mode=3 proposed=0 reader_captured=0x62f000000448 old_allocation=0x62f000000400 swap_return=1 elapsed_us=35286 mixed_before_release=0\n"
+    }
+  ],
+  "all_expected": true,
+  "limits": [
+    "Delayed-reader scheduling is test-only. It proves reclamation correctness under that schedule, not that such a schedule caused a human audio report.",
+    "Exact real native PCM and actual mixer readers/loaders are used. No PSP/game/emulator run, no asset conversion.",
+    "LSan disabled because unsupported on this Mac; ASan and UBSan remain enabled."
+  ]
+}

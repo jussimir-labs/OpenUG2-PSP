@@ -1,0 +1,38 @@
+{
+  "candidate": "closed-beta-20261027-beta01-rc21",
+  "eboot_sha256": "42d252dfb8a5f5f8d195027ad816ac0fa661fe3194e1de20f72a3ed29f436a95",
+  "sources": {
+    "xbox": {
+      "physics_sha256": "1d2eca7cffcd995cf5bd12ee9bf761f99d9867dfb5f9d285dc859de81b6f0cb4",
+      "envsound_sha256": "f7a66903f902e40e668e95a51bd9f4dc5b087421a1c3fecf48ca5a99268fa180",
+      "streamed_pack_sha256": "33c565857ea3cadf0cb28812ed83f11ad9f8601e9eac5a65ee72d85aac21b2b2",
+      "data_id": "bfaa",
+      "manifest_files": 162,
+      "packed_entries": 753,
+      "full_iso_conversion": false,
+      "passed": true
+    },
+    "ps2": {
+      "physics_sha256": "1d2eca7cffcd995cf5bd12ee9bf761f99d9867dfb5f9d285dc859de81b6f0cb4",
+      "envsound_sha256": "75e9de9019f501d3c4f6ef91cc9f0324ca33988e6cb16e9aecb88f5a044b1184",
+      "streamed_pack_sha256": "ceea9fe8809252293c0f9e68f58d72587bf257fcd3a5d4333a899711838eb3ea",
+      "data_id": "804e",
+      "manifest_files": 159,
+      "packed_entries": 756,
+      "full_iso_conversion": false,
+      "passed": true
+    }
+  },
+  "english_document_links": "passed",
+  "shell_syntax": "passed",
+  "recipe_preflight": "passed",
+  "full_iso_reconversion_repeated": false,
+  "runtime_executed_for_packaging": false,
+  "generator_safety_tests": {
+    "passed": 26,
+    "python": "3.12.14",
+    "scope": "local HTTP origin/token controls, paths/output and save protection, lifecycle/cancellation; no full ISO conversion"
+  },
+  "test_log_sha256": "ae9035e73c5d9df403710af0cac109a68abd3d84caf3dd325e3f36c278733de8",
+  "verified_at": "2026-10-27T22:13:41.134567+00:00"
+}

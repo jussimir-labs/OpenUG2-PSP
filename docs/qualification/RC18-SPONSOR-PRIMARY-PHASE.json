@@ -1,0 +1,137 @@
+{
+  "status": "PRIMARY_SYNTHETIC_SPONSOR_UI_SAVE_PASS_COLD_PENDING",
+  "using_native_only": true,
+  "source_native_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "360bc7e13c45594e798481b3b4ba618705c417d853965dc0d3bfc973337eaf85",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "5354badb8ea090924df6aff50b02b4e2fb9ef26d7a4ce0408145d69bf5d05aed"
+  },
+  "synthetic_setup": true,
+  "not_earned_progression": true,
+  "build": {
+    "source": "68566e7bcb90786b18dc42494512dd1741c44f25",
+    "eboot": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/release-build-15-sponsor-audio-ownership/binaries/EBOOT.PBP",
+    "eboot_sha256": "da37c1120252916f3e70a8034d347ea111f09303237c65d495778d3882f0dfe1",
+    "elf": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/release-build-15-sponsor-audio-ownership/binaries/nfsu2-viewer.elf",
+    "elf_sha256": "660791b2e3c1c6233905c89dabb545e701d1ef38dcaef5e5c1a2e495990b0342"
+  },
+  "fixture_legacy_sha256": "b2213bb033b9ff81ee526c6c6d2667f6cf170ecd3a030202750f0eb8ee678b64",
+  "before_native_absent": false,
+  "emulator_runs": 1,
+  "initial_empty_memory_stick": false,
+  "primary_run": "58c97caabdee4a35963214e6fa49aa28",
+  "before_ui": {
+    "money": 1250,
+    "rep": 1500,
+    "races": 5,
+    "stage": 2,
+    "sponsor": -1,
+    "slots": 1,
+    "car": 0,
+    "previous_average_rep": 300
+  },
+  "native_loaded": {
+    "NFSU2VIEWCAREER/DATA.BIN": "360bc7e13c45594e798481b3b4ba618705c417d853965dc0d3bfc973337eaf85",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "5354badb8ea090924df6aff50b02b4e2fb9ef26d7a4ce0408145d69bf5d05aed"
+  },
+  "offered_before": {
+    "money": 1250,
+    "rep": 1500,
+    "races": 5,
+    "stage": 2,
+    "sponsor": -1,
+    "slots": 1,
+    "car": 0,
+    "previous_average_rep": 300
+  },
+  "offer_ids": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "after_accept": {
+    "money": 2575,
+    "rep": 1500,
+    "races": 5,
+    "stage": 2,
+    "sponsor": 1,
+    "slots": 2,
+    "car": 0,
+    "previous_average_rep": 300
+  },
+  "after_manual_save": {
+    "money": 2575,
+    "rep": 1500,
+    "races": 5,
+    "stage": 2,
+    "sponsor": 1,
+    "slots": 2,
+    "car": 0,
+    "previous_average_rep": 300
+  },
+  "native_after_save": {
+    "NFSU2VIEWCAREER/DATA.BIN": "48762cdead3a17c56d46546ea45fbff3560c861f51915492121a20bb5f293561",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "262a7a8562a558b75bdf7a4b8017d4ae6d9317153e0d1cea2e73ac71145e3db6"
+  },
+  "flow": {
+    "name": "synthetic-stage2-sponsor",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [],
+    "command": [
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-integration/primary-02/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=65023",
+      "--timeout=300",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-integration/primary-02/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "58c97caabdee4a35963214e6fa49aa28",
+    "pack_activation": {
+      "on_card": 1,
+      "entries": 753
+    },
+    "movie_skips": [
+      "movie-PSA.n2mv",
+      "movie-FMVOPENING.n2mv"
+    ],
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "screens": [
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-integration/primary-02/synthetic-stage2-sponsor/main-before-sponsor.png",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-integration/primary-02/synthetic-stage2-sponsor/sponsor-offers-synthetic.png",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-integration/primary-02/synthetic-stage2-sponsor/eurolite-selected-by-pad.png",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-integration/primary-02/synthetic-stage2-sponsor/synthetic-contract-game-saved.png"
+    ],
+    "saves_written": [],
+    "debug_files_written": [
+      ".movie-playback.log",
+      "boot.txt"
+    ],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 17.494076208997285
+  },
+  "primary_passed": true
+}

@@ -1,0 +1,51 @@
+{
+  "status": "NO_REMAINING_BLOCKER_IN_SPONSOR_UI_FAILURE_DELTA",
+  "review": "Read-only narrow final Mainglobals/sponsor_open and actual-functionhosttest review.No source edits or test rerun.",
+  "source_sha256": {
+    "psp-viewer/main.c": "7a219083bfc7885a62e9b124a181b6df7b27d1955d805cfbe31ce2090b8b753d",
+    "tools/test_sponsor_ui_failure.py": "66aabe12da76f66414d44f83bb0c4b69796bfa004488a2102516053af42ef672"
+  },
+  "P1_autosign": {
+    "status": "RESOLVED",
+    "proof": "Originalnegativefails sign_calls==0;newNULLloadreturnswithoffmenu/no sign/save/career mutation;normalCrossselectsnondefaultcontract."
+  },
+  "P2_long_idle": {
+    "status": "RESOLVED",
+    "source": "(uint32_t)(now-sponsor_retry_since)<1000000u;onlyfailedattemptstoresnow",
+    "reason": "Unsignedelapsedtestadmitslate observations evenafter2^31microseconds;wrapshortstillmeasuresone-secondwindow.No signeddeadlineorper-frameextensionremains.",
+    "negative_receipt": "long-idle-negative/RESULT.json",
+    "negative_source_sha256": "60ca505aeabe84fbb5ffeb0b11da902444a16f19c7d8fbc1e7bd928cb92ba0f5",
+    "negative_rc": -6,
+    "negative_failure": "long_pause_ok",
+    "fixed_receipt": "fixed-host-02/RESULT.json",
+    "fixed_rc": 0,
+    "actual_source_match": true,
+    "cases": 12,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "passed": true
+  },
+  "caller_and_choice": {
+    "retry_allowed": true,
+    "failure_menu": "MENU_OFFpreserved;callerpaused=(menu!=OFF)doesnotlockretry",
+    "success_menu": "MENU_SPONSORonlywithvalidscreen/offers;waitflagcleared",
+    "no_offers": "returnswithoutload/commit andclearswait",
+    "cached_screen": "openswithoutnewload;clearswait",
+    "choice": "arrowwrapthenCrosscommitsselectedID;loading/retrynevercommits"
+  },
+  "source_event_policy": "No newglobaleventblockderived: originalpostracequeueschoice,EventPileordinarycapsandsponsor-onlycapsseparate.OriginalscreenOOMbehaviornotclaimed.",
+  "retained_evidence": [
+    "legacy-negative/RESULT.json",
+    "fixed-host/RESULT.json",
+    "long-idle-negative/RESULT.json",
+    "fixed-host-02/RESULT.json",
+    "PEER-REVIEW.json"
+  ],
+  "limits": [
+    "HostmocksSonyutility/allocator/scene boundaries;notnativeUIrun.",
+    "No normalstage2sponsorhandover/SAVE/cold gateapprovedbythisreview.",
+    "Current4602executionanditsresultbelongRoot;not rerunhere."
+  ]
+}

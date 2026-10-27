@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-27T12:39:35.263811+00:00",
+  "owner": "root",
+  "status": "RC18_CURRENT_GATES_PASS_ROADMAP_CONTINUES",
+  "proofs": [
+    {
+      "path": "roadmap-resume-20261027/career-streetx4602-02/run/RESULT.json",
+      "sha256": "847d8759450b01abcbf209ea19a0c0224a62a4bba99d129ddbf8b97ab5dceea1"
+    },
+    {
+      "path": "roadmap-resume-20261027/career-streetx4602-02/cold-postwin/RESULT.json",
+      "sha256": "1eba197d25446051967ef62da6d2cd67f62e4d77bcfb12272154067757c66134"
+    },
+    {
+      "path": "roadmap-resume-20261027/sponsor-integration/FINAL-RESULT.json",
+      "sha256": "838b31d0347308d751908555c635359d86e289d4cd5207919af2b492401b6d26"
+    },
+    {
+      "path": "roadmap-resume-20261027/audio-integration/QUALIFICATION.json",
+      "sha256": "f31995612ffcf4034564b6e8422a982aee755289a29e5266552681aed1a98c5b"
+    }
+  ],
+  "natural_progress": "4101 historicalRC17 + current4602full3laps/win/nativeSAVE/cold; $500 REP400 races2 stage1",
+  "synthetic_boundary": "Stage2 sponsor fixture explicitly5syntheticwins; choiceEUROLITE/bonus1325/$2575/slot2/save/coldPASS; not naturalstage2",
+  "audio": "CurrentFocus\u2192Rachel familybanks/brake/pause/resume/menu statePASS; not listening",
+  "next": "Root natural4013 fromactualtwo-win native source; plan4201 offline by original-rules; reviewedKit18 by frontend. NoPSP/inputdependency."
+}

@@ -1,0 +1,15 @@
+{
+  "status": "UNCHANGED_MOVIE_PAYLOAD_IDENTITY_STRUCTURAL_AVAILABILITY_REUSED",
+  "current_eboot": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "earlier_receipt": "reports/closed-beta-20261025/rc16-native-nos-validation/MOVIE-AVAILABILITY.json",
+  "delta": [
+    "EBOOT.PBP"
+  ],
+  "source_results": {
+    "xbox": "available-structurally-checked",
+    "ps2": "available-structurally-checked"
+  },
+  "movies_each": 28,
+  "proof": "Exact original packed container SHA256 plus each loose movie SHA256 unchanged; no decoder/player/source delta in RC17. No repeated heavy playback needed.",
+  "limits": "Structural availability/unchanged data only; no playback/physical proof inferred."
+}

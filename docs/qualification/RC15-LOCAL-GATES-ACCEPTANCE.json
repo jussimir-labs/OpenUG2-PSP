@@ -1,0 +1,81 @@
+{
+  "at": "2026-10-27T02:40:30.316031+00:00",
+  "status": "PASS_DIRECTED_LOCAL_GATES_CARD_DELTA_ADMITTED",
+  "reviewer": "root",
+  "eboot_sha256": "adb5c8690f630b074ddc4b99898d22d42b9692cd6c8517fba4571bee0690d061",
+  "source_commit": "5535dd695987ceddca637789d4bc528aa3ff9840",
+  "career": {
+    "run": "e9187b07f90f4edbacfed86b1d950d73",
+    "receipt": "rc15-clean-build/validation/career-up-01/RESULT.json",
+    "normal_pad_only": true,
+    "event": 4101,
+    "gps_navigation_m": 1204.4402759082402,
+    "Up_dialog_accept_countdown_drive_main": true,
+    "drive_s": 4.099997520446777,
+    "resets_nans": [
+      0,
+      0
+    ],
+    "source_fixture_unchanged": true
+  },
+  "drift": {
+    "run": "ef37d3aabd5e4f6a8fc494e01f5a04d3",
+    "receipt": "rc15-clean-build/validation/drift4311-nis-01/RESULT.json",
+    "event": 4311,
+    "sampled_handover": {
+      "crossed_handover": true,
+      "rows": [
+        {
+          "car": 0,
+          "animated_slot": 3,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 6.658551450957778,
+          "yaw_step_rad": 0.0
+        },
+        {
+          "car": 1,
+          "animated_slot": 0,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 0.12776571058597244,
+          "yaw_step_rad": 0.0
+        },
+        {
+          "car": 2,
+          "animated_slot": 1,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 0.19476111783635947,
+          "yaw_step_rad": 0.0
+        },
+        {
+          "car": 3,
+          "animated_slot": 2,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 6.644283319206215,
+          "yaw_step_rad": 0.0
+        }
+      ],
+      "scope": "sampled transforms; no automatic visual/collision verdict",
+      "frame_gap": 0,
+      "elapsed_wall": 0.06863187499402557
+    },
+    "movement_m": 8.092456173170097,
+    "root_visual_review": "Viewed nis-delivered-grid, go-after-handover and first-motion. These three frames show spectators alongside the starting cars, without the reported body/car overlap; rear cars retain two-row NIS placement. Sampled visual PASS only.",
+    "frames": {
+      "rc15-clean-build/validation/drift4311-nis-01/normal-drift4311/nis-delivered-grid.png": "78849c2f826dd38c4fd14b7f35556e011372bf78710e1ab63808e9c52d9f8a16",
+      "rc15-clean-build/validation/drift4311-nis-01/normal-drift4311/go-after-handover.png": "e0ac147b4920d6d76dd636dc54ba733585a6cd7582e1135afaa38c7ed0098b28",
+      "rc15-clean-build/validation/drift4311-nis-01/normal-drift4311/first-motion.png": "9908fd86ae11ea034d130bdd7d5d666f89c8596a6cd984155495d7ab801c327c"
+    }
+  },
+  "model_breakpoint_qualification": {
+    "fact": "fail_model is also the normal destructive release. rival_pack.inc load_rival_model calls it unconditionally before rs_try_empty for a recognized compact rival model. A registered entry with load_racer stack alone does not prove a read failure, fallback, or crash.",
+    "code": "psp-viewer/rival_pack.inc:190; psp-viewer/main.c:875",
+    "scope": "No broader model/asset approval inferred"
+  },
+  "limits": [
+    "Career heap bins observation UNKNOWN because full multi-read walk did not hold one uninterrupted CPU pause; no physical ENOMEM reproduction claimed. Host fault-injection tests separately exercise allocator recovery.",
+    "Inherited flow proof_scope mentions full race/reward, but this current run stops after 4.1s. No full-race, reward or new save/cold proof attributed to RC15.",
+    "One Drift4311 sample does not guarantee every spectator/track/camera; no full drift event.",
+    "No new PSP physical execution, global30fps, PSP1000 or complete beta approval. Nitro timbre remains unresolved; Drift/Drag original ambience policy unchanged."
+  ],
+  "card_scope": "Human-authorized EBOOT-only staged update after tests; preserve all saves/unknown files, verify162managed identities, remove only new owned AppleDouble metadata, eject."
+}

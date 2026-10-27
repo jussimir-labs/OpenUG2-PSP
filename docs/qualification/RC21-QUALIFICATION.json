@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "candidate": "closed-beta-20261027-beta01-rc21",
+  "source_commit": "cdf93ef2c7d8c66b3e40fcd612d281522c986da6",
+  "eboot_sha256": "42d252dfb8a5f5f8d195027ad816ac0fa661fe3194e1de20f72a3ed29f436a95",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "acceptance": {
+    "observer": "Jussimir",
+    "date": "2026-10-27",
+    "statement": "Tested RC21 and reported it good enough for the first beta.",
+    "scope": "First closed beta; no unreported device, duration, save or race details are inferred.",
+    "full_release_approved": false
+  },
+  "retained_directed_checks": {
+    "host_tests": 5,
+    "host_assertions": 3043,
+    "directed_headless_scenarios": 6,
+    "scope": "Legacy/source drive excerpts, source physics on Xbox and PS2, an Outer Ring excerpt, normal-control Drift4312 and URL4701 restart/menu paths. These are not six full races.",
+    "movies_structurally_available_per_source": 28,
+    "pgo_profiles_unchanged": 63,
+    "hot_layout_unchanged": true,
+    "retained_inconclusive_attempts": [
+      "First Outer Ring attempt timed out without final statistics; the same build/data later completed the bounded fixed-step case with frameskip6.",
+      "First Drift harness used Circle (look back); the corrected L-button script passed on the same executable."
+    ]
+  },
+  "sources": {
+    "xbox": {
+      "after_data_id": "bfaa",
+      "profiles": 51,
+      "files": 162,
+      "pack_entries": 753,
+      "pack_sha256": "33c565857ea3cadf0cb28812ed83f11ad9f8601e9eac5a65ee72d85aac21b2b2",
+      "physics_sha256": "1d2eca7cffcd995cf5bd12ee9bf761f99d9867dfb5f9d285dc859de81b6f0cb4"
+    },
+    "ps2": {
+      "after_data_id": "804e",
+      "profiles": 51,
+      "files": 159,
+      "pack_entries": 756,
+      "pack_sha256": "ceea9fe8809252293c0f9e68f58d72587bf257fcd3a5d4333a899711838eb3ea",
+      "physics_sha256": "1d2eca7cffcd995cf5bd12ee9bf761f99d9867dfb5f9d285dc859de81b6f0cb4"
+    }
+  },
+  "full_iso_reconversion_repeated_for_this_packaging": false,
+  "limits": [
+    "Extended-memory build; PSP-1000 compatibility and all-device support are not established.",
+    "Stable 30 fps throughout the game is not yet established.",
+    "Full-career completion and all save/reload paths are not qualified on RC21.",
+    "Drag 4401 rivals may become stuck in repeated recovery.",
+    "Stability Control On has no implemented effect in this executable; leave it Off.",
+    "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
+    "Custom dyno and special presets use the earlier handling path; collisions retain port adaptations.",
+    "Materials, visibility, doors, movies and all audio/camera combinations need broader testing.",
+    "The original US PS2 disc image has not been independently verified; PAL and other revisions are refused."
+  ]
+}

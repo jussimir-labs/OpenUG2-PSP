@@ -1,0 +1,215 @@
+{
+  "source": "ps2",
+  "scope": "One RC17 native SAVE/new-process gate for one existing earned fixture.",
+  "passed": true,
+  "eboot_sha256": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "elf_sha256": "b18cea09a78eebb17f85ed351320e1a8fd50fef58b12807404f67faf7fae5c02",
+  "build_source_commit": "1808daaca09629d90b6682f9dec722ff9485ef86",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "build_pgo_files": 63,
+  "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a",
+  "data": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/night-nos-generated-data-17/ps2/PSP/GAME/NFSU2VIEW",
+  "native_fixture": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/ps2-release03-normal-earned-win-02/memstick/PSP/SAVEDATA",
+  "native_fixture_proof": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/ps2-release03-normal-earned-win-02/RESULT.json",
+  "native_files_copied": 3,
+  "seed_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "8ec1eb87b6a8070f2720c54ae9580e98669c96f36d2acc2abd80f877f0917a94",
+    "NFSU2VIEWCAREER/ICON0.PNG": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+    "NFSU2VIEWCAREER/PARAM.SFO": "6992f7456f2a7e7f616cd66f728b77409adacf154cef78f1f72f89dc2601efba"
+  },
+  "private_copy_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "8ec1eb87b6a8070f2720c54ae9580e98669c96f36d2acc2abd80f877f0917a94",
+    "NFSU2VIEWCAREER/ICON0.PNG": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+    "NFSU2VIEWCAREER/PARAM.SFO": "6992f7456f2a7e7f616cd66f728b77409adacf154cef78f1f72f89dc2601efba"
+  },
+  "expected_earned_state": {
+    "money": 250,
+    "rep": 300,
+    "races": 1
+  },
+  "state_symbol": {
+    "name": "st.lto_priv.0",
+    "address": 3146584,
+    "bytes": 1584,
+    "first12": "money,rep,races(uint32)"
+  },
+  "history_consulted": [
+    "1887dec6f8144a3eae56ac83b52c5e6c",
+    "release06-4u-native-save-cold-01/RESULT.json"
+  ],
+  "no_retry": true,
+  "no_game_state_writes": true,
+  "saved_files": {
+    "DATA.BIN": "cb27d57d21960582cbcc612e495ced7f155d2208e5acd12331b8a4c8d75b69c4",
+    "ICON0.PNG": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+    "PARAM.SFO": "f78aa9b712dc2611d89ccc17635a204fccbb5d1af2c1fd26720120d4de633f6e"
+  },
+  "career": {
+    "name": "career",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [
+      {
+        "label": "saved",
+        "t": 8.84,
+        "save_status": 1
+      },
+      {
+        "label": "street",
+        "t": 19.38
+      }
+    ],
+    "command": [
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=61454",
+      "--timeout=540",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "5a0593ff0b074170a27e833bfec59b41",
+    "pack_activation": {
+      "on_card": 1,
+      "entries": 756,
+      "cwd": "ms0:/PSP/GAME/NFSU2VIEW"
+    },
+    "normal_start_skipped": [
+      "movie-FMVOPENING.n2mv",
+      "movie-PSA.n2mv"
+    ],
+    "earned_state_at_crib": {
+      "money": 250,
+      "rep": 300,
+      "races": 1
+    },
+    "earned_state_expected": {
+      "money": 250,
+      "rep": 300,
+      "races": 1
+    },
+    "screens": [
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/career/crib.png",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/career/crib-game-saved.png",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/career/street.png",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/career/street-driving.png"
+    ],
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "saves_written": [],
+    "debug_files_written": [
+      ".movie-playback.log",
+      "boot.txt"
+    ],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 24.388523333997
+  },
+  "private_copy_after_save": {
+    "NFSU2VIEWCAREER/DATA.BIN": "cb27d57d21960582cbcc612e495ced7f155d2208e5acd12331b8a4c8d75b69c4",
+    "NFSU2VIEWCAREER/ICON0.PNG": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+    "NFSU2VIEWCAREER/PARAM.SFO": "f78aa9b712dc2611d89ccc17635a204fccbb5d1af2c1fd26720120d4de633f6e"
+  },
+  "reopen": {
+    "name": "reopen",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [
+      {
+        "label": "reopened",
+        "t": 6.03,
+        "career_load_status": 1
+      }
+    ],
+    "command": [
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=61517",
+      "--timeout=540",
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "6a9191d7662648ff8fe62aa666c41cfb",
+    "pack_activation": {
+      "on_card": 1,
+      "entries": 756,
+      "cwd": "ms0:/PSP/GAME/NFSU2VIEW"
+    },
+    "normal_start_skipped": [
+      "movie-FMVOPENING.n2mv",
+      "movie-PSA.n2mv"
+    ],
+    "earned_state_at_crib": {
+      "money": 250,
+      "rep": 300,
+      "races": 1
+    },
+    "earned_state_expected": {
+      "money": 250,
+      "rep": 300,
+      "races": 1
+    },
+    "screens": [
+      "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/ps2/reopen/reopened-crib.png"
+    ],
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "saves_written": [],
+    "debug_files_written": [],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 11.03359150000324
+  },
+  "status": "NATIVE_SAVE_AND_NEW_PROCESS_LOAD_EARNED_STATE_VERIFIED",
+  "seconds": 49.45,
+  "seed_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "8ec1eb87b6a8070f2720c54ae9580e98669c96f36d2acc2abd80f877f0917a94",
+    "NFSU2VIEWCAREER/ICON0.PNG": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+    "NFSU2VIEWCAREER/PARAM.SFO": "6992f7456f2a7e7f616cd66f728b77409adacf154cef78f1f72f89dc2601efba"
+  },
+  "source_native_unchanged": true,
+  "private_copy_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "cb27d57d21960582cbcc612e495ced7f155d2208e5acd12331b8a4c8d75b69c4",
+    "NFSU2VIEWCAREER/ICON0.PNG": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+    "NFSU2VIEWCAREER/PARAM.SFO": "f78aa9b712dc2611d89ccc17635a204fccbb5d1af2c1fd26720120d4de633f6e"
+  },
+  "source_eboot_unchanged": true
+}

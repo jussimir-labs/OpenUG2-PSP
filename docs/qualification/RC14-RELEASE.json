@@ -1,0 +1,61 @@
+{
+  "candidate": "closed-beta-20261026-beta01-rivals14",
+  "candidate_id": "local-rivals14-source582fe4e1b-not-published",
+  "eboot_sha256": "8c51055ec4443e09e7c58c45f00b82659e11529cee398da49a6cf9b0fd505049",
+  "eboot_bytes": 4079631,
+  "build_id": "582fe4e1b",
+  "source_commit": "582fe4e1b0ef23aeac9518f98bf10290c8aeb331",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "supported_sources": [
+    "xbox",
+    "ps2"
+  ],
+  "publication_status": "STAGED_LOCAL_ONLY_NOT_PUBLISHED_OR_INSTALLED",
+  "quality_approval": "Three scoped current headlessrival-audio fixtures and directednativecontracts; no newhardware/globalgameplay approval",
+  "known_issues": [
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery"
+  ],
+  "reference_scope": "RC13canonicaldataunchanged forXbox162/PS2159, replacing only EBOOT with reviewedbuild11. Identity is separate from quality.",
+  "files_by_source": {
+    "xbox": 162,
+    "ps2": 159
+  },
+  "source_main_sha256": "34493b00bf6a2142fd18e8ce5084abccce81f486aa7c466d4d1a67e51f91f32d",
+  "runtime_build_id_note": "Build11 source582fe4e1b; exact EBOOT hash is authoritative",
+  "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
+  "functional_scope": "Existing scriptfixtures for newaudio wiring. Circuit4011 andDrift4312 completed, free-roamrivals appeared/triggered effects. Countsabove_mixer_threshold_updates are perrivalupdatecounts, not uniqueframes, listening, allraces, originalbitparity or30fpsapproval.",
+  "psplink_cleanup": "Historical bf7f PSPLink stop required manual recovery; no new physical job.",
+  "historical_hardware_scope": "Only historicalbf7f had limitedhumanPSP3000/cardobservations. Neither e7ce nor8c51 has a physical/card approval.",
+  "previous_eboot_sha256": "e7ce75f8b2e35949fdd04525baf9d6a114c177d822cfbe2e4189f20f7e68fa63",
+  "elf_sha256": "3c33e3bb0c97802d4b31fe0ac07df85c652211b7d6bf9f72d4f7452f4cdd3b48",
+  "prx_sha256": "a6c5ab814cf58e8999557770bcc44c35cb6dc0946253aa4ac358369735bb47ff",
+  "qualification_receipts": [
+    "docs/qualification/OVERNIGHT-QUALIFICATION.json"
+  ],
+  "qualification_receipt": "docs/qualification/OVERNIGHT-QUALIFICATION.json",
+  "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a",
+  "pgo_profile_count": 63,
+  "source_data_ids": {
+    "xbox": "78eb",
+    "ps2": "4111"
+  },
+  "historical_receipts": [
+    "docs/qualification/RC13-QUALIFICATION.json",
+    "docs/qualification/RC13-RELEASE.json"
+  ],
+  "historical_receipts_note": "Previouscandidateproofs retained as history, not transferred to new executable",
+  "source_snapshot_reference": "release-build-11-rival-tyres/source/psp-viewer; BUILD.json authoritative. No old C/H digest carried forward."
+}

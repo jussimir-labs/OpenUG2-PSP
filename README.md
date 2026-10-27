@@ -1,134 +1,116 @@
-## Bug reports
+# NFSU2 PSP — Closed Beta 1 (RC21)
 
-Read [the illustrated English guide](docs/bug-reporting-guide-EN.pdf) ([Português](ptbr/manual-reportar-bugs.pdf)), review the [roadmap](ROADMAP.md), and open [an issue](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
+Welcome to the first closed beta of the native PSP port of *Need for Speed Underground 2*.
+Thank you for helping test it on real devices.
 
-# NFSU2 PSP: closed beta
+**Start here:** download **NFSU2-PSP-Closed-Beta-1-RC21.zip** from the
+[RC21 release](https://github.com/jussimir/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21),
+extract the complete folder, and follow the steps below. The same kit handles Xbox and PS2 sources.
+Please keep this beta and its generated files within the selected test group.
 
-*(Português: [LEIA-ME.md](ptbr/LEIA-ME.md))*
+This kit contains the prebuilt PSP executable and a local game-data generator.
+**No ISO, original game assets or saves are included.** Use a dump of your own game disc.
+Your ISO stays on your computer.
 
-A fan-made native port of *Need for Speed Underground 2* to the PSP. This
-repository holds **no game data**: you build the game from **your own
-copy** with the tool in here. The PSP executable (`eboot/EBOOT.PBP`) comes
-prebuilt.
+[Release notes](RELEASE_NOTES.md) · [Known issues](KNOWN_ISSUES.md) ·
+[Testing and bug reports](docs/TESTING.md) · [Roadmap](ROADMAP.md)
 
-Please do not share this repository or the folder it builds: access is
-personal.
+## Before you begin
 
-## What you need
+- A **US/NTSC-U Xbox ISO**, or the **US PS2 edition SLUS_210.65** of NFS Underground 2.
+  PAL and other revisions are not supported. The original US PS2 disc image is not independently
+  verified; PS2 source support is based on the retained file-level reference. If verification fails,
+  keep the report and contact the organizer; do not bypass it.
+- A PSP with custom firmware that can run homebrew. **RC21 is an extended-memory build.**
+  The organizer accepted it for this first beta after testing; PSP-1000 compatibility is not
+  established. If you only have a PSP-1000, contact the organizer before attempting this build.
+  PSP-2000/3000, Go, Street, Vita/Adrenaline and PPSSPP results should be reported separately;
+  compatibility with every device and firmware is not guaranteed.
+- At least **2.2 GB free on the Memory Stick** and **12 GB free on the computer**, in addition
+  to your existing ISO. Back up your saves before replacing game files.
+- macOS, Linux, or Windows with an initialized **WSL Linux distribution**.
+  Python 3.9+ opens the interface; conversion requires Python 3.12+ and the setup dependencies.
+  Reference conversion times were about 1.5 hours for Xbox and 3.5 hours for PS2; your computer may differ.
 
-- **The Xbox ISO** of *Need for Speed Underground 2* (US, NTSC-U), dumped
-  from your disc. The tool checks the ISO's hash or, for an image in
-  another layout (a full dump, a rebuilt xiso), the game's 185 files one
-  by one. The American **PS2 NTSC-U disc (SLUS_210.65)** is also integrated for validation; PAL/European revisions are refused. See `tools/PS2_SOURCE.md` for source differences. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for this candidate’s validation scope and limitations.
-- **A PSP with custom firmware** (ARK-4/ARK-5 or similar) that runs
-  homebrew from the Memory Stick. Development uses a **PSP-3000**. This
-  executable passed directed tests in extended-memory PPSSPP and a human
-  PSP-3000 host0 title/driving/menu check. PSPLink cleanup required manual
-  recovery and is complete; card installation, physical saves, PSP-2000, Go and PSP-1000 remain
-  unqualified. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
-- **A Memory Stick** (or a microSD in an adapter) with **2.2 GB free**.
-- **A Mac** (Apple Silicon or Intel), or a PC with **Linux**, or with
-  **Windows and WSL**. It needs **12 GB free** on disk and about
-  **1h30 for Xbox or 3h30 for PS2** on the reference Mac, depending on
-  the computer and processing queue.
+## 1. Open the generator
 
-## 1. Build the game
+Keep the extracted kit together; do not run a launcher from inside the ZIP.
 
-Download and extract the complete repository (*Code > Download ZIP*, or
-`git clone`). Open the launcher for your system; it starts a local helper
-and opens the generator in your browser.
+| Computer | Launcher |
+| --- | --- |
+| macOS | Double-click `Generate-game.command` |
+| Linux | Run `sh ./generate-game.sh` from the kit folder |
+| Windows + WSL | Double-click `Generate-game.bat` after initializing WSL |
 
-### macOS
+On macOS, install Homebrew and Apple's command-line tools (`xcode-select --install`) if needed.
+The local setup installs converter dependencies in `.venv/` and tools in `.tools/`;
+some system packages require administrator permission. The setup does not bundle Python, WSL,
+Homebrew or Apple's command-line tools. If the OS blocks a launcher, review its warning and
+use the normal OS process for running a trusted local script.
 
-Double-click [Generate-game.command](Generate-game.command) in the repository
-root. If macOS blocks it, right-click, choose *Open* and confirm.
+## 2. Generate the game from your own ISO
 
-Python 3.9 or newer is needed to open the interface. Conversion requires
-Python 3.12 or newer and its dependencies; the setup script uses Python
-3.12/3.13 or `uv` to create `.venv/`. Install [Homebrew](https://brew.sh) and
-Apple's command-line tools (`xcode-select --install`) before preparing the
-converters. The launcher does not bundle these system requirements.
+1. In the local browser interface, click **Prepare this computer** if dependencies are missing.
+2. Choose your ISO and a **new, empty output folder**. Keep source detection on **Automatic**.
+   The folder picker creates `NFSU2-PSP` inside the selected folder; a typed path is used as entered.
+3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
+   assets including all 28 movies, and compares the result against the RC21 reference.
+4. Wait for successful identity verification. The game is in `<output>/PSP/GAME/NFSU2VIEW`.
+   A failed or mismatching result is diagnostic output; attach `relatorio.json` and the failing
+   step log when asking for help. Do not install an output that failed verification.
+5. Click **Open generated folder** when complete. The helper does not install the game on your PSP.
 
-### Linux
+To stop generation, use **Cancel process** and wait for the converters to exit. A compatible
+interrupted job can resume only with the same ISO, source, executable, tools and options.
+When changing kit versions, use a new output folder. Close the local helper with **Close helper**
+when no conversion is running; closing the browser tab alone does not stop it.
 
-From the repository root, run:
+Advanced CLI: `.venv/bin/python build_game.py --help`. Some converter logs and CLI option
+names are in Portuguese; the browser instructions are in English.
 
-```sh
-sh ./generate-game.sh
-```
+## 3. Install on the PSP
 
-Python 3.9+ opens the interface; conversion needs Python 3.12+ and the
-converter dependencies. On Debian/Ubuntu, setup uses `apt-get` and may
-require administrator access. On other distributions, install the equivalent
-packages listed by setup. The optional `zenity` or `kdialog` package enables
-the native file picker; otherwise paste the full paths into the form.
+1. Back up `PSP/SAVEDATA`. Connect the PSP by USB and select **Settings → USB Connection**.
+2. Confirm the destination is your PSP's card. Copy the generated `PSP/GAME/NFSU2VIEW` folder
+   to the card's corresponding folder. Keep the complete RC21 folder together.
+   On Windows/Linux, merge the generated `PSP` folder with the card's existing `PSP` folder.
+3. On macOS, use the included copy helper to avoid Finder's `._` sidecar files:
 
-### Windows
+   ```sh
+   .venv/bin/python tools/ms_package.py push "/Volumes/YOUR PSP CARD" "/path/to/output"
+   ```
 
-Install and initialize WSL with a Linux distribution first. Then double-click
-[Generate-game.bat](Generate-game.bat) in the repository root. It opens the
-same browser interface through WSL; the Linux Python and dependency
-requirements above apply inside that distribution. Python, WSL and system
-packages are not bundled, and this does not establish validation on every
-Windows configuration.
+   Replace both paths with your actual card and generated output. Do not add `--fresh`.
+4. Eject the card safely, leave USB Connection, and launch **NFSU2 PSP** under
+   **Game → Memory Stick** in the XMB.
 
-### Generate from the browser
+**Updating an older beta:** generate RC21 in a new output folder and install the complete result.
+Both `EBOOT.PBP` and `pack.n2pk` changed. Copying only the executable leaves the older physics data.
+Never mix Xbox and PS2 output, and do not delete `PSP/SAVEDATA` when updating.
 
-1. If prerequisites are missing, click **Prepare this computer**. The local
-   helper downloads and installs converter dependencies and builds the movie
-   encoder. Python modules go in `.venv/` and local tools in `.tools/`.
-   System packages may require separate installation or administrator access;
-   follow the requirements shown if preparation stops.
-2. Choose your ISO and output folder, or paste their full paths. The folder
-   picker creates `NFSU2-PSP` inside the selected folder; a typed output path
-   is used as entered. Use a new folder with at least 12 GB free. Leave source
-   detection on **Automatic** unless you need to select Xbox or PS2 explicitly.
-3. Click **Generate PSP game**. The helper identifies the source, checks the
-   ISO and original files, then converts the assets and assembles
-   `<output>/PSP/GAME/NFSU2VIEW`. The browser workflow includes all **28
-   movies** and has no option to omit them. Your ISO stays on your computer;
-   it is not uploaded.
-4. Follow the stages and logs. A successful result requires matching the
-   reference for the same source and executable. A mismatch or missing
-   reference remains a diagnostic result, with files preserved. This checks
-   file identity; the beta's [known issues](KNOWN_ISSUES.md) remain valid.
-5. Use **Open generated folder** after success. The helper does not erase
-   existing user folders or saves, and does not copy anything to the PSP.
-   Follow the installation section below separately. Its examples use the
-   default `saida` output; substitute your chosen output folder if different.
+## 4. Test and report
 
-Use **Download logs** when reporting a problem, and keep the step logs in
-`<output>/registros/`. To interrupt, click **Cancel process** and wait for the
-converters to stop. Compatible partial stages can be resumed only with the
-same ISO, source, executable, converters and options. If the recipe changes,
-choose a new output folder; the browser does not erase an old output to start
-over.
+Follow the [first-session checklist](docs/TESTING.md). Leave **Stability Control Off** in RC21;
+the On option does not affect this executable. Keep the FPS/build overlays visible in evidence.
+This is an unfinished beta, with known gameplay, visual, audio and performance limitations.
 
-Closing the browser tab does not stop the local helper or an active job.
-When no job is running, click **Close helper** to shut it down; reopen
-the launcher to use it again.
+Report one problem per [GitHub issue](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
+Include **Closed Beta 1 — RC21**, device/firmware, game source, car/mode/track, steps, expected
+and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
+technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.
+See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
-Advanced command-line options remain available from the repository root:
-`.venv/bin/python build_game.py --help`.
+## Build identity
 
-## 2. Install on the PSP
+| Item | RC21 value |
+| --- | --- |
+| Embedded build | `cdf93ef2c7` |
+| EBOOT SHA-256 | `42d252dfb8a5f5f8d195027ad816ac0fa661fe3194e1de20f72a3ed29f436a95` |
+| Xbox data ID | `bfaa` |
+| PS2 data ID | `804e` |
+| Memory profile | Extended memory (`PSP_LARGE_MEMORY=1`) |
 
-1. Connect the PSP over USB and, in the XMB, open
-   *Settings > USB Connection*.
-2. Copy the folder:
-   - **macOS:** do not copy with the Finder (it leaves a `._` file beside
-     each one, and the game gets slower on the card). In Terminal, in this
-     folder, run:
-     ```sh
-     .venv/bin/python tools/ms_package.py push /Volumes/<card name> saida --fresh
-     ```
-   - **Windows and Linux:** copy `saida/PSP` to the card's root, merging
-     it with the `PSP` folder already there.
-3. Eject the card and leave USB Connection (the O button).
-4. In the XMB, under *Game > Memory Stick*, open **NFSU2 PSP**.
-
-Saves live in the XMB's *Saved Data* and survive a new copy.
-
-## Credits and licences
-
-See [THIRD_PARTY.md](THIRD_PARTY.md) and the `licenses/` folder.
+These values identify the kit; you do not need to calculate hashes to report a bug.
+See [qualification scope](docs/qualification/RC21-QUALIFICATION.json) and
+[third-party notices](THIRD_PARTY.md). Portuguese historical material remains in `ptbr/`;
+the English instructions on this page are authoritative for RC21.

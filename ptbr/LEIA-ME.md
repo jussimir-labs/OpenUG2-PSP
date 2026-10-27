@@ -1,3 +1,7 @@
+> **RC21:** este documento descreve uma candidata anterior. Use as [instruções atuais em inglês](../README.md), as [notas da RC21](../RELEASE_NOTES.md) e as [limitações atuais](../KNOWN_ISSUES.md).
+
+> Revisão noturna: veja [NOTAS-NOTURNAS.md](NOTAS-NOTURNAS.md). A candidata atual ainda não foi instalada nem testada no PSP; provas físicas históricas não se transferem automaticamente.
+
 ## Como reportar bugs
 
 Veja o [manual visual em PDF](manual-reportar-bugs.pdf) ([English](../docs/bug-reporting-guide-EN.pdf)), consulte o [roadmap](ROADMAP.md) e abra um [relato de bug](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
@@ -14,6 +18,16 @@ PSP (`eboot/EBOOT.PBP`) já vem compilado.
 Por favor, não compartilhe este repositório nem a pasta gerada: o acesso é
 pessoal.
 
+## Rascunho RC18 em poucas palavras
+
+Este rascunho local traz o executável **da37c112**, fonte `68566e7bc`. Uma tela de sponsor que falha ao carregar não assina nem salva mais o primeiro contrato automaticamente. A troca de bancos de áudio preserva os dados antigos até o mixer poder trocar com segurança; três leituras inválidas de memória reproduzidas foram corrigidas. Isso não comprova a causa do sintoma sonoro relatado pelo testador.
+
+As conferências headless atuais limitadas incluem uma **vitória normal de três voltas na Street X4602**, SAVE nativo e processo novo restaurando **$500, REP400, duas corridas e os melhores eventos preservados**, além de SAVE/reabertura privados PS2. A carreira realmente conquistada permanece no **estágio1**, com melhores eventos5 e6. Um teste separado de interface/SAVE/reabertura de sponsor passou com **fixture sintética de cinco vitórias**. Conferências normais Focus/Rachel de bancos, frenagem, pausa/retomada e menu também passaram em um processo, sem capturar PCM ou aprovar audição. Não há aprovação de progressão normal ao sponsor do estágio2; o rascunho local aguarda empacotamento final.
+
+Em relação à saída exata correspondente RC17, **somente EBOOT.PBP muda**. Pack, SFX e bancos NOS nativos são iguais; IDs **9576 (Xbox)** e **8729 (PS2)**. Gere a pasta correspondente, preserve os saves e use outra saída se a receita mudar. Identidade dos arquivos é separada de aprovação sonora/jogável. O gerador não instala automaticamente.
+
+Configuração4u mantida. Audição humana no PSP, outros perfis de câmera, curva Master original, demais modelos e30fps globais continuam sem aprovação. Veja [notas](NOTAS-NOTURNAS.md), [limitações](LIMITACOES.md) e o [recibo de qualificação](../docs/qualification/RC18-QUALIFICATION.json).
+
 ## Do que você precisa
 
 - **A ISO do Xbox** de *Need for Speed Underground 2* (versão americana,
@@ -23,10 +37,11 @@ pessoal.
   Também há uma fonte **PS2 americana NTSC-U (SLUS_210.65)**. ISOs europeias e outras revisões são recusadas. A fonte PS2 usa somente os arquivos desse disco; diferenças conhecidas estão em [tools/PS2_SOURCE.md](../tools/PS2_SOURCE.md). As 857 falas MicroTalk foram convertidas offline e conferidas estruturalmente; a conferência das falas durante o jogo ainda é parcial. Veja também [LIMITACOES.md](LIMITACOES.md).
 - **Um PSP com firmware customizado** (ARK-4/ARK-5 ou similar) que rode
   homebrew do Memory Stick. O desenvolvimento usa o **PSP-3000**. Esta
-  build passou nos testes dirigidos no PPSSPP e na checagem humana de
-  título, condução e menu no PSP-3000 via host0. O encerramento PSPLink exigiu
-  recuperação manual, já concluída. Instalação, save físico, PSP-2000, Go e
-  PSP-1000 ainda não foram aprovados. Veja [LIMITACOES.md](LIMITACOES.md).
+  candidata passou em conferências locais headless limitadas e não foi instalada
+  nem testada no aparelho. As provas humanas e a instalação
+  anteriores pertencem à build bf7f. PSP-2000, Go, PSP-1000 e comportamento
+  do save físico continuam sem aprovação. Veja [NOTAS-NOTURNAS.md](NOTAS-NOTURNAS.md)
+  e [LIMITACOES.md](LIMITACOES.md).
 - **Um Memory Stick** (ou microSD no adaptador) com **2,2 GB livres**.
 - **Um Mac** (Apple Silicon ou Intel) ou um PC com **Linux**, ou com
   **Windows e o WSL**. Precisa de **12 GB livres** no disco e de cerca de
@@ -104,7 +119,7 @@ de Windows.
 5. Após o sucesso, use **Abrir pasta gerada**. O auxiliar não apaga pastas
    existentes do usuário nem saves, e não copia nada para o PSP. Faça a
    instalação separadamente, conforme a seção abaixo. Os exemplos dela
-   usam a saída padrão `saida`; substitua pela pasta escolhida se for outra.
+   usam a saída padrão `output`; substitua pela pasta escolhida se for outra.
 
 Use **Baixar registros** ao relatar um problema e preserve os registros de
 cada etapa em `<saída>/registros/`. Para interromper, clique em **Cancelar
@@ -124,14 +139,16 @@ As opções avançadas por linha de comando continuam disponíveis na raiz:
 
 1. Ligue o PSP ao computador pelo cabo USB e, no XMB, abra
    *Ajustes > Conexão USB*.
-2. Copie a pasta:
+2. Faça a cópia manualmente. Confira o volume de destino do cartão e faça
+   backup de `PSP/SAVEDATA` antes. O comando macOS abaixo atualiza os arquivos
+   alterados; não acrescente `--fresh` automaticamente.
    - **macOS:** não copie pelo Finder (ele deixa um arquivo `._` ao lado de
      cada um, e o jogo fica mais lento no cartão). No Terminal, dentro desta
      pasta, rode:
      ```sh
-     .venv/bin/python tools/ms_package.py push /Volumes/<nome do cartão> saida --fresh
+     .venv/bin/python tools/ms_package.py push /Volumes/<nome do cartão> output
      ```
-   - **Windows e Linux:** copie a pasta `saida/PSP` para a raiz do cartão,
+   - **Windows e Linux:** copie a pasta `output/PSP` para a raiz do cartão,
      juntando com a pasta `PSP` que já existe lá.
 3. Ejete o cartão e saia da Conexão USB (botão O).
 4. No XMB, em *Jogo > Memory Stick*, abra **NFSU2 PSP**.
@@ -147,8 +164,10 @@ Os saves ficam em *Dados salvos* do XMB e sobrevivem a uma nova cópia.
 | `arquivos extraídos diferem do jogo esperado` | outra região ou versão; por enquanto, só a NTSC-U |
 | `falta preparar o computador` | rode `sh ./setup.sh` e siga o que ele pedir |
 | `pouco espaço em disco` | libere espaço ou use `--saida` num disco com mais espaço |
-| `a etapa "…" falhou` | rode de novo; se repetir, mande a pasta `saida/registros` |
+| `a etapa "…" falhou` | rode de novo; se repetir, mande a pasta `output/registros` |
 
 ## Créditos e licenças
 
 Veja [TERCEIROS.md](TERCEIROS.md) e a pasta [`licenses/`](../licenses/).
+
+A prova histórica da RC13 e7ce inclui um Drift 4312 completo de três voltas: 1.880 pontos, sete drifts e quarto lugar (derrota real), com pausa/retomada e retorno ao menu/música. Veja as notas noturnas para o escopo.

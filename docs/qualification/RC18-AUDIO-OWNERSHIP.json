@@ -1,0 +1,213 @@
+{
+  "at": "2026-10-27T12:12:37.832988+00:00",
+  "status": "DEMONSTRATED_AUDIO_BANK_UAF_AND_XA_UB_FIXED_NATIVE_GATE_PASSED_INTEGRATION_PENDING",
+  "production_source": {
+    "file": "psp-viewer/audio.c",
+    "before_sha256": "ae6df874e96ee61f3203bbcca695ed97896a200ebcf789337290c6d355bc6c18",
+    "after_sha256": "8c447536ffb3a1945e8b408af4217b4b22460888fde3bcb9990c53a6dddd0e92",
+    "patch": "audio-ownership.patch",
+    "patch_sha256": "26c730f636b8bf33627c9b719974b13860743a103ef1111e8ea44c74cb66cef8",
+    "only_product_file_changed_by_this_agent": true,
+    "no_Main_Makefile_NOS_rival_pool_changes": true
+  },
+  "confirmed_defects": [
+    {
+      "id": "delayed-reader-bank-reclamation",
+      "before": "GIN/AEMS/gear publish/free after a30ms elapsed wait, with no acknowledgement that a reader already past the pause/off/on check has returned.",
+      "proof": "All three actual mixer readers were suspended after local PCM/state capture. Each baseline swap returned1 in35.3\u201336.0ms while mixed_before_release stayed0. Upon reader resume, ASan diagnosed heap-use-after-free in all3.",
+      "baseline_gate": "gate/baseline-04/RESULT.json",
+      "baseline_sanitizers": [
+        "address"
+      ],
+      "not_human_cause_proof": "This demonstrates a real unsafe reclamation schedule. It does not show that scheduling occurred on PSP, that swapping occurred during the reported drift cut, or which sound family the human heard."
+    },
+    {
+      "id": "XA-negative-left-shift",
+      "before": "decode_xa used nib<<shift with negative signed nib; actual AEMS00 data produced UBSan left shift of negative value\u22121 before the scheduled-reader test.",
+      "proof": "gate/baseline-03/AEMS.log preserves the separate decoder UB.",
+      "fix": "Use nib*(1<<shift). After sign extraction nib\u2208[\u22128,7]; shift=20\u2212(header&15)\u2208[5,20]; product\u2208[\u22128388608,7340032], fitting32-bit int. No clamp, scale, rounding or predictor change.",
+      "semantic_gate": "Actual C decoder agrees with independent existing Python decoder for16 loops/361434 PCM samples."
+    }
+  ],
+  "implemented_contract": {
+    "candidate": "Gear/AEMS continue staging/validating/decoding candidates before publication. GIN now stages a local Sweep without mutating the live Sweep while loading.",
+    "quiescence": "Only a successful audio_mixer_hold(1) ACK allows stopping affected gear voices, changing bank descriptors/cursors or freeing the old bank. No elapsed sleep substitutes for ACK.",
+    "rollback": "Load failure or ACK timeout frees only candidate resources and leaves old bindings, cursors, associated source state and voices intact.",
+    "outer_hold": "An already acknowledged outer hold retains its ticket and remains held after successful replacement.",
+    "publication": "GIN swaps the prepared Sweep and resets published RPM to its new min; AEMS resets only attached source positions as before; gear stops only its own descriptor consumers.",
+    "telemetry": "eng_searches increment now belongs only to the mixer fallback callsite. Unbaked candidate cache construction does not write this live mixer telemetry. No synthesis/entry-search math changed.",
+    "serialized_writers": "Uses existing game/main-thread serialized loader and ticket protocol; it does not add a multi-writer API guarantee."
+  },
+  "current_native_validation": {
+    "ownership_gate": "gate/ack-03/RESULT.json",
+    "source_sha256": "8c447536ffb3a1945e8b408af4217b4b22460888fde3bcb9990c53a6dddd0e92",
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "cases": 5,
+    "three_reader_paths": "GIN350Z\u2192Acura_ITR, AEMS00\u219201, gearBase\u2192Lev1; actual existing data rather than stock206-only synthetic samples.",
+    "checks": [
+      "Delayed reader makes ACK timeout; old owner/complete bank and consumer state remain intact.",
+      "After reader returns, fresh ACK permits replacement.",
+      "Nested outer hold retains its acknowledged ticket.",
+      "Missing-file failure keeps current allocation.",
+      "Held stop and joined mixer precede final buffer release.",
+      "All16 AEMS decoded loop hashes match Python (361434 samples).",
+      "Accepted GIN without optional cached entry table builds a local cache without writing live search telemetry."
+    ],
+    "rows": [
+      {
+        "mode": "engine-GIN",
+        "exit_code": 0,
+        "expected": true,
+        "ASan_UAF": false,
+        "UBSan_error": false,
+        "seconds": 0.7050988749833778,
+        "stdout": "mode=1 proposed=1 reader_captured=0x10260cb54 old_allocation=0x10260c800 swap_return=0 elapsed_us=297810 mixed_before_release=0\nPASS delayed-reader timeout kept old allocation; reader resumed; freshACK replacement; nested outer hold preserved; missing file atomic; held stop and mixer join before free\n"
+      },
+      {
+        "mode": "AEMS",
+        "exit_code": 0,
+        "expected": true,
+        "ASan_UAF": false,
+        "UBSan_error": false,
+        "seconds": 0.3871845840185415,
+        "stdout": "mode=2 proposed=1 reader_captured=0x101a11f08 old_allocation=0x1019dc800 swap_return=0 elapsed_us=297352 mixed_before_release=0\nPASS delayed-reader timeout kept old allocation; reader resumed; freshACK replacement; nested outer hold preserved; missing file atomic; held stop and mixer join before free\n"
+      },
+      {
+        "mode": "gear",
+        "exit_code": 0,
+        "expected": true,
+        "ASan_UAF": false,
+        "UBSan_error": false,
+        "seconds": 0.38623433298198506,
+        "stdout": "mode=3 proposed=1 reader_captured=0x62f000000448 old_allocation=0x62f000000400 swap_return=0 elapsed_us=298419 mixed_before_release=0\nPASS delayed-reader timeout kept old allocation; reader resumed; freshACK replacement; nested outer hold preserved; missing file atomic; held stop and mixer join before free\n"
+      },
+      {
+        "mode": "decoder-PCM",
+        "exit_code": 0,
+        "expected": true,
+        "ASan_UAF": false,
+        "UBSan_error": false,
+        "seconds": 0.09974933401099406,
+        "stdout": "PCM 0 0 35272 130bea71\nPCM 0 1 21602 54f51e3f\nPCM 0 2 25201 7bb0cca6\nPCM 0 3 27365 2dec0483\nPCM 0 4 21240 1898542c\nPCM 0 5 24300 bb6a4652\nPCM 0 6 27362 2f035b47\nPCM 0 7 15398 cd71048a\nPCM 1 0 23020 b75a1da3\nPCM 1 1 21603 a5856d12\nPCM 1 2 23037 9c8e3687\nPCM 1 3 19079 b677d783\nPCM 1 4 9718 7ef0ea66\nPCM 1 5 20879 b4b2ec95\nPCM 1 6 32310 ac6e83a7\nPCM 1 7 14048 fd8a09a7\n",
+        "independent_Python_reference_loops": 16,
+        "independent_Python_reference_samples": 361434
+      },
+      {
+        "mode": "uncached-GIN",
+        "exit_code": 0,
+        "expected": true,
+        "ASan_UAF": false,
+        "UBSan_error": false,
+        "seconds": 0.090254416980315,
+        "stdout": "PASS accepted unbaked GIN builds candidate cache without touching live mixer search telemetry\n"
+      }
+    ],
+    "LSan": false,
+    "LSan_reason": "Unsupported on this Mac; ASan+UBSan enabled for all positive cases."
+  },
+  "targeted_regressions": {
+    "cases": 3,
+    "logs": "gate/regressions.json",
+    "all_passed": true,
+    "player_tyre_golden": "13e8deeb",
+    "rival_skid_scope": "Actual mixer PCM/IMA long loops, immutable4banks,9reserved+24legacy, player/rival isolation, zero-time pause and owner reset; controller source aggregate1024/306/432. Synthetic bank payloads in this regression; separate historical real-bank evidence retained.",
+    "limiter_pause_scope": "Existing actual engsnd limiter fixture: entry/fade/recovery, pause incoming/outgoing/settled limiter, idempotence/dt0, low-RPM resume/high-RPM reentry.",
+    "production_logic_unchanged": "No tyres.c or engsnd.c edit in this delta. Their existing fixtures passed at the stated source snapshot; no acoustic or global claim.",
+    "audio_source_at_run_sha256": "40768d8516a40a53d8993b38a3d228115111e21358f29e0879176307c9b79cf7",
+    "final_source_delta": "The final source then only moved eng_searches++ to the mixer fallback callsite. This is covered by the final five-case ack03 gate. The unaffected tyre/limiter regressions were not repeated."
+  },
+  "failed_or_partial_attempts_preserved": [
+    {
+      "path": "gate/baseline-01",
+      "classification": "First GIN scheduling seam stopped before full state capture; on resume the concurrent mutation triggered UBSan before the intended PCM access. Not a successful isolated UAF gate."
+    },
+    {
+      "path": "gate/baseline-02",
+      "classification": "Harness anchor typo rejected before compilation/launch; no game finding."
+    },
+    {
+      "path": "gate/baseline-03",
+      "classification": "GIN UAF expected; AEMS blocked by separately real decoder shift UB. Whole3case run not PASS."
+    },
+    {
+      "path": "gate/baseline-04",
+      "classification": "All3 ASan-specific UAF negatives completed. Old receipt limits line claiming both sanitizers enabled is superseded by explicit sanitizers:[address]; fixed source gate uses both."
+    },
+    {
+      "path": "gate/ack-01,gate/ack-02",
+      "classification": "Earlier positive source/fixture snapshots preserved; final gate is ack03 after telemetry-only staging guard."
+    }
+  ],
+  "original_source_first": {
+    "CARSFX_PlayerEngine.c": {
+      "sha256": "fdfe9cd0d7d98bdad0688a8834c98d04c560ebd071e8209c06dabd3eee69b67e",
+      "function": "~CARSFX_PlayerEngine8009fe30",
+      "lines": [
+        69,
+        108
+      ],
+      "fact": "Stops Ginsu synthesis before deleting instances and releasing owned data."
+    },
+    "GinsuSynthesis.c": {
+      "sha256": "f63a02e6db9e4a648e629da03a06b51af0fa32020dd662fd2b5791f500481dd5",
+      "function": "StopSynthesis800b1624",
+      "lines": [
+        540,
+        553
+      ],
+      "fact": "Uses sound critical section around its stop flag mutation."
+    },
+    "EAXAemsManager.c": {
+      "sha256": "552d7a49f2fa58055d2fcf9b90d150ca63c5defe5679fa9e20e6a5e2a95b6379",
+      "functions": [
+        "UnloadSndData8007d3fc",
+        "RemoveBank8007d4a8"
+      ],
+      "lines": [
+        119,
+        160
+      ],
+      "fact": "Removes module bank before freeing related payloads."
+    },
+    "_free.c": {
+      "sha256": "1568c9a13e900d91b9149fc0cfac2f0e9c9ed329a6b26e7464e1124e63e8fe1e",
+      "function": "SNDAEMS_removemodulebank802d9c70",
+      "lines": [
+        149636,
+        149704
+      ],
+      "fact": "Enters sound critical section, destroys instances and removes native banks before leaving. No pseudo-C copied into this repository."
+    }
+  },
+  "reused_runtime_evidence": {
+    "full_current_RC17_drift": "860c693d1c1b4c7089c6ca020000019a; stock206,3laps122.4985s,5417score,7drifts,4th loss; pause/resume/menu observed state passed; no PCM in that run.",
+    "scope": "RC17 historical evidence only, not approval of this changed source. No additional drift or NOS battery was run.",
+    "prior_PCM": "RC13 fullPCM scan retained as history; no replay or family attribution in this delta."
+  },
+  "frozen_delivery": {
+    "eboot": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+    "zip_sha256": "b56f3b25990b35161d54e4501610e9f1400d999af6deda2f0f619ff9d1fb1bf2",
+    "package_changed": false,
+    "new_builds": 0,
+    "new_emulator_runs": 0,
+    "new_hardware_runs": 0,
+    "new_asset_conversions": 0,
+    "save_input_operations": 0,
+    "PGO_LTO_hotld_flags_edited": false
+  },
+  "next_useful_action": {
+    "owner": "Root integration after peer review",
+    "gate": "Build a separately named candidate with preserved4u flags. One normal-menu car/engine-family change followed by straight braking, pause/resume and return-to-menu with reader/gain/cursor telemetry would qualify caller integration of these three handoffs. Use existing history/fixtures and private saves; no need to rerun full4312 or NOS batteries to decide this delta.",
+    "why_not_run_now": "This agent cannot create a game build and RC17 remains frozen; running its old executable would not validate the new ACK patch."
+  },
+  "remaining_limits": [
+    "No causality assigned to the human drift cuts, pause sound or brake report; reports remain open.",
+    "No physical listening, full acoustic parity, global car/upgrade coverage or PSP1000/memory-budget claim.",
+    "Bank parsers and option/camera/mix policies were not redesigned; this is not a general malformed-file robustness audit.",
+    "ACK timeout is a safe refusal, not proof that every caller already surfaces every load failure; caller admission is owned by root.",
+    "No global timing/30fps approval from native tests."
+  ]
+}

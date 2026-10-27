@@ -1,0 +1,105 @@
+{
+  "status": "NO_BLOCKING_FINDING_IN_AUDIO_OWNER_TRANSACTION_DELTA",
+  "reviewer": "beta_original_rules_audit",
+  "scope": "Read-only audio.c diff vsHEADc43a40013, staging/readers/ACK helper/Main callers, actual-source host fixture/scripts and retained receipts. No edits/test reruns/build/game/hardware.",
+  "hashes": {
+    "psp-viewer/audio.c": "8c447536ffb3a1945e8b408af4217b4b22460888fde3bcb9990c53a6dddd0e92",
+    "baseline_c43a40013_audio.c": "ae6df874e96ee61f3203bbcca695ed97896a200ebcf789337290c6d355bc6c18",
+    "tools/test_audio_bank_ownership.py": "b948b2c6e70c21ea2e41620820f9d389f66ff9e80abe0628fe87d1c57f8d41bd",
+    "tools/fixtures/audio_bank_ownership.c": "2658b306a91c82fc0245563ab4205b53348cc434bf46c436d5441913f906d3e2",
+    "psp-viewer/engsnd.c_readonly": "507e77316f94900eccecb6f8ce602d5f74275dd3b48fede2c2dbac441737454f"
+  },
+  "verified_contracts": {
+    "GIN": "sweep_load initializes/indexes a separate Sweep;all helpers read candidate/constdata.Onlyafter mixerACK are eng/fresh swapped and oldSweep reclaimed.Failedread/allocation/ACK leavesoldeng,cursors,filterstate untouched.Production audio_engine_load remainsboot-only at Main sound_init,before audio_init;liveMain uses swap.",
+    "AEMS": "Decode/guards/tables are staged privately.Oldmem and sourcepositions unchangeduntilACK;then mem/descriptor replace and attached sourcepositionsreset withinhold.Failure freesonlycandidate.",
+    "gear": "Candidate descriptors/PCM staged;activegearvoicesare stopped,descriptorspublishedandoldblobfreedonlyinsideACKhold.ConsumerscannotretainoldPCM acrosspublish/free.",
+    "timeout": "Mixer ACK is issued only between complete mix calls.Unique ticket prevents staleACK reuse.A timeout clearsrequest and frees onlystaging;oldowner remainsvalidwhether mixer ACK arriveslate ornot.200polls isnot a hardwallclockguarantee under arbitrary scheduling.",
+    "outer_hold": "was/requested hold preserved;audio_mixer_hold(1)returnswithsamealreadyacknowledgedticket;restore1doesnotresumeoutertransaction.Testcomparesactualticket/holdingvalue.",
+    "stop_join": "No newproductionstop/joinchanges.audio_stop_all clearsvoiceflagswithoutfreeingpayload;sourceaudio_shutdownjoinsmixerbeforeNOS/rival frees.HostfixtureexplicitlyjoinsbeforefreeingallGIN/AEMS/gearowners;that isnot a newclaimproductionreclaimsallthosebanks.",
+    "telemetry": "eng_entry nowpurewithrespecttoliveeng_searches;onlymixer fallbackincrements.Constructorcacheworkno longer races telemetry orinflatesmixersearch count.",
+    "XA": "Forciheader nib\u22128..7,shift20\u2212(b0&15) in5..20.The newnib*(1<<shift) matches signed arithmetic value and avoids negative-left-shift UB.Eachhistory sample is16bit/clamped;absolute sum\u226430670976 before >>8,inside32bits.No newgain/pitch/sampleorder/coefficients."
+  },
+  "evidence_reused": {
+    "negative": {
+      "path": "gate/baseline-04/RESULT.json",
+      "source_sha256": "ae6df874e96ee61f3203bbcca695ed97896a200ebcf789337290c6d355bc6c18",
+      "modes": [
+        {
+          "mode": "engine-GIN",
+          "ASan_UAF": true,
+          "exit_code": -6
+        },
+        {
+          "mode": "AEMS",
+          "ASan_UAF": true,
+          "exit_code": -6
+        },
+        {
+          "mode": "gear",
+          "ASan_UAF": true,
+          "exit_code": -6
+        }
+      ],
+      "qualification": "Artificial delayed-reader schedule reproducesactualread-after-free,not observedcause ofhumancomplaint."
+    },
+    "positive": {
+      "path": "gate/ack-03/RESULT.json",
+      "source_matches_current": true,
+      "fixture_matches_current": true,
+      "modes": [
+        {
+          "mode": "engine-GIN",
+          "exit_code": 0,
+          "UBSan_error": false
+        },
+        {
+          "mode": "AEMS",
+          "exit_code": 0,
+          "UBSan_error": false
+        },
+        {
+          "mode": "gear",
+          "exit_code": 0,
+          "UBSan_error": false
+        },
+        {
+          "mode": "decoder-PCM",
+          "exit_code": 0,
+          "UBSan_error": false
+        },
+        {
+          "mode": "uncached-GIN",
+          "exit_code": 0,
+          "UBSan_error": false
+        }
+      ],
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "PCM_independent_python": {
+        "loops": 16,
+        "samples": 361434,
+        "identical": true
+      }
+    },
+    "regressions": [
+      {
+        "case": "rival-tyres",
+        "exit_code": 0
+      },
+      {
+        "case": "limiter-pause",
+        "exit_code": 0
+      }
+    ]
+  },
+  "risk_and_limits": [
+    "Stagedpayload temporarilycoexistswitholdbank;thispreservesrollback andalreadyexistedinallocationdesign.Not a PSPheap/performanceapproval.",
+    "Validconvertedassets exercised;unchangedmalformed/truncatedbankparserhardeningisoutside thedelta.",
+    "Main/audio parameter publicationotherthanreviewedownercutoversisnotpromotedtoTSAN/all-audio-racefree.",
+    "GIN/AEMS/gear patchdoesnotchangeoriginalsoundgraphfidelity;XAonlyeliminatesUBwithPCM-equivalenceproof.",
+    "No gamebehavior/timbre/performance/physicalapproval;later integrated binaryneedsitsowndirectedgate."
+  ],
+  "findings": []
+}

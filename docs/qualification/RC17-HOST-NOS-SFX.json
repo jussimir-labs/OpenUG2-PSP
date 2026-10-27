@@ -1,0 +1,87 @@
+{
+  "at": "2026-10-27T05:33:49.491883+00:00",
+  "status": "PASS_HOST_SOURCE_SFX_PRECLASS_PRODUCTION_WIRING",
+  "source_hashes": {
+    "psp-viewer/main.c": "84dfed4b9f2b0d8a288fd85bc57abec948efc58c95f8674845631ab51f59b071",
+    "psp-viewer/audio.c": "ae6df874e96ee61f3203bbcca695ed97896a200ebcf789337290c6d355bc6c18",
+    "psp-viewer/audio_nos.h": "e081a45b5d8579bf78e15e1d1ba9e903f677e1cdf9d725edb87c085d482c2601",
+    "psp-viewer/nos_mixctl.c": "865878ba204fe6f0c6cca9b78ca3038c1d2f7735ae4ab1e8d9833d686c4bc97d",
+    "psp-viewer/nos_mixctl.h": "394d325a413a7e82a24363875ca4dc92018d4a849870025d5019c2e756eaf5ac",
+    "tools/fixtures/nos_full_mixer.c": "d87432533178f764aa1bd80e5bb5a130bc4244d49939316d0c9bec5c70111688",
+    "tools/test_nos_main.py": "457b9147fa740298e7c07c559fb7849ed2731a8990fe852ebdedc5d56a676ce1",
+    "tools/test_nos_audio.py": "f79fbb5804c63bc39043bc1730d354698c80c6e33ad8bdb002df7e01192dd7ba"
+  },
+  "main_seam": "tools/test_nos_main.py passed: full7522/3993, half3765/1999, zero0; installed kits/Rachel/committed pedal/cache/pause preserved",
+  "production_mixer": {
+    "results": [
+      {
+        "status": "PASS",
+        "checks": 700385,
+        "bank": 0,
+        "buffers": 1000,
+        "audible_values": 1014442,
+        "clipped_values": 0,
+        "hash": "5535a2c6",
+        "nos_starts": 10,
+        "purge_starts": 4,
+        "source": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/banks/xbox",
+        "wave": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/backend/sfx-preclass-02/final/xbox-bank0-full-mixer.wav",
+        "bytes": 4096044,
+        "sha256": "715555a15739fc1f335149015b28f3b4f68bf6db5e7d99d695d785e16f7fd0c4"
+      },
+      {
+        "status": "PASS",
+        "checks": 700385,
+        "bank": 1,
+        "buffers": 1000,
+        "audible_values": 1056390,
+        "clipped_values": 0,
+        "hash": "a6f15721",
+        "nos_starts": 10,
+        "purge_starts": 4,
+        "source": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/banks/xbox",
+        "wave": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/backend/sfx-preclass-02/final/xbox-bank1-full-mixer.wav",
+        "bytes": 4096044,
+        "sha256": "a65898eaf14d2a7ac16a8d387ca2885e9b3a439ab5f49d7a5177970f8ba7619e"
+      },
+      {
+        "status": "PASS",
+        "checks": 700385,
+        "bank": 0,
+        "buffers": 1000,
+        "audible_values": 1014085,
+        "clipped_values": 0,
+        "hash": "63f0bb39",
+        "nos_starts": 10,
+        "purge_starts": 4,
+        "source": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/banks/ps2",
+        "wave": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/backend/sfx-preclass-02/final/ps2-bank0-full-mixer.wav",
+        "bytes": 4096044,
+        "sha256": "7173a8a018338a399cce4787233684620a94eecb7e33dc21696c945fe4c7546c"
+      },
+      {
+        "status": "PASS",
+        "checks": 700385,
+        "bank": 1,
+        "buffers": 1000,
+        "audible_values": 1055818,
+        "clipped_values": 0,
+        "hash": "f1d251c5",
+        "nos_starts": 10,
+        "purge_starts": 4,
+        "source": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/banks/ps2",
+        "wave": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/nitro-implementation-20261027/backend/sfx-preclass-02/final/ps2-bank1-full-mixer.wav",
+        "bytes": 4096044,
+        "sha256": "6c9ffbaf2e60abfdf15f2f574c7796a25e8315a1cdd838b1d4cb8144a4db98ca"
+      }
+    ],
+    "scope": "Production mixer/buses/master with other sources silent; host, not physical or perceptual parity."
+  },
+  "lifecycle": "Actual audio.c/backend: NOS hold active; SFXpreclass0 => no voices; raise held => silence/no new attack; off/on restarts. Halfpreclass receives no duplicate final SFXbus multiplication.",
+  "backend_unchanged": "2source\u00d71520090checks/ASanUBSan native cursors/EOS/partialloops/queue/ACK passed in tests.log",
+  "limits": [
+    "Host only; no hardware/timbre/performance/global approval",
+    "Original Master<1 curve not restored: existing port final Master policy explicit",
+    "Original chase0 profile; other camera/global routing not qualified"
+  ]
+}

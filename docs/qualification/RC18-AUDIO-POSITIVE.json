@@ -1,0 +1,91 @@
+{
+  "status": "ACK_HANDOFF_HOST_PASS",
+  "source_sha256": "8c447536ffb3a1945e8b408af4217b4b22460888fde3bcb9990c53a6dddd0e92",
+  "fixture_sha256": "2658b306a91c82fc0245563ab4205b53348cc434bf46c436d5441913f906d3e2",
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "binary_sha256": "69b4ce58c69d00928ea83dff7d34c3ffed5b4f945b7891ac00641e7a0d59fb81",
+  "assets": {
+    "engine-350Z_01d_shrt2.n2en": {
+      "bytes": 287856,
+      "sha256": "02df088e2bde268e12377520beaae1d4b6a057b07670ea1803e7e57e7b6f2b96"
+    },
+    "engine-Acura_ITR.n2en": {
+      "bytes": 333638,
+      "sha256": "dedb53058fe9bdd23ff1a3fcf7e10e3e17f1f89a8e90b3a73c067f1cbd50f8fc"
+    },
+    "aems-00.n2ab": {
+      "bytes": 108014,
+      "sha256": "5094c0aa1508cbddc6da1d9586eabdc93036e97e578efe9e9afb94bb95061fa7"
+    },
+    "aems-01.n2ab": {
+      "bytes": 89774,
+      "sha256": "e54f2194870980ee4aeff89838f65902886768b13ea5782aefb490e77dfa688b"
+    },
+    "gear-GEAR_MED_Base.n2sf": {
+      "bytes": 53690,
+      "sha256": "1c41024746b88c2c15b798e8afc1b980b37e398b9294d398bed783044846af23"
+    },
+    "gear-GEAR_MED_Lev1.n2sf": {
+      "bytes": 70416,
+      "sha256": "bfbd9b51397a4b6ba0b5edbf5591d67631550942fd6a24a47e3d25b1c1c4a5fb"
+    }
+  },
+  "rows": [
+    {
+      "mode": "engine-GIN",
+      "exit_code": 0,
+      "expected": true,
+      "ASan_UAF": false,
+      "UBSan_error": false,
+      "seconds": 0.7050988749833778,
+      "stdout": "mode=1 proposed=1 reader_captured=0x10260cb54 old_allocation=0x10260c800 swap_return=0 elapsed_us=297810 mixed_before_release=0\nPASS delayed-reader timeout kept old allocation; reader resumed; freshACK replacement; nested outer hold preserved; missing file atomic; held stop and mixer join before free\n"
+    },
+    {
+      "mode": "AEMS",
+      "exit_code": 0,
+      "expected": true,
+      "ASan_UAF": false,
+      "UBSan_error": false,
+      "seconds": 0.3871845840185415,
+      "stdout": "mode=2 proposed=1 reader_captured=0x101a11f08 old_allocation=0x1019dc800 swap_return=0 elapsed_us=297352 mixed_before_release=0\nPASS delayed-reader timeout kept old allocation; reader resumed; freshACK replacement; nested outer hold preserved; missing file atomic; held stop and mixer join before free\n"
+    },
+    {
+      "mode": "gear",
+      "exit_code": 0,
+      "expected": true,
+      "ASan_UAF": false,
+      "UBSan_error": false,
+      "seconds": 0.38623433298198506,
+      "stdout": "mode=3 proposed=1 reader_captured=0x62f000000448 old_allocation=0x62f000000400 swap_return=0 elapsed_us=298419 mixed_before_release=0\nPASS delayed-reader timeout kept old allocation; reader resumed; freshACK replacement; nested outer hold preserved; missing file atomic; held stop and mixer join before free\n"
+    },
+    {
+      "mode": "decoder-PCM",
+      "exit_code": 0,
+      "expected": true,
+      "ASan_UAF": false,
+      "UBSan_error": false,
+      "seconds": 0.09974933401099406,
+      "stdout": "PCM 0 0 35272 130bea71\nPCM 0 1 21602 54f51e3f\nPCM 0 2 25201 7bb0cca6\nPCM 0 3 27365 2dec0483\nPCM 0 4 21240 1898542c\nPCM 0 5 24300 bb6a4652\nPCM 0 6 27362 2f035b47\nPCM 0 7 15398 cd71048a\nPCM 1 0 23020 b75a1da3\nPCM 1 1 21603 a5856d12\nPCM 1 2 23037 9c8e3687\nPCM 1 3 19079 b677d783\nPCM 1 4 9718 7ef0ea66\nPCM 1 5 20879 b4b2ec95\nPCM 1 6 32310 ac6e83a7\nPCM 1 7 14048 fd8a09a7\n",
+      "independent_Python_reference_loops": 16,
+      "independent_Python_reference_samples": 361434
+    },
+    {
+      "mode": "uncached-GIN",
+      "exit_code": 0,
+      "expected": true,
+      "ASan_UAF": false,
+      "UBSan_error": false,
+      "seconds": 0.090254416980315,
+      "stdout": "PASS accepted unbaked GIN builds candidate cache without touching live mixer search telemetry\n"
+    }
+  ],
+  "all_expected": true,
+  "limits": [
+    "Delayed-reader scheduling is test-only. It proves reclamation correctness under that schedule, not that such a schedule caused a human audio report.",
+    "Exact real native PCM and actual mixer readers/loaders are used. No PSP/game/emulator run, no asset conversion.",
+    "LSan disabled because unsupported on this Mac; enabled sanitizers are listed explicitly above."
+  ]
+}

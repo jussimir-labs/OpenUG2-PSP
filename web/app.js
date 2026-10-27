@@ -108,6 +108,42 @@
     const root = $('known-issues'); root.replaceChildren();
     if (!raw) return;
     const descriptions = {
+      'new-executable-hardware-and-memory-stick-listening-validation-pending': {
+        en:'This version still needs testing and listening checks on a PSP and Memory Stick.',
+        pt:'Esta versão ainda precisa de testes e conferência do áudio no PSP e Memory Stick.'
+      },
+      'original-drift-domain-qualified-not-global-parity': {
+        en:'Drift has had limited local tests; handling across all cars and tracks still needs validation.',
+        pt:'O Drift passou por testes locais limitados; a dirigibilidade de todos os carros e pistas ainda precisa de validação.'
+      },
+      'custom-dyno-and-special-preset-drift-use-previous-model': {
+        en:'Custom dyno settings and special preset cars use the previous handling for the whole event.',
+        pt:'O dyno personalizado e carros de presets especiais usam a dirigibilidade anterior durante o evento inteiro.'
+      },
+      '2d-collision-and-unqualified-wild-hydraulics-branches': {
+        en:'Collisions use a simplified model; extreme handling and hydraulics still need testing.',
+        pt:'As colisões usam um modelo simplificado; comportamentos extremos e hidráulica ainda precisam de testes.'
+      },
+      'drag-4401-rival-recovery-loop-deferred': {
+        en:'In Tunnel Construction, opponents may get stuck and repeatedly respawn.',
+        pt:'Em Tunnel Construction, os adversários podem ficar presos e reaparecer repetidamente.'
+      },
+      'tone-visibility-uv-cull-doors-review-incomplete': {
+        en:'Colors, materials, textures, scenery visibility and doors still need review.',
+        pt:'Cores, materiais, texturas, visibilidade do cenário e portas ainda precisam de revisão.'
+      },
+      'psp1000-other-models-and-global30fps-unapproved': {
+        en:'PSP-1000, PSP-2000, Go and consistent 30 fps still need validation.',
+        pt:'PSP-1000, PSP-2000, Go e os 30 fps constantes ainda precisam de validação.'
+      },
+      'ps2-original-usa-disc-image-unverified': {
+        en:'The original US PS2 disc image has not been verified.',
+        pt:'A imagem do disco americano original de PS2 ainda não foi verificada.'
+      },
+      'historical-psplink-stop-manual-recovery': {
+        en:'Stopping an earlier PSPLink test required manual recovery.',
+        pt:'O encerramento de um teste anterior pelo PSPLink exigiu recuperação manual.'
+      },
       'drag-4401-rival-recovery-loop': {
         en:'In Tunnel Construction, opponents may get stuck and repeatedly respawn.',
         pt:'Em Tunnel Construction, os adversários podem ficar presos e reaparecer repetidamente.'

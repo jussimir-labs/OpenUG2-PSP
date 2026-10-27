@@ -51,7 +51,10 @@ import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 LAYERS = ('Ambience', 'Reverb', 'Wind')
-FX_SIZE = {0: 4, 1: 8, 3: 4, 6: 4, 7: 8, 9: 4}
+# Retail Speed.elf filtermodsizetable (8037f8e0), used by MIX_initreverb:
+# type 5 is an eight-byte resonant filter, not a four-byte module followed
+# by a delay. Its parameter bytes can themselves start with 0x07.
+FX_SIZE = (4, 8, 4, 4, 8, 8, 4, 8, 4, 4)
 TUNNELS = (5, 6, 7, 20)
 
 
@@ -95,27 +98,69 @@ def xbe_tables(xbe):
     return zones, rows, names
 
 
+def fx_modules(data):
+    """Read the six counted variants, without mistaking parameters for modules.
+
+    MIX_initreverb copies the 0x38-byte header, walks each variant's module
+    count using filtermodsizetable, then skips its counted 12-byte edges.
+    The original selects a populated variant by its mixer output count;
+    these groups are alternatives, not simultaneous input/room buses.
+    Connections are not recognisable by a byte-pattern heuristic: their
+    ports and padding vary between the retail presets.
+    """
+    if len(data) < 0x38 or data[:4] != b'FX\x0b\0':
+        raise ValueError('invalid FXEDIT header')
+    if struct.unpack_from('>I', data, 4)[0] != len(data):
+        raise ValueError('FXEDIT size differs from header')
+    groups, o = [], 0x38
+    for variant in range(6):
+        count = struct.unpack_from('>I', data, 8 + variant * 4)[0]
+        edges = struct.unpack_from('>I', data, 0x20 + variant * 4)[0]
+        modules = []
+        if count > (len(data) - o) // 4:
+            raise ValueError('FXEDIT module count exceeds file')
+        for _ in range(count):
+            t = data[o]
+            if t >= len(FX_SIZE):
+                raise ValueError(f'unknown FXEDIT module {t} at {o:#x}')
+            end = o + FX_SIZE[t]
+            if end > len(data):
+                raise ValueError('truncated FXEDIT module')
+            modules.append((t, data[o:end]))
+            o = end
+        end = o + edges * 12
+        if end > len(data):
+            raise ValueError('FXEDIT connection count exceeds file')
+        for at in range(o, end, 12):
+            source, target = struct.unpack_from('>2I', data, at)
+            if source >= count or target >= count:
+                raise ValueError('FXEDIT connection references missing module')
+        groups.append(modules)
+        o = end
+    if o != len(data):
+        raise ValueError('unconsumed FXEDIT bytes')
+    return groups
+
+
 def preset(data):
     """A SOUND\\FXEDIT preset as the port plays it (the module's doc): (low-pass
-    Hz, output gain, [(ms, feedback, side)])."""
-    mods, o = [], 0x3c
-    while o < len(data):
-        a, b = struct.unpack_from('>II', data, o) if o + 12 <= len(data) else (99, 99)
-        if a < 32 and b < 32 and data[o + 8] in (1, 2) and data[o + 9] == 1:
-            o += 12   # a connection: from, to, port
-            continue
-        t = data[o]
-        r = data[o:o + FX_SIZE.get(t, 4)]
+    Hz, output gain, [(ms, feedback, side)]). Retain the port's existing
+    projection of the last populated variant into a stereo room. This
+    does not implement the original's output-count selection or complete
+    FXEDIT DSP graph, including resonant filters.
+    """
+    groups = [group for group in fx_modules(data) if group]
+    if not groups:
+        raise ValueError('FXEDIT preset has no modules')
+    mods = []
+    for t, r in groups[-1]:
         if t == 7:
             mods.append(('delay', r[1], *struct.unpack_from('>2H', r, 2)))
         elif t == 1:
             mods.append(('lowpass', r[1], *struct.unpack_from('>2H', r, 4)))
         elif t == 6:
             mods.append(('gain', r[1], struct.unpack_from('>H', r, 2)[0], 0))
-        elif t == 0:
-            mods.append(('io', 0, 0, 0))
-        o += len(r)
-    room = mods[mods.index(('io', 0, 0, 0)) + 1:] if ('io', 0, 0, 0) in mods else mods
+    room = mods
     lows = [m for m in room if m[0] == 'lowpass' and m[2]]
     gains = [m[2] for m in room if m[0] == 'gain']
     hz = lows[0][2] if lows else 5000

@@ -1,0 +1,50 @@
+{
+  "status": "PASS_DIRECTED_NATIVE_NOS_GAME_RENDER_NOT_NORMAL_RACE",
+  "source": "ps2",
+  "run_id": "780e01fb7d2e4a189a50bc3a1da0d3c0",
+  "eboot_sha256": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "pack_sha256": "d0e10e1a8715e5fcb6c860a70a5017c248bbf1a169892b1e7981d6ee8a355a5b",
+  "data_id": "8729",
+  "line": "1200 0 94 4 -1 0 1 31 1",
+  "scope": "One directed script94 game render, exact native package and binary.\nSynthetic setup/fullperf and course driver, not a normal career/race approval.\n",
+  "source_geometry_identical_to_prior": true,
+  "returncode": 0,
+  "nos_audio": [
+    2,
+    315920,
+    0,
+    2024,
+    0,
+    0,
+    0,
+    0,
+    4,
+    95,
+    7,
+    87,
+    8,
+    7,
+    7522,
+    1854
+  ],
+  "screens": [
+    "memstick/PSP/GAME/NFSU2VIEW/l9-40-card.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-41-full-100.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-42-nos-010.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-42-nos-025.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-42-nos-050.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-42-nos-075.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-42-nos-100.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-43-long-02.0.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-43-long-04.0.ppm",
+    "memstick/PSP/GAME/NFSU2VIEW/l9-43-long-06.0.ppm"
+  ],
+  "stats_file": "/Users/jussimirpasold/.codex/worktrees/closed-beta-iso/pessoal-nfsu2-psp/reports/closed-beta-20261025/rc17-nos-sfx-validation/ps2-effect-01/memstick/PSP/GAME/NFSU2VIEW/viewer-stats.json",
+  "audio": [],
+  "not_approved": [
+    "Subjective human timbre matching",
+    "Purge and every bank in gameplay (host contracts separate)",
+    "Normal complete race/reward/save/cold",
+    "PSP hardware/memory/timing/PSP1000/global30fps"
+  ]
+}
