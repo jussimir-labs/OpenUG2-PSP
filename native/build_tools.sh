@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Maintainer/CI only. Testers receive the compiled output, never run this script.
 set -euo pipefail
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 OUT="$(mkdir -p "$1" && cd "$1" && pwd)"
 CACHE="$(mkdir -p "$2" && cd "$2" && pwd)"
 JOBS="${NATIVE_JOBS:-3}"
@@ -31,6 +32,11 @@ case "$(uname -s)" in MINGW*|MSYS*) SUFFIX=.exe; EXTRA=(--target-os=mingw32 --ar
 if [ "${NATIVE_FFMPEG_ONLY:-0}" = 1 ]; then exit 0; fi
 (
  cd "$CACHE/lame-4.0"
+ # This dispatch accepts either UTF-8 bytes or UTF-16 words, selected by enc.
+ # A generic pointer fixes GCC 14+'s error without changing audio encoding.
+ if ! grep -qF 'int type, void const* str)' frontend/parse.c; then
+  patch -p1 < "$SCRIPT_DIR/lame-4.0-portable.patch"
+ fi
  ac_cv_prog_cc_c23=no ./configure --disable-shared --enable-static --disable-decoder CFLAGS="-O3 -std=gnu17 -include locale.h -Wno-implicit-function-declaration" LDFLAGS="$LDFLAGS_EXTRA"
  make -j "$JOBS"
  cp "frontend/lame$SUFFIX" "$OUT/"
@@ -56,3 +62,4 @@ cp "$CACHE/ffmpeg-8.1.2/COPYING.LGPLv2.1" "$OUT/licenses/FFmpeg-LGPL-2.1.txt"
 cp "$CACHE/lame-4.0/COPYING" "$OUT/licenses/LAME.txt"
 cp "$CACHE/jpegli/LICENSE" "$OUT/licenses/jpegli.txt"
 cp "$0" "$OUT/sources/build_tools.sh"
+cp "$SCRIPT_DIR/lame-4.0-portable.patch" "$OUT/sources/"

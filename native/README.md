@@ -24,7 +24,7 @@ and notarization are outside this implementation. Normal OS trust prompts can st
 
 GitHub Actions builds and tests on Windows x64 and both Mac architectures. Build tools
 are needed **only on the maintainer/CI machine**: Rust, Python, uv, C/C++ compiler, CMake,
-Ninja, Make, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest tool.
+Ninja, Make, patch, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest tool.
 
 ```sh
 bash native/build_tools.sh native/tools native/.cache/tools
@@ -59,3 +59,7 @@ must still match the existing RC21 manifests: a mismatch is a diagnostic failure
 successful package. Complete ISO qualification on each OS is recorded separately; synthetic
 fixtures and compilation alone must not be described as end-to-end validation.
 The PSP executable is unchanged (`42d252df…436a95`), as are RC21's known game/hardware limits.
+
+The LAME frontend has a small portability patch: its encoding-dispatched ID3 input
+accepts a generic pointer for either UTF-8 or UTF-16. The audio encoder is unchanged.
+The original source archive, patch and build script accompany each native package.

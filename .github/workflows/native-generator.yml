@@ -32,14 +32,14 @@ jobs:
           msystem: MINGW64
           update: true
           install: >-
-            git make tar curl diffutils mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
+            git make tar curl diffutils patch mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
             mingw-w64-x86_64-ninja perl
       - name: Cached native tools
         uses: actions/cache@v4
         id: tools
         with:
           path: native/tools
-          key: native-tools-${{ matrix.target }}-${{ hashFiles('native/build_tools.sh', 'native/utf8.manifest') }}
+          key: native-tools-${{ matrix.target }}-${{ hashFiles('native/build_tools.sh', 'native/lame-4.0-portable.patch', 'native/utf8.manifest') }}
       - name: Build native tools (Windows)
         if: runner.os == 'Windows' && steps.tools.outputs.cache-hit != 'true'
         shell: msys2 {0}
@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: native/tools
-          key: native-tools-${{ matrix.target }}-${{ hashFiles('native/build_tools.sh', 'native/utf8.manifest') }}
+          key: native-tools-${{ matrix.target }}-${{ hashFiles('native/build_tools.sh', 'native/lame-4.0-portable.patch', 'native/utf8.manifest') }}
       - name: Native Rust tests and release build
         run: |
           cargo --config native/.cargo/config.toml test --locked --manifest-path native/Cargo.toml
