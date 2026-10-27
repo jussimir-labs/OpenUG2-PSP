@@ -15,6 +15,7 @@ test group on 27 October 2026. [Release notes](RELEASE_NOTES.md) · [Known issue
 
 ## Next validation and fixes
 
+- [ ] Ship self-contained native generator packages for Windows x64 and macOS, with bundled Python, libraries and prebuilt conversion tools. Remove manual WSL/Homebrew/compiler setup and validate complete generation on clean systems. Deferred until after the first beta rollout; RC21 uses the existing generator and documented prerequisites.
 - [ ] Confirm generation and installation on testers' macOS/Linux/Windows+WSL setups.
 - [ ] Gather current-device visual/audio feedback and recheck existing reports #1–#5.
 - [ ] Extend Career, natural rewards, sponsor progression and native save/cold-load coverage.
