@@ -1,3 +1,5 @@
+> Historical audit of executable bf7f. For the overnight corrections and their exact qualification, read [NIGHTLY_NOTES.md](../../NIGHTLY_NOTES.md).
+
 # Audio audit: closed beta build 06
 
 Audit date: 25 October 2026. Related reports: [#2 drift audio](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2), [#3 pause audio](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3), [#4 braking audio](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4), and [#5 music after drift](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5).

@@ -1,0 +1,982 @@
+{
+  "passed": true,
+  "scope": "Current RC17 continuation from actual first win: normal Street X4602, default3laps, natural result/SAVE.\nA private APFS clone of our own test stick, cold load, Resume Career,\npause World Map Sprint GPS, ordinary pad to its event, Up/Accept, natural\nfull race on pad, reward/native SAVE (one launch; no second cold process). No smoke,\nboot driver, repr/placement, progress/position/AI writes, shortened laps,\nsynthetic win or user/physical saves. A pilot loss stays a loss.\nNot all career, all modes, physical PSP/PSP1000 or timing approval.\n",
+  "eboot_sha256": "da37c1120252916f3e70a8034d347ea111f09303237c65d495778d3882f0dfe1",
+  "pack_sha256": "3f08a47c9837de623a5023175d6c52dc2e1f09aa1f9381c31aba674fc5062ffb",
+  "source_native": {
+    "DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  },
+  "source_proof": "rc17-nos-sfx-validation/natural4101-01/cold-postwin/RESULT.json",
+  "prefix_seconds": 0.0,
+  "controller_sha256": "c110512da4a43f3ba0c73953bef6628928347a56e5218e04270f0d74efdc67fc",
+  "sampler_seconds": 0.04,
+  "external_lookahead": "4+.25*speed from race.c",
+  "race_cadence_delta": "40ms wall minimum; actual emulated delta logged",
+  "external_pad_speed_parameters": {
+    "steer": 1.045454502105713,
+    "tyre_grip": [
+      1.4500000476837158,
+      1.4250000715255737
+    ],
+    "turn_grip": 19.319569551068547,
+    "planned_lateral_accel": 16.421634118408264,
+    "braking_accel": 7.0,
+    "cruise": 45.0
+  },
+  "speed_planner_sha256": "f4abb5633c7e810d66dcaf5c76482e987f41ceb8f53c1186be0cfe4985035bee",
+  "actual_shipping_manifest_checked": true,
+  "actual_pack_sha256": "3f08a47c9837de623a5023175d6c52dc2e1f09aa1f9381c31aba674fc5062ffb",
+  "proof_scope": "Current RC17 continuation from actual first win: normal Street X4602, default3laps, natural result/SAVE.\nA private APFS clone of our own test stick, cold load, Resume Career,\npause World Map Sprint GPS, ordinary pad to its event, Up/Accept, natural\nfull race on pad, reward/native SAVE (one launch; no second cold process). No smoke,\nboot driver, repr/placement, progress/position/AI writes, shortened laps,\nsynthetic win or user/physical saves. A pilot loss stays a loss.\nNot all career, all modes, physical PSP/PSP1000 or timing approval.\n",
+  "run": "56bf88c129f14940a98bacab6c572229",
+  "normal_boot_start_samples": [
+    {
+      "t": 0.144,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 0.6,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 1.051,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 1.501,
+      "front": 14,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    }
+  ],
+  "event_row": 5,
+  "event_id": 4602,
+  "event_marker": [
+    -185.10791015625,
+    16.118999481201172,
+    -317.25213623046875
+  ],
+  "career_offer": [
+    4602,
+    1,
+    2,
+    250,
+    3,
+    3,
+    4,
+    0
+  ],
+  "samples": [
+    {
+      "clock": 1.283333420753479,
+      "position": [
+        -99.68159484863281,
+        15.67921257019043,
+        652.1351318359375
+      ],
+      "ground": 15.473172187805176,
+      "speed": 0.0,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 0,
+      "distance_m": 0
+    },
+    {
+      "clock": 2.3166658878326416,
+      "position": [
+        -101.01731872558594,
+        15.66149616241455,
+        653.3886108398438
+      ],
+      "ground": 15.455455780029297,
+      "speed": 2.053150727095993,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 1,
+      "distance_m": 1.8362145938535561
+    },
+    {
+      "clock": 3.3499982357025146,
+      "position": [
+        -102.77970886230469,
+        15.64587688446045,
+        654.3150024414062
+      ],
+      "ground": 15.439836502075195,
+      "speed": 1.8223031992225267,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 1,
+      "distance_m": 3.8323901017905344
+    },
+    {
+      "clock": 4.383330821990967,
+      "position": [
+        -104.80027770996094,
+        15.630094528198242,
+        654.8887329101562
+      ],
+      "ground": 15.424054145812988,
+      "speed": 2.0294744441681467,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 1,
+      "distance_m": 5.935161043198089
+    },
+    {
+      "clock": 5.41666316986084,
+      "position": [
+        -106.9641342163086,
+        15.614002227783203,
+        655.1820068359375
+      ],
+      "ground": 15.40796184539795,
+      "speed": 2.1294989041235315,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 1,
+      "distance_m": 8.12005233925835
+    },
+    {
+      "clock": 6.483328819274902,
+      "position": [
+        -109.49280548095703,
+        15.598313331604004,
+        655.2545166015625
+      ],
+      "ground": 15.39227294921875,
+      "speed": 2.3225143654671845,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 1,
+      "distance_m": 10.650674235578322
+    },
+    {
+      "clock": 7.583327770233154,
+      "position": [
+        -111.6421890258789,
+        15.588299751281738,
+        655.1399536132812
+      ],
+      "ground": 15.382259368896484,
+      "speed": 1.26047829560771,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 1,
+      "distance_m": 12.803533211797003
+    },
+    {
+      "clock": 8.616668701171875,
+      "position": [
+        -113.11457824707031,
+        15.58035945892334,
+        654.970703125
+      ],
+      "ground": 15.374319076538086,
+      "speed": 1.956936827945756,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 14.28572812633768
+    },
+    {
+      "clock": 9.616682052612305,
+      "position": [
+        -115.00482940673828,
+        15.56948184967041,
+        654.982177734375
+      ],
+      "ground": 15.363441467285156,
+      "speed": 2.059593842633736,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 16.182238184753732
+    },
+    {
+      "clock": 10.650029182434082,
+      "position": [
+        -116.93712615966797,
+        15.555644035339355,
+        655.5029296875
+      ],
+      "ground": 15.349603652954102,
+      "speed": 1.8325649593359659,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 18.18756075720761
+    },
+    {
+      "clock": 11.750043869018555,
+      "position": [
+        -118.93753051757812,
+        15.538057327270508,
+        656.4675903320312
+      ],
+      "ground": 15.332016944885254,
+      "speed": 2.029365508103637,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 20.410416096776178
+    },
+    {
+      "clock": 12.81672477722168,
+      "position": [
+        -121.0244140625,
+        15.517619132995605,
+        657.815673828125
+      ],
+      "ground": 15.311578750610352,
+      "speed": 2.5720131271092392,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 22.895889286588805
+    },
+    {
+      "clock": 13.916739463806152,
+      "position": [
+        -123.25109100341797,
+        15.49351692199707,
+        659.5375366210938
+      ],
+      "ground": 15.287476539611816,
+      "speed": 2.759821734643959,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 25.71122791162505
+    },
+    {
+      "clock": 14.983420372009277,
+      "position": [
+        -125.44722747802734,
+        15.46830940246582,
+        661.4437866210938
+      ],
+      "ground": 15.262269020080566,
+      "speed": 2.5802154858321833,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 28.619531570845314
+    },
+    {
+      "clock": 16.016767501831055,
+      "position": [
+        -127.11039733886719,
+        15.450481414794922,
+        662.9954833984375
+      ],
+      "ground": 15.244441032409668,
+      "speed": 1.9417815936133054,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 2,
+      "distance_m": 30.8942224614184
+    },
+    {
+      "clock": 17.150083541870117,
+      "position": [
+        -128.32635498046875,
+        15.43636703491211,
+        664.18603515625
+      ],
+      "ground": 15.230326652526855,
+      "speed": 1.6716484832854899,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 3,
+      "distance_m": 32.59600704546945
+    },
+    {
+      "clock": 18.216733932495117,
+      "position": [
+        -130.4076385498047,
+        15.410309791564941,
+        666.2276611328125
+      ],
+      "ground": 15.204269409179688,
+      "speed": 2.880842510381713,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 3,
+      "distance_m": 35.51154979238171
+    },
+    {
+      "clock": 19.250051498413086,
+      "position": [
+        -132.4658203125,
+        15.387070655822754,
+        668.16943359375
+      ],
+      "ground": 15.1810302734375,
+      "speed": 2.8317074908201723,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 3,
+      "distance_m": 38.34115454944714
+    },
+    {
+      "clock": 20.38336753845215,
+      "position": [
+        -134.78546142578125,
+        15.360827445983887,
+        670.3131713867188
+      ],
+      "ground": 15.154787063598633,
+      "speed": 2.6282468590416315,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 3,
+      "distance_m": 41.49971429215688
+    },
+    {
+      "clock": 21.45001792907715,
+      "position": [
+        -136.2372283935547,
+        15.345735549926758,
+        671.6188354492188
+      ],
+      "ground": 15.139695167541504,
+      "speed": 1.7098701890459014,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 3,
+      "distance_m": 43.452262042963916
+    },
+    {
+      "clock": 22.483335494995117,
+      "position": [
+        -137.3432159423828,
+        15.333678245544434,
+        672.5850219726562
+      ],
+      "ground": 15.12763786315918,
+      "speed": 1.7561855125989172,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 4,
+      "distance_m": 44.920863555425065
+    },
+    {
+      "clock": 23.516653060913086,
+      "position": [
+        -138.60960388183594,
+        15.32673454284668,
+        673.4412231445312
+      ],
+      "ground": 15.120694160461426,
+      "speed": 1.850941963260584,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 4,
+      "distance_m": 46.453088447776395
+    },
+    {
+      "clock": 24.549970626831055,
+      "position": [
+        -140.56048583984375,
+        15.32416820526123,
+        674.0695190429688
+      ],
+      "ground": 15.118127822875977,
+      "speed": 2.195476686769775,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 5,
+      "distance_m": 48.510306643833154
+    },
+    {
+      "clock": 25.616621017456055,
+      "position": [
+        -142.7368927001953,
+        15.329851150512695,
+        674.0194091796875
+      ],
+      "ground": 15.123810768127441,
+      "speed": 1.9208172558809855,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 5,
+      "distance_m": 50.69899112484239
+    },
+    {
+      "clock": 26.716604232788086,
+      "position": [
+        -144.69851684570312,
+        15.33298110961914,
+        673.2423706054688
+      ],
+      "ground": 15.126940727233887,
+      "speed": 1.987702630388873,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 5,
+      "distance_m": 52.81924013558417
+    },
+    {
+      "clock": 27.816587448120117,
+      "position": [
+        -146.2876739501953,
+        15.334474563598633,
+        671.8736572265625
+      ],
+      "ground": 15.128434181213379,
+      "speed": 2.1732076421345723,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 5,
+      "distance_m": 54.92550244057877
+    },
+    {
+      "clock": 28.883237838745117,
+      "position": [
+        -147.4771270751953,
+        15.338926315307617,
+        670.0552978515625
+      ],
+      "ground": 15.132885932922363,
+      "speed": 1.9221342351028925,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 5,
+      "distance_m": 57.10435882925938
+    },
+    {
+      "clock": 29.916555404663086,
+      "position": [
+        -148.0265655517578,
+        15.345039367675781,
+        668.6005859375
+      ],
+      "ground": 15.138998985290527,
+      "speed": 1.1360869157823148,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 5,
+      "distance_m": 58.66151757989055
+    },
+    {
+      "clock": 30.966541290283203,
+      "position": [
+        -148.4351348876953,
+        15.34876823425293,
+        666.8234252929688
+      ],
+      "ground": 15.142727851867676,
+      "speed": 1.8209798543293279,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 6,
+      "distance_m": 60.48598218089046
+    },
+    {
+      "clock": 32.099857330322266,
+      "position": [
+        -149.38198852539062,
+        15.357621192932129,
+        664.8126831054688
+      ],
+      "ground": 15.151580810546875,
+      "speed": 1.8931432249201727,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 6,
+      "distance_m": 62.71432238589498
+    },
+    {
+      "clock": 33.23317337036133,
+      "position": [
+        -150.74794006347656,
+        15.365168571472168,
+        662.9971313476562
+      ],
+      "ground": 15.159128189086914,
+      "speed": 2.085168212683721,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 6,
+      "distance_m": 64.98864787602015
+    },
+    {
+      "clock": 34.29982376098633,
+      "position": [
+        -152.3933563232422,
+        15.417427062988281,
+        661.3117065429688
+      ],
+      "ground": 15.211386680603027,
+      "speed": 2.403064938521267,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 6,
+      "distance_m": 67.34510280334261
+    },
+    {
+      "clock": 35.39980697631836,
+      "position": [
+        -154.4768524169922,
+        15.574017524719238,
+        659.525390625
+      ],
+      "ground": 15.367977142333984,
+      "speed": 2.711881412473795,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 6,
+      "distance_m": 70.09019117781337
+    },
+    {
+      "clock": 36.49979019165039,
+      "position": [
+        -156.7252655029297,
+        15.712054252624512,
+        657.8326416015625
+      ],
+      "ground": 15.506013870239258,
+      "speed": 2.416310697954102,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 6,
+      "distance_m": 72.90492943914757
+    },
+    {
+      "clock": 37.59977340698242,
+      "position": [
+        -158.28318786621094,
+        15.740059852600098,
+        656.7598266601562
+      ],
+      "ground": 15.534019470214844,
+      "speed": 1.5281776389085173,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 6,
+      "distance_m": 74.79658873493949
+    },
+    {
+      "clock": 38.63309097290039,
+      "position": [
+        -159.6253204345703,
+        15.736533164978027,
+        655.8671875
+      ],
+      "ground": 15.530492782592773,
+      "speed": 2.12155985066432,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 7,
+      "distance_m": 76.40866016360752
+    },
+    {
+      "clock": 39.69974136352539,
+      "position": [
+        -161.09072875976562,
+        15.745408058166504,
+        654.3508911132812
+      ],
+      "ground": 15.53936767578125,
+      "speed": 1.8610896966981796,
+      "gps": [
+        0,
+        2,
+        0,
+        0
+      ],
+      "waypoint": 7,
+      "distance_m": 78.52751562718173
+    }
+  ],
+  "egress_last_sample": {
+    "clock": 40.0330696105957,
+    "position": [
+      -161.40567016601562,
+      15.73949146270752,
+      653.831787109375
+    ],
+    "ground": 15.533451080322266,
+    "gps": [
+      0,
+      1,
+      0,
+      76
+    ]
+  },
+  "connected": {
+    "clock": 40.0330696105957,
+    "position": [
+      -161.40567016601562,
+      15.73949146270752,
+      653.831787109375
+    ],
+    "ground": 15.533451080322266,
+    "speed": 1.787526295397261,
+    "gps": [
+      0,
+      1,
+      0,
+      76
+    ],
+    "waypoint": 7,
+    "distance_m": 79.13491221009163
+  },
+  "egress_distance_m": 79.13491221009163,
+  "navigation_last_sample": {
+    "clock": 150.66990661621094,
+    "position": [
+      -192.5219268798828,
+      16.771291732788086,
+      -318.22796630859375
+    ],
+    "ground": 16.565250396728516,
+    "gps": [
+      0,
+      0,
+      74,
+      0
+    ],
+    "to_marker": 7.477960171041329,
+    "near": true,
+    "engage": 5
+  },
+  "normal_navigation_distance_m": 1232.1492902702744,
+  "career_before": {
+    "money": 250,
+    "rep": 200,
+    "races": 1
+  },
+  "natural_finish": {
+    "state": 3,
+    "event_index": 85,
+    "laps": 3,
+    "nr": 4,
+    "order": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "ai_resets": 0,
+    "clock": 76.69917297363281,
+    "countdown": 0.4999963939189911,
+    "offtrack": 0.0
+  },
+  "normal_race_distance_m": 1546.0502008446397,
+  "career_after": {
+    "money": 500,
+    "rep": 400,
+    "races": 2
+  },
+  "earned_money": 250,
+  "earned_rep": 200,
+  "saved_files": {
+    "DATA.BIN": "fe305bb0fcdfd58dc8d962dee59c9af7519350695b5642ae3a4d4888789e8d8e",
+    "ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "PARAM.SFO": "3997264dce1db892560fcc222452802474c6ca80d8c5049daf930ecaec4644eb"
+  },
+  "progression_bytes": {
+    "17": 1,
+    "18": 1,
+    "680": 1,
+    "681": 255
+  },
+  "flow": {
+    "name": "stage1-normal-pad",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [
+      {
+        "label": "ordinary START boot skip",
+        "t": 0.5,
+        "front": 0,
+        "on_card": 1,
+        "pack_files": 753
+      },
+      {
+        "label": "ordinary START boot skip",
+        "t": 0.94,
+        "front": 0,
+        "on_card": 1,
+        "pack_files": 753
+      },
+      {
+        "label": "ordinary START boot skip",
+        "t": 1.4,
+        "front": 0,
+        "on_card": 1,
+        "pack_files": 753
+      },
+      {
+        "label": "normal Street X GPS",
+        "t": 8.4,
+        "event": 4602,
+        "marker": [
+          -185.10791015625,
+          16.118999481201172,
+          -317.25213623046875
+        ]
+      },
+      {
+        "label": "normal egress starts",
+        "t": 8.4,
+        "position": [
+          -99.68159484863281,
+          15.67921257019043,
+          652.1351318359375
+        ]
+      },
+      {
+        "label": "GPS connected after ordinary pad egress",
+        "t": 36.49,
+        "clock": 40.0330696105957,
+        "position": [
+          -161.40567016601562,
+          15.73949146270752,
+          653.831787109375
+        ],
+        "ground": 15.533451080322266,
+        "speed": 1.787526295397261,
+        "gps": [
+          0,
+          1,
+          0,
+          76
+        ],
+        "waypoint": 7,
+        "distance_m": 79.13491221009163
+      }
+    ],
+    "command": [
+      "reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=64118",
+      "--timeout=2400",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "56bf88c129f14940a98bacab6c572229",
+    "proof_scope": "Current RC17 continuation from actual first win: normal Street X4602, default3laps, natural result/SAVE.\nA private APFS clone of our own test stick, cold load, Resume Career,\npause World Map Sprint GPS, ordinary pad to its event, Up/Accept, natural\nfull race on pad, reward/native SAVE (one launch; no second cold process). No smoke,\nboot driver, repr/placement, progress/position/AI writes, shortened laps,\nsynthetic win or user/physical saves. A pilot loss stays a loss.\nNot all career, all modes, physical PSP/PSP1000 or timing approval.\n",
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "screens": [
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/ordinary-create-profile-question.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/resumed-owned-car-street.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/ordinary-worldmap-streetx.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/normal-egress-gps-connected.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/ordinary-event-engage.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/normal-career-race-grid.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/normal-career-natural-finish.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/normal-career-results-ready.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/run/stage1-normal-pad/normal-career-reward.png"
+    ],
+    "entry_stops": [
+      {
+        "at": "fail_model.isra.0",
+        "pc": 143748400,
+        "observation": "paused PC matches registered entry; no reason inferred",
+        "stack": [
+          "fail_model.isra.0+0x0",
+          "load_racer.lto_priv.0+0x114",
+          "race_start.lto_priv.0+0x1394",
+          "menu_input.lto_priv.0+0xabc",
+          "main+0x121ec",
+          "_main+0x98"
+        ],
+        "model_load_stage": "model-read",
+        "t": 162.76
+      }
+    ],
+    "saves_written": [
+      "records.sav"
+    ],
+    "debug_files_written": [
+      ".movie-playback.log",
+      "boot.txt",
+      "savedata-dialog.on"
+    ],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 234.45271945899003
+  },
+  "second_cold_launch_omitted": "This process covers only the actual new race/reward/SAVE; a separate first cold reopen is required after success. Historical cold evidence is not transferred.",
+  "source_native_after": {
+    "DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  }
+}

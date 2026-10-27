@@ -51,7 +51,12 @@ physics.n2ph: 'N2PH', u32 count, then count x 132 bytes:
   for a car without a valid powertrain (the traffic: the arcade thrust);
   then 'AERO' and count x 3 f32, the record's AeroInfo (CarPhysicsInfo
   +0x260, record +0x370): the air's drag and the front's and the rear's
-  downforce (kN per m/s, Aerodynamics::ResolveForces); 0 for traffic.
+  downforce (kN per m/s, Aerodynamics::ResolveForces); 0 for traffic;
+  then 'SUSP' and count x 14 f32: front/rear rise, spring, bump,
+  rebound, sway, maximum and minimum compression (kN/m, kN s/m, m),
+  or zeros when invalid; then 'HBRK' and count x f32 raw per-wheel
+  handbrake torque at +0x388 (kN m, before EBrakingTorque x10), -1 invalid.
+  Both extensions include traffic; old files retain the legacy fallback.
 """
 import argparse
 import json
@@ -126,6 +131,28 @@ def powertrain(r):
           and .05 <= steer <= 3 and all(0 <= t <= 5 for t in torque) and 3 <= gears <= 6
           and .1 <= final <= 15 and all(.1 <= g <= 15 for g in forward[:gears]))
     return dict(mass=mass, idle=idle, limiter=limiter, torque=torque, steer=steer) if ok else None
+
+
+def suspension(r):
+    """GameCube SuspensionInfo +170/+190, GLOBALB +280/+2a0.
+
+    Seven consumed floats per axle. The eighth lane is intentionally not
+    assigned a new meaning. Invalid blocks select the legacy ride.
+    """
+    values = [v for at in (0x280, 0x2a0) for v in struct.unpack_from('<7f', r, at)]
+    for a in range(2):
+        q = values[7*a:7*a+7]
+        if not (all(math.isfinite(v) for v in q) and 0 <= q[0] <= 1000
+                and 0 < q[1] <= 1000 and 0 <= q[2] <= 100 and 0 <= q[3] <= 100
+                and 0 <= q[4] <= 1000 and 0 < q[5] <= 2 and -2 <= q[6] < 0):
+            return [0.0] * 14
+    return values
+
+
+def handbrake(r):
+    """Raw ControlInfo+8; Wheel applies EBrakingTorque=10, not a CG height."""
+    v = f32(r, 0x388)
+    return v if math.isfinite(v) and 0 <= v <= 100 else -1.0
 
 
 def gearbox(r):
@@ -223,6 +250,8 @@ def main():
                                           struct.unpack_from('<f', recs[car], 0x38c)[0]) for pack, car in cars)
     out += b'GEAR' + b''.join(struct.pack('<26f', *([0.0] * 26 if pack.startswith('traffic-') else gearbox(recs[car]))) for pack, car in cars)
     out += b'AERO' + b''.join(struct.pack('<3f', *((0.0, 0.0, 0.0) if pack.startswith('traffic-') else struct.unpack_from('<3f', recs[car], 0x370))) for pack, car in cars)
+    out += b'SUSP' + b''.join(struct.pack('<14f', *suspension(recs[car])) for _, car in cars)
+    out += b'HBRK' + b''.join(struct.pack('<f', handbrake(recs[car])) for _, car in cars)
     (args.out / 'physics.n2ph').write_bytes(struct.pack('<4sI', b'N2PH', len(cars)) + out)
     (args.out / 'physics.json').write_text(json.dumps(report, indent=1) + '\n')
     print(len(cars), 'profiles;', {k: (v['accel'], v['steer'], v['source']) for k, v in report.items() if not k.startswith('traffic')})

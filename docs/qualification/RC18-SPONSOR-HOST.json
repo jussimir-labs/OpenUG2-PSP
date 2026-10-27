@@ -1,0 +1,24 @@
+{
+  "source_main_sha256": "7a219083bfc7885a62e9b124a181b6df7b27d1955d805cfbe31ce2090b8b753d",
+  "scope": "Actual Main sponsorship dispatch: load failure cannot sign/save a contract.\nHost-only allocator/platform seams; no emulator, game assets or user saves.\n",
+  "compile_rc": 0,
+  "command": [
+    "cc",
+    "-std=c11",
+    "-O0",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-fsanitize=address,undefined",
+    "-fno-sanitize-recover=all",
+    "reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-ui/fixed-host-02/test.c",
+    "-o",
+    "reports/closed-beta-20261025/roadmap-resume-20261027/sponsor-ui/fixed-host-02/test"
+  ],
+  "expected_legacy_failure": false,
+  "expected_retry_stall": false,
+  "run_rc": 0,
+  "stdout": "PASS 12 actual sponsor-open/input contracts: failure no sign/save, bounded retries, choice, clock wrap and unchanged state\n",
+  "stderr": "",
+  "passed": true
+}

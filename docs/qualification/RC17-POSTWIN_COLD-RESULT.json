@@ -1,0 +1,153 @@
+{
+  "status": "REAL_4101_REWARD_SAVE_COLD_ALL_KEPT_AND_NORMAL_CAREER_MENU_VERIFIED",
+  "scope": "One authorized cold reopen of the actual RC17 natural-win SAVEDATA only.\nNo race, driving, warmup, SAVE, game-memory writes or second cold attempt.\n",
+  "source_run": "ccc1851818e64e85abca4c232a6c74c2",
+  "before_postwin_source": {
+    "NFSU2VIEWCAREER/DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  },
+  "frozen_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  },
+  "private_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  },
+  "eboot_sha256": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "elf_sha256": "b18cea09a78eebb17f85ed351320e1a8fd50fef58b12807404f67faf7fae5c02",
+  "expected": {
+    "money": 250,
+    "rep": 200,
+    "races": 1
+  },
+  "one_cold_only": true,
+  "passed": true,
+  "run": "5c19b574460442adba58470bdab676e6",
+  "boot": [
+    {
+      "t": 0.122,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 0.583,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 1.034,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 1.485,
+      "front": 14,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    }
+  ],
+  "cold_title": {
+    "money": 250,
+    "rep": 200,
+    "races": 1
+  },
+  "cold_title_all_kept_equal": true,
+  "title_prompt_scope": "Two unmodified post-delay frames for visual review; no timed blink/global proof from title_allow alone.",
+  "cold_crib": {
+    "money": 250,
+    "rep": 200,
+    "races": 1
+  },
+  "flow": {
+    "name": "cold-normal-menus",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [
+      {
+        "label": "normal START cold boot skip",
+        "t": 0.47,
+        "front": 0
+      },
+      {
+        "label": "normal START cold boot skip",
+        "t": 0.93,
+        "front": 0
+      },
+      {
+        "label": "normal START cold boot skip",
+        "t": 1.37,
+        "front": 0
+      }
+    ],
+    "command": [
+      "reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/natural4101-01/cold-postwin/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=61865",
+      "--timeout=540",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/natural4101-01/cold-postwin/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "5c19b574460442adba58470bdab676e6",
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "screens": [
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/natural4101-01/cold-postwin/cold-normal-menus/cold-title-prompt-ready.png",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/natural4101-01/cold-postwin/cold-normal-menus/cold-title-prompt-visible.png",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/natural4101-01/cold-postwin/cold-normal-menus/cold-new-earned-career-menu.png"
+    ],
+    "saves_written": [],
+    "debug_files_written": [
+      ".movie-playback.log",
+      "boot.txt"
+    ],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 10.104063167003915
+  },
+  "frozen_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  },
+  "source_postwin_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  },
+  "private_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "b176256772bcc9bdf1d975a5fa6d063ec58f7ef6848220061a27c12c5e7a9da9"
+  },
+  "frozen_and_source_unchanged": true,
+  "no_new_native_SAVE": true,
+  "prewin_source_preserved": true
+}

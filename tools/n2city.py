@@ -27,6 +27,8 @@ class CityCollision:
         out = CityCollision.__new__(CityCollision)
         out.__dict__.update(self.__dict__)
         out.over = CityCollision(path) if Path(path).exists() else None
+        if out.over is not None:   # preserve local direct overlay patch lookup
+            out.over.patch_base = self
         return out
 
     def _raw(self, ci, cj):
@@ -51,7 +53,11 @@ class CityCollision:
             if g:
                 return g
         if (ci, cj) not in self.cache:
-            self.cache[(ci, cj)] = self._grid(self._raw(ci, cj))
+            raw = self._raw(ci, cj)
+            base = getattr(self, 'patch_base', None)
+            if base is not None and raw[:4] == n2cy_patch.MAGIC:
+                raw = n2cy_patch.apply_patch(base._raw(ci, cj), raw)
+            self.cache[(ci, cj)] = self._grid(raw)
         return self.cache[(ci, cj)]
 
     def _grid(self, b):

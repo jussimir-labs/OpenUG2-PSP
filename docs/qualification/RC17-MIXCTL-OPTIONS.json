@@ -1,0 +1,38 @@
+{
+  "status": "SOURCE_HELPER_AND_VERSIONED_NATIVE_GATE_PASS",
+  "helper_api": "int nos_mixctl_chase_options(NosMixCtl *out, float delta_x, float delta_z, float forward_x, float forward_z, int drag, unsigned sfx_option_q15);",
+  "scope": "Original Master held at 1; source SFX option lookup/composition before class graph. Global port Master remains outside. Chase camera profile only.",
+  "command": "python3 tools/mac_slots.py run --weight 1 --label nos-mixctl-options-versioned -- python3 tools/test_nos_mixctl.py",
+  "exit_code": 0,
+  "wall_time_seconds": 0.882505459,
+  "options_swept": 32768,
+  "full_class_q15": [
+    7522,
+    3993
+  ],
+  "half_class_q15": [
+    3765,
+    1999
+  ],
+  "max_delta_vs_linear_postmix_q15": 49,
+  "source_gate_zero_through_option": 215,
+  "sanitizers": [
+    "address",
+    "undefined",
+    "float-cast-overflow"
+  ],
+  "source_hashes": {
+    "nos_mixctl.c": "865878ba204fe6f0c6cca9b78ca3038c1d2f7735ae4ab1e8d9833d686c4bc97d",
+    "nos_mixctl.h": "394d325a413a7e82a24363875ca4dc92018d4a849870025d5019c2e756eaf5ac"
+  },
+  "test": "tools/test_nos_mixctl.py",
+  "test_sha256": "b88502b8e578c998dce0faca3db857da635150aace85cc551cd12345ff82ff29",
+  "lifecycle": "Actual nos_sound.c fixture separately passed matching serial EOS, zero-before-class destruction, volume raised with NOS held stays retired, off/on restarts. See OPTIONS-REVIEW.json.",
+  "integration": "Root owns Main preclass option and backend unity; their independent actual-Main/full-mixer checks were reported passing, not executed by this agent.",
+  "limits": [
+    "No emulator, game build or hardware run in this delta.",
+    "Prior a258 normal-race and cold proofs remain historical for that binary.",
+    "No global acoustic parity, original non-unity Master or other camera profile claim."
+  ],
+  "files_stable": true
+}

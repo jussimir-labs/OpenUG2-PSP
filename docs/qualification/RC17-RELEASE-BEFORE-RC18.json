@@ -1,0 +1,114 @@
+{
+  "candidate": "closed-beta-20261027-beta01-nos-sfx17",
+  "candidate_id": "local-nos-sfx17-8ef4cd73-current-gates-pending",
+  "eboot_sha256": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "eboot_bytes": 4142543,
+  "build_id": "1808daaca",
+  "source_commit": "1808daaca09629d90b6682f9dec722ff9485ef86",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "supported_sources": [
+    "xbox",
+    "ps2"
+  ],
+  "publication_status": "LOCAL_VALIDATED_CANDIDATE_NOT_PUBLISHED_OR_INSTALLED",
+  "quality_approval": "Directed host/headless tests passed with this exact executable; hardware, subjective timbre and global quality remain unapproved.",
+  "known_issues": [
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery",
+    "NOS/PURGE correction needs reporter listening on PSP; other camera mix profiles remain unqualified",
+    "Original USA PS2 ISO still unverified; retained179-input reconstructed-ISO evidence",
+    "4401 AI recovery remains deferred",
+    "PSP1000/global30fps/fullgame/visual-parity remain unapproved",
+    "Master volume remains the port final-output policy; original Master curve parity is unqualified"
+  ],
+  "reference_scope": "Exact final source-package file maps from night-nos-generated-data-17; only EBOOT differs from RC16. Logical data IDs/pack/SFX/native banks unchanged. Identity is separate from runtime approval.",
+  "files_by_source": {
+    "xbox": 162,
+    "ps2": 159
+  },
+  "source_main_sha256": "84dfed4b9f2b0d8a288fd85bc57abec948efc58c95f8674845631ab51f59b071",
+  "runtime_build_id_note": "Exact8ef4/source1808, unchanged4u flags/63profiles/hot.ld. Current local results in RC17-QUALIFICATION; no physical test/card install.",
+  "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
+  "functional_scope": "Exact8ef4: native NOS directed render both sources; normal Drift4311 sampled NIS/first-motion/Main; private native SAVE/new-process earned-state checks Xbox+PS2; normal Xbox4101 natural full win141.3679s/0AIresets/$250/REP200/races1, nativeSAVE and unique fresh cold all-kept equality at Title/Career menu. No full Drift/PS2 natural-race/hardware approval is inferred.",
+  "psplink_cleanup": "Historical bf7f PSPLink stop required manual recovery; no new physical job.",
+  "historical_hardware_scope": "Only historicalbf7f had limited humanPSP3000/card observations. RC13e7ce, RC14 8c51 and RC15adb5 have no transferred physical/card approval.",
+  "previous_eboot_sha256": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+  "elf_sha256": "b18cea09a78eebb17f85ed351320e1a8fd50fef58b12807404f67faf7fae5c02",
+  "prx_sha256": "44acb2e015800b2727d1f8c414eb5b9f819ca154ce4449559a66a204e707e44e",
+  "qualification_receipts": [
+    "docs/qualification/RC17-QUALIFICATION.json",
+    "docs/qualification/RC17-GENERATOR-IDENTITY.json"
+  ],
+  "qualification_receipt": "docs/qualification/RC17-QUALIFICATION.json",
+  "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a",
+  "pgo_profile_count": 63,
+  "source_data_ids": {
+    "xbox": "9576",
+    "ps2": "8729"
+  },
+  "historical_receipts": [
+    "docs/qualification/RC16-RELEASE-BEFORE-RC17.json",
+    "docs/qualification/RC16-QUALIFICATION.json",
+    "docs/qualification/RC16-HISTORICAL-ACCEPTANCE.json",
+    "docs/qualification/RC14-QUALIFICATION.json",
+    "docs/qualification/RC14-RELEASE.json",
+    "docs/qualification/RC13-QUALIFICATION.json",
+    "docs/qualification/RC13-RELEASE.json"
+  ],
+  "historical_receipts_note": "Older phase receipts are preserved verbatim, including the RC16 draft qualification. RC16 later natural win/SAVE/cold acceptance is a separate historical receipt; no old runtime proof approves 8ef4.",
+  "source_snapshot_reference": "release-build-14-nos-sfx-preclass/source.tar",
+  "readiness_status": "LOCAL_CANDIDATE_READY_FOR_MANUAL_TEST_WITH_KNOWN_LIMITS",
+  "generator_commit": "1808daaca09629d90b6682f9dec722ff9485ef86",
+  "data_compatibility": "Only EBOOT differs from the exact matching RC16 output. Older pre-NOS output still requires the matching pack and SFX as well; EBOOT alone cannot supply native sound banks. No automatic installation.",
+  "source_archive_sha256": "6fd5767f25338f9822f240bc4748a56da660796c458c55e984625a2211b223e4",
+  "sfx_policy": "NOS/PURGE SFX option is applied before the original class gate/lifetime, with source default level rounding. Master remains the port shared final-output volume policy, not original Master-curve parity. Other camera mix profiles and target listening remain unqualified.",
+  "current_runtime_proofs": {
+    "natural4101": {
+      "receipt": "RC17-NATURAL4101-RESULT.json",
+      "sha256": "e6494fa7fd044068f9b170abed232f1ebcac66ef8cf2219662e5645bac50fe4d",
+      "source_path": "rc17-nos-sfx-validation/natural4101-01/run/RESULT.json"
+    },
+    "postwin_cold": {
+      "receipt": "RC17-POSTWIN_COLD-RESULT.json",
+      "sha256": "620c260297968dee8dae7dfab0ab69b7127d8c70b2291034470f9d45f6a926e4",
+      "source_path": "rc17-nos-sfx-validation/natural4101-01/cold-postwin/RESULT.json"
+    },
+    "drift4311_excerpt": {
+      "receipt": "RC17-DRIFT4311_EXCERPT-RESULT.json",
+      "sha256": "13be820803d4c8122be12f899e33605d5f332206fca1438aecea578e46f5840a",
+      "source_path": "rc17-nos-sfx-validation/drift4311-nis-02/RESULT.json"
+    },
+    "native_xbox": {
+      "receipt": "RC17-NATIVE_XBOX-RESULT.json",
+      "sha256": "bec69cc38ee6fa205766de71f9dd435bb748f713f5a80b2947718cd7f640f636",
+      "source_path": "rc17-nos-sfx-validation/native-save-cold/xbox/RESULT.json"
+    },
+    "native_ps2": {
+      "receipt": "RC17-NATIVE_PS2-RESULT.json",
+      "sha256": "fec7bf24687429fc3063f922dbce06d2ea9ab93b40ae62c02a4d89cc8ba8f17d",
+      "source_path": "rc17-nos-sfx-validation/native-save-cold/ps2/RESULT.json"
+    },
+    "effect_xbox": {
+      "receipt": "RC17-EFFECT_XBOX-RESULT.json",
+      "sha256": "ba94ec9b91a8baa62e6c49ba2c174bc2e763fb71fbe137ba34487dfe97447968",
+      "source_path": "rc17-nos-sfx-validation/xbox-effect-01/RESULT.json"
+    },
+    "effect_ps2": {
+      "receipt": "RC17-EFFECT_PS2-RESULT.json",
+      "sha256": "462da1f1c4ae81da7349619537b7aca79f4d931f1714bf42cf953d03c2d8ab9a",
+      "source_path": "rc17-nos-sfx-validation/ps2-effect-01/RESULT.json"
+    }
+  }
+}

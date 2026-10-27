@@ -1,0 +1,65 @@
+{
+  "candidate": "closed-beta-20261026-beta01-ui-drift15",
+  "candidate_id": "local-ui-drift15-source5535dd695-scoped-headless-qualified",
+  "eboot_sha256": "adb5c8690f630b074ddc4b99898d22d42b9692cd6c8517fba4571bee0690d061",
+  "eboot_bytes": 4096679,
+  "build_id": "5535dd695",
+  "source_commit": "5535dd695987ceddca637789d4bc528aa3ff9840",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "supported_sources": [
+    "xbox",
+    "ps2"
+  ],
+  "publication_status": "STAGED_LOCAL_ONLY_NOT_PUBLISHED_OR_INSTALLED",
+  "quality_approval": "Two scoped normal-control UI/career and Drift handoff/first-motion gates passed; three Drift captures reviewed. Prepared for manual beta testing, not installed or globally approved.",
+  "known_issues": [
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery"
+  ],
+  "reference_scope": "Unchanged RC14/RC13 canonical Xbox162/PS2159 source data; only EBOOT replaced with build12. File identity is separate from gameplay readiness.",
+  "files_by_source": {
+    "xbox": 162,
+    "ps2": 159
+  },
+  "source_main_sha256": "9e8abdf89a120a70061e02982aab46605867dfb956fc1e7973b12bce2f7b3398",
+  "runtime_build_id_note": "Build12 source5535dd695; exact EBOOT hash is authoritative. Two scoped normal-control gates and three visual captures qualified.",
+  "pgo_baseline": "4u candidate 86b4b4b1ce2b4a92bb23e7eddef7bbad; retained 63 gcda and hot.ld; no new training",
+  "functional_scope": "Career GPS/event-icon Up/Accept/countdown/4.1s drive/Main and normal4311 NIS handoff/2.033s first motion/Main. Zero sampled handoff XZ/yaw jumps; three captures reviewed. No current fullrace/reward/SAVE or hardware approval.",
+  "psplink_cleanup": "Historical bf7f PSPLink stop required manual recovery; no new physical job.",
+  "historical_hardware_scope": "Only historicalbf7f had limited humanPSP3000/card observations. RC13e7ce, RC14 8c51 and RC15adb5 have no transferred physical/card approval.",
+  "previous_eboot_sha256": "6723e0d1155c5ce3a1320eae3e155445d7ec8229d036af9cc97c50eaa1774517",
+  "elf_sha256": "d03e0952d30b1dc7834fe3fee7b1b853dd706d67ca70e2c4806ce86a31d04fb8",
+  "prx_sha256": "94d353922cb0ca061d6ddc8a21504fce286181a6a2b02226481e3e27ca3edb9f",
+  "qualification_receipts": [
+    "docs/qualification/OVERNIGHT-QUALIFICATION.json",
+    "docs/qualification/RC15-RUNTIME-SUMMARY.json"
+  ],
+  "qualification_receipt": "docs/qualification/OVERNIGHT-QUALIFICATION.json",
+  "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a",
+  "pgo_profile_count": 63,
+  "source_data_ids": {
+    "xbox": "78eb",
+    "ps2": "4111"
+  },
+  "historical_receipts": [
+    "docs/qualification/RC14-QUALIFICATION.json",
+    "docs/qualification/RC14-RELEASE.json",
+    "docs/qualification/RC13-QUALIFICATION.json",
+    "docs/qualification/RC13-RELEASE.json"
+  ],
+  "historical_receipts_note": "Previouscandidateproofs retained as history, not transferred to new executable",
+  "source_snapshot_reference": "release-build-12-ui-pressure-drift/source/psp-viewer; BUILD12-SUMMARY.json binds the preserved build receipt.",
+  "readiness_status": "SCOPED_HEADLESS_GATES_PASSED_MANUAL_TEST_READY_NOT_INSTALLED"
+}

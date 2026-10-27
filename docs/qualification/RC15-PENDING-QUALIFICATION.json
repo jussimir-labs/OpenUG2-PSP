@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "candidate": "closed-beta-20261026-beta01-ui-drift15",
+  "status": "COMPILED_HOST_CHECKS_PASSED_CURRENT_RUNTIME_GATES_PENDING",
+  "eboot_sha256": "adb5c8690f630b074ddc4b99898d22d42b9692cd6c8517fba4571bee0690d061",
+  "source_commit": "5535dd695987ceddca637789d4bc528aa3ff9840",
+  "configuration": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "pgo_profiles": 63,
+  "pgo_unchanged": true,
+  "hot_ld_unchanged": true,
+  "cflags_unchanged": true,
+  "incremental_build": {
+    "returncode": 0,
+    "changed_objects": [
+      "build_id.o",
+      "controls.o",
+      "fe.o",
+      "garage.o",
+      "main.o",
+      "music_card.o"
+    ],
+    "reused_objects_count": 76
+  },
+  "new_code_scope": [
+    "Recover career UI allocation failures before page dispatch; retain explicit failure handling when allocation cannot recover.",
+    "Keep the delivered Drift NIS car pose at handoff instead of restoring raw grid poses; preserve non-Drift and scene15 policy."
+  ],
+  "current_host_tests": {
+    "career_UI": {
+      "actual_loader_cases": 34,
+      "wrapper_cases": 11,
+      "dispatch_cases": 28,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "scope": "Actual loader/wrapper/dispatch code with allocator and renderer seams; not a complete game run."
+    },
+    "Drift_handoff": {
+      "assertions": 84,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "scope": "Actual function extracted with old-function negative discriminator and retained4311/4312 geometry; not visual approval."
+    }
+  },
+  "current_runtime_tests": {
+    "status": "PENDING",
+    "cases": [],
+    "qualification": "Independent directed UI/career and Drift gates are running. No result has been assumed or transferred from an earlier executable."
+  },
+  "inherited_code_and_evidence": {
+    "RC14": {
+      "eboot_sha256": "6723e0d1155c5ce3a1320eae3e155445d7ec8229d036af9cc97c50eaa1774517",
+      "receipt": "RC14-QUALIFICATION.json",
+      "scope": "Rival tyre emitters and prior host/headless audio fixtures belong to8c51. Their implementation is retained, not relabelled as newadb5runtime proof."
+    },
+    "RC13": {
+      "eboot_sha256": "562bfb2c94074652a3e12cfa1bef7922040bcc10b42c5bb010f8c143ba722ae6",
+      "receipt": "RC13-QUALIFICATION.json",
+      "scope": "Normal-control Drift/career/reward/nativeSAVE/cold and calibrated observations remain historical."
+    }
+  },
+  "unchanged_generated_data": {
+    "xbox": {
+      "files": 162,
+      "data_id": "78eb"
+    },
+    "ps2": {
+      "files": 159,
+      "data_id": "4111"
+    },
+    "scope": "Only EBOOT changes versus RC14 source references. No conversion performed."
+  },
+  "remaining": [
+    "Current executable runtime gates pending.",
+    "No physical PSP, MemoryStick installation/listening, all-model or global30fps approval.",
+    "Drift/Drag race music follows original ambience policy; menu-recovery history is separate.",
+    "Nitro timbre remains unresolved; no new bank/pitch/timbre fix claimed.",
+    "Reporter confirmation remains required for prior audio and EA TRAX reports.",
+    "4401 rival recovery deferred; no complete career or original visual/handling parity approval.",
+    "Original PS2 USA disc image remains unverified."
+  ],
+  "published": false,
+  "hardware_tested": false,
+  "new_savedata_operation_by_packaging": false
+}

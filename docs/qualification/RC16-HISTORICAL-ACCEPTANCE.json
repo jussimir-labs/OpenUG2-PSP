@@ -1,0 +1,50 @@
+{
+  "status": "HISTORICAL_RC16_A258_SCOPED_ACCEPTANCE_NOT_RC17_APPROVAL",
+  "eboot_sha256": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+  "natural4101": {
+    "run": "df6fcefe5dbe4c5da9ceaff0eb8e93ac",
+    "win": true,
+    "money": 250,
+    "rep": 300,
+    "races": 1,
+    "native_save": true,
+    "cold_run": "0b355c30b95d4554aaf3b869e2ff0862",
+    "cold_all_kept": true
+  },
+  "two_source_private_save_cold": true,
+  "evidence": {
+    "natural4101": {
+      "receipt": "docs/qualification/RC16-NATURAL4101-RESULT.json",
+      "sha256": "486998d0bc21b9f158b3b62f75ca37f78bc166fcbe39ddf3b4d5593c1aef114d",
+      "passed_for_eboot": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+      "run": "df6fcefe5dbe4c5da9ceaff0eb8e93ac",
+      "scope": "Historical RC16 evidence only, not a current RC17 runtime gate"
+    },
+    "cold-postwin": {
+      "receipt": "docs/qualification/RC16-COLD-POSTWIN-RESULT.json",
+      "sha256": "8aea2e4ec39817853368dc9674d3bb5da9fd012604d6d812f8091cf8e55bbe4a",
+      "passed_for_eboot": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+      "run": "0b355c30b95d4554aaf3b869e2ff0862",
+      "scope": "Historical RC16 evidence only, not a current RC17 runtime gate"
+    },
+    "xbox-native-save-cold": {
+      "receipt": "docs/qualification/RC16-XBOX-NATIVE-SAVE-COLD-RESULT.json",
+      "sha256": "d66835d6ce18882e186ff1fb8329d9993e9cbea840916e473e7971dd50f5a0f3",
+      "passed_for_eboot": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+      "run": null,
+      "scope": "Historical RC16 evidence only, not a current RC17 runtime gate"
+    },
+    "ps2-native-save-cold": {
+      "receipt": "docs/qualification/RC16-PS2-NATIVE-SAVE-COLD-RESULT.json",
+      "sha256": "eaaf8860d9881c31d83b478dfb88c06d001092a19ad65c20f0f02f1780a114a3",
+      "passed_for_eboot": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+      "run": null,
+      "scope": "Historical RC16 evidence only, not a current RC17 runtime gate"
+    }
+  },
+  "limits": [
+    "No physical PSP/card/listening approval",
+    "No transferred runtime PASS to RC17",
+    "No all-race/full-career/global30fps approval"
+  ]
+}

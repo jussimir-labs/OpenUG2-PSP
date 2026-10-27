@@ -1,0 +1,215 @@
+{
+  "source": "xbox",
+  "scope": "One RC17 native SAVE/new-process gate for one existing earned fixture.",
+  "passed": true,
+  "eboot_sha256": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "elf_sha256": "b18cea09a78eebb17f85ed351320e1a8fd50fef58b12807404f67faf7fae5c02",
+  "build_source_commit": "1808daaca09629d90b6682f9dec722ff9485ef86",
+  "build_flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "build_pgo_files": 63,
+  "hot_ld_sha256": "bad63467db869643c2b41ac04f93179e5cd2d9a3c55a91fecaed2ac2c9f68f8a",
+  "data": "reports/closed-beta-20261025/night-nos-generated-data-17/xbox/PSP/GAME/NFSU2VIEW",
+  "native_fixture": "reports/closed-beta-20261025/xbox-release03-normal-earned-win-01/memstick/PSP/SAVEDATA",
+  "native_fixture_proof": "reports/closed-beta-20261025/xbox-release03-normal-earned-win-01/RESULT.json",
+  "native_files_copied": 3,
+  "seed_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "54fac1928398ebcf94ba33a2508d286471454f33d350cb2c52542aa5312e9be2",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "12ae2519a6320c2cb7f5e0290f772cc5a1d2a1c52c8adeb1aaed1015c879b951"
+  },
+  "private_copy_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "54fac1928398ebcf94ba33a2508d286471454f33d350cb2c52542aa5312e9be2",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "12ae2519a6320c2cb7f5e0290f772cc5a1d2a1c52c8adeb1aaed1015c879b951"
+  },
+  "expected_earned_state": {
+    "money": 250,
+    "rep": 200,
+    "races": 1
+  },
+  "state_symbol": {
+    "name": "st.lto_priv.0",
+    "address": 3146584,
+    "bytes": 1584,
+    "first12": "money,rep,races(uint32)"
+  },
+  "history_consulted": [
+    "1887dec6f8144a3eae56ac83b52c5e6c",
+    "release06-4u-native-save-cold-01/RESULT.json"
+  ],
+  "no_retry": true,
+  "no_game_state_writes": true,
+  "saved_files": {
+    "DATA.BIN": "bbf9873565f7980669d046d16823d828fadf44b312e7317541e9653ac834b864",
+    "ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "PARAM.SFO": "d5349ed2620e2c4c64983cc3710c28aaf41246b1c5c2a82e683afdc8bfc7c12c"
+  },
+  "career": {
+    "name": "career",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [
+      {
+        "label": "saved",
+        "t": 8.32,
+        "save_status": 1
+      },
+      {
+        "label": "street",
+        "t": 18.9
+      }
+    ],
+    "command": [
+      "reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=61460",
+      "--timeout=540",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "4ba9c8ff1f3f4464b0ebc895222abab1",
+    "pack_activation": {
+      "on_card": 1,
+      "entries": 753,
+      "cwd": "ms0:/PSP/GAME/NFSU2VIEW"
+    },
+    "normal_start_skipped": [
+      "movie-FMVOPENING.n2mv",
+      "movie-PSA.n2mv"
+    ],
+    "earned_state_at_crib": {
+      "money": 250,
+      "rep": 200,
+      "races": 1
+    },
+    "earned_state_expected": {
+      "money": 250,
+      "rep": 200,
+      "races": 1
+    },
+    "screens": [
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/career/crib.png",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/career/crib-game-saved.png",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/career/street.png",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/career/street-driving.png"
+    ],
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "saves_written": [],
+    "debug_files_written": [
+      ".movie-playback.log",
+      "boot.txt"
+    ],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 23.902838499998325
+  },
+  "private_copy_after_save": {
+    "NFSU2VIEWCAREER/DATA.BIN": "bbf9873565f7980669d046d16823d828fadf44b312e7317541e9653ac834b864",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "d5349ed2620e2c4c64983cc3710c28aaf41246b1c5c2a82e683afdc8bfc7c12c"
+  },
+  "reopen": {
+    "name": "reopen",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [
+      {
+        "label": "reopened",
+        "t": 6.59,
+        "career_load_status": 1
+      }
+    ],
+    "command": [
+      "reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=61501",
+      "--timeout=540",
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "6bbfa7c99da94dba896913e8bfe6b228",
+    "pack_activation": {
+      "on_card": 1,
+      "entries": 753,
+      "cwd": "ms0:/PSP/GAME/NFSU2VIEW"
+    },
+    "normal_start_skipped": [
+      "movie-FMVOPENING.n2mv",
+      "movie-PSA.n2mv"
+    ],
+    "earned_state_at_crib": {
+      "money": 250,
+      "rep": 200,
+      "races": 1
+    },
+    "earned_state_expected": {
+      "money": 250,
+      "rep": 200,
+      "races": 1
+    },
+    "screens": [
+      "reports/closed-beta-20261025/rc17-nos-sfx-validation/native-save-cold/xbox/reopen/reopened-crib.png"
+    ],
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "saves_written": [],
+    "debug_files_written": [],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 11.59146487498947
+  },
+  "status": "NATIVE_SAVE_AND_NEW_PROCESS_LOAD_EARNED_STATE_VERIFIED",
+  "seconds": 38.165,
+  "seed_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "54fac1928398ebcf94ba33a2508d286471454f33d350cb2c52542aa5312e9be2",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "12ae2519a6320c2cb7f5e0290f772cc5a1d2a1c52c8adeb1aaed1015c879b951"
+  },
+  "source_native_unchanged": true,
+  "private_copy_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "bbf9873565f7980669d046d16823d828fadf44b312e7317541e9653ac834b864",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "d5349ed2620e2c4c64983cc3710c28aaf41246b1c5c2a82e683afdc8bfc7c12c"
+  },
+  "source_eboot_unchanged": true
+}

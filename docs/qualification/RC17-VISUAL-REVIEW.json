@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-27T05:38:12.621038+00:00",
+  "status": "SCOPED_VISUAL_REVIEW_COMPLETED",
+  "binding": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "images": {
+    "DRIFT-NIS-REVIEW.png": "08e15e77262cbde9cf1bdab2d15b7246683ded2ff8dd63b6dfa3ebe567ac5db7",
+    "EA-TRAX-REVIEW.png": "6aa1c6ab1d220ec4b30057e10ca6eec534c8862ab9f18f6f8f957cb960774411"
+  },
+  "drift": "Selected NIS/late/grid/first-motion frames show crowd separated from cars. Sampled handover, not every-frame/no-intersections guarantee; no full drift proof.",
+  "EA_card": "Drift NIS/grid frames show the white opaque circular EA badge. Debug overlay (preserved RELEASE0) overlaps upper text. The script94 file named l9-40-card contains no visible card in either source; filename alone is not pixel proof.",
+  "not_approved": [
+    "Global visual/UV/PVS/cull parity",
+    "EA card in every source/scene/timing",
+    "All NIS crowd intersections fixed",
+    "PSP hardware/performance"
+  ],
+  "title_postdelay": "Root visually inspected current cold-title-prompt-visible.png: Press START button present after title_allow delay. Earlier t0 cold-title frame has no prompt as expected; not evidence of a persistent missing prompt."
+}

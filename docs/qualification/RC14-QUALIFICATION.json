@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "candidate": "closed-beta-20261026-beta01-rivals14",
+  "status": "SCOPED_HEADLESS_RIVAL_AUDIO_QUALIFIED_NOT_HARDWARE_OR_GLOBAL_BETA_APPROVAL",
+  "eboot_sha256": "6723e0d1155c5ce3a1320eae3e155445d7ec8229d036af9cc97c50eaa1774517",
+  "source_commit": "582fe4e1b0ef23aeac9518f98bf10290c8aeb331",
+  "configuration": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "pgo_profiles": 63,
+  "pgo_unchanged": true,
+  "hot_ld_unchanged": true,
+  "exact_current_tests": {
+    "adapter": "8ASan/UBSan contracts using actualadapter/acceleration/wheelhelpers; Carbytespreserved",
+    "controller_and_mixer": "TwoASan/UBSan tests with realXboxbanks; unchangedplayergolden13e8deeb/2400steps; independentreserved9voices/legacy24/ACK/pause/owner/banks",
+    "existing_brake_oracle": "OneexistingdirectedtestPASSafterlinkstubs",
+    "PS2_banks": "DifferentrealPS2samples tested PCM798284B andIMA224676B; noPS2newgameflowapproval"
+  },
+  "directed_headless_cases": [
+    {
+      "case": "circuit4011",
+      "status": "PASS_DIRECTED_AUDIO_CALLER",
+      "run": "ffb5b9451af84e6c8babe7e351e2ae4f",
+      "audio": {
+        "updates": 10518,
+        "above_mixer_threshold_updates": 536,
+        "bank_failures": 0,
+        "peak": [
+          0,
+          508,
+          432
+        ],
+        "bank_mask": 15,
+        "bank_bytes": 1321824
+      }
+    },
+    {
+      "case": "drift4312",
+      "status": "PASS_DIRECTED_AUDIO_CALLER",
+      "run": "a221b72bc589410d8d441d98c87d0d80",
+      "audio": {
+        "updates": 8043,
+        "above_mixer_threshold_updates": 1476,
+        "bank_failures": 0,
+        "peak": [
+          0,
+          651,
+          675
+        ],
+        "bank_mask": 15,
+        "bank_bytes": 1321824
+      }
+    },
+    {
+      "case": "free-roam-rivals",
+      "status": "PASS_DIRECTED_AUDIO_CALLER",
+      "run": "07912192a91447e1ab02641604ef697e",
+      "audio": {
+        "updates": 13297,
+        "above_mixer_threshold_updates": 282,
+        "bank_failures": 0,
+        "peak": [
+          0,
+          370,
+          319
+        ],
+        "bank_mask": 15,
+        "bank_bytes": 1321824
+      }
+    }
+  ],
+  "qualification_scope": "Existing scriptfixtures for newaudio wiring. Circuit4011 andDrift4312 completed, free-roamrivals appeared/triggered effects. Countsabove_mixer_threshold_updates are perrivalupdatecounts, not uniqueframes, listening, allraces, originalbitparity or30fpsapproval.",
+  "source_reference": "OriginalAI type2mask802d/skidbit5 confirmed forraceandrandomencounters; oneaveragedemitterperAI, correctseparatechannelgains. Railmotion/forceinputs, continuous3Denvelope/pan andsamplepitch remain documentedportadaptations.",
+  "previous_candidate": {
+    "eboot_sha256": "562bfb2c94074652a3e12cfa1bef7922040bcc10b42c5bb010f8c143ba722ae6",
+    "qualification": "RC13-QUALIFICATION.json",
+    "notes": "RC13-NOTES.md",
+    "scope": "Prior normalDrift/career/reward/nativeSAVE/cold/calibratedproofs belong to e7ce. No such proof is relabelled as a new8c51run."
+  },
+  "remaining": [
+    "ManualPSP listening/controls andMemoryStick installation not performed",
+    "PSP1000/2000/Go/global30fps andfullvisual/careerparity unapproved",
+    "4401 rivalrecovery remainsdeferred",
+    "OriginalPS2USAISO unverified; reconstructedinputevidence unchanged",
+    "Otheraudioissues remainopen for reporterconfirmation"
+  ],
+  "published": false,
+  "hardware_tested": false,
+  "new_savedata_operation": false,
+  "test_fixture_failures_retained": "PS2unitfixture initially assumedXboxsamplelengths andlong-onlycursorfield. BothrawFAILlogs retained locally; fixture now compares sourceheadercounts andproper short/longcursors. No production fix was needed for these fixture assumptions."
+}

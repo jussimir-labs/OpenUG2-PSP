@@ -1,0 +1,153 @@
+{
+  "status": "REAL_4101_REWARD_SAVE_COLD_ALL_KEPT_AND_NORMAL_CAREER_MENU_VERIFIED",
+  "scope": "One authorized cold reopen of the actual Current candidate StreetX4602 natural-win SAVEDATA only.\nNo race, driving, warmup, SAVE, game-memory writes or second cold attempt.\n",
+  "source_run": "56bf88c129f14940a98bacab6c572229",
+  "before_postwin_source": {
+    "NFSU2VIEWCAREER/DATA.BIN": "fe305bb0fcdfd58dc8d962dee59c9af7519350695b5642ae3a4d4888789e8d8e",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "3997264dce1db892560fcc222452802474c6ca80d8c5049daf930ecaec4644eb"
+  },
+  "frozen_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "fe305bb0fcdfd58dc8d962dee59c9af7519350695b5642ae3a4d4888789e8d8e",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "3997264dce1db892560fcc222452802474c6ca80d8c5049daf930ecaec4644eb"
+  },
+  "private_before": {
+    "NFSU2VIEWCAREER/DATA.BIN": "fe305bb0fcdfd58dc8d962dee59c9af7519350695b5642ae3a4d4888789e8d8e",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "3997264dce1db892560fcc222452802474c6ca80d8c5049daf930ecaec4644eb"
+  },
+  "eboot_sha256": "da37c1120252916f3e70a8034d347ea111f09303237c65d495778d3882f0dfe1",
+  "elf_sha256": "660791b2e3c1c6233905c89dabb545e701d1ef38dcaef5e5c1a2e495990b0342",
+  "expected": {
+    "money": 500,
+    "rep": 400,
+    "races": 2
+  },
+  "one_cold_only": true,
+  "passed": true,
+  "run": "95040f74b94649208f28ed78340b6d8b",
+  "boot": [
+    {
+      "t": 0.119,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 0.56,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 1.007,
+      "front": 0,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    },
+    {
+      "t": 1.459,
+      "front": 14,
+      "loading": 0,
+      "on_card": 1,
+      "pack_files": 753
+    }
+  ],
+  "cold_title": {
+    "money": 500,
+    "rep": 400,
+    "races": 2
+  },
+  "cold_title_all_kept_equal": true,
+  "title_prompt_scope": "Two unmodified post-delay frames for visual review; no timed blink/global proof from title_allow alone.",
+  "cold_crib": {
+    "money": 500,
+    "rep": 400,
+    "races": 2
+  },
+  "flow": {
+    "name": "cold-normal-menus",
+    "smoke": null,
+    "model": 1,
+    "checkpoints": [
+      {
+        "label": "normal START cold boot skip",
+        "t": 0.45,
+        "front": 0
+      },
+      {
+        "label": "normal START cold boot skip",
+        "t": 0.89,
+        "front": 0
+      },
+      {
+        "label": "normal START cold boot skip",
+        "t": 1.36,
+        "front": 0
+      }
+    ],
+    "command": [
+      "reports/closed-beta-20261025/headless-debugger-lifetime-01/PPSSPPHeadless",
+      "-j",
+      "--graphics=software",
+      "--root",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/cold-postwin/memstick/PSP/GAME/NFSU2VIEW",
+      "--debugger=64678",
+      "--timeout=540",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/cold-postwin/memstick/PSP/GAME/NFSU2VIEW/EBOOT.PBP"
+    ],
+    "run_id": "95040f74b94649208f28ed78340b6d8b",
+    "threads": [
+      "idle0",
+      "idle1",
+      "user_main",
+      "FileAhead",
+      "Callbacks",
+      "SuspendSim",
+      "Flip",
+      "music_reader",
+      "music_decoder",
+      "speech_reader",
+      "audio_mixer",
+      "world_loader"
+    ],
+    "debug_build": true,
+    "dialog_auto": true,
+    "memory_profile": "extended",
+    "screens": [
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/cold-postwin/cold-normal-menus/cold-title-prompt-ready.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/cold-postwin/cold-normal-menus/cold-title-prompt-visible.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/career-streetx4602-02/cold-postwin/cold-normal-menus/cold-new-earned-career-menu.png"
+    ],
+    "saves_written": [],
+    "debug_files_written": [
+      ".movie-playback.log",
+      "boot.txt"
+    ],
+    "files_written": [],
+    "returncode": -15,
+    "seconds": 10.189636958995834
+  },
+  "frozen_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "fe305bb0fcdfd58dc8d962dee59c9af7519350695b5642ae3a4d4888789e8d8e",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "3997264dce1db892560fcc222452802474c6ca80d8c5049daf930ecaec4644eb"
+  },
+  "source_postwin_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "fe305bb0fcdfd58dc8d962dee59c9af7519350695b5642ae3a4d4888789e8d8e",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "3997264dce1db892560fcc222452802474c6ca80d8c5049daf930ecaec4644eb"
+  },
+  "private_after": {
+    "NFSU2VIEWCAREER/DATA.BIN": "fe305bb0fcdfd58dc8d962dee59c9af7519350695b5642ae3a4d4888789e8d8e",
+    "NFSU2VIEWCAREER/ICON0.PNG": "e1f058eb553bf05e5a9d28210b2d00e9d8eeb72c4242a443ccc4d7deeee936fe",
+    "NFSU2VIEWCAREER/PARAM.SFO": "3997264dce1db892560fcc222452802474c6ca80d8c5049daf930ecaec4644eb"
+  },
+  "frozen_and_source_unchanged": true,
+  "no_new_native_SAVE": true,
+  "prewin_source_preserved": true
+}

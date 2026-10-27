@@ -1,0 +1,52 @@
+{
+  "source_commit": "5535dd695987ceddca637789d4bc528aa3ff9840",
+  "flags": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "returncode": 0,
+  "finished": "2026-10-27T02:22:13.903372+00:00",
+  "pgo_unchanged": true,
+  "hot_ld_unchanged": true,
+  "cflags_unchanged": true,
+  "reference_unchanged": true,
+  "files": {
+    "EBOOT.PBP": {
+      "bytes": 4096679,
+      "sha256": "adb5c8690f630b074ddc4b99898d22d42b9692cd6c8517fba4571bee0690d061"
+    },
+    "nfsu2-viewer.elf": {
+      "bytes": 5829556,
+      "sha256": "d03e0952d30b1dc7834fe3fee7b1b853dd706d67ca70e2c4806ce86a31d04fb8"
+    },
+    "nfsu2-viewer.prx": {
+      "bytes": 3805398,
+      "sha256": "94d353922cb0ca061d6ddc8a21504fce286181a6a2b02226481e3e27ca3edb9f"
+    },
+    "nfsu2-viewer.map": {
+      "bytes": 2095260,
+      "sha256": "2f8ad9bcf1f095611c628b3f221b47d8ec1efca819814b4b058ea81464f67d71"
+    },
+    "PARAM.SFO": {
+      "bytes": 316,
+      "sha256": "cca4efaf30f9fdf2dff9b5ecb950fefe81a424fc835c36c22fe87afaa4386374"
+    },
+    ".cflags": {
+      "bytes": 4358,
+      "sha256": "fb42bc2230ec666ceb50d1d80924fb1c56607886ac5e838cfcc225e50a2d4275"
+    }
+  },
+  "changed_objects": [
+    "build_id.o",
+    "controls.o",
+    "fe.o",
+    "garage.o",
+    "main.o",
+    "music_card.o"
+  ],
+  "pgo_profile_count": 63,
+  "reused_objects_count": 76,
+  "source_build_receipt_sha256": "d4af0d994996bab74ace3bc646b99233b0f0f0532ff7be43c1b9631808146549"
+}

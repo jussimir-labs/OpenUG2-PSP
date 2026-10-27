@@ -1,0 +1,24 @@
+{
+  "candidate": "closed-beta-20261026-beta01-ui-drift15",
+  "derivation": "Exact RC14 source file maps; only EBOOT replaced with independently hashed build12 binary. No conversion, pack, loose source asset, data-id or movie delta.",
+  "sources": {
+    "xbox": {
+      "files": 162,
+      "changed": [
+        "EBOOT.PBP"
+      ],
+      "unchanged": 161,
+      "pack_sha256": "4a64400f70336b035cd03488bb920a928bf3779370acdad65a8f6fe8d5817940",
+      "data_id": "78eb"
+    },
+    "ps2": {
+      "files": 159,
+      "changed": [
+        "EBOOT.PBP"
+      ],
+      "unchanged": 158,
+      "pack_sha256": "d9d09a8de65a597dc424648b61c8378021c6cab7425a056d97cb28eef0447aed",
+      "data_id": "4111"
+    }
+  }
+}

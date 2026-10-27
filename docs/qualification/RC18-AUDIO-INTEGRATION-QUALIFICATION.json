@@ -1,0 +1,296 @@
+{
+  "at": "2026-10-27T12:37:44.908325+00:00",
+  "status": "SCOPED_HEADLESS_AUDIO_INTEGRATION_PASS",
+  "run": "d3e718b7fe4d4c8da277e7e9a467c4fa",
+  "source_commit": "68566e7bcb90786b18dc42494512dd1741c44f25",
+  "eboot_sha256": "da37c1120252916f3e70a8034d347ea111f09303237c65d495778d3882f0dfe1",
+  "elf_sha256": "660791b2e3c1c6233905c89dabb545e701d1ef38dcaef5e5c1a2e495990b0342",
+  "pack_sha256": "3f08a47c9837de623a5023175d6c52dc2e1f09aa1f9381c31aba674fc5062ffb",
+  "pack_entries": 753,
+  "script_sha256": "babbb013701f2b089d525d2c36ef383b347a158f0577a7f52e7ac64005d2f561",
+  "PREFLIGHT_sha256": "0a46f78673102f44bc28af972a8d321f3fac0e9a154497845bdabcc68db59928",
+  "raw_RESULT_sha256": "6ab2c6eb9189a18a915eecfe4e7d7460cfa0386f69679df4c3ab216392504c34",
+  "normal_controls_only": true,
+  "game_memory_writes": 0,
+  "number_of_emulator_processes": 1,
+  "wall_seconds": 53.76154583302559,
+  "families": [
+    {
+      "label": "Focus",
+      "player_car": 1,
+      "GIN": "engine-FordFocus_Road.n2en",
+      "GIN_range": [
+        1171.5999755859375,
+        6566.10009765625
+      ],
+      "AEMS_bank0_path": "aems-31.n2ab",
+      "gear_samples": [
+        {
+          "name": "gear_up",
+          "samples": 18753
+        },
+        {
+          "name": "gear_down",
+          "samples": 17318
+        }
+      ],
+      "hold_serial": 15,
+      "hold_activity_delta_since_menu": 10,
+      "hold_req": 0,
+      "holding": 0,
+      "driving_speed_mps": 12.388100075379379,
+      "braked_speed_mps": 1.3297974157570576,
+      "player_lock_voice_during_brake": {
+        "observations": 13,
+        "voice_slots": [
+          2
+        ],
+        "maximum_gain_q15": 3476,
+        "distinct_cursors": 13,
+        "first_records": [
+          {
+            "clock": 3.566664695739746,
+            "voice": 2,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 362,
+            "gainR": 362,
+            "cursor": 32062
+          },
+          {
+            "clock": 3.6666646003723145,
+            "voice": 2,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 909,
+            "gainR": 909,
+            "cursor": 34266
+          },
+          {
+            "clock": 3.7999978065490723,
+            "voice": 2,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 1641,
+            "gainR": 1641,
+            "cursor": 37538
+          }
+        ]
+      },
+      "rival_lock_voice_during_player_brake_window": {
+        "observations": 7,
+        "voice_slots": [
+          29
+        ],
+        "maximum_gain_q15": 1480,
+        "distinct_cursors": 7,
+        "first_records": [
+          {
+            "clock": 4.266664028167725,
+            "voice": 29,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 73,
+            "gainR": 70,
+            "cursor": 15082
+          },
+          {
+            "clock": 4.366663932800293,
+            "voice": 29,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 310,
+            "gainR": 298,
+            "cursor": 17239
+          },
+          {
+            "clock": 4.499997138977051,
+            "voice": 29,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 634,
+            "gainR": 611,
+            "cursor": 20447
+          }
+        ]
+      },
+      "paused": {
+        "engine_gain": 0.0,
+        "engine_gain_target": 0.0,
+        "engine_rpm": 0.0,
+        "AEMS_source0_bank": -1,
+        "skid_voices_muted": true
+      },
+      "resumed_engine_gain": 0.35655081272125244,
+      "rival_bank_failures": 0,
+      "rival_controller_peak": [
+        0.0,
+        113.0,
+        409.0
+      ],
+      "menu": {
+        "mus_shown": 34,
+        "mus_blocks": 153,
+        "amb_track": -1,
+        "progressed_after_return": true
+      }
+    },
+    {
+      "label": "Rachel350Z",
+      "player_car": -1,
+      "GIN": "engine-G35_350ZX_Comp_v2_AB.n2en",
+      "GIN_range": [
+        1232.5999755859375,
+        6599.89990234375
+      ],
+      "AEMS_bank0_path": "aems-25.n2ab",
+      "gear_samples": [
+        {
+          "name": "gear_up",
+          "samples": 14534
+        },
+        {
+          "name": "gear_down",
+          "samples": 20638
+        }
+      ],
+      "hold_serial": 25,
+      "hold_activity_delta_since_menu": 10,
+      "hold_req": 0,
+      "holding": 0,
+      "driving_speed_mps": 12.387488813102648,
+      "braked_speed_mps": 0.5774904127708417,
+      "player_lock_voice_during_brake": {
+        "observations": 12,
+        "voice_slots": [
+          2
+        ],
+        "maximum_gain_q15": 3476,
+        "distinct_cursors": 12,
+        "first_records": [
+          {
+            "clock": 3.199998378753662,
+            "voice": 2,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 362,
+            "gainR": 362,
+            "cursor": 20699
+          },
+          {
+            "clock": 3.2999982833862305,
+            "voice": 2,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 909,
+            "gainR": 909,
+            "cursor": 22921
+          },
+          {
+            "clock": 3.399998188018799,
+            "voice": 2,
+            "name": "skid_lock",
+            "samples": 43136,
+            "gainL": 1464,
+            "gainR": 1464,
+            "cursor": 25675
+          }
+        ]
+      },
+      "rival_lock_voice_during_player_brake_window": {
+        "observations": 0,
+        "voice_slots": [],
+        "maximum_gain_q15": 0,
+        "distinct_cursors": 0,
+        "first_records": []
+      },
+      "paused": {
+        "engine_gain": 0.0,
+        "engine_gain_target": 0.0,
+        "engine_rpm": 0.0,
+        "AEMS_source0_bank": -1,
+        "skid_voices_muted": true
+      },
+      "resumed_engine_gain": 0.23194919526576996,
+      "rival_bank_failures": 0,
+      "rival_controller_peak": [
+        0.0,
+        126.0,
+        409.0
+      ],
+      "menu": {
+        "mus_shown": 38,
+        "mus_blocks": 271,
+        "amb_track": -1,
+        "progressed_after_return": true
+      }
+    }
+  ],
+  "shared_contracts": {
+    "two_distinct_GIN_AEMS_gear_families": true,
+    "hold_serial_sequence": [
+      5,
+      15,
+      25
+    ],
+    "no_hold_left_requested": true,
+    "menu_music_blocks_advanced": true,
+    "no_observed_NaN_reset": true,
+    "source_savedata_unchanged": true,
+    "private_native_savedata_unchanged": true,
+    "career_totals_before": {
+      "money": 250,
+      "rep": 200,
+      "races": 1
+    },
+    "career_totals_after": {
+      "money": 250,
+      "rep": 200,
+      "races": 1
+    },
+    "new_saves_written": []
+  },
+  "process_lifetime": {
+    "pid": 68640,
+    "terminal_returncode": -15,
+    "reaped": true,
+    "classification": "Owned SIGTERM cleanup after both successful normal menu returns. Unbounded interactive game was not expected to exit by itself; this is not a spontaneous game crash. Raw returncode\u221215 is retained.",
+    "raw_context": "Flow exited without exception after assertions; debugger disconnected, then its context manager terminated and joined the owned headless. No retry or second launch."
+  },
+  "footprint": {
+    "real_files_bytes_at_qualification": 10156574,
+    "budget_bytes": 200000000,
+    "read_only_asset_symlinks": 161,
+    "GAME_copied_or_converted": false,
+    "source_native_and_input_files_preserved": true
+  },
+  "evidence": {
+    "raw": "RESULT.json",
+    "rows": "samples.json",
+    "preflight": "PREFLIGHT.json",
+    "input_recipe": "run_once.py",
+    "screens": [
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/title.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Focus-green.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Focus-driving.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Focus-paused.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Focus-menu.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Rachel350Z-green.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Rachel350Z-driving.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Rachel350Z-paused.png",
+      "reports/closed-beta-20261025/roadmap-resume-20261027/audio-integration/normal-cars-01/Rachel350Z-menu.png"
+    ],
+    "process_log": "normal-cars-01/process.log",
+    "debugger_log": "normal-cars-01/ws.jsonl",
+    "source_manifest": "PREFLIGHT.json/source_savedata_files"
+  },
+  "limits": [
+    "No PCM or subjective/perceptual/audio-hardware approval. Engine muting and recovery are qualified by source/gain/RPM and callback state only.",
+    "Positive skid_lock gain and advancing cursor prove scheduled sample-family playback; they do not prove the reporter can hear it at their physical volume.",
+    "Rival slot29 skid_lock activity during the Focus window was observed; AI brake pedal/state was not read or forced, so no per-rival physical braking-parity conclusion. No rival lock voice was captured during the Rachel window.",
+    "Two short ordinary Circuit4011 excerpts in one process, not a complete race, Drift all-car validation or global game/timing/hardware approval.",
+    "Host delayed-reader negative/ACK proof remains in sibling drift-audio receipt; this normal scheduling gate does not force a delayed reader.",
+    "RC17/K17/ZIP/B remain frozen. This is the separate da37/68566 integration candidate, not transferred RC17 approval."
+  ],
+  "prelaunch_harness_failure": "A syntax-only py_compile failure was fixed before any emulator launch and preserved as run-precompile-failed.py. Final admitted script compiled with warnings treated as errors."
+}

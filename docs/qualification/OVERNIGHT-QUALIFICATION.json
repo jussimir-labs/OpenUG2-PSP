@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "candidate": "closed-beta-20261026-beta01-ui-drift15",
+  "status": "TWO_SCOPED_NORMAL_CONTROL_GATES_PASSED_THREE_VISUAL_SAMPLES_MANUAL_TEST_READY",
+  "eboot_sha256": "adb5c8690f630b074ddc4b99898d22d42b9692cd6c8517fba4571bee0690d061",
+  "source_commit": "5535dd695987ceddca637789d4bc528aa3ff9840",
+  "configuration": [
+    "PGO=use",
+    "LTO=1",
+    "RELEASE=0",
+    "PSP_LARGE_MEMORY=1"
+  ],
+  "pgo_profiles": 63,
+  "pgo_unchanged": true,
+  "hot_ld_unchanged": true,
+  "cflags_unchanged": true,
+  "incremental_build": {
+    "returncode": 0,
+    "changed_objects": [
+      "build_id.o",
+      "controls.o",
+      "fe.o",
+      "garage.o",
+      "main.o",
+      "music_card.o"
+    ],
+    "reused_objects_count": 76
+  },
+  "new_code_scope": [
+    "Recover career UI allocation failures before page dispatch; retain explicit failure handling when allocation cannot recover.",
+    "Keep the delivered Drift NIS car pose at handoff instead of restoring raw grid poses; preserve non-Drift and scene15 policy."
+  ],
+  "current_host_tests": {
+    "career_UI": {
+      "actual_loader_cases": 34,
+      "wrapper_cases": 11,
+      "dispatch_cases": 28,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "scope": "Actual loader/wrapper/dispatch code with allocator and renderer seams; not a complete game run."
+    },
+    "Drift_handoff": {
+      "assertions": 84,
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "scope": "Actual function extracted with old-function negative discriminator and retained4311/4312 geometry; not visual approval."
+    }
+  },
+  "current_runtime_tests": {
+    "status": "PASS_TWO_SCOPED_NORMAL_CONTROL_GATES",
+    "cases": [
+      {
+        "case": "career-event-icon-Up",
+        "status": "PASS_BOUNDED_NORMAL_CONTROL_EVENT_UI_AND_FIRST_DRIVE",
+        "run": "e9187b07f90f4edbacfed86b1d950d73",
+        "source_result": "rc15-clean-build/validation/career-up-01/RESULT.json",
+        "source_result_sha256": "9c88520ec2dba805e94991235eb15999e9c39035bbe153b8798848f144826669",
+        "event": 4101,
+        "normal_navigation_m": 1204.4402759082402,
+        "steps": [
+          "cold private native fixture",
+          "normal GPS/pad drive",
+          "event icon Up",
+          "engage Accept",
+          "countdown",
+          "4.100s first drive",
+          "return to Main"
+        ],
+        "drive_seconds": 4.099997520446777,
+        "resets_nans": [
+          0,
+          0
+        ],
+        "observed_UI_load_failures": 0,
+        "source_native_files_unchanged": true,
+        "new_SAVE": false,
+        "scope": "Event-page entry and bounded drive; no complete race, reward, new SAVE or synthetic allocation failure.",
+        "heap_qualification": "UNKNOWN: reads were not one coherent full-CPU-paused snapshot; raw heap numbers are not allocator state evidence.",
+        "entry_observation": {
+          "symbol": "fail_model.isra.0",
+          "t": 252.95,
+          "status": "QUALIFIED_INTENTIONAL_PRE_N2RS_SLOT_DESTRUCTION: ELF callsite load_racer+0x114 is unconditional cleanup before rs_try_empty. Not evidence of a read/parse failure, crash or fallback; exact model not captured."
+        }
+      },
+      {
+        "case": "Drift4311-NIS-handoff-first-motion",
+        "status": "PASS_NORMAL_UI_NIS_FIRST_MOTION_AND_THREE_VISUAL_SAMPLES",
+        "raw_result_status": "PASS_NORMAL_UI_NIS_AND_FIRST_MOTION_VISUAL_REVIEW_PENDING",
+        "run": "ef37d3aabd5e4f6a8fc494e01f5a04d3",
+        "source_result": "rc15-clean-build/validation/drift4311-nis-01/RESULT.json",
+        "source_result_sha256": "86a81d413218c4f74a3d035e8d79f6391f6c5e2633e35a7ece2ed98eb6e3fdbc",
+        "event": 4311,
+        "normal_pad_only": true,
+        "cars": 4,
+        "handover_rows": [
+          {
+            "car": 0,
+            "animated_slot": 3,
+            "xz_step_m": 0.0,
+            "to_raw_grid_m": 6.658551450957778,
+            "yaw_step_rad": 0.0
+          },
+          {
+            "car": 1,
+            "animated_slot": 0,
+            "xz_step_m": 0.0,
+            "to_raw_grid_m": 0.12776571058597244,
+            "yaw_step_rad": 0.0
+          },
+          {
+            "car": 2,
+            "animated_slot": 1,
+            "xz_step_m": 0.0,
+            "to_raw_grid_m": 0.19476111783635947,
+            "yaw_step_rad": 0.0
+          },
+          {
+            "car": 3,
+            "animated_slot": 2,
+            "xz_step_m": 0.0,
+            "to_raw_grid_m": 6.644283319206215,
+            "yaw_step_rad": 0.0
+          }
+        ],
+        "drive_seconds": 2.0333326011896133,
+        "movement_m": 8.092456173170097,
+        "source_native_files_unchanged": true,
+        "new_SAVE": false,
+        "cleanup": "Expected own-process termination after normal Main return; not game self-exit.",
+        "resets": 0,
+        "nan_events": 0,
+        "Core_errors": 0,
+        "UI_load_failures": 0,
+        "visual_review": {
+          "reviewer": "Root coordinator; explicitly reported inspection of these three original frames",
+          "status": "PASS_THREE_CAPTURE_SAMPLE_ONLY",
+          "finding": "People remain beside/outside the cars in these three captures. No all-actor, all-camera or every-frame overlap guarantee.",
+          "screens_sha256": {
+            "nis-delivered-grid.png": "78849c2f826dd38c4fd14b7f35556e011372bf78710e1ab63808e9c52d9f8a16",
+            "go-after-handover.png": "e0ac147b4920d6d76dd636dc54ba733585a6cd7582e1135afaa38c7ed0098b28",
+            "first-motion.png": "9908fd86ae11ea034d130bdd7d5d666f89c8596a6cd984155495d7ab801c327c"
+          }
+        },
+        "scope": "Normal UI intro, sampled handoff and first motion then Main; no complete race, score/win or performance approval."
+      }
+    ],
+    "portable_summary": "RC15-RUNTIME-SUMMARY.json",
+    "no_rerun": true
+  },
+  "inherited_code_and_evidence": {
+    "RC14": {
+      "eboot_sha256": "6723e0d1155c5ce3a1320eae3e155445d7ec8229d036af9cc97c50eaa1774517",
+      "receipt": "RC14-QUALIFICATION.json",
+      "scope": "Rival tyre emitters and prior host/headless audio fixtures belong to8c51. Their implementation is retained, not relabelled as newadb5runtime proof."
+    },
+    "RC13": {
+      "eboot_sha256": "562bfb2c94074652a3e12cfa1bef7922040bcc10b42c5bb010f8c143ba722ae6",
+      "receipt": "RC13-QUALIFICATION.json",
+      "scope": "Normal-control Drift/career/reward/nativeSAVE/cold and calibrated observations remain historical."
+    }
+  },
+  "unchanged_generated_data": {
+    "xbox": {
+      "files": 162,
+      "data_id": "78eb"
+    },
+    "ps2": {
+      "files": 159,
+      "data_id": "4111"
+    },
+    "scope": "Only EBOOT changes versus RC14 source references. No conversion performed."
+  },
+  "remaining": [
+    "No current full-race/reward/SAVE/new-process-earned-state chain.",
+    "No current physical PSP/MemoryStick, all-model or global30fps approval.",
+    "Career heap snapshots remain UNKNOWN. Qualified model-loader stops are normal cleanup; exact model identity was not captured.",
+    "Drift visual verdict covers three inspected screenshots only.",
+    "Nitro timbre unresolved; original Drift/Drag ambience policy retained.",
+    "Prior RC14audio/RC13career/save proofs remain historical; reporter confirmation still required.",
+    "4401 recovery and full original visual/handling parity remain unqualified.",
+    "Original PS2 USA disc image remains unverified."
+  ],
+  "published": false,
+  "hardware_tested": false,
+  "new_savedata_operation_by_packaging": false,
+  "prepared_for_manual_beta_test": true,
+  "installed_on_user_card": false,
+  "phase_history": {
+    "pending_qualification": "RC15-PENDING-QUALIFICATION.json",
+    "pending_zip_sha256": "ca80495bd71bfa898b6b4927b509bc9cd1330386690a9c32b024406c77d1fac4",
+    "pending_zip_preserved_unchanged": true
+  }
+}

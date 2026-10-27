@@ -1,0 +1,132 @@
+{
+  "status": "SYNTHETIC_SPONSOR_UI_NATIVE_SAVE_COLD_ALL_KEPT_PASS",
+  "scope": "Integratednormalmenus/pad/UI/nativecodec only.5initialwinsandstage2wereHOSTsynthetic,notearnedcareerprogress.",
+  "build": {
+    "source": "68566e7bcb90786b18dc42494512dd1741c44f25",
+    "eboot": "reports/closed-beta-20261025/release-build-15-sponsor-audio-ownership/binaries/EBOOT.PBP",
+    "eboot_sha256": "da37c1120252916f3e70a8034d347ea111f09303237c65d495778d3882f0dfe1",
+    "elf": "reports/closed-beta-20261025/release-build-15-sponsor-audio-ownership/binaries/nfsu2-viewer.elf",
+    "elf_sha256": "660791b2e3c1c6233905c89dabb545e701d1ef38dcaef5e5c1a2e495990b0342"
+  },
+  "data": "night-nos-generated-data-18/xbox/PSP/GAME/NFSU2VIEW",
+  "host_preflight": {
+    "result": "host-preflight/RESULT.json",
+    "status": "PASS_SYNTHETIC_SETUP_REAL_API_CODEC_FRESH_PID",
+    "legacy_sha256": "b2213bb033b9ff81ee526c6c6d2667f6cf170ecd3a030202750f0eb8ee678b64",
+    "legacy_bytes": 2098,
+    "synthetic_wins": 5,
+    "initial_car": 0,
+    "initial_stage": 2,
+    "initial_sponsor": -1
+  },
+  "retained_harness_failure": {
+    "result": "RESULT.json",
+    "diagnostic": "HARNESS-FAILURE-01.json",
+    "run": "ebbfc96983f04486a55fa822e1234a13",
+    "error": "KeyError menu fromstate-dictionary seam;notgamefailure",
+    "native_migration_before_failure": true,
+    "reaped": true,
+    "not_overwritten": true
+  },
+  "primary02": {
+    "run": "58c97caabdee4a35963214e6fa49aa28",
+    "result": "RESULT-02.json",
+    "native_only": true,
+    "legacy_absent": true,
+    "source_native_unchanged": true,
+    "before": {
+      "money": 1250,
+      "rep": 1500,
+      "races": 5,
+      "stage": 2,
+      "sponsor": -1,
+      "slots": 1,
+      "car": 0,
+      "previous_average_rep": 300
+    },
+    "offers": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "pad_choice": "Rightoncefromindex0toindex1thenCross",
+    "selected_sponsor": "EUROLITE/id1",
+    "after": {
+      "money": 2575,
+      "rep": 1500,
+      "races": 5,
+      "stage": 2,
+      "sponsor": 1,
+      "slots": 2,
+      "car": 0,
+      "previous_average_rep": 300
+    },
+    "explicit_native_manual_save": true,
+    "reaped": true,
+    "screens": "primary-02/synthetic-stage2-sponsor/"
+  },
+  "cold02": {
+    "run": "abf883f6178c4328bf01c54fb3449065",
+    "result": "COLD-RESULT-02.json",
+    "native_only": true,
+    "legacy_absent": true,
+    "title": {
+      "money": 2575,
+      "rep": 1500,
+      "races": 5,
+      "stage": 2,
+      "sponsor": 1,
+      "slots": 2,
+      "car": 0,
+      "previous_average_rep": 300
+    },
+    "crib": {
+      "money": 2575,
+      "rep": 1500,
+      "races": 5,
+      "stage": 2,
+      "sponsor": 1,
+      "slots": 2,
+      "car": 0,
+      "previous_average_rep": 300
+    },
+    "all_kept_equal_title": true,
+    "all_kept_equal_crib": true,
+    "native_no_writes": true,
+    "source_unchanged": true,
+    "reaped": true
+  },
+  "visual_review": {
+    "by": "beta_original_rules_audit",
+    "sampled": [
+      "eurolite-selected-by-pad.png",
+      "synthetic-contract-game-saved.png"
+    ],
+    "observed": "EUROLITEyellowselection,bonus1325/bank1250beforeaccept;GameSavedandbank2575afteraccept",
+    "limits": "SampledUIonly;notalllayouts/cameras/globalvisualparity"
+  },
+  "budget": {
+    "extra_output_bytes": 15562867,
+    "limit_bytes": 100000000,
+    "immutable_APFS_CoW_asset_refs_excluded": 483,
+    "concurrency_in_case": 1,
+    "mac_slots": true,
+    "nice_game": 15,
+    "disk_floor_bytes": 25000000000,
+    "full_game_copies": false
+  },
+  "protected_earned_fixture": {
+    "sha256": "b9c2ae55b50fee17c900c122c6c31f1eb9bfc9b3b6ecddb00dd1f8f0e9908607",
+    "unchanged": true,
+    "used_as_input": false
+  },
+  "limits": [
+    "NoENOMEMforcedinheadless;allocationfailurecoveredseparatelybyactual-Mainhostfaulttests.",
+    "Noordinarycareer Stage2progressclaim;RootStreetXrunisindependent.",
+    "NoPROFILEcreationrequested;normalNoProfiledefaultNoaccepted.",
+    "NoPSP/hardware/performance/physicalSAVEDATA/packagechanges."
+  ],
+  "next": "No additionalrunneededforthisUIboundary;Rootcanintegratewithnormalcareerresultswithoutmergingproofscopes."
+}

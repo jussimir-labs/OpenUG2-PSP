@@ -1,0 +1,94 @@
+{
+  "status": "DIRECTED_HEADLESS_GATES_AND_NORMAL_4101_REWARD_NATIVE_SAVE_COLD_PASS_HARDWARE_PENDING",
+  "eboot_sha256": "8ef4cd73a1cbf372c2cbfe90b068587462675ff475cee523594ae5bef88bd91e",
+  "source_commit": "1808daaca09629d90b6682f9dec722ff9485ef86",
+  "generator_commit": "1808daaca09629d90b6682f9dec722ff9485ef86",
+  "current_game_data_ids": {
+    "xbox": "9576",
+    "ps2": "8729"
+  },
+  "current_runtime_pass_claimed": true,
+  "planned_gates_not_results": [],
+  "current_host_scope": "Source SFX preclass/level/default quantizer production-wiring contracts; no new test execution in kit staging",
+  "sfx_policy": "NOS/PURGE SFX option is applied before the original class gate/lifetime, with source default level rounding. Master remains the port shared final-output volume policy, not original Master-curve parity. Other camera mix profiles and target listening remain unqualified.",
+  "historical_rc16": "RC16-HISTORICAL-ACCEPTANCE.json",
+  "no_transfer_of_runtime_approval": true,
+  "not_approved": [
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery",
+    "NOS/PURGE correction needs reporter listening on PSP; other camera mix profiles remain unqualified",
+    "Original USA PS2 ISO still unverified; retained179-input reconstructed-ISO evidence",
+    "4401 AI recovery remains deferred",
+    "PSP1000/global30fps/fullgame/visual-parity remain unapproved",
+    "Master volume remains the port final-output policy; original Master curve parity is unqualified"
+  ],
+  "hardware": false,
+  "installed": false,
+  "published": false,
+  "at": "2026-10-27T05:44:04.012393+00:00",
+  "current_runtime_scope": "Listed scoped emulator cases only; not global game/hardware approval",
+  "current_runtime_proofs": {
+    "natural4101": {
+      "receipt": "RC17-NATURAL4101-RESULT.json",
+      "sha256": "e6494fa7fd044068f9b170abed232f1ebcac66ef8cf2219662e5645bac50fe4d",
+      "source_path": "rc17-nos-sfx-validation/natural4101-01/run/RESULT.json"
+    },
+    "postwin_cold": {
+      "receipt": "RC17-POSTWIN_COLD-RESULT.json",
+      "sha256": "620c260297968dee8dae7dfab0ab69b7127d8c70b2291034470f9d45f6a926e4",
+      "source_path": "rc17-nos-sfx-validation/natural4101-01/cold-postwin/RESULT.json"
+    },
+    "drift4311_excerpt": {
+      "receipt": "RC17-DRIFT4311_EXCERPT-RESULT.json",
+      "sha256": "13be820803d4c8122be12f899e33605d5f332206fca1438aecea578e46f5840a",
+      "source_path": "rc17-nos-sfx-validation/drift4311-nis-02/RESULT.json"
+    },
+    "native_xbox": {
+      "receipt": "RC17-NATIVE_XBOX-RESULT.json",
+      "sha256": "bec69cc38ee6fa205766de71f9dd435bb748f713f5a80b2947718cd7f640f636",
+      "source_path": "rc17-nos-sfx-validation/native-save-cold/xbox/RESULT.json"
+    },
+    "native_ps2": {
+      "receipt": "RC17-NATIVE_PS2-RESULT.json",
+      "sha256": "fec7bf24687429fc3063f922dbce06d2ea9ab93b40ae62c02a4d89cc8ba8f17d",
+      "source_path": "rc17-nos-sfx-validation/native-save-cold/ps2/RESULT.json"
+    },
+    "effect_xbox": {
+      "receipt": "RC17-EFFECT_XBOX-RESULT.json",
+      "sha256": "ba94ec9b91a8baa62e6c49ba2c174bc2e763fb71fbe137ba34487dfe97447968",
+      "source_path": "rc17-nos-sfx-validation/xbox-effect-01/RESULT.json"
+    },
+    "effect_ps2": {
+      "receipt": "RC17-EFFECT_PS2-RESULT.json",
+      "sha256": "462da1f1c4ae81da7349619537b7aca79f4d931f1714bf42cf953d03c2d8ab9a",
+      "source_path": "rc17-nos-sfx-validation/ps2-effect-01/RESULT.json"
+    }
+  },
+  "current_host_receipts": [
+    "RC17-HOST-NOS-SFX.json",
+    "RC17-MIXCTL-OPTIONS.json"
+  ],
+  "natural_win": {
+    "run": "ccc1851818e64e85abca4c232a6c74c2",
+    "clock_seconds": 141.36790466308594,
+    "ai_resets": 0,
+    "money_rep_races": {
+      "money": 250,
+      "rep": 200,
+      "races": 1
+    },
+    "cold_run": "5c19b574460442adba58470bdab676e6",
+    "all_kept_equal": true,
+    "private_and_source_saves_preserved": true
+  },
+  "visual_review": "RC17-VISUAL-REVIEW.json",
+  "build_summary": "RC17-BUILD-SUMMARY.json",
+  "movies_structural": "RC17-MOVIE-AVAILABILITY.json"
+}

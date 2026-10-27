@@ -1,3 +1,5 @@
+> Historical audit of executable bf7f. For the overnight corrections and their exact qualification, read [NIGHTLY_NOTES.md](../../NIGHTLY_NOTES.md).
+
 # Original rules: rival neon and drift handling
 
 Source comparison performed on October 25, 2026 for executable `bf7f21e3`.

@@ -12,6 +12,9 @@
 - sfx.n2sf: named one-shots and loops from ABKC banks (BNKl at +0x18; PT
   headers via the BNKl offset table; Xbox PT platform 7 uses codec 0x14 =
   Xbox IMA ADPCM, 36-byte mono blocks of 64 samples), decoded to s16 PCM.
+- nos-0.n2ns + nos-1.n2ns: all six NOS/PURGE slots at native PCM16 rates
+  and original PT loop bounds; strict qualified graph gate (tools/nos_bank.py).
+  The two legacy nitrous entries are omitted from sfx.n2sf.
 - music.mp3 + music.idx: SOUND\\PFDATA\\MUSICSFX.MUS (43 GSTR SCHl
   tracks, EA-XA v2, stereo 32 kHz, big-endian block fields), each song
   decoded (tools/eaxa2pcm.c, the decoding the PSP did) and encoded by lame
@@ -75,6 +78,7 @@ SFX = {
     'skid':      (r'SOUND\SKIDS\SKID_PAV_MB.abk', 1, True, 2),
     'skid_spin': (r'SOUND\SKIDS\SKID_PAV_MB.abk', 2, True, 2),
     'skid_lock': (r'SOUND\SKIDS\SKID_PAV_MB.abk', 5, True, 2),
+    # Legacy descriptors retained for migration checks, omitted by write_sfx.
     'nitrous':   (r'SOUND\NOS\Nitrous_00_MB.abk', 1, True),
     # the bigger nitrous kits' (CARSFX_Nitrous: Nitrous_01 for levels 2-3), at 24 kHz
     'nitrous_2': (r'SOUND\NOS\Nitrous_01_MB.abk', 1, True, 2),
@@ -839,10 +843,16 @@ def ps2_slot(game, path, index):
 
 
 def write_sfx(game, out):
-    """sfx.n2sf: the SFX table's one-shots and loops (a loop made seamless)."""
+    """Non-NOS SFX plus mandatory native NOS/PURGE banks (never seam NOS)."""
+    # The native six-slot NOS/PURGE banks replace the two old centered loops.
+    # Validate/export both before writing SFX, refusing unsupported source graphs.
+    from nos_bank import export as export_nos
+    nos = export_nos(game, out)
     blob, entries, cache = bytearray(), [], {}
-    report = {}
+    report = {'nos_banks': nos}
     for name, (path, index, loop, *down) in SFX.items():
+        if name in ('nitrous', 'nitrous_2'):
+            continue
         if path not in cache:
             cache[path] = bank_streams(game, path)
         streams = cache[path]
@@ -1054,12 +1064,17 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
-    ap.add_argument('--sfx', action='store_true', help='sfx.n2sf alone')
+    ap.add_argument('--nos', action='store_true', help='native NOS/PURGE banks alone (no music or other SFX)')
+    ap.add_argument('--sfx', action='store_true', help='SFX tables and mandatory native NOS/PURGE banks')
     ap.add_argument('--music', action='store_true', help='music.mp3 and music.idx alone')
     ap.add_argument('--music-gains', action='store_true', help='music.idx\'s gains alone, in place (the songs at their own level)')
     ap.add_argument('--cars', action='store_true', help='the cars\' engines alone (carsnd.n2cs, engine-*, aems-*, gear-*, turbo-*)')
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
+    if args.nos:
+        from nos_bank import export as export_nos
+        print(json.dumps(export_nos(args.game, args.out), indent=2))
+        return
     if args.sfx:
         print(json.dumps(dict(write_sfx(args.game, args.out), stitches=write_stitches(args.game, args.out),
                               driveby=write_driveby(args.game, args.out), skid_banks=skid_banks(args.game, args.out)), indent=1))

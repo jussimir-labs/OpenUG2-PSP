@@ -1,0 +1,25 @@
+{
+  "status": "DRAFT_FULL_CYCLE_IN_PROGRESS",
+  "eboot": "a2583001d73f793129b4078f0aaba6b954e06c82d99b6f6b1f49ae2e9efdcfa9",
+  "source_commit": "54bf0deeec70d44fb4532ca5c511952632ea737f",
+  "generator_commit": "1080c22f2",
+  "current_game_data_ids": {
+    "xbox": "9576",
+    "ps2": "8729"
+  },
+  "not_approved": [
+    "new-executable-hardware-and-memory-stick-listening-validation-pending",
+    "original-drift-domain-qualified-not-global-parity",
+    "custom-dyno-and-special-preset-drift-use-previous-model",
+    "2d-collision-and-unqualified-wild-hydraulics-branches",
+    "drag-4401-rival-recovery-loop-deferred",
+    "tone-visibility-uv-cull-doors-review-incomplete",
+    "psp1000-other-models-and-global30fps-unapproved",
+    "ps2-original-usa-disc-image-unverified",
+    "historical-psplink-stop-manual-recovery",
+    "NOS/PURGE correction needs reporter listening on PSP; other camera mix profiles remain unqualified",
+    "Original USA PS2 ISO still unverified; retained179-input reconstructed-ISO evidence",
+    "4401 AI recovery remains deferred",
+    "PSP1000/global30fps/fullgame/visual-parity remain unapproved"
+  ]
+}

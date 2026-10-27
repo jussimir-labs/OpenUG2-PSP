@@ -1,0 +1,260 @@
+{
+  "status": "PASS_TWO_DIRECTED_HEADLESS_GATES_WITH_SCOPED_QUALIFICATIONS",
+  "at": "2026-10-27T02:41:01.254052+00:00",
+  "source_commit": "5535dd695987ceddca637789d4bc528aa3ff9840",
+  "eboot_sha256": "adb5c8690f630b074ddc4b99898d22d42b9692cd6c8517fba4571bee0690d061",
+  "elf_sha256": "d03e0952d30b1dc7834fe3fee7b1b853dd706d67ca70e2c4806ce86a31d04fb8",
+  "canonical_pack_sha256": "4a64400f70336b035cd03488bb920a928bf3779370acdad65a8f6fe8d5817940",
+  "launches": 2,
+  "retries": 0,
+  "new_builds": 0,
+  "conversions": 0,
+  "full_asset_copies": 0,
+  "observed_written_bytes_before_manifest": 26531115,
+  "byte_budget": 300000000,
+  "career": {
+    "run_id": "e9187b07f90f4edbacfed86b1d950d73",
+    "status": "PASS_ACTUAL_ICON_UP_ACCEPT_SHORT_DRIVE_MAIN",
+    "raw_result": "career-up-01/RESULT.json",
+    "accepted_scope": "Private stage1 native fixture, cold title/Main/Career/Resume, normal egress/GPS/pad to4101 event marker, Up dialog owner, Accept/countdown/4.1s drive and normal Main return; no race finish/reward",
+    "inherited_scope_correction": "raw flow.proof_scope describes old full-win controller template. That text is stale and NOT the executed/accepted scope; this qualification supersedes it. Raw retained unchanged.",
+    "before_up": {
+      "event": 6,
+      "speed": 0.26856955251827835,
+      "distance": 7.428456311301432,
+      "ground_delta": 0.01640605926513672
+    },
+    "after_up": {
+      "menu": 4,
+      "event": 6,
+      "owner": 174518272
+    },
+    "drive_clock": 4.099997520446777,
+    "resets_nans": [
+      0,
+      0
+    ],
+    "fe_load_failures": 0,
+    "career_rewards_before": {
+      "money": 0,
+      "rep": 0,
+      "races": 0
+    },
+    "career_rewards_after": {
+      "money": 0,
+      "rep": 0,
+      "races": 0
+    },
+    "source_native_unchanged": true,
+    "pressure_acceptance": "UNKNOWN_OBSERVER_NOT_PAUSED_ACROSS_WALK",
+    "pressure_reason": "Raw before_up/after_up report STRUCTURE_VALID but only each memory.read paused independently. No coherent single allocator snapshot is established; do NOT use free_sum/max_request/fits from this case as acceptance or physical-memory evidence."
+  },
+  "drift": {
+    "run_id": "ef37d3aabd5e4f6a8fc494e01f5a04d3",
+    "status": "PASS_SAMPLED_4311_NIS_DELIVERY_FIRST_MOTION_AND_VISUAL",
+    "raw_result": "drift4311-nis-01/RESULT.json",
+    "sample_count": 232,
+    "actual_event": 4311,
+    "actors": 16,
+    "handover": {
+      "crossed_handover": true,
+      "rows": [
+        {
+          "car": 0,
+          "animated_slot": 3,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 6.658551450957778,
+          "yaw_step_rad": 0.0
+        },
+        {
+          "car": 1,
+          "animated_slot": 0,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 0.12776571058597244,
+          "yaw_step_rad": 0.0
+        },
+        {
+          "car": 2,
+          "animated_slot": 1,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 0.19476111783635947,
+          "yaw_step_rad": 0.0
+        },
+        {
+          "car": 3,
+          "animated_slot": 2,
+          "xz_step_m": 0.0,
+          "to_raw_grid_m": 6.644283319206215,
+          "yaw_step_rad": 0.0
+        }
+      ],
+      "scope": "sampled transforms; no automatic visual/collision verdict",
+      "frame_gap": 0,
+      "elapsed_wall": 0.06863187499402557
+    },
+    "all12_float_deltas_at_handover": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -7.624604947409352e-09,
+        -2.6802002395243107e-08,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "movement_m": 8.092456173170097,
+    "motion_clock_before": 0.23333333432674408,
+    "motion_clock_after": 2.2666659355163574,
+    "firstNIS_heap": {
+      "status": "STRUCTURE_VALID_RO_SNAPSHOT",
+      "free_sum": 591608,
+      "free_chunks": 53,
+      "top_raw": 6408,
+      "largest_bin_raw": 262160,
+      "max_request_existing": 262156,
+      "visits": 52,
+      "growth_bytes": 16334848,
+      "requests": {
+        "204800": {
+          "normalized": 204816,
+          "existing_fits": true,
+          "growth_request": 208896,
+          "growth_fits": true
+        },
+        "219888": {
+          "normalized": 219904,
+          "existing_fits": true,
+          "growth_request": 221184,
+          "growth_fits": true
+        },
+        "66560": {
+          "normalized": 66576,
+          "existing_fits": true,
+          "growth_request": 69632,
+          "growth_fits": true
+        }
+      },
+      "scope": "no allocation performed; private ABI and full CPU pause required"
+    },
+    "motion_before_heap": {
+      "status": "STRUCTURE_VALID_RO_SNAPSHOT",
+      "free_sum": 325080,
+      "free_chunks": 48,
+      "top_raw": 9240,
+      "largest_bin_raw": 207888,
+      "max_request_existing": 207884,
+      "visits": 47,
+      "growth_bytes": 15917056,
+      "requests": {
+        "204800": {
+          "normalized": 204816,
+          "existing_fits": true,
+          "growth_request": 208896,
+          "growth_fits": true
+        },
+        "219888": {
+          "normalized": 219904,
+          "existing_fits": false,
+          "growth_request": 221184,
+          "growth_fits": true
+        },
+        "66560": {
+          "normalized": 66576,
+          "existing_fits": true,
+          "growth_request": 69632,
+          "growth_fits": true
+        }
+      },
+      "scope": "no allocation performed; private ABI and full CPU pause required"
+    },
+    "source_native_unchanged": true,
+    "visual_review": {
+      "reviewer": "Root (confirmed in coordination message), also inspected grid/GO locally by audit agent",
+      "captures": [
+        "drift4311-nis-01/normal-drift4311/nis-delivered-grid.png",
+        "drift4311-nis-01/normal-drift4311/go-after-handover.png",
+        "drift4311-nis-01/normal-drift4311/first-motion.png"
+      ],
+      "result": "Torcida lateral fora dos carros nas tr\u00eas capturas; poses traseiras2\u00d72 retidas, sem retorno4abreast.",
+      "limit": "Only these sampled4311 views; no all-actor/camera mesh guarantee."
+    },
+    "phase_limit": "Reported frame_gap0 is the sampled Main frame counter across a same-frame phase change, not a proof of identical moment or complete every-frame trace."
+  },
+  "entry_stops": {
+    "career_count": 1,
+    "drift_count": 2,
+    "classification": "QUALIFIED_INTENTIONAL_PRE_N2RS_SLOT_DESTRUCTION",
+    "source": "psp-viewer/rival_pack.inc190-199: supported rs_source_size triggers fail_model unconditionally before rs_try_empty; fail_model is also a destructor, not an error-only path.",
+    "ELF_proof": "load_racer0x15ff60: rs_source_size at0x15ffb0; nonzero branch0x15ffb8\u21920x16006c JALfail_model0x10cd30, delay a0=s0; observed caller RA0x160074=load_racer+0x114.",
+    "stale_stage": "model-read is last stage text; this callsite does not read or fail parsing.",
+    "not_inferred": [
+      "No crash, N2RS error or legacy fallback is inferred from these stops",
+      "Specific model/file argument was not captured; exact identity UNKNOWN and unnecessary for this callsite classification",
+      "Successful race start proves required rival owners admitted eventually; it does not certify every alternate-format path"
+    ]
+  },
+  "cleanup": {
+    "career_process_rc": -15,
+    "drift_process_rc": -15,
+    "classification": "EXPECTED_EXTERNAL_TERMINATION_AFTER_NORMAL_MAIN_RETURN",
+    "explanation": "Normal game remains running at Main. PlayerFlow closes debugger, waits5s then terminates and waits for its own child. Both native launcher exec sessions completed rc0; no game-driven exit was observed.",
+    "world_seconds": {
+      "career": 278.7412144580012,
+      "drift": 33.78492062501027
+    }
+  },
+  "limits": [
+    "HOST fault-injection and ordinary UI are separate evidence; these two emulator runs did not synthesize ENOMEM",
+    "Drift pressure samples use one full paused batch and qualified newlib private offsets/code; no target allocation performed, no physical PSP allocator equivalence",
+    "No performance, all-race/all-career, global physics fidelity, physical PSP or PSP1000 claim",
+    "No PSP/card/Deck/USB/GUI/Drive access or publication; all saves private and original fixtures unchanged"
+  ]
+}
