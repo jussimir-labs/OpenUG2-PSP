@@ -188,8 +188,14 @@ class HttpTests(Fixture):
             pick.assert_not_called()
 
     def test_iso_upload_refused(self):
-        with self.assertRaises(HTTPError)as error:self.request('/api/start',body={'padding':'x'*65537})
-        self.assertEqual(error.exception.code,413)
+        # Some Windows hosts abort the client's send when the server answers
+        # 413 and closes without reading the body: that is a refusal too.
+        try:
+            with self.assertRaises(HTTPError)as error:self.request('/api/start',body={'padding':'x'*65537})
+            self.assertEqual(error.exception.code,413)
+        except (ConnectionAbortedError,ConnectionResetError):
+            pass
+        self.assertFalse(self.app.data.get('busy'))
 
     def test_shutdown_refused_while_busy(self):
         self.app.data['busy']=True
