@@ -82,6 +82,28 @@ def fixture_probe(root):
             "-",
         ).stdout
         assert len(resampled) > len(raw)
+        # The converters stream PCM through stdin/stdout ("-": FFmpeg's fd:
+        # protocol); a file-only check missed a build without it.
+        piped = execute(
+            "ffmpeg",
+            "-v",
+            "error",
+            "-f",
+            "s16le",
+            "-ar",
+            "32000",
+            "-ac",
+            "1",
+            "-i",
+            "-",
+            "-ar",
+            "44100",
+            "-f",
+            "s16le",
+            "-",
+            input=raw,
+        ).stdout
+        assert piped == resampled, "FFmpeg stdin/stdout output differs"
         lame_args = [
             "--quiet",
             "-r",

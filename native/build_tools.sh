@@ -20,7 +20,7 @@ case "$(uname -s)" in MINGW*|MSYS*) SUFFIX=.exe; EXTRA=(--target-os=mingw32 --ar
  cd "$CACHE/ffmpeg-8.1.2"
  ./configure --disable-doc --disable-debug --disable-shared --enable-static --disable-network --disable-autodetect \
   --disable-everything --enable-ffmpeg --disable-ffplay --disable-ffprobe --disable-x86asm \
-  --enable-protocol=file,pipe --enable-demuxer=ea,ea_cdata,mpeg,mpegvideo,pcm_s16le,mp3 \
+  --enable-protocol=file,pipe,fd --enable-demuxer=ea,ea_cdata,mpeg,mpegvideo,pcm_s16le,mp3 \
   --enable-parser=mpegvideo,mpegaudio \
   --enable-decoder=vp6,vp6f,mpeg2video,adpcm_ea,adpcm_ea_r1,adpcm_ea_r2,adpcm_ea_r3,adpcm_ea_xas,pcm_s16le,mp3float \
   --enable-encoder=rawvideo,pcm_s16le --enable-muxer=rawvideo,pcm_s16le \
