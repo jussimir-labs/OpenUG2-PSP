@@ -8,7 +8,9 @@ speech MP3s (re-encoded from PCM a least significant bit apart), the
 geometry (.n2cy, a byte or two where a float lands on the other side of a
 decision) and the racing lines (a float's last bit, 0.00024 m). Windows'
 Pillow (MSVC) also quantizes the vinyls' and magazines' palettes a little
-differently (0.006% of a vinyl's pixels on average, most identical). The
+differently (0.006% of a vinyl's pixels on average, most identical), and
+its numpy a few bytes of the line forks (floats), engine sounds (a byte or
+two), the mipmaps' header (their geometry's size) and so the data ID. The
 reference manifest keeps, for those files, their shape: the structural
 fields their readers depend on (frame and sample counts, picture size,
 grids, texture keys, line ids and point counts) and their size. A file
@@ -28,7 +30,8 @@ import sys
 
 # The share of the size a file of each kind may differ by (0: exact).
 TOLERANCE = {'.n2mv': 0.001, '.n2cy': 0.0005, '.n2rl': 0.0, '.mp3': 0.0, '.big': 0.002,
-             '.n2vc': 0.002, '.n2mg': 0.0}
+             '.n2vc': 0.002, '.n2mg': 0.0, '.n2lf': 0.0, '.n2en': 0.0, '.n2mp': 0.0,
+             'data-id.txt': 0.0}
 PACK = 'pack.n2pk'
 
 
@@ -62,6 +65,15 @@ def shape(name, data):
         for _ in range(count):
             at += 12 + 8 * data[at + 8]
         return _digest([data[:at].hex()])
+    if k == '.n2lf':    # the forks' table: event, way, fork count, offset
+        count = struct.unpack_from('<I', data, 8)[0]
+        return _digest([data[:12 + 8 * count].hex()])
+    if k == '.n2mp':    # 'N2MP', version, texture count (not the geometry's size)
+        return _digest([data[:8].hex(), data[12:16].hex()])
+    if k == '.n2en':
+        return _digest([data[:4].hex()])
+    if k == 'data-id.txt':
+        return _digest([len(data) == 5 and data[4:] == b'\n' and all(c in b'0123456789abcdef' for c in data[:4])])
     if k in ('.mp3', '.big'):
         return _digest([k])
     return None

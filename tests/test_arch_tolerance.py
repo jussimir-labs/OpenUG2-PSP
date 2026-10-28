@@ -63,6 +63,13 @@ class EquivalenceTests(unittest.TestCase):
         self.assertTrue(t.equivalent("magazines.n2mg", mags(image=b"j" * 64), ref))
         self.assertFalse(t.equivalent("magazines.n2mg", mags(offset=44), ref))
 
+    def test_data_id_and_mipmap_header(self):
+        self.assertTrue(t.equivalent("data-id.txt", b"0519\n", t.describe("data-id.txt", b"b23c\n")))
+        self.assertFalse(t.equivalent("data-id.txt", b"zzzz\n", t.describe("data-id.txt", b"b23c\n")))
+        mips = lambda size, count: struct.pack("<4s3I", b"N2MP", 1, size, count) + b"m" * 32
+        self.assertTrue(t.equivalent("track-L4RC.n2mp", mips(412000, 9), t.describe("track-L4RC.n2mp", mips(411952, 9))))
+        self.assertFalse(t.equivalent("track-L4RC.n2mp", mips(412000, 8), t.describe("track-L4RC.n2mp", mips(412000, 9))))
+
     def test_other_kinds_must_be_identical(self):
         self.assertIsNone(t.kind("races.n2rc"))
         self.assertFalse(t.equivalent("races.n2rc", b"x", {"size": 1, "shape": None}))
