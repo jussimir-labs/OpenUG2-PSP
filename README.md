@@ -50,8 +50,14 @@ Keep the extracted kit together; do not run a launcher from inside the ZIP.
 Keep the terminal window open while using the browser interface. All required conversion tools
 are included in the download. The generator verifies its files on startup and does not install
 anything on your system. If a file is missing or damaged, extract the complete download again.
-If the OS blocks the helper, review the warning and use the normal OS process for opening a
-trusted local application. Packages are not commercially signed or Apple-notarized.
+Packages are not commercially signed or Apple-notarized, so the first launch needs one approval:
+
+- **Windows:** if *Windows protected your PC* appears, click **More info → Run anyway**.
+  If Windows asks whether to run a file from the internet, choose **Run**.
+- **Mac:** the first double-click shows *"Generate-game.command" Not Opened*. Click **Done**,
+  open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to
+  `Generate-game.command`, then confirm. The launcher then clears the download flag on its own
+  folder, so macOS does not ask again for the included tools.
 
 ## 2. Generate the game from your own ISO
 
