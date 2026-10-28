@@ -14,6 +14,8 @@ all-device compatibility, PSP-1000 support or stable 30 fps throughout the game.
 - **Updates:** use a new generator output and install the complete result. RC21 changes both
   `EBOOT.PBP` and `pack.n2pk`; an executable-only update keeps stale physics.
 - Back up your saves. Broad physical save/reload and full-career coverage remain pending.
+- **Xbox source button icons:** the PSP prompts use the PS2 disc's pad icons. A game generated
+  from the Xbox ISO uses the port's own drawn icons instead (same buttons, slightly different look).
 
 ## Gameplay and presentation
 

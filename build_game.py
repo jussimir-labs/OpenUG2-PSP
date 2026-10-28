@@ -313,6 +313,12 @@ def step_env(work, source):
     env.pop('NFSU2_DIST', None)
     env['PYTHONUNBUFFERED'] = '1'
     env['NFSU2_SOURCE'] = env['NFSU2_PLATFORM'] = source.name
+    # The pad icons come from the PS2 disc (tools/ps2_buttons.py): the
+    # extracted one when it is the source, else the port's own drawings.
+    if source.name == 'ps2':
+        env['NFSU2_PS2_GAME'] = str(work / 'game' / 'ps2' / 'NFSUNDER')
+    else:
+        env.pop('NFSU2_PS2_GAME', None)
     # the converters' temporary files and matplotlib's cache (imported by
     # the racing-line helpers) inside the work folder too
     # and the bytecode Python caches for every module it imports
