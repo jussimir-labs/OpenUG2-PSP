@@ -97,8 +97,12 @@ def jdlz(d, expected):
                 count, dist = (a & 31) + 3, (b | ((a & 224) << 3)) + 17
             if dist > len(out) or len(out) + count > expected:
                 raise ValueError('invalid JDLZ backreference')
-            for _ in range(count):
-                out.append(out[-dist])
+            start = len(out) - dist
+            if count <= dist:      # a plain copy; an overlapping one repeats its bytes
+                out += out[start:start + count]
+            else:
+                for _ in range(count):
+                    out.append(out[-dist])
             f2 >>= 1
         else:
             out.append(d[p])
@@ -160,29 +164,55 @@ def huff(d, expected):
                 n -= 1
         defined.add(dat)
         values.append(dat)
-    first, offset, c, idx = {}, {}, 0, 0
+    # Canonical codes: a table of every width-bit prefix -> (symbol, length),
+    # read from a '0'/'1' string (the per-bit reader made this the
+    # converters' slowest loop). Same codes, same output as before.
+    table, c, idx = [None] * (1 << width), 0, 0
     for w in range(1, width + 1):
-        first[w], offset[w] = c, idx
+        for k in range(counts[w]):
+            lo = (c + k) << (width - w)
+            table[lo:lo + (1 << (width - w))] = [(values[idx + k], w)] * (1 << (width - w))
         c = (c + counts[w]) << 1
         idx += counts[w]
+    data = d[16:]
+    nbits = len(data) * 8
+    bits = ''.join(map(BYTE_BITS.__getitem__, data)) + '0' * 32
+    pos = s.pos
+
+    def take(n):
+        nonlocal pos
+        if pos + n > nbits:
+            raise ValueError('truncated Huffman stream')
+        v = int(bits[pos:pos + n], 2) if n else 0
+        pos += n
+        return v
+
+    def var():
+        nonlocal pos
+        n = 2
+        while take(1) == 0:
+            n += 1
+            if n > 24:
+                raise ValueError('invalid Huffman integer')
+        return take(n) + (1 << n) - 4
+
     out = bytearray()
     while len(out) < expected:
-        v = 0
-        for w in range(1, width + 1):
-            v = (v << 1) | s.get(1)
-            if 0 <= v - first[w] < counts[w]:
-                sym = values[offset[w] + v - first[w]]
-                break
-        else:
+        entry = table[int(bits[pos:pos + width], 2)]
+        if entry is None:
             raise ValueError('invalid Huffman code')
+        sym, w = entry
+        if pos + w > nbits:
+            raise ValueError('truncated Huffman stream')
+        pos += w
         if sym != esc:
             out.append(sym)
         else:
-            n = s.var()
+            n = var()
             if n == 0:
-                if s.get(1):
+                if take(1):
                     break
-                out.append(s.get(8))
+                out.append(take(8))
             else:
                 if not out or len(out) + n > expected:
                     raise ValueError('invalid Huffman repeat')
@@ -196,6 +226,9 @@ def huff(d, expected):
             y = (y + x) & 255
             out[i] = y if method & 0xfeff == 0x34fb else x
     return bytes(out)
+
+
+BYTE_BITS = [format(b, '08b') for b in range(256)]
 
 
 def decompress(blob, expected):

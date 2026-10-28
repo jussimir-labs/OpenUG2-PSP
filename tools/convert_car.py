@@ -8,6 +8,7 @@ and float vertices the PSP draws directly.
 """
 import argparse
 import collections
+import functools
 import hashlib
 import json
 import math
@@ -535,17 +536,34 @@ PLATE_MARKER = 0xc805f7e0   # REAR_LICENSE_PLATE (the rear bumpers'; no car has 
 EXHAUST_MARKERS = (0xbcf8a18b, 0xbd7cf15e)   # the exhaust flames, left and right (the rear bumper's): where the PS2 shows the tips
 
 
+@functools.lru_cache(maxsize=4)
+def car_parts(game, car):
+    """A car's parsed GEOMETRY.BIN parts, kept per process: the garage
+    assembles every option of a car from the same geometry."""
+    return tuple(parts(archived(game, f'CARS/{car}/GEOMETRY.BIN'), lambda n: n.startswith(car + '_')))
+
+
+@functools.lru_cache(maxsize=4)
+def car_textures(game, car):
+    """A car's texture sources, kept per process with their decoded textures."""
+    return Textures(game, car)
+
+
+@functools.lru_cache(maxsize=1)
+def global_bun(game):
+    return archived(game, 'GLOBAL/GLOBALB.BUN')
+
+
 def assemble(game, preset, lod, strict=False):
     """strict: a far level of the street's (C, D: CarRenderInfo::Render),
     each part at that level or left out, as the original's, whose parts
     have no model there; the wheels keep their last level, but at D, whose
     body is the whole car alone (its wheels boxes in it)."""
     car = preset['car']
-    data = archived(game, f'CARS/{car}/GEOMETRY.BIN')
-    textures = Textures(game, car)
+    textures = car_textures(game, car)
     paint = hexcolor(preset.get('paint', '2a8a20'))
-    wheels = car_record(archived(game, 'GLOBAL/GLOBALB.BUN'), car)
-    all_parts = list(parts(data, lambda n: n.startswith(car + '_')))
+    wheels = car_record(global_bun(game), car)
+    all_parts = list(car_parts(game, car))
     wheels = widebody_track(all_parts, car, preset.get('widebody'), wheels, bool(preset.get('rims')))
     families = choose_car_parts(all_parts, car, preset)
     # window_tint: the garage's tint level (1..3, the viewer's GARAGE_TINTS),
