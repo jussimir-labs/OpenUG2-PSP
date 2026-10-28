@@ -102,7 +102,7 @@ def write(game, folder=DIST):
     ident, _ = compute(folder)
     p = Path(game) / 'data-id.txt'
     p.unlink(missing_ok=True)
-    p.write_text(ident + '\n')
+    p.write_text(ident + '\n', encoding='utf-8', newline='\n')
     return ident
 
 

@@ -113,7 +113,10 @@ de Windows.
    upload dela.
 4. Acompanhe as etapas e os registros. O resultado só é confirmado quando
    coincide com a referência da mesma fonte e executável. Divergência ou
-   referência ausente produz diagnóstico e preserva os arquivos. Isso
+   referência ausente produz diagnóstico e preserva os arquivos. No
+   Windows e em Macs Intel, alguns filmes, áudios, geometrias e linhas de
+   corrida aparecem como **equivalentes**: mesma estrutura, com bytes
+   arredondados de outro jeito pelo processador x86. Isso é sucesso. Isso
    verifica a identidade dos arquivos; as
    [limitações do beta](LIMITACOES.md) continuam válidas.
 5. Após o sucesso, use **Abrir pasta gerada**. O auxiliar não apaga pastas

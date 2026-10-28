@@ -11,6 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+#include <fcntl.h>
+#include <io.h>
+static void binary_stdio(void) { _setmode(_fileno(stdin), _O_BINARY); _setmode(_fileno(stdout), _O_BINARY); }
+#else
+static void binary_stdio(void) {}
+#endif
 static const int XA1[4]={0,240,460,392},XA2[4]={0,0,-208,-220};
 static uint32_t be32(const unsigned char *p) { return (uint32_t)p[0]<<24|p[1]<<16|p[2]<<8|p[3]; }
 static int decode_xa(const unsigned char *d,int bytes,int samples,int *prev,int16_t *out,int stride) {
@@ -39,6 +46,7 @@ static int decode_xa(const unsigned char *d,int bytes,int samples,int *prev,int1
     return n;
 }
 int main(int argc,char **argv) {
+    binary_stdio();
     if(argc!=3){fprintf(stderr,"uso: eaxa2pcm FILE OFFSET\n");return 2;}
     FILE *f=fopen(argv[1],"rb");if(!f){perror(argv[1]);return 1;}
     long at=strtol(argv[2],NULL,0);

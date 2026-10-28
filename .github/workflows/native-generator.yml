@@ -1,0 +1,90 @@
+name: Native browser generator
+on:
+  workflow_dispatch:
+  push:
+    branches: [jussimir/native-generator]
+permissions:
+  contents: write
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-2022
+            target: windows-x64
+          - runner: macos-15
+            target: macos-arm64
+          - runner: macos-15-intel
+            target: macos-x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: msys2/setup-msys2@v2
+        id: msys2
+        if: runner.os == 'Windows'
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git make tar curl diffutils patch mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja mingw-w64-x86_64-clang perl
+      - name: Cached native tools
+        uses: actions/cache@v4
+        id: tools
+        with:
+          path: native/tools
+          key: native-tools-${{ matrix.target }}-${{ hashFiles('native/build_tools.sh', 'native/lame-4.0-portable.patch', 'native/utf8.manifest') }}
+      - name: Build native tools (Windows)
+        if: runner.os == 'Windows' && steps.tools.outputs.cache-hit != 'true'
+        shell: msys2 {0}
+        run: bash native/build_tools.sh native/tools native/.cache/tools
+      - name: Build native tools (macOS)
+        if: runner.os == 'macOS' && steps.tools.outputs.cache-hit != 'true'
+        run: bash native/build_tools.sh native/tools native/.cache/tools
+      - name: Save compiled native tools
+        if: steps.tools.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: native/tools
+          key: native-tools-${{ matrix.target }}-${{ hashFiles('native/build_tools.sh', 'native/lame-4.0-portable.patch', 'native/utf8.manifest') }}
+      - name: Native Rust tests and release build
+        run: |
+          cargo --config native/.cargo/config.toml test --locked --manifest-path native/Cargo.toml
+          cargo --config native/.cargo/config.toml build --locked --release --manifest-path native/Cargo.toml
+      - name: Package Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
+        run: |
+          # setup-msys2 installs under RUNNER_TEMP, not the image's C:\msys64.
+          $mingw = Join-Path $env:MSYS2_LOCATION "mingw64\bin"
+          $env:PATH = "$mingw;" + $env:PATH
+          $env:CC = Join-Path $mingw "gcc.exe"
+          if (-not (Test-Path $env:CC)) { throw "MinGW gcc not found at $env:CC" }
+          python native/build_bundle.py --output native/dist/NFSU2-Generator-${{ matrix.target }} --tools native/tools --helper native/target/release/nfsu2-generator.exe
+      - name: Package macOS
+        if: runner.os == 'macOS'
+        run: python native/build_bundle.py --output native/dist/NFSU2-Generator-${{ matrix.target }} --tools native/tools --helper native/target/release/nfsu2-generator
+      - name: Test isolated package and archive
+        run: python native/test_bundle.py native/dist/NFSU2-Generator-${{ matrix.target }} --archive
+      - name: Store verified packages in the private draft release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          latest="$(gh api "repos/$GH_REPO/git/ref/heads/jussimir/native-generator" --jq .object.sha)"
+          if [ "$latest" != "$GITHUB_SHA" ]; then
+            echo "A newer revision exists; this build will not replace its packages."
+            exit 0
+          fi
+          cp "native/dist/NFSU2-Generator-${{ matrix.target }}/native-qa.json" "native/dist/native-qa-${{ matrix.target }}.json"
+          gh release upload native-generator-0.1.0-rc21 native/dist/*.zip native/dist/*.sha256 native/dist/native-qa-*.json --clobber

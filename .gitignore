@@ -6,3 +6,13 @@ __pycache__/
 *.pyc
 .DS_Store
 *.iso
+
+# Native distributables and build caches (release assets, never Git objects).
+/native/target/
+/native/dist/
+/native/.cache/
+/runtime/
+/bundle.json
+/nfsu2-generator
+/nfsu2-generator.exe
+/native/tools/

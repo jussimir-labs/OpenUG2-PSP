@@ -1,0 +1,11 @@
+--- a/frontend/parse.c
++++ b/frontend/parse.c
+@@ -403,7 +403,7 @@
+ 
+ #ifdef ID3TAGS_EXTENDED
+ static int
+-set_id3v2tag(lame_global_flags* gfp, TextEncoding enc, int type, unsigned short const* str)
++set_id3v2tag(lame_global_flags* gfp, TextEncoding enc, int type, void const* str)
+ {
+     switch (enc)
+     {

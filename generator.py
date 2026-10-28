@@ -25,6 +25,10 @@ from urllib.parse import urlsplit
 import webbrowser
 
 ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT / 'tools'))
+import native_runtime
+from process_control import WindowsJob, lock_file
+ROOT = native_runtime.local_path(ROOT)
 sys.dont_write_bytecode = True
 
 
@@ -33,6 +37,8 @@ class UserError(Exception):
 
 
 def python_runtime(root=ROOT):
+    if native_runtime.bundled():
+        return sys.executable
     for candidate in (root / '.venv/bin/python', shutil.which('python3.12'),
                       shutil.which('python3.13'), shutil.which('python3'), sys.executable):
         if candidate and Path(candidate).is_file():
@@ -41,10 +47,10 @@ def python_runtime(root=ROOT):
 
 
 def validate_paths(iso, output, root=ROOT):
-    root = root.resolve()
+    root = native_runtime.local_path(root)
     if not isinstance(iso, str) or not isinstance(output, str) or not iso.strip() or not output.strip():
         raise UserError('Choose your ISO and output folder.')
-    disc, out = Path(iso).expanduser().resolve(), Path(output).expanduser().resolve()
+    disc, out = native_runtime.local_path(iso), native_runtime.local_path(output)
     if not disc.is_file() or disc.suffix.lower() != '.iso':
         raise UserError('Choose a complete US Underground 2 .iso file.')
     if out == root or out in root.parents or disc == out or out in disc.parents:
@@ -58,7 +64,7 @@ def validate_paths(iso, output, root=ROOT):
             raise UserError('This folder already contains files. Choose a new folder; nothing will be deleted.')
         if (out / 'PSP').exists():
             raise UserError('This output already contains a PSP folder. Keep it and choose a new output.')
-        if any(p.is_symlink() and p.is_dir() for p in out.rglob('*')):
+        if any((p.is_symlink() or getattr(p, 'is_junction', lambda: False)()) and p.is_dir() for p in out.rglob('*')):
             raise UserError('The output contains a linked folder. Choose a new output to keep external files untouched.')
         if any(out.rglob('SAVEDATA')) or any(out.rglob('*.sav')):
             raise UserError('The output contains saves. Choose another folder; your saves will be preserved.')
@@ -81,6 +87,8 @@ def probe(root=ROOT):
         except Exception as exc:
             problems.append(str(exc))
         def friendly(problem):
+            if native_runtime.bundled():
+                return 'An included converter or library is missing. Extract the complete native download again. Details: ' + problem
             if problem.startswith('faltam módulos do Python:'):
                 return 'Python conversion libraries need setup. Use Prepare this computer.'
             if problem.startswith('falta o cjpegli'):
@@ -109,6 +117,15 @@ def detect_source(iso, requested, root=ROOT):
     return source.name
 
 
+def powershell_output(script):
+    """Use UTF-8 stdout even on Windows profiles with a legacy console code page."""
+    script = '[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); ' + script
+    encoded = base64.b64encode(script.encode('utf-16le')).decode('ascii')
+    executable = str(Path(os.environ.get('SystemRoot', r'C:\Windows')) / 'System32/WindowsPowerShell/v1.0/powershell.exe') if os.name == 'nt' else 'powershell.exe'
+    return subprocess.run([executable, '-NoProfile', '-STA', '-EncodedCommand', encoded],
+                          capture_output=True, text=True, encoding='utf-8')
+
+
 def native_pick(kind):
     """An OS picker avoids copying a multi-GB ISO into a browser upload."""
     folder = kind == 'output'
@@ -124,8 +141,7 @@ def native_pick(kind):
         if not folder:
             script += '$d.Filter="ISO (*.iso)|*.iso"; '
         script += 'if($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK){[Console]::Write($d.' + prop + ')}'
-        encoded = base64.b64encode(script.encode('utf-16le')).decode('ascii')
-        result = subprocess.run(['powershell.exe', '-NoProfile', '-STA', '-EncodedCommand', encoded], capture_output=True, text=True)
+        result = powershell_output(script)
     elif shutil.which('zenity'):
         args = ['zenity', '--file-selection', '--title=NFSU2 PSP']
         if folder:
@@ -160,6 +176,7 @@ class Application:
         self.root, self.lock = root, threading.RLock()
         self.process = None
         self.process_group = None
+        self.windows_job = None
         self.cancelled = threading.Event()
         self.started = None
         self.duration = None
@@ -224,6 +241,11 @@ class Application:
         proc = subprocess.Popen(command, cwd=self.root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                 stdin=subprocess.DEVNULL, text=True, encoding='utf-8', errors='replace',
                                 start_new_session=os.name != 'nt', env=env)
+        if os.name == 'nt':
+            try:
+                self.windows_job = WindowsJob(proc)
+            except BaseException:
+                proc.kill(); proc.wait(); raise
         with self.lock:
             self.process = proc
             self.process_group = proc.pid
@@ -234,8 +256,18 @@ class Application:
                 self.log(line)
             return proc.wait()
         finally:
-            if self.cancelled.is_set():
+            with self.lock:
+                job = self.windows_job
+            if job:
+                try:
+                    job.stop()
+                finally:
+                    job.close()
+                    with self.lock:
+                        self.windows_job = None
+            elif self.cancelled.is_set():
                 self.stop_group(proc.pid)
+            proc.stdout.close()
             with self.lock:
                 self.process = None
                 self.process_group = None
@@ -272,8 +304,8 @@ class Application:
 
     def work(self, action):
         try:
-            if action == 'prepare':
-                self.update(message='Preparing converters. The first setup may take several minutes.')
+            if action == 'prepare' and not native_runtime.bundled():
+                self.update(message='Checking the included runtime and converters.' if native_runtime.bundled() else 'Preparing converters. The first setup may take several minutes.')
                 env = dict(os.environ, NFSU2_SETUP_APPROVED='1', JPEGLI_JOBS='4')
                 code = self.run(['sh', str(self.root / 'setup.sh')], env)
                 if code:
@@ -289,9 +321,9 @@ class Application:
             if not preflight['ready']:
                 for problem in preflight.get('details', preflight['problems']):
                     self.log(problem)
-                raise UserError('Your computer needs setup. Check the requirements below and use Prepare this computer.')
+                raise UserError('The included tools are incomplete. Extract the full native download again.' if native_runtime.bundled() else 'Your computer needs setup. Check the requirements below and use Prepare this computer.')
             if action == 'prepare':
-                self.update(status='idle', message='Converters are ready. Choose your ISO and generate the game.')
+                self.update(status='idle', message='Included converters are ready. Choose your ISO and generate the game.')
                 return
             job = self.state()['job']
             source = detect_source(Path(job['iso']), job['source'], self.root)
@@ -338,10 +370,15 @@ class Application:
 
     def signal_process(self, sig):
         with self.lock:
-            proc, group = self.process, self.process_group
+            proc, group, job = self.process, self.process_group, self.windows_job
         if group:
             try:
-                os.killpg(group, sig) if os.name != 'nt' else proc.terminate()
+                if job:
+                    job.stop()
+                elif os.name != 'nt':
+                    os.killpg(group, sig)
+                else:
+                    proc.terminate()
             except ProcessLookupError:
                 pass
 
@@ -352,6 +389,8 @@ class Application:
         self.update(status='cancelling', message='Stopping safely; wait for the converters to exit…')
         self.signal_process(signal.SIGINT)
         group = self.process_group
+        if os.name == 'nt':
+            return  # TerminateJobObject has already stopped the complete tree.
         def finish():
             for sig in (signal.SIGTERM, signal.SIGKILL):
                 time.sleep(5)
@@ -468,27 +507,27 @@ def main():
     parser.add_argument('--port', type=int, default=0)
     args = parser.parse_args()
     if args.probe:
-        print(json.dumps(probe(), ensure_ascii=False)); return
-    if os.name == 'nt':
-        raise SystemExit('Use Generate-game.bat: the converters run in Windows WSL.')
-    import fcntl
+        result = probe(); print(json.dumps(result, ensure_ascii=False)); return 0 if result['ready'] else 1
     config = ROOT / '.tools'
     config.mkdir(exist_ok=True)
-    lease = (config / 'browser-generator.lock').open('a+')
-    os.chmod(lease.name, 0o600)
+    lease = (config / 'browser-generator.lock').open('a+b')
+    if os.name != 'nt':
+        os.chmod(lease.name, 0o600)
     try:
-        fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        lock_file(lease)
     except BlockingIOError:
-        lease.seek(0)
+        lease.seek(1)  # Byte zero is locked; Windows byte-range locks are mandatory.
         previous = json.loads(lease.read())
         if not args.no_browser:
             open_browser(previous['url'])
-        print('The generator is already open on this computer.'); return
+        print('NFSU2_GENERATOR_URL=' + previous['url'], flush=True)
+        print('The generator is already open on this computer.'); return 0
     token = secrets.token_hex(32)
     app = Application()
     server = ThreadingHTTPServer(('127.0.0.1', args.port), handler_for(app, token))
     url = 'http://127.0.0.1:' + str(server.server_port) + '/#token=' + token
-    lease.seek(0); lease.truncate(); lease.write(json.dumps(dict(url=url, pid=os.getpid()))); lease.flush()
+    lease.seek(0); lease.truncate(); lease.write(b'\0' + json.dumps(dict(url=url, pid=os.getpid())).encode('utf-8')); lease.flush()
+    print('NFSU2_GENERATOR_URL=' + url, flush=True)
     print('NFSU2 PSP — local generator opened in your browser. Keep this window open during conversion.', flush=True)
     if not args.no_browser:
         open_browser(url)
@@ -504,4 +543,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

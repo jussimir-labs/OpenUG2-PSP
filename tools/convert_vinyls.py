@@ -106,7 +106,8 @@ def vinyl(design, mask, colours):
 
 
 def convert_car(game, out, car, items):
-    os.nice(15)
+    if hasattr(os, 'nice'):   # POSIX only; Windows keeps the default priority
+        os.nice(15)
     store, index = cc.vinyl_index(game, car)
     rows, blobs, at = [], [], 0
     for name, group, colours, label in items:

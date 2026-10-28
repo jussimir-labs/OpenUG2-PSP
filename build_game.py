@@ -27,6 +27,8 @@ HERE = Path(__file__).resolve().parent
 sys.dont_write_bytecode = True   # (nothing written beside the tool: only in the output folder)
 sys.path.insert(0, str(HERE))
 from sources import SOURCES, SourceError  # noqa: E402
+sys.path.insert(0, str(HERE / 'tools'))
+import native_runtime
 
 EBOOT = HERE / 'eboot/EBOOT.PBP'
 RELEASE = HERE / 'eboot/release.json'
@@ -159,7 +161,7 @@ def sha256(path, label=None):
 
 
 def find_cjpegli(explicit):
-    for cand in [explicit, os.environ.get('NFSU2_CJPEGLI'), HERE / '.tools/jpegli/build/tools/cjpegli',
+    for cand in [native_runtime.binary('cjpegli'), explicit, os.environ.get('NFSU2_CJPEGLI'), HERE / '.tools/jpegli/build/tools/cjpegli',
                  HERE / '.tools/jpegli/build/tools/cjpegli.exe', shutil.which('cjpegli')]:
         if cand and Path(cand).is_file():
             return Path(cand).resolve()
@@ -175,7 +177,7 @@ def recipe_problems():
     # New source-data producers are stdlib-only; their canonical tables and
     # standalone archive reader must be present before any expensive stage.
     for name in ('export_physics.py', 'export_road.py', 'source_data.py',
-                 'nitro_constants.json', 'road_constants.json'):
+                 'nitro_constants.json', 'road_constants.json', 'native_runtime.py', 'process_control.py'):
         if not (HERE / 'tools' / name).is_file():
             problems.append(f'fonte da física original ausente: tools/{name}')
     if not (HERE / 'tools/nos_bank.py').is_file():
@@ -201,10 +203,16 @@ def preflight(args):
         problems.append(f'faltam módulos do Python: {", ".join(missing)} (rode o ./setup.sh, que os instala em .venv, e use '
                         f'o Python de lá: .venv/bin/python build_game.py).')
     for tool in ('ffmpeg', 'lame'):
-        if not shutil.which(tool):
+        if not native_runtime.binary(tool) and not shutil.which(tool):
             problems.append(f'falta o programa {tool} (macOS: brew install {tool}; Linux: apt install {tool}).')
-    if not shutil.which('cc'):
+    if not native_runtime.bundled() and not shutil.which('cc'):
         problems.append('falta um compilador C chamado cc (macOS: xcode-select --install; Linux: apt install build-essential).')
+    if native_runtime.bundled():
+        for tool in native_runtime.NAMES:
+            try:
+                native_runtime.binary(tool)
+            except RuntimeError as exc:
+                problems.append(str(exc))
     cjpegli = None
     if not args.sem_filmes:
         cjpegli = find_cjpegli(args.cjpegli)
@@ -233,6 +241,9 @@ def build_identity(digest, source, args, release):
             if path.is_file() and '__pycache__' not in path.parts and path.name != '.DS_Store':
                 inputs[path.relative_to(HERE).as_posix()] = sha256(path)
     inputs['build_game.py'] = sha256(Path(__file__))
+    if native_runtime.bundled():
+        # A resumed output must use the exact included binaries/libraries too.
+        inputs['native-bundle.json'] = sha256(Path(os.environ['NFSU2_BUNDLE_ROOT']) / 'bundle.json')
     return {'schema': 2, 'iso_sha256': digest, 'source': source.name,
             'candidate': release['candidate'], 'eboot_sha256': release['eboot_sha256'],
             'movies': not args.sem_filmes, 'jobs': getattr(args, 'jobs', 4),
@@ -302,6 +313,12 @@ def step_env(work, source):
     env.pop('NFSU2_DIST', None)
     env['PYTHONUNBUFFERED'] = '1'
     env['NFSU2_SOURCE'] = env['NFSU2_PLATFORM'] = source.name
+    # The pad icons come from the PS2 disc (tools/ps2_buttons.py): the
+    # extracted one when it is the source, else the port's own drawings.
+    if source.name == 'ps2':
+        env['NFSU2_PS2_GAME'] = str(work / 'game' / 'ps2' / 'NFSUNDER')
+    else:
+        env.pop('NFSU2_PS2_GAME', None)
     # the converters' temporary files and matplotlib's cache (imported by
     # the racing-line helpers) inside the work folder too
     # and the bytecode Python caches for every module it imports
@@ -371,17 +388,27 @@ def package(work, out, logs, env):
 
 def compare(game, manifest_path):
     """The package against the reference build's hashes (manifests/):
-    verifies output identity; gameplay qualification is separate.
-    Returns (same, differ, missing, extra)."""
-    ref = json.loads(manifest_path.read_text())['files']
+    verifies output identity; gameplay qualification is separate. A file
+    whose bytes differ only by another CPU's rounding (tools/arch_tolerance.py:
+    same kind, shape and size as the reference's) is equivalent.
+    Returns (same, equivalent, differ, missing, extra)."""
+    import arch_tolerance
+    manifest = json.loads(manifest_path.read_text())
+    ref, records = manifest['files'], manifest.get('equivalence', {})
     have = {p.name: p for p in game.iterdir() if p.is_file()}
-    same, differ = [], []
+    same, equivalent, differ = [], [], []
     for name, digest in sorted(ref.items()):
-        if name in have:
-            (same if sha256(have[name]) == digest else differ).append(name)
+        if name not in have:
+            continue
+        if sha256(have[name]) == digest:
+            same.append(name)
+        elif arch_tolerance.equivalent(name, have[name].read_bytes(), records.get(name)):
+            equivalent.append(name)
+        else:
+            differ.append(name)
     missing = sorted(set(ref) - set(have))
     extra = sorted(set(have) - set(ref))
-    return same, differ, missing, extra
+    return same, equivalent, differ, missing, extra
 
 
 def main():
@@ -506,14 +533,20 @@ def main():
                   'quality_approval': release.get('quality_approval', 'not-assessed'),
                   'known_issues': release.get('known_issues', [])}
         if manifest.exists():
-            same, differ, missing, extra = compare(game, manifest)
-            report.update(same=len(same), differ=differ, missing=missing, extra=extra,
-                          verification='mismatch' if differ or missing or extra else 'exact-reference',
+            same, equivalent, differ, missing, extra = compare(game, manifest)
+            report.update(same=len(same), equivalent=equivalent, differ=differ, missing=missing, extra=extra,
+                          verification='mismatch' if differ or missing or extra else
+                          'equivalent-reference' if equivalent else 'exact-reference',
                           approved=not (differ or missing or extra))
-            # `approved` is retained for existing report readers: file identity
-            # only. It never overrides known issues or the release's quality status.
+            # `approved` is retained for existing report readers: file identity,
+            # or equivalence by another CPU's rounding. It never overrides known
+            # issues or the release's quality status.
             report['reference_verified'] = report['approved']
-            say(f'  {len(same)} de {len(same) + len(differ) + len(missing)} arquivos idênticos à build de referência.')
+            total = len(same) + len(equivalent) + len(differ) + len(missing)
+            say(f'  {len(same)} de {total} arquivos idênticos à build de referência.')
+            if equivalent:
+                say(f'  {len(equivalent)} equivalentes: mesma estrutura, bytes arredondados de outro jeito por este processador '
+                    f'(filmes, áudio, geometria ou linhas de corrida; normal fora de um Mac Apple Silicon).')
             if differ or missing or extra:
                 say(f'  diferentes: {", ".join(differ) or "nenhum"}; faltando: {", ".join(missing) or "nenhum"}; '
                     f'a mais: {", ".join(extra) or "nenhum"}')

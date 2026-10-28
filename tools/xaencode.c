@@ -4,8 +4,16 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
+#ifdef _WIN32
+#include <fcntl.h>
+#include <io.h>
+static void binary_stdio(void) { _setmode(_fileno(stdin), _O_BINARY); _setmode(_fileno(stdout), _O_BINARY); }
+#else
+static void binary_stdio(void) {}
+#endif
 static int clip(int n,int lo,int hi){return n<lo?lo:n>hi?hi:n;}
 int main(void) {
+ binary_stdio();
  const int c1[4]={0,240,460,392},c2[4]={0,0,-208,-220};
  int p1=0,p2=0,x[28],nib[28],bestn[28];
  for(;;) {
