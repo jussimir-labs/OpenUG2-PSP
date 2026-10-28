@@ -22,9 +22,9 @@ and notarization are outside this implementation. Normal OS trust prompts can st
 
 ## Maintainer build
 
-GitHub Actions builds and tests on Windows x64 and both Mac architectures. Build tools
-are needed **only on the maintainer/CI machine**: Rust, Python, uv, C/C++ compiler, CMake,
-Ninja, Make, patch, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest tool.
+Packages are built and tested locally on each platform (Windows x64, Apple Silicon and Intel
+Macs); no hosted CI is used. Build tools are needed **only on the maintainer machine**: Rust,
+Python, uv, C/C++ compiler, CMake, Ninja, Make, patch, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest tool.
 
 ```sh
 bash native/build_tools.sh native/tools native/.cache/tools
@@ -39,7 +39,7 @@ Use the platform name and `.exe` helper on Windows. Builds pin CPython archives 
 Python library versions, FFmpeg/LAME source archives by SHA-256 and jpegli by Git commit.
 The builder preserves third-party licenses and corresponding native-tool sources, audits
 library dependencies, and records file hashes in `bundle.json`. Output ZIPs and SHA-256 files
-are release assets. Never put game ISOs, game data, access keys or private sign-up data in CI.
+are release assets. Never put game ISOs, game data, access keys or private sign-up data in a release.
 
 ## Validation scope
 

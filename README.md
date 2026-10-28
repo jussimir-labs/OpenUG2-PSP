@@ -4,8 +4,8 @@ Welcome to the first closed beta of the native PSP port of *Need for Speed Under
 Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
-and follow the steps below. Native packages are built by the
-[Native browser generator workflow](https://github.com/jussimir/pessoal-nfsu2-psp-beta/actions/workflows/native-generator.yml).
+and follow the steps below. The packages are on the
+[native generator release](https://github.com/jussimir/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21-native).
 Windows x64, Apple Silicon and Intel Mac use separate downloads. The original
 [RC21 source kit](https://github.com/jussimir/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21)
 remains available with its older setup requirements.
