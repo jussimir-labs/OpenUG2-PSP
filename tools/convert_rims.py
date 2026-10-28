@@ -88,7 +88,8 @@ def rim_pack(game, textures, lib, family, lod, spin=None):
 
 def brand_rims(game, brand):
     """[(name, style, inches, tyre, detailed pack, street pack)] of a brand."""
-    os.nice(15)
+    if hasattr(os, 'nice'):   # POSIX only; Windows keeps the default priority
+        os.nice(15)
     textures = cc.Textures(game, '350Z')   # the rims' art is the shared wheels' (any car's sources hold it)
     lib, spins = {}, {}
     for p in parts(archived(game, f'CARS/WHEELS/GEOMETRY_{brand}.BIN')):
