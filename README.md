@@ -35,7 +35,7 @@ Your ISO stays on your computer.
   with the matching Apple Silicon or Intel package. Windows ARM and Linux native packages
   are not included in this release. The original source kit remains available for Linux.
   **You do not need to install Python, WSL, Homebrew, a compiler, or conversion libraries.**
-  Reference conversion times were about 1.5 hours for Xbox and 3.5 hours for PS2; your computer may differ.
+  A complete PS2 conversion took about 3 hours on a Steam Deck running Windows; a recent Mac is usually faster.
 
 ## 1. Open the generator
 
