@@ -1,4 +1,5 @@
-"""NFSU2 Xbox data formats. Python stdlib only.
+"""NFSU2 Xbox data formats. Python stdlib only; numpy, when installed,
+gathers decoded texels faster (gather()).
 
 Format research: OpenUG2/src/nfsu2.h (public domain). Xbox layouts were
 verified against this project's USA disc; do not silently treat PC as Xbox.
@@ -7,6 +8,7 @@ The PS2 disc (SLUS_210.65) shares the container and most chunks; its own
 layouts (CLUT textures, VIF meshes) are read when PLATFORM is 'ps2', which
 tools/n2source.py sets from the disc a converter was given.
 """
+import functools
 import math
 import os
 import re
@@ -300,15 +302,38 @@ def morton_tables(w, h):
     return [offset(x, 0) for x in range(w)], [offset(0, y) for y in range(h)]
 
 
-def unswizzle(data, w, h, bpp):
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
+
+def gather(data, order, size=1):
+    """bytes: data's size-byte item order[i] for each i (order: a tuple of
+    item indices, or a numpy array of them)."""
+    if numpy is not None:
+        src = numpy.frombuffer(bytes(data[:len(data) // size * size]), numpy.uint8).reshape(-1, size)
+        return src[order].tobytes()
+    if size == 1:
+        return bytes(map(bytes(data).__getitem__, order))
+    items = [bytes(data[i:i + size]) for i in range(0, len(data) - size + 1, size)]
+    return b''.join(map(items.__getitem__, order))
+
+
+def index_table(values):
+    """A gather() order from a list of indices."""
+    return numpy.array(values, numpy.intp) if numpy is not None else tuple(values)
+
+
+@functools.lru_cache(maxsize=32)
+def morton_order(w, h):
+    """The swizzled texel of each row-major texel."""
     xs, ys = morton_tables(w, h)
-    out = bytearray(w * h * bpp)
-    for y in range(h):
-        row = ys[y]
-        for x in range(w):
-            q = (xs[x] | row) * bpp
-            out[(y*w+x)*bpp:(y*w+x+1)*bpp] = data[q:q+bpp]
-    return out
+    return index_table([xs[x] | ys[y] for y in range(h) for x in range(w)])
+
+
+def unswizzle(data, w, h, bpp):
+    return bytearray(gather(data[:w * h * bpp], morton_order(w, h), bpp))
 
 
 P8_FORMATS = (0x08, 0x80, 0x81)
@@ -323,11 +348,8 @@ class Texture:
     def rgba(self):
         if self.palette is None:
             return self.pixels
-        out = bytearray(self.w * self.h * 4)
-        pal = self.palette
-        for i, c in enumerate(self.pixels):
-            out[i*4:i*4+4] = pal[c*4:c*4+4]
-        return out
+        pal = bytes(self.palette[:1024]).ljust(1024, b'\0')
+        return bytearray(gather(pal, index_table(self.pixels) if numpy is None else numpy.frombuffer(bytes(self.pixels), numpy.uint8), 4))
 
 
 def decode_texture(name, key, info, image, palette_bytes):
@@ -363,15 +385,20 @@ def ps2_unswizzle8(idx, w, h):
     and every other column pair shifted by 4. Returns row-major indices."""
     if w < 16 or h < 4:
         return bytes(idx[:w*h])
-    out = bytearray(w * h)
+    return gather(idx[:w*h], ps2_order8(w, h))
+
+
+@functools.lru_cache(maxsize=32)
+def ps2_order8(w, h):
+    """ps2_unswizzle8's source byte of each row-major texel."""
+    order = []
     for y in range(h):
         block_row = (y & ~0xf) * w
         shift = (((y + 2) >> 2) & 1) * 4
         col = ((((y & ~3) >> 1) + (y & 1)) & 7) * w * 2
         byte = (y >> 1) & 1
-        for x in range(w):
-            out[y*w + x] = idx[block_row + (x & ~0xf) * 2 + col + ((x + shift) & 7) * 4 + byte + ((x >> 2) & 2)]
-    return bytes(out)
+        order += [block_row + (x & ~0xf) * 2 + col + ((x + shift) & 7) * 4 + byte + ((x >> 2) & 2) for x in range(w)]
+    return index_table(order)
 
 
 PS2_CLUT8 = [(i & ~0x18) | ((i & 8) << 1) | ((i & 16) >> 1) for i in range(256)]
