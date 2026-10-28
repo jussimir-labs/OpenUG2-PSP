@@ -398,6 +398,10 @@
       "size": 2133612,
       "shape": "ddc4be81beda493bb2224e9cdc004c6b7591518a2891c570f32fd34639aba582"
     },
+    "magazines.n2mg": {
+      "size": 9985560,
+      "shape": "1ae5f22978ec602fb73dccbb853dc11afae2403895f7dc344b4ac6fc4eef2d89"
+    },
     "movie-DRAGTUT.n2mv": {
       "size": 6854756,
       "shape": "1b8642da176f1c446e5783247598d7374b0da165d8679d00a9c8bbe933fada21"
@@ -1527,6 +1531,122 @@
     "track-L4RG.n2cy": {
       "size": 85211168,
       "shape": "f8465865d4773fc8b1090df7eb5794816590cdb63acf086e0995d3e9c23b6cc7"
+    },
+    "vinyls-240SX.n2vc": {
+      "size": 1729798,
+      "shape": "fdf9376e3e9a329e082a2684037eddfb4c984c705f63a5d773431b3b1342ef44"
+    },
+    "vinyls-3000GT.n2vc": {
+      "size": 1602412,
+      "shape": "f6bc3dd5135e211589744de02c0c4f1c8f14cae2ddc90826641b9c6dc5d1ceaf"
+    },
+    "vinyls-350Z.n2vc": {
+      "size": 2001902,
+      "shape": "aca459d82dcf823015a4c25c7c6757bb44f2b29ea66e6320380cbacefce937ab"
+    },
+    "vinyls-A3.n2vc": {
+      "size": 1709326,
+      "shape": "44f8bf9be0d0760c441a0a8784d1236e3c52b32b5155bd090d8d749ec9e45c23"
+    },
+    "vinyls-CELICA.n2vc": {
+      "size": 1874901,
+      "shape": "f6bc3dd5135e211589744de02c0c4f1c8f14cae2ddc90826641b9c6dc5d1ceaf"
+    },
+    "vinyls-CIVIC.n2vc": {
+      "size": 1843277,
+      "shape": "fdf9376e3e9a329e082a2684037eddfb4c984c705f63a5d773431b3b1342ef44"
+    },
+    "vinyls-COROLLA.n2vc": {
+      "size": 1765681,
+      "shape": "eda77cee1cc79ff381449b0cbce79f4bbd3195c6b967c72343cfd805a2ed7e2f"
+    },
+    "vinyls-ECLIPSE.n2vc": {
+      "size": 1782119,
+      "shape": "eda77cee1cc79ff381449b0cbce79f4bbd3195c6b967c72343cfd805a2ed7e2f"
+    },
+    "vinyls-ESCALADE.n2vc": {
+      "size": 1654404,
+      "shape": "432d44884f54c52d7e0e940d355f1f2ecf9c4fcbe3de55a6c3fb005b447efbdc"
+    },
+    "vinyls-FOCUS.n2vc": {
+      "size": 1797845,
+      "shape": "fdf9376e3e9a329e082a2684037eddfb4c984c705f63a5d773431b3b1342ef44"
+    },
+    "vinyls-G35.n2vc": {
+      "size": 1891001,
+      "shape": "0536f3165df34c41357fed47c169247f53fa83a565657043cec865eb22bd768c"
+    },
+    "vinyls-GOLF.n2vc": {
+      "size": 1876855,
+      "shape": "aca459d82dcf823015a4c25c7c6757bb44f2b29ea66e6320380cbacefce937ab"
+    },
+    "vinyls-GTO.n2vc": {
+      "size": 1759519,
+      "shape": "0536f3165df34c41357fed47c169247f53fa83a565657043cec865eb22bd768c"
+    },
+    "vinyls-HUMMER.n2vc": {
+      "size": 1755141,
+      "shape": "f6bc3dd5135e211589744de02c0c4f1c8f14cae2ddc90826641b9c6dc5d1ceaf"
+    },
+    "vinyls-IMPREZAWRX.n2vc": {
+      "size": 1569616,
+      "shape": "05832212345aadbdcb178db62c6b5fff49586f7f3e6ce72e5cff190deb5a1322"
+    },
+    "vinyls-IS300.n2vc": {
+      "size": 1847032,
+      "shape": "fdf9376e3e9a329e082a2684037eddfb4c984c705f63a5d773431b3b1342ef44"
+    },
+    "vinyls-LANCEREVO8.n2vc": {
+      "size": 1572814,
+      "shape": "05832212345aadbdcb178db62c6b5fff49586f7f3e6ce72e5cff190deb5a1322"
+    },
+    "vinyls-MIATA.n2vc": {
+      "size": 1819872,
+      "shape": "fdf9376e3e9a329e082a2684037eddfb4c984c705f63a5d773431b3b1342ef44"
+    },
+    "vinyls-MUSTANGGT.n2vc": {
+      "size": 1601049,
+      "shape": "a53ab6bd5ba5f269a6387904caefef3fcb495f56f3f7394627666a198a880f8b"
+    },
+    "vinyls-NAVIGATOR.n2vc": {
+      "size": 1339137,
+      "shape": "a53ab6bd5ba5f269a6387904caefef3fcb495f56f3f7394627666a198a880f8b"
+    },
+    "vinyls-PEUGOT.n2vc": {
+      "size": 1890352,
+      "shape": "f6bc3dd5135e211589744de02c0c4f1c8f14cae2ddc90826641b9c6dc5d1ceaf"
+    },
+    "vinyls-RSX.n2vc": {
+      "size": 1909765,
+      "shape": "0536f3165df34c41357fed47c169247f53fa83a565657043cec865eb22bd768c"
+    },
+    "vinyls-RX7.n2vc": {
+      "size": 1787912,
+      "shape": "0536f3165df34c41357fed47c169247f53fa83a565657043cec865eb22bd768c"
+    },
+    "vinyls-RX8.n2vc": {
+      "size": 1830030,
+      "shape": "0536f3165df34c41357fed47c169247f53fa83a565657043cec865eb22bd768c"
+    },
+    "vinyls-SENTRA.n2vc": {
+      "size": 1793632,
+      "shape": "f6bc3dd5135e211589744de02c0c4f1c8f14cae2ddc90826641b9c6dc5d1ceaf"
+    },
+    "vinyls-SKYLINE.n2vc": {
+      "size": 1795915,
+      "shape": "eda77cee1cc79ff381449b0cbce79f4bbd3195c6b967c72343cfd805a2ed7e2f"
+    },
+    "vinyls-SUPRA.n2vc": {
+      "size": 1806118,
+      "shape": "fdf9376e3e9a329e082a2684037eddfb4c984c705f63a5d773431b3b1342ef44"
+    },
+    "vinyls-TIBURON.n2vc": {
+      "size": 1796804,
+      "shape": "eda77cee1cc79ff381449b0cbce79f4bbd3195c6b967c72343cfd805a2ed7e2f"
+    },
+    "vinyls-TT.n2vc": {
+      "size": 1818707,
+      "shape": "44f8bf9be0d0760c441a0a8784d1236e3c52b32b5155bd090d8d749ec9e45c23"
     }
   },
   "equivalence_from_x86": [

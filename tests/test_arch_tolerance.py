@@ -48,6 +48,21 @@ class EquivalenceTests(unittest.TestCase):
         self.assertTrue(t.equivalent("music.mp3", b"b" * 100, ref))
         self.assertFalse(t.equivalent("music.mp3", b"b" * 101, ref))
 
+    def test_vinyl_catalogue_rows_must_match(self):
+        def vinyls(name=b"STRIPE", blob=b"z" * 500):
+            row = struct.pack("<24s24s2BH2I", name, b"", 2, 1, 0, 72, len(blob))
+            return struct.pack("<4s2I", b"N2VC", 1, 1) + row + blob
+        ref = t.describe("vinyls-RX8.n2vc", vinyls())
+        self.assertTrue(t.equivalent("vinyls-RX8.n2vc", vinyls(blob=b"y" * 500), ref))
+        self.assertFalse(t.equivalent("vinyls-RX8.n2vc", vinyls(name=b"STRIPF"), ref))
+
+    def test_magazine_table_must_match(self):
+        def mags(offset=40, image=b"i" * 64):
+            return struct.pack("<4sII", b"N2MG", 1, 1) + b"MAG1\0\0\0\0" + struct.pack("<B3x", 1) + struct.pack("<B3xI", 0, offset) + image
+        ref = t.describe("magazines.n2mg", mags())
+        self.assertTrue(t.equivalent("magazines.n2mg", mags(image=b"j" * 64), ref))
+        self.assertFalse(t.equivalent("magazines.n2mg", mags(offset=44), ref))
+
     def test_other_kinds_must_be_identical(self):
         self.assertIsNone(t.kind("races.n2rc"))
         self.assertFalse(t.equivalent("races.n2rc", b"x", {"size": 1, "shape": None}))

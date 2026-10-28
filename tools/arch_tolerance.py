@@ -6,7 +6,9 @@ own SIMD paths on x86-64 and ARM64, so a few outputs round differently:
 the movies (a few JPEG bytes, 0.005% of a movie's size), the music and
 speech MP3s (re-encoded from PCM a least significant bit apart), the
 geometry (.n2cy, a byte or two where a float lands on the other side of a
-decision) and the racing lines (a float's last bit, 0.00024 m). The
+decision) and the racing lines (a float's last bit, 0.00024 m). Windows'
+Pillow (MSVC) also quantizes the vinyls' and magazines' palettes a little
+differently (0.006% of a vinyl's pixels on average, most identical). The
 reference manifest keeps, for those files, their shape: the structural
 fields their readers depend on (frame and sample counts, picture size,
 grids, texture keys, line ids and point counts) and their size. A file
@@ -25,7 +27,8 @@ import struct
 import sys
 
 # The share of the size a file of each kind may differ by (0: exact).
-TOLERANCE = {'.n2mv': 0.001, '.n2cy': 0.0005, '.n2rl': 0.0, '.mp3': 0.0, '.big': 0.002}
+TOLERANCE = {'.n2mv': 0.001, '.n2cy': 0.0005, '.n2rl': 0.0, '.mp3': 0.0, '.big': 0.002,
+             '.n2vc': 0.002, '.n2mg': 0.0}
 PACK = 'pack.n2pk'
 
 
@@ -51,6 +54,14 @@ def shape(name, data):
     if k == '.n2rl':    # every line's id, circuit flag and point count
         count = struct.unpack_from('<I', data, 8)[0]
         return _digest([list(struct.unpack_from('<2H2I', data, 12 + 12 * i)[:3]) for i in range(count)])
+    if k == '.n2vc':    # the catalogue's rows without their offsets and sizes
+        count = struct.unpack_from('<I', data, 8)[0]
+        return _digest([data[12 + 60 * i:12 + 60 * i + 52].hex() for i in range(count)])
+    if k == '.n2mg':    # header and table (fixed-size images: their offsets too)
+        count, at = struct.unpack_from('<I', data, 8)[0], 12
+        for _ in range(count):
+            at += 12 + 8 * data[at + 8]
+        return _digest([data[:at].hex()])
     if k in ('.mp3', '.big'):
         return _digest([k])
     return None
