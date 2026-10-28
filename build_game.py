@@ -388,17 +388,27 @@ def package(work, out, logs, env):
 
 def compare(game, manifest_path):
     """The package against the reference build's hashes (manifests/):
-    verifies output identity; gameplay qualification is separate.
-    Returns (same, differ, missing, extra)."""
-    ref = json.loads(manifest_path.read_text())['files']
+    verifies output identity; gameplay qualification is separate. A file
+    whose bytes differ only by another CPU's rounding (tools/arch_tolerance.py:
+    same kind, shape and size as the reference's) is equivalent.
+    Returns (same, equivalent, differ, missing, extra)."""
+    import arch_tolerance
+    manifest = json.loads(manifest_path.read_text())
+    ref, records = manifest['files'], manifest.get('equivalence', {})
     have = {p.name: p for p in game.iterdir() if p.is_file()}
-    same, differ = [], []
+    same, equivalent, differ = [], [], []
     for name, digest in sorted(ref.items()):
-        if name in have:
-            (same if sha256(have[name]) == digest else differ).append(name)
+        if name not in have:
+            continue
+        if sha256(have[name]) == digest:
+            same.append(name)
+        elif arch_tolerance.equivalent(name, have[name].read_bytes(), records.get(name)):
+            equivalent.append(name)
+        else:
+            differ.append(name)
     missing = sorted(set(ref) - set(have))
     extra = sorted(set(have) - set(ref))
-    return same, differ, missing, extra
+    return same, equivalent, differ, missing, extra
 
 
 def main():
@@ -523,14 +533,20 @@ def main():
                   'quality_approval': release.get('quality_approval', 'not-assessed'),
                   'known_issues': release.get('known_issues', [])}
         if manifest.exists():
-            same, differ, missing, extra = compare(game, manifest)
-            report.update(same=len(same), differ=differ, missing=missing, extra=extra,
-                          verification='mismatch' if differ or missing or extra else 'exact-reference',
+            same, equivalent, differ, missing, extra = compare(game, manifest)
+            report.update(same=len(same), equivalent=equivalent, differ=differ, missing=missing, extra=extra,
+                          verification='mismatch' if differ or missing or extra else
+                          'equivalent-reference' if equivalent else 'exact-reference',
                           approved=not (differ or missing or extra))
-            # `approved` is retained for existing report readers: file identity
-            # only. It never overrides known issues or the release's quality status.
+            # `approved` is retained for existing report readers: file identity,
+            # or equivalence by another CPU's rounding. It never overrides known
+            # issues or the release's quality status.
             report['reference_verified'] = report['approved']
-            say(f'  {len(same)} de {len(same) + len(differ) + len(missing)} arquivos idênticos à build de referência.')
+            total = len(same) + len(equivalent) + len(differ) + len(missing)
+            say(f'  {len(same)} de {total} arquivos idênticos à build de referência.')
+            if equivalent:
+                say(f'  {len(equivalent)} equivalentes: mesma estrutura, bytes arredondados de outro jeito por este processador '
+                    f'(filmes, áudio, geometria ou linhas de corrida; normal fora de um Mac Apple Silicon).')
             if differ or missing or extra:
                 say(f'  diferentes: {", ".join(differ) or "nenhum"}; faltando: {", ".join(missing) or "nenhum"}; '
                     f'a mais: {", ".join(extra) or "nenhum"}')

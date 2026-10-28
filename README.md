@@ -67,6 +67,9 @@ Packages are not commercially signed or Apple-notarized, so the first launch nee
 3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
    assets including all 28 movies, and compares the result against the RC21 reference.
 4. Wait for successful identity verification. The game is in `<output>/PSP/GAME/NFSU2VIEW`.
+   On Windows and Intel Macs some movies, audio, geometry and racing-line files are reported as
+   **equivalent**: the same structure, with bytes rounded differently by an x86 processor. That
+   is a successful result.
    A failed or mismatching result is diagnostic output; attach `relatorio.json` and the failing
    step log when asking for help. Do not install an output that failed verification.
 5. Click **Open generated folder** when complete. The helper does not install the game on your PSP.
