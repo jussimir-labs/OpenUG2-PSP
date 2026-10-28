@@ -36,7 +36,14 @@
       "files": 162,
       "pack_entries": 753,
       "pack_sha256": "33c565857ea3cadf0cb28812ed83f11ad9f8601e9eac5a65ee72d85aac21b2b2",
-      "physics_sha256": "1d2eca7cffcd995cf5bd12ee9bf761f99d9867dfb5f9d285dc859de81b6f0cb4"
+      "physics_sha256": "1d2eca7cffcd995cf5bd12ee9bf761f99d9867dfb5f9d285dc859de81b6f0cb4",
+      "native_generator": {
+        "after_data_id": "fae2",
+        "files": 162,
+        "pack_entries": 753,
+        "pack_sha256": "80ae8f362a0aad481263e366d0cd6740720d19a943d638f299f0cef502a6c4e6",
+        "change": "Own drawn button icons in pack.n2pk and parts.n2ui; every other file and the EBOOT are identical to the qualified package."
+      }
     },
     "ps2": {
       "after_data_id": "804e",
