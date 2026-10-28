@@ -33,6 +33,11 @@ def _small(path, limit):
 
 
 def _token(info):
+    # Windows' fstat() gives the metadata change time as st_ctime and stat()
+    # the creation time, so an unchanged file would differ: there, the
+    # identity, size and write time decide.
+    if os.name=='nt':
+        return info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns
     return info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,info.st_ctime_ns
 
 
