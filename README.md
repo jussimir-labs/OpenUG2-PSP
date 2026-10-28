@@ -5,9 +5,9 @@ Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[native generator release](https://github.com/jussimir/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21-native).
+[native generator release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21-native).
 Windows x64, Apple Silicon and Intel Mac use separate downloads. The original
-[RC21 source kit](https://github.com/jussimir/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21)
+[RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21)
 remains available with its older setup requirements.
 Please keep this beta and its generated files within the selected test group.
 
@@ -108,7 +108,7 @@ Follow the [first-session checklist](docs/TESTING.md). Leave **Stability Control
 the On option does not affect this executable. Keep the FPS/build overlays visible in evidence.
 This is an unfinished beta, with known gameplay, visual, audio and performance limitations.
 
-Report one problem per [GitHub issue](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
+Report one problem per [GitHub issue](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
 Include **Closed Beta 1 — RC21**, device/firmware, game source, car/mode/track, steps, expected
 and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
 technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.

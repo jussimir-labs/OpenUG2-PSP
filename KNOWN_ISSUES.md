@@ -37,15 +37,15 @@ all-device compatibility, PSP-1000 support or stable 30 fps throughout the game.
 Please include the device, source, car, mode/track and exact steps. Fixes in code do not
 automatically close a person's observation.
 
-- [EA TRAX badge/cap (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1):
+- [EA TRAX badge/cap (#1)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/1):
   order, proportions and later presentation work are included; please confirm while playing.
-- [Cuts/clicks during Drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2):
+- [Cuts/clicks during Drift (#2)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/2):
   bank lifetime and loop corrections are included; the reported audible symptom still needs listening.
-- [Loop during pause (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3):
+- [Loop during pause (#3)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/3):
   pause/environment cleanup and limiter changes are included; please identify the sound and steps.
-- [Braking sound (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4):
+- [Braking sound (#4)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/4):
   braking inputs and rival emitters have fixes; target listening across handling paths remains necessary.
-- [Music after Drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5):
+- [Music after Drift (#5)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/5):
   report the exact event/menu transition. Drift/Drag keep their original ambience policy.
 
 Master Volume remains the port's final-output policy; complete original mix parity is not established.

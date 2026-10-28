@@ -4,9 +4,9 @@
 
 **RC18 é um rascunho local com testes limitados de sponsor/frio e Focus/Rachel concluídos, aguardando empacotamento final pelo responsável.** Reparos de fonte e4602/SAVE/frio atuais têm provas limitadas; estágio2 normal e carreira inteira continuam abertos. Veja o [recibo](../docs/qualification/RC18-QUALIFICATION.json) e as [limitações](LIMITACOES.md). Resultados históricos abaixo mantêm seu escopo.
 
-- [x] Corrigir ordem do logo/borda circular EA TRAX e preservar a comparação visual local. [#1](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1)
-- [x] Corrigir a posse dos bancos de turbo/pneus e os cursores de loops completos; preservar as provas nativas. [#2](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2)
-- [x] Manter correções de pausa/limitador, frenagem e música do menu; trechos históricos e7ce cobrem pausa/retomada/retorno. [#3](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3), [#4](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4), [#5](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5)
+- [x] Corrigir ordem do logo/borda circular EA TRAX e preservar a comparação visual local. [#1](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/1)
+- [x] Corrigir a posse dos bancos de turbo/pneus e os cursores de loops completos; preservar as provas nativas. [#2](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/2)
+- [x] Manter correções de pausa/limitador, frenagem e música do menu; trechos históricos e7ce cobrem pausa/retomada/retorno. [#3](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/3), [#4](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/4), [#5](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/5)
 - [x] Integrar o Drift humano derivado do original e os produtores de configuração/pista; dyno personalizado/presets especiais mantêm o modelo anterior durante o evento inteiro.
 - [x] Qualificar três trechos de Drift por controles normais, SAVE/frio privados das duas fontes e uma vitória natural completa Xbox 4101/prêmio/SAVE/frio na e7ce.
 - [x] Conferir identidade dos pacotes e presença estrutural dos 28 filmes por fonte; preservar os dois PDFs ilustrados.

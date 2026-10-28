@@ -2,7 +2,7 @@
 
 # Audio audit: closed beta build 06
 
-Audit date: 25 October 2026. Related reports: [#2 drift audio](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2), [#3 pause audio](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3), [#4 braking audio](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4), and [#5 music after drift](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5).
+Audit date: 25 October 2026. Related reports: [#2 drift audio](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/2), [#3 pause audio](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/3), [#4 braking audio](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/4), and [#5 music after drift](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/5).
 
 This audit covers the installed build with EBOOT SHA-256
 `c34edd611f60021496f88106e87b616bae5df6c6712ba32dea85762cf923df48`.

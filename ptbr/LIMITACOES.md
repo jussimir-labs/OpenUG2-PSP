@@ -8,11 +8,11 @@
 
 Confira novamente no novo executável, informando aparelho, fonte, carro, pista e passos. Uma correção de código não encerra automaticamente a observação de quem reportou.
 
-- [Logo/borda EA TRAX (#1)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/1): ordem de desenho e proporção circular corrigidas e conferidas localmente; confirme durante o jogo.
-- [Cortes/cliques no Drift (#2)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/2): bancos separados e cursores de loops completos corrigem defeitos confirmados. O sintoma ouvido ainda precisa da confirmação do testador; a causa física não foi totalmente isolada.
-- [Loop na pausa (#3)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/3): testes locais silenciaram pedidos do motor; limpeza do ambiente e rampas pendentes do limitador foram corrigidas. Isso não identifica todos os sons do relato original.
-- [Som de frenagem (#4)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/4): aceleração e sinais no referencial do pneu foram corrigidos. O Drift humano fornece agora estado nativo de rodas/corpo; outros caminhos mantêm estimativas do port. Audição e paridade de todos os ramos continuam pendentes.
-- [Música após Drift (#5)](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues/5): a recuperação anterior no menu é histórica. Drift/Drag seguem a política original de ambiência; não se declara nova correção de música de corrida. Informe a transição exata.
+- [Logo/borda EA TRAX (#1)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/1): ordem de desenho e proporção circular corrigidas e conferidas localmente; confirme durante o jogo.
+- [Cortes/cliques no Drift (#2)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/2): bancos separados e cursores de loops completos corrigem defeitos confirmados. O sintoma ouvido ainda precisa da confirmação do testador; a causa física não foi totalmente isolada.
+- [Loop na pausa (#3)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/3): testes locais silenciaram pedidos do motor; limpeza do ambiente e rampas pendentes do limitador foram corrigidas. Isso não identifica todos os sons do relato original.
+- [Som de frenagem (#4)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/4): aceleração e sinais no referencial do pneu foram corrigidos. O Drift humano fornece agora estado nativo de rodas/corpo; outros caminhos mantêm estimativas do port. Audição e paridade de todos os ramos continuam pendentes.
+- [Música após Drift (#5)](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/5): a recuperação anterior no menu é histórica. Drift/Drag seguem a política original de ambiência; não se declara nova correção de música de corrida. Informe a transição exata.
 
 ## Dirigibilidade e progresso
 

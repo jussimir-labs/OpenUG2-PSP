@@ -4,7 +4,7 @@
 
 ## Como reportar bugs
 
-Veja o [manual visual em PDF](manual-reportar-bugs.pdf) ([English](../docs/bug-reporting-guide-EN.pdf)), consulte o [roadmap](ROADMAP.md) e abra um [relato de bug](https://github.com/jussimir/pessoal-nfsu2-psp-beta/issues).
+Veja o [manual visual em PDF](manual-reportar-bugs.pdf) ([English](../docs/bug-reporting-guide-EN.pdf)), consulte o [roadmap](ROADMAP.md) e abra um [relato de bug](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues).
 
 # NFSU2 PSP: beta fechado
 
