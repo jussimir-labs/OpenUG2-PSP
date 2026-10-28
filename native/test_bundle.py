@@ -82,8 +82,7 @@ def fixture_probe(root):
             "-",
         ).stdout
         assert len(resampled) > len(raw)
-        mp3 = execute(
-            "lame",
+        lame_args = [
             "--quiet",
             "-r",
             "-s",
@@ -96,9 +95,24 @@ def fixture_probe(root):
             "m",
             "-",
             "-",
-            input=raw,
-        ).stdout
+        ]
+        mp3 = execute("lame", *lame_args, input=raw).stdout
         assert len(mp3) > 100 and mp3[:1] == b"\xff", "LAME did not produce an MP3"
+        # The RC21 reference MP3s were encoded on Apple Silicon (FMA). Every
+        # package must reproduce those bytes, not merely produce an MP3.
+        assert (
+            hashlib.sha256(mp3).hexdigest()
+            == "0a37bf99e6443473672e9058bad29e190e64b45af1b36441f711fd9c30ccf7be"
+        ), "LAME output differs from the Apple Silicon reference encoder"
+        if os.name == "nt":
+            compat = subprocess.run(
+                [str(Path(root) / "runtime/bin/lame-compat.exe"), *lame_args],
+                input=raw,
+                check=True,
+                capture_output=True,
+                timeout=30,
+            ).stdout
+            assert len(compat) > 100 and compat[:1] == b"\xff", "LAME fallback failed"
         im = Image.new("RGB", (32, 32))
         im.putdata([(i * 19 % 256, i * 41 % 256, i * 17 % 256) for i in range(1024)])
         ppm = tmp / "imagem ação.ppm"
@@ -382,7 +396,10 @@ def test(root, archive=False):
                     z.write(f, original.name + "/" + f.relative_to(original).as_posix())
         with zipped.open("rb") as f:
             digest = hashlib.file_digest(f, "sha256").hexdigest()
-        zipped.with_suffix(".zip.sha256").write_text(digest + "  " + zipped.name + "\n")
+        # LF so `shasum -c` also accepts the Windows checksum on macOS/Linux.
+        zipped.with_suffix(".zip.sha256").write_text(
+            digest + "  " + zipped.name + "\n", newline="\n"
+        )
     print(json.dumps(results, indent=2))
 
 

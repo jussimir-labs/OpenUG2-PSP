@@ -427,6 +427,12 @@ def build(args):
         dest = bin_dir / (name + ext)
         shutil.copy2(src, dest)
         originals[dest] = src.resolve()
+    compat = tool_dir / ("lame-compat" + ext) if tool_dir else None
+    if os.name == "nt":
+        if not (compat and compat.is_file()):
+            raise RuntimeError("Build-time native tool missing: lame-compat")
+        shutil.copy2(compat, bin_dir / compat.name)
+        originals[bin_dir / compat.name] = compat.resolve()
     cc = os.environ.get("CC", "gcc" if os.name == "nt" else "cc")
     for name, files in {
         "eaxa2pcm": ["eaxa2pcm.c"],

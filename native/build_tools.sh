@@ -37,9 +37,24 @@ if [ "${NATIVE_FFMPEG_ONLY:-0}" = 1 ]; then exit 0; fi
  if ! grep -qF 'int type, void const* str)' frontend/parse.c; then
   patch -p1 < "$SCRIPT_DIR/lame-4.0-portable.patch"
  fi
- ac_cv_prog_cc_c23=no ./configure --disable-shared --enable-static --disable-decoder CFLAGS="-O3 -std=gnu17 -include locale.h -Wno-implicit-function-declaration" LDFLAGS="$LDFLAGS_EXTRA"
- make -j "$JOBS"
- cp "frontend/lame$SUFFIX" "$OUT/"
+ # The RC21 reference MP3s come from Apple Silicon, where clang fuses a*b+c
+ # (FMA). Clang emits the same fusible operations for every target, so x86-64
+ # builds with FMA enabled produce identical MP3 bytes. GCC contracts other
+ # expressions; build LAME with clang everywhere.
+ lame_build() {
+  make distclean >/dev/null 2>&1 || true
+  ac_cv_prog_cc_c23=no CC=clang ./configure --disable-shared --enable-static --disable-decoder \
+   CFLAGS="-O3 -std=gnu17 -include locale.h -Wno-implicit-function-declaration $1" LDFLAGS="$LDFLAGS_EXTRA"
+  make -j "$JOBS"
+  cp "frontend/lame$SUFFIX" "$OUT/$2$SUFFIX"
+ }
+ if [ "$(uname -m)" = x86_64 ]; then
+  lame_build "-mfma" lame
+  # Windows PCs without AVX2/FMA use this; output works but is not byte-identical.
+  if [ -n "$SUFFIX" ]; then lame_build "" lame-compat; fi
+ else
+  lame_build "" lame
+ fi
 )
 if [ ! -d "$CACHE/jpegli/.git" ]; then git clone --recursive https://github.com/google/jpegli.git "$CACHE/jpegli"; fi
 (

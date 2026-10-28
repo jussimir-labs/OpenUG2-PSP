@@ -34,7 +34,7 @@ jobs:
           update: true
           install: >-
             git make tar curl diffutils patch mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-ninja perl
+            mingw-w64-x86_64-ninja mingw-w64-x86_64-clang perl
       - name: Cached native tools
         uses: actions/cache@v4
         id: tools

@@ -11,12 +11,25 @@ def bundled():
     return bool(os.environ.get("NFSU2_BUNDLE_ROOT"))
 
 
+def fma_capable():
+    """Bundled Windows LAME uses FMA, matching the Apple Silicon reference MP3s.
+    Every AVX2 CPU also has FMA3; older CPUs get the generic build."""
+    import ctypes
+
+    PF_AVX2_INSTRUCTIONS_AVAILABLE = 40
+    return bool(
+        ctypes.windll.kernel32.IsProcessorFeaturePresent(PF_AVX2_INSTRUCTIONS_AVAILABLE)
+    )
+
+
 def binary(name):
     root = os.environ.get("NFSU2_BUNDLE_ROOT")
     if not root:
         return None
     if name not in NAMES:
         raise ValueError("Unknown bundled converter: " + name)
+    if name == "lame" and os.name == "nt" and not fma_capable():
+        name = "lame-compat"
     path = Path(root) / "runtime/bin" / (name + (".exe" if os.name == "nt" else ""))
     if not path.is_file():
         raise RuntimeError(
