@@ -37,7 +37,13 @@ PYTHON = {
         "x86_64-pc-windows-msvc",
         "7330282b47cd43a66b702d39078d2e5a88e580cee351d82f95045f21f5ee042a",
     ),
+    "linux-x64": (
+        "x86_64-unknown-linux-gnu",
+        "3297691ae34f75fed81ac424e040145fccb0bafe8e581cd5cadbddfa1c0766c0",
+    ),
 }
+# Linux wheels no newer than this glibc, whatever the build machine has.
+MANYLINUX = "x86_64-manylinux_2_28"
 
 
 def sha(path):
@@ -314,6 +320,77 @@ def vendor_windows(package):
     )
 
 
+def elf(path):
+    try:
+        with path.open("rb") as f:
+            return f.read(4) == b"\x7fELF"
+    except OSError:
+        return False
+
+
+def vendor_linux(package):
+    """Audit every ELF file: only glibc and the loader come from the system.
+    Wheels carry their own libraries (auditwheel, $ORIGIN); a library outside
+    the package or a C++ runtime from the build machine fails the build."""
+    system = {
+        "libc.so.6", "libm.so.6", "libpthread.so.0", "libdl.so.2", "librt.so.1",
+        "libutil.so.1", "ld-linux-x86-64.so.2", "libcrypt.so.1",
+        # GCC's unwinder: glibc itself loads it, every distribution has it (Rust std).
+        "libgcc_s.so.1",
+        # Left to the system by the manylinux wheels (SciPy's C++, Pillow's zlib),
+        # as their policy allows; part of every distribution's base.
+        "libstdc++.so.6", "libz.so.1",
+    }
+    private = {f.name for f in (package / "runtime").rglob("*.so*") if f.is_file()}
+    glibc = (0, 0)
+    count = 0
+    static = []
+    foreign_rpaths = {}
+    for f in sorted(package.rglob("*")):
+        if not f.is_file() or f.is_symlink() or not elf(f):
+            continue
+        count += 1
+        dynamic = subprocess.check_output(["readelf", "-d", str(f)], text=True, stderr=subprocess.DEVNULL)
+        if "(NEEDED)" not in dynamic and "(SONAME)" not in dynamic:
+            static.append(f.relative_to(package).as_posix())   # needs nothing at all
+            continue
+        for line in dynamic.splitlines():
+            if "(NEEDED)" in line:
+                name = line.split("[", 1)[1].split("]", 1)[0]
+                if "/" in name:   # by path ($ORIGIN): must stay inside the package
+                    target = Path(name.replace("$ORIGIN", str(f.parent))).resolve()
+                    if not target.is_file() or not target.is_relative_to(package.resolve()):
+                        raise RuntimeError(f"Library path outside the bundle: {f.relative_to(package)}: {name}")
+                elif name not in system and name not in private:
+                    raise RuntimeError(f"Non-system library outside the bundle: {f.relative_to(package)}: {name}")
+            if "(RPATH)" in line or "(RUNPATH)" in line:
+                for entry in line.split("[", 1)[1].split("]", 1)[0].split(":"):
+                    if not entry or entry.startswith("$ORIGIN"):
+                        continue
+                    # CPython's Tcl/Tk keep their build folder (/tools/deps/lib):
+                    # tkinter is unused, and the folder exists on no machine.
+                    if Path(entry).exists() or not f.name.startswith(("libtcl", "libtk")):
+                        raise RuntimeError(f"Absolute library path in bundle: {f.relative_to(package)}: {entry}")
+                    foreign_rpaths[f.relative_to(package).as_posix()] = entry
+        symbols = subprocess.check_output(["objdump", "-T", str(f)], text=True, errors="replace",
+                                          stderr=subprocess.DEVNULL)
+        for word in symbols.split():
+            word = word.strip("()")
+            if word.startswith("GLIBC_2."):
+                version = tuple(int(x) for x in word[6:].split(".")[:2] if x.isdigit())
+                if len(version) == 2:
+                    glibc = max(glibc, version)
+    audit = {
+        "elf_files": count,
+        "system_libraries_only_outside_package": sorted(system),
+        "minimum_glibc": "%d.%d" % glibc,
+        "without_dependencies": static,
+        "unused_build_rpaths": foreign_rpaths,
+        "wheels_platform": MANYLINUX,
+    }
+    (package / "runtime/linux-library-audit.json").write_text(json.dumps(audit, indent=2) + "\n")
+
+
 def windows_utf8(package):
     # CLI programs using the Windows CRT must receive UTF-8 paths too. This is
     # embedded at build time, not a system locale change on the tester's machine.
@@ -426,11 +503,14 @@ def build_from(args):
 def build(args):
     if args.runtime_from:
         return build_from(args)
-    target = (
-        "windows-x64"
-        if os.name == "nt"
-        else "macos-" + ("arm64" if platform.machine() == "arm64" else "x64")
-    )
+    if os.name == "nt":
+        target = "windows-x64"
+    elif sys.platform == "linux":
+        if platform.machine() != "x86_64":
+            raise RuntimeError("Linux packages are built on x86-64.")
+        target = "linux-x64"
+    else:
+        target = "macos-" + ("arm64" if platform.machine() == "arm64" else "x64")
     triple, digest = PYTHON[target]
     cache = Path(args.cache).resolve()
     out = Path(args.output).resolve()
@@ -486,8 +566,9 @@ def build(args):
     )
     for key in ["PYTHONHOME", "PYTHONPATH", "VIRTUAL_ENV"]:
         env.pop(key, None)
+    pin = ["--python-platform", MANYLINUX] if target == "linux-x64" else []
     run(
-        ["uv", "pip", "install", "--python", py, "-r", ROOT / "requirements.txt"],
+        ["uv", "pip", "install", "--python", py, *pin, "-r", ROOT / "requirements.txt"],
         env=env,
     )
     run(
@@ -497,6 +578,7 @@ def build(args):
             "install",
             "--python",
             py,
+            *pin,
             "--no-deps",
             "trajectory-planning-helpers==0.79",
         ],
@@ -521,7 +603,7 @@ def build(args):
         shutil.copy2(src, dest)
         originals[dest] = src.resolve()
     compat = tool_dir / ("lame-compat" + ext) if tool_dir else None
-    if os.name == "nt":
+    if os.name == "nt" or target == "linux-x64":
         if not (compat and compat.is_file()):
             raise RuntimeError("Build-time native tool missing: lame-compat")
         shutil.copy2(compat, bin_dir / compat.name)
@@ -585,6 +667,8 @@ def build(args):
     elif os.name == "nt":
         vendor_windows(out)
         windows_utf8(out)
+    else:
+        vendor_linux(out)
     # Some vendored libraries arrive read-only (0444). Testers must be able to
     # delete/replace the folder, and macOS cannot clear quarantine on them.
     for p in out.rglob("*"):

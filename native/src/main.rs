@@ -46,6 +46,8 @@ fn platform() -> &'static str {
         "macos-x64"
     } else if cfg!(all(target_os = "windows", target_arch = "x86_64")) {
         "windows-x64"
+    } else if cfg!(all(target_os = "linux", target_arch = "x86_64")) {
+        "linux-x64"
     } else {
         "unsupported"
     }
@@ -145,6 +147,26 @@ fn browser(url: &str) -> io::Result<()> {
             .arg(url)
             .spawn()?;
     }
+    #[cfg(target_os = "linux")]
+    {
+        // The desktop's default browser; xdg-open is part of every desktop
+        // (KDE on SteamOS too), gio is GNOME's own opener.
+        let mut last = io::Error::new(io::ErrorKind::NotFound, "xdg-open not found");
+        for (program, args) in [("xdg-open", &[][..]), ("gio", &["open"][..])] {
+            match Command::new(program)
+                .args(args)
+                .arg(url)
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .spawn()
+            {
+                Ok(_) => return Ok(()),
+                Err(e) => last = e,
+            }
+        }
+        return Err(last);
+    }
+    #[allow(unreachable_code)]
     Ok(())
 }
 fn runtime_command(root: &Path, m: &Manifest) -> Result<Command, String> {
@@ -165,6 +187,7 @@ fn runtime_command(root: &Path, m: &Manifest) -> Result<Command, String> {
         "NFSU2_MAC_SLOTS_DIR",
         "DYLD_LIBRARY_PATH",
         "LD_LIBRARY_PATH",
+        "LD_PRELOAD",
         "WSL_DISTRO_NAME",
         "WSL_INTEROP",
     ] {
@@ -219,7 +242,7 @@ impl Drop for Job {
 fn main_result() -> Result<i32, String> {
     let args: Vec<String> = env::args().skip(1).collect();
     if args.iter().any(|a| a == "--help" || a == "-h") {
-        println!("NFSU2 PSP native helper\n\n  nfsu2-generator [serve] [--no-browser] [--port PORT]\n  nfsu2-generator doctor\n\nKeep this executable in the extracted bundle. No Python/WSL/Homebrew installation is needed.\nThe ISO and generated game files stay on this computer.");
+        println!("NFSU2 PSP native helper\n\n  nfsu2-generator [serve] [--no-browser] [--port PORT]\n  nfsu2-generator doctor\n\nKeep this executable in the extracted bundle. No Python/WSL/Homebrew/distribution package is needed.\nThe ISO and generated game files stay on this computer.");
         return Ok(0);
     }
     let mut mode = "serve";

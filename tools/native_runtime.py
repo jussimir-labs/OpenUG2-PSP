@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 import subprocess
+import sys
 
 NAMES = ("ffmpeg", "lame", "cjpegli", "movie_audio", "eaxa2pcm", "mt2pcm", "xaencode")
 
@@ -12,8 +13,17 @@ def bundled():
 
 
 def fma_capable():
-    """Bundled Windows LAME uses FMA, matching the Apple Silicon reference MP3s.
+    """Bundled x86-64 LAME uses FMA, matching the Apple Silicon reference MP3s.
     Every AVX2 CPU also has FMA3; older CPUs get the generic build."""
+    if os.name != "nt":
+        try:
+            with open("/proc/cpuinfo", encoding="ascii", errors="replace") as f:
+                for line in f:
+                    if line.startswith("flags"):
+                        return {"fma", "avx2"} <= set(line.split(":", 1)[1].split())
+        except OSError:
+            pass
+        return False
     import ctypes
 
     PF_AVX2_INSTRUCTIONS_AVAILABLE = 40
@@ -28,7 +38,7 @@ def binary(name):
         return None
     if name not in NAMES:
         raise ValueError("Unknown bundled converter: " + name)
-    if name == "lame" and os.name == "nt" and not fma_capable():
+    if name == "lame" and (os.name == "nt" or sys.platform == "linux") and not fma_capable():
         name = "lame-compat"
     path = Path(root) / "runtime/bin" / (name + (".exe" if os.name == "nt" else ""))
     if not path.is_file():

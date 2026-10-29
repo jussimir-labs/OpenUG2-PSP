@@ -126,9 +126,9 @@ def fixture_probe(root):
             hashlib.sha256(mp3).hexdigest()
             == "0a37bf99e6443473672e9058bad29e190e64b45af1b36441f711fd9c30ccf7be"
         ), "LAME output differs from the Apple Silicon reference encoder"
-        if os.name == "nt":
+        if os.name == "nt" or sys.platform == "linux":
             compat = subprocess.run(
-                [str(Path(root) / "runtime/bin/lame-compat.exe"), *lame_args],
+                [str(Path(root) / "runtime/bin" / ("lame-compat" + (".exe" if os.name == "nt" else ""))), *lame_args],
                 input=raw,
                 check=True,
                 capture_output=True,

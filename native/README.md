@@ -8,23 +8,30 @@ the tester's system. No original game data is included or uploaded.
 ## Usage
 
 Extract the matching ZIP into a writable local folder. Open `Generate-game.bat` on Windows,
-or `Generate-game.command` on Mac. Keep the terminal open. Select your ISO and a new empty
+`Generate-game.command` on Mac, or `Generate-game.sh` on Linux (it opens a terminal window when
+started from a file manager). Keep the terminal open. Select your ISO and a new empty
 output folder in the browser. Use **Generate PSP game** and wait for reference verification.
 The helper does not copy to the PSP. Copy instructions and bug reporting are in the root README.
 
 CLI: `nfsu2-generator[.exe] serve`, `serve --no-browser`, `serve --port 4173`, or `doctor`.
-Use `./nfsu2-generator` on Mac. Ctrl+C stops the helper and conversion. Closing only the tab
+Use `./nfsu2-generator` on Mac and Linux. Ctrl+C stops the helper and conversion. Closing only the tab
 does not stop a job. **Close helper** is available once a conversion has ended/cancelled.
 
 Windows x64 requires Windows 10 2004+ or 11. Mac packages target macOS 15+ and are separate
-for Apple Silicon and Intel. Windows ARM, Linux native packaging, commercial code signing,
-and notarization are outside this implementation. Normal OS trust prompts can still appear.
+for Apple Silicon and Intel. Linux x86-64 needs glibc 2.35+ (built on Ubuntu 22.04); only glibc
+and the loader come from the system, everything else is inside, and the browser opens through
+`xdg-open`. Windows ARM, ARM Linux, commercial code signing and notarization are outside this
+implementation. Normal OS trust prompts can still appear.
 
 ## Maintainer build
 
-Packages are built and tested locally on each platform (Windows x64, Apple Silicon and Intel
-Macs); no hosted CI is used. Build tools are needed **only on the maintainer machine**: Rust,
+Packages are built and tested locally on each platform (Windows x64, Linux x86-64, Apple Silicon
+and Intel Macs); no hosted CI is used. Build tools are needed **only on the maintainer machine**: Rust,
 Python, uv, C/C++ compiler, CMake, Ninja, Make, patch, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest tool.
+Linux builds in an Ubuntu 22.04 environment (clang for LAME, GCC for the rest, binutils for the
+audit); the builder pins `manylinux_2_28` wheels and fails if any ELF file needs a library outside
+the package other than glibc, the loader, `libgcc_s` and the `libstdc++`/`libz` that the
+manylinux wheels leave to the system (`runtime/linux-library-audit.json`).
 
 ```sh
 bash native/build_tools.sh native/tools native/.cache/tools

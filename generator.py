@@ -540,7 +540,8 @@ def main():
     url = 'http://127.0.0.1:' + str(server.server_port) + '/#token=' + token
     lease.seek(0); lease.truncate(); lease.write(b'\0' + json.dumps(dict(url=url, pid=os.getpid())).encode('utf-8')); lease.flush()
     print('NFSU2_GENERATOR_URL=' + url, flush=True)
-    print('NFSU2 PSP — local generator opened in your browser. Keep this window open during conversion.', flush=True)
+    print('NFSU2 PSP — local generator ' + ('ready at the address above' if args.no_browser else 'opened in your browser')
+          + '. Keep this window open during conversion.', flush=True)
     if not args.no_browser:
         open_browser(url)
     try:

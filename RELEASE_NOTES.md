@@ -15,7 +15,16 @@ generator on your computer changed.
   that only replaces the game executable updates in seconds. Updating an RC21 folder to this
   generator takes about as long as a complete generation, because this release changed the
   slowest converters; the result was verified identical to a complete generation on Mac and Windows.
-- **Not yet tested:** the Intel Mac package, an Xbox conversion on Windows, and updating from
+- **Native Linux package.** `NFSU2-Generator-linux-x64.zip` runs on Linux x86-64 with glibc 2.35
+  or later: SteamOS on a Steam Deck or Steam Machine, Ubuntu 22.04+, Debian 12+, Fedora 36+, Arch
+  and similar. Like the other packages it includes Python and every converter. On SteamOS, use
+  Desktop Mode and open `Generate-game.sh`; see [the instructions](README.md). Use it instead of
+  the Windows package under Proton. On a Steam Deck with SteamOS 3.9 a complete PS2 generation
+  from the browser page took 1 h 32 min and matched the RC21 reference (97 identical and 62
+  equivalent files), and an update of the same folder with no changes took 20 seconds.
+- **Not yet tested:** the Intel Mac package, an Xbox conversion on Windows or Linux, Linux
+  distributions other than SteamOS, the Plasma Wayland session (Desktop Mode from the Steam
+  button uses X11, which was tested), the Steam Machine itself, and updating an RC21 folder from
   the browser page (verified with the command the page runs).
 
 

@@ -2,6 +2,59 @@
 
 > Revisão noturna: veja [NOTAS-NOTURNAS.md](NOTAS-NOTURNAS.md). A candidata atual ainda não foi instalada nem testada no PSP; provas físicas históricas não se transferem automaticamente.
 
+## Gerador nativo: Windows, Mac e Linux
+
+O gerador atual vem em pacotes nativos, com Python e todos os conversores
+dentro: não é preciso instalar nada. Baixe o ZIP do seu computador na
+[página da versão](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases),
+extraia a pasta inteira e abra o lançador. As instruções completas estão no
+[README em inglês](../README.md).
+
+| Computador | Pacote | Abrir |
+| --- | --- | --- |
+| Windows x64 | `NFSU2-Generator-windows-x64.zip` | `Generate-game.bat` ou `ptbr/Gerar-jogo.bat` |
+| Mac Apple Silicon | `NFSU2-Generator-macos-arm64.zip` | `Generate-game.command` ou `ptbr/Gerar-jogo.command` |
+| Mac Intel | `NFSU2-Generator-macos-x64.zip` | `Generate-game.command` ou `ptbr/Gerar-jogo.command` |
+| Linux x86-64 (SteamOS, Steam Deck, Steam Machine) | `NFSU2-Generator-linux-x64.zip` | `Generate-game.sh` ou `ptbr/Gerar-jogo.sh` |
+
+O Linux precisa de glibc 2.35 ou mais nova: SteamOS 3, Ubuntu 22.04+,
+Debian 12+, Fedora 36+, Arch e parecidas. Use o pacote Linux, não o do
+Windows pelo Proton ou Wine (não foi testado).
+
+### No SteamOS (Steam Deck ou Steam Machine)
+
+O gerador roda no **Modo Desktop**: botão Steam → **Ligar/Desligar → Mudar
+para o Desktop**. Ele não roda pelo Modo Jogo.
+
+1. Baixe `NFSU2-Generator-linux-x64.zip` com um navegador, na pasta
+   **Downloads**.
+2. No gerenciador de arquivos **Dolphin**, clique com o botão direito no ZIP
+   → **Extrair → Extrair aqui** (*Extract → Extract here*, com o sistema em inglês).
+3. Abra a pasta `NFSU2-Generator-linux-x64` e dê dois cliques em
+   `Generate-game.sh` (ou em `ptbr/Gerar-jogo.sh`). Se o Dolphin perguntar o
+   que fazer, escolha **Executar**, não *Abrir*. Uma janela de terminal abre com o auxiliar:
+   mantenha-a aberta. A página do gerador abre no navegador padrão; no
+   seletor **Idioma**, escolha **Português**.
+4. Se nenhum navegador abrir, copie a linha `Local interface:
+   http://127.0.0.1:…` do terminal para um navegador. O endereço só funciona
+   neste computador.
+
+**Permissão de execução:** extraído pelo Ark (o extrator do Dolphin), pelo
+File Roller do GNOME ou pelo `unzip`, o pacote mantém a permissão. Se o
+clique abrir o `Generate-game.sh` como texto, clique com o botão direito →
+**Propriedades → Permissões**, marque **É executável** (no GNOME:
+*Executável como programa*) e abra de novo. Ou rode pelo terminal (Konsole):
+
+```sh
+cd ~/Downloads/NFSU2-Generator-linux-x64
+sh Generate-game.sh
+```
+
+O lançador repõe sozinho a permissão das ferramentas incluídas. Escolha uma
+pasta de saída num disco com 12 GB livres, como `~/NFSU2-PSP`. Para copiar
+ao PSP, ligue o aparelho por USB (**Configurações → Conexão USB**) e junte a
+pasta `PSP` gerada com a pasta `PSP` do cartão pelo Dolphin.
+
 ## Como reportar bugs
 
 Veja o [manual visual em PDF](manual-reportar-bugs.pdf) ([English](../docs/bug-reporting-guide-EN.pdf)), consulte o [roadmap](ROADMAP.md) e abra um [relato de bug](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues).
@@ -50,6 +103,10 @@ Configuração4u mantida. Audição humana no PSP, outros perfis de câmera, cur
 
 ## 1. Gerar o jogo
 
+> Esta seção descreve o kit de código-fonte antigo. Com os pacotes nativos,
+> siga [Gerador nativo: Windows, Mac e Linux](#gerador-nativo-windows-mac-e-linux)
+> acima.
+
 Baixe e extraia o repositório completo (botão *Code > Download ZIP*, ou
 `git clone`). O lançador do seu sistema inicia um auxiliar local e abre o
 gerador no navegador. No seletor **Idioma**, escolha **Português**.
@@ -70,11 +127,9 @@ traz esses requisitos do sistema embutidos.
 
 ### Linux
 
-No Terminal, dentro da raiz do repositório, rode:
-
-```sh
-sh ./generate-game.sh
-```
+No kit de código-fonte da RC21, no Terminal, dentro da raiz do repositório,
+rode `sh ./generate-game.sh`. (No pacote nativo, o lançador é o
+`Generate-game.sh` descrito acima.)
 
 Python 3.9+ abre a interface; a conversão precisa de Python 3.12+ e das
 dependências dos conversores. No Debian/Ubuntu, a preparação usa `apt-get`
