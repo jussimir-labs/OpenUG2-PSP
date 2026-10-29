@@ -2273,240 +2273,270 @@ def lay_course(ev, nodes, links, usable, city, free_count, city_track, barriers=
                 outline=sum(math.dist(ev['outline'][k], ev['outline'][k + 1]) for k in range(len(ev['outline']) - 1)))
 
 
+_CTX = {}
+
+
+def load_context(args, only):
+    """What every event reads: the track's roads, its collision, its routes
+    and markers (in each process of the pool once)."""
+    global TRACK
+    TRACK = args.track
+    city_track = args.track == 'L4RA'
+    free_nodes, free_links = read_roads(args.out / ('roads.n2rd' if city_track else f'roads-{args.track}.n2rd'))
+    city = CityCollision(args.out / ('city.n2cy' if city_track else f'track-{args.track}.n2cy'))
+    base_city = city
+    net = read_route_net(args.game, args.track)
+    info = n2routes.read_routes(args.game, args.track)
+    route_events = n2routes.route_events(args.game, args.track)
+    all_marks = read_markers(args.game, args.track)
+    _CTX.update(args=args, only=only, city_track=city_track, free_nodes=free_nodes, free_links=free_links, city=city,
+                base_city=base_city, net=net, info=info, route_events=route_events, all_marks=all_marks)
+
+
+def lay_event_record(ev):
+    """One event of the catalog: (its report, its course's record in the
+    races file, its marks' record, its lanes' record or None); no course:
+    (why, None, None, None). Each event on its own: the events run side by
+    side in processes (main), and the files keep the catalog's order."""
+    (args, only, city_track, free_nodes, free_links, city, base_city, net, info, route_events,
+     all_marks) = (_CTX[k] for k in ('args', 'only', 'city_track', 'free_nodes', 'free_links', 'city', 'base_city', 'net', 'info',
+                                    'route_events', 'all_marks'))
+    marks = all_marks.get(ev['id'], {})
+    catalog_ev = ev
+    if not ev['circuit'] and marker(marks, 'ForwardStartLine') and marker(marks, 'ForwardFinishLine'):
+        # laid from just behind the start line to past the finish line
+        # (the catalog's outline runs on either side: 4201's 236 m
+        # before its grid; 4107's starts 170 m after its start line)
+        ev = dict(ev, outline=mark_outline(ev['outline'], marker(marks, 'ForwardStartLine'), marker(marks, 'ForwardFinishLine')))
+    if not path_exists(args.game, args.track, ev['id']):
+        return dict(id=ev['id'], error='no paths file'), None, None, None
+    # the event's own barriers over the world (convert_city.py's bar-<id>.n2cy)
+    event_city = base_city.with_overlay(args.out / f"bar-{ev['id']}.n2cy")
+    def lay_event(ev):
+        """The event's course over its roads and the clean-up passes:
+        (points, gates, report fields), or why there is none."""
+        city = event_city
+        nodes, links = race_roads(args.game, ev['id'], free_nodes, free_links, city)
+        # The city's graph is one network (its main component); a closed
+        # track's is several islands, one per course: any of them will do
+        # (the course still has to join its points by road).
+        usable = components(nodes, links) if city_track else [True] * len(nodes)
+        def choose(walls):
+            laid = lay_course(ev, nodes, links, usable, city, len(free_nodes), city_track, median=False, walls=walls)
+            if laid and not walls and (laid['crossings'] or laid['blocked']):
+                # The race roads off their medians (EdgeCheck): kept only where
+                # they leave fewer barrier crossings, or as many and fewer
+                # blocked metres, with no detour. Everywhere, they changed
+                # courses that drove fine (4126's took a race road over a deck,
+                # wedging where it joined and left it).
+                med = lay_course(ev, nodes, links, usable, city, len(free_nodes), city_track, walls=walls)
+                if med and (med['crossings'], med['blocked']) < (laid['crossings'], laid['blocked']) \
+                        and laid['outline'] * .95 <= med['length'] <= laid['length'] * 1.1:
+                    laid = med
+            if laid and (laid['crossings'] or laid['route_crossings']):
+                # Through one of the event's barriers (the game's invisible
+                # PLAYER_BARRIERS_<id>, a 1 m wall: on the diagonal a metre or
+                # two of a car-wide corridor, under the edges' tolerance): the
+                # course driver wedges there (4126, Black Tusk, twice). Again
+                # with those edges closed, kept when that costs no walls and no
+                # detour (closing them can send the course the long way round,
+                # or skip a stretch of the outline).
+                # Also when the route crossed one and nudge took the course round
+                # the barrier's end: that can cost more walls than the route
+                # that keeps off it (4124, 4145).
+                other = lay_course(ev, nodes, links, usable, city, len(free_nodes), city_track, barriers=True, median=False, walls=walls)
+                # (a barrier closing a road calls for the detour: up to 1.3 times
+                # the outline, the 4144's 1.2)
+                if other and not other['crossings'] and other['blocked'] <= laid['blocked'] \
+                        and laid['outline'] * .95 <= other['length'] <= longest_detour(laid, other):
+                    laid = other
+            return laid
+        laid = choose(False)
+        if laid and laid['faults']:
+            # Through a thin wall across the road or off a step (more than
+            # DROP): the 4083's course went through two walls of a single
+            # cell, the 4043's dropped 1.9 m off a terrain block. Again with
+            # those closed (EdgeCheck, nudge), kept when that leaves fewer
+            # faults and crossings, and no detour. Everywhere, they moved
+            # courses that drove fine (4084, 4105).
+            alt = choose(True)
+            if alt and (alt['faults'] + alt['crossings'], alt['blocked']) < (laid['faults'] + laid['crossings'], laid['blocked']) \
+                    and laid['outline'] * .95 <= alt['length'] <= longest_detour(laid, alt):
+                laid = alt
+        if not laid:
+            return 'no road path'
+        pts, gates, cut, pulled, moved, relayered = (laid[k] for k in ('pts', 'gates', 'cut', 'pulled', 'moved', 'relayered'))
+        followed = walked = 0
+        if city_track:
+            # Where the original game's racers drive (RacerWalk): on a dual
+            # road, the carriageway its signs keep them to (the 4083's ramp
+            # and the road after it: the east one; the course took the west).
+            walk = RacerWalk(*net, n2routes.read_event_barriers(args.game, args.track, ev['id']))
+            pts, gates, walked = follow_walk(pts, gates, ev['circuit'], walk_course(walk, pts, ev['circuit']), city, walk)
+        if str(ev['id']) in REFERENCE:
+            # Where the original game's rivals drive (race_reference.json): the
+            # 4083's course took the west carriageway of a dual ramp and the
+            # road after it, through the median twice; theirs keeps east.
+            pts, gates, followed = follow_reference(pts, gates, REFERENCE[str(ev['id'])], city)
+        axis = None
+        if not city_track and (4200 <= ev['id'] < 4300 or 4400 <= ev['id'] < 4500):
+            # only the routes that stand in the event (n2routes.route_events)
+            mine = {r: p for r, p in net[0].items() if n2routes.route_for(route_events, r, ev['id'])}
+            signs = {key: [sg for sg in v if sg[0] in mine] for key, v in net[1].items() if key[0] in mine}
+            walk = RacerWalk(mine, signs, n2routes.read_event_barriers(args.game, args.track, ev['id']))
+            axis = drag_on_routes_any(ev, pts, gates, walk, info, city)
+            if axis:
+                pts, gates, _ = axis
+                walked = len(pts)
+        if not city_track and ev['circuit'] and not axis:
+            # The lap along the event's own routes where the course misses
+            # its outline (the map's drawing of the race) and the routes
+            # keep to it: the Parkade's 4306, laid over the roads of the
+            # floor below, cut a corner of the map 104 m off it, through a
+            # wall on the decks; its routes pass within 9 m of every point.
+            own = f"ROUTES{ev['id']}F.BIN"
+            # (judged on the course without its backtracks, as it will be
+            # raced)
+            clean = drop_backtracks(list(pts), list(gates), ev['circuit'])[0]
+            if route_file_exists(args.game, args.track, own) and off_outline(ev, [(q[2], q[0]) for q in clean]) > OUTLINE_MISS:
+                lap = event_lap(RacerWalk(*read_route_net(args.game, args.track, own),
+                                          n2routes.read_event_barriers(args.game, args.track, ev['id'])),
+                                pts, ev['circuit'], city)
+                if lap and off_outline(ev, [(q[2], q[0]) for q in lap]) <= OUTLINE_KEEP:
+                    gates = sorted(set(min(range(len(lap)), key=lambda j: math.dist(lap[j], pts[g])) for g in gates))
+                    pts, walked = lap, len(lap)
+        if not city_track:
+            pts, gates, back = drop_backtracks(pts, gates, ev['circuit'])
+            start = marker(marks, 'ForwardStartLine') or marker(marks, 'ForwardStartingPosition')
+            anchor = start_anchor(pts, start, city) if start else None
+            ground = pts
+            pts, step = follow_ground(ground, ev['circuit'], city, anchor)
+            if step > 5 and anchor:
+                # the course's points cut the Parkade's spiral ramp on the way
+                # down (the 4302, the 4306): no ground joins them on its floor,
+                # so it stays on the ground floor, as before
+                pts, step = follow_ground(ground, ev['circuit'], city)
+            elif anchor:
+                # the lines across the spiral's well, round the ramp instead
+                pts, gates, threaded = thread_ramps(pts, gates, ev['circuit'], city)
+            if walked and not axis:
+                # Drag lanes/availability are sampled at these points too.
+                # Keep their dense route axis: simplifying only its centre
+                # discards short lane closures and stretches lane changes.
+                # the lap from its routes (event_lap), a point every 5 m:
+                # only its turns and its changes of slope kept (the 4306's
+                # 453 points, 4.5 KB more of races-L4RC.n2rc)
+                pts, gates = simplify_course(pts, gates)
+            cut += back
+            # On the ground, every closed track's course again: the runway
+            # drags now lay out on the free roam's links (not the channel
+            # fallback), from a race node 45 m behind the wall that closes
+            # the lane channel, and the walls show only at the ground's height
+            if not ev['circuit']:
+                pts, gates, trimmed = trim_walled_ends(pts, gates, city)
+                cut += round(trimmed)
+            if step > 5:
+                # the ground under the line drops away (a deck whose
+                # collision ends over the road beneath): no car makes it
+                return f'ground step {step:.0f} m'
+        return pts, gates, dict(kinks_cut=cut, pulled=pulled, nudged=moved, relayered=relayered, walked=walked,
+                                followed=followed, barrier_crossings=laid['crossings'], axis=axis and axis[2])
+    got = lay_event(ev)
+    if isinstance(got, str) and ev is not catalog_ev:
+        # no road to the lines' points (L4RB's runways: the lane channel
+        # closes behind the grid and past the finish): the catalog's
+        # outline, cut at the lines afterwards (at_markers)
+        ev = catalog_ev
+        got = lay_event(ev)
+    if isinstance(got, str):
+        return dict(id=ev['id'], error=got), None, None, None
+    pts, gates, fields = got
+    cut_pts = at_markers(pts, gates, ev['circuit'], marks)
+    def worst(cut):
+        return max(o for o in cut[3] if o is not None) if any(o is not None for o in cut[3]) else 0.0
+    if ev is not catalog_ev and worst(cut_pts) > 5:
+        # laid to the lines' points, the course still misses one (4141's
+        # start line, 16 m off the road its approach point took): the
+        # catalog's outline cut at the lines, when it passes nearer them
+        other = lay_event(catalog_ev)
+        if not isinstance(other, str):
+            alt = at_markers(other[0], other[1], False, marks)
+            if worst(alt) < worst(cut_pts):
+                cut_pts, fields, ev = alt, other[2], catalog_ev
+    if ev['circuit'] and cut_pts[3][0] is not None and cut_pts[3][0] > 5:
+        # the circuit's start line on another road than its course (4002,
+        # 22 m off, on the stadium road's other carriageway; L4RC's 4304,
+        # 63 m): again from the line, kept when that brings the line onto
+        # the course and changes it only near the line (4083's laid again
+        # took another way 2 km on)
+        again = lay_event(dict(ev, outline=circuit_from_line(ev['outline'], marker(marks, 'ForwardStartLine'))))
+        if not isinstance(again, str):
+            alt = at_markers(again[0], again[1], True, marks)
+            if alt[3][0] < cut_pts[3][0] and changed_near_start(cut_pts[0], alt[0]):
+                cut_pts, fields = alt, dict(again[2], from_line=round(cut_pts[3][0], 1))
+    pts, gates, finish, line_off, anchor = cut_pts
+    cut, pulled, moved, relayered, walked, followed = (fields[k] for k in ('kinks_cut', 'pulled', 'nudged', 'relayered', 'walked', 'followed'))
+    crossings = fields['barrier_crossings']
+    length = sum(math.dist(pts[k], pts[k + 1]) for k in range(len(pts) - 1))
+    if ev['circuit']:
+        length += math.dist(pts[-1], pts[0])
+    marks_out = marks_record(ev['id'], pts, ev['circuit'], finish, marks, anchor)
+    outline_len = sum(math.dist(ev['outline'][k], ev['outline'][k + 1]) for k in range(len(ev['outline']) - 1))
+    out = bytearray(struct.pack('<HBBHHf', ev['id'], ev['circuit'], ev['hint'], len(pts), len(gates), length))
+    for p in pts:
+        out += struct.pack('<3f', *p)
+    out += struct.pack(f'<{len(gates)}H', *gates)
+    out += bytes((-len(out)) % 4)
+    lanes_out = None
+    if fields.get('axis'):   # (on the course as cut at the lines: at_markers)
+        shapes = barrier_shapes(n2routes.read_event_barriers(args.game, args.track, ev['id']))
+        others = [(num, rt, route_levels(rt, event_city)) for num, rt in info.items()
+                  if DRAG_OTHER_ROUTES and n2routes.route_for(route_events, num, ev['id']) and len(rt) > 1]
+        lanes, where, dist = drag_lanes(pts, fields['axis'], info, shapes, event_city, others)
+        plan = drag_plan(lanes, where, dist, event_city, pts, shapes)
+        lanes_out = bytearray(struct.pack('<2H', ev['id'], len(pts)))
+        for row, go, at, q in zip(lanes, plan, where, pts):
+            lanes_out += struct.pack('<4bB4b', *(NO_LANE if v is None else max(-127, min(127, round(v * LANE_UNITS))) for v in row),
+                                     sum(g << (2 * k) for k, g in enumerate(go)),
+                                     *(max(-127, min(127, round((a[2] - q[1]) * 8))) for a in at))
+        lanes_out += bytes((-len(lanes_out)) % 4)
+    entry = dict(id=ev['id'], circuit=ev['circuit'], points=len(pts), gates=len(gates), kinks_cut=cut, pulled=pulled, nudged=moved,
+                 relayered=relayered, walked=walked, followed=followed, barrier_crossings=crossings, from_line=fields.get('from_line'),
+                 length=round(length), outline=round(outline_len), finish=round(finish),
+                 start_off=None if line_off[0] is None else round(line_off[0], 1),
+                 finish_off=None if line_off[1] is None else round(line_off[1], 1))
+    return entry, bytes(out), marks_out, lanes_out and bytes(lanes_out)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', default='L4RA', help='L4RA the city (races.n2rc); another: races-<track>.n2rc')
     ap.add_argument('--only', help='comma-separated event ids (a trial run: the output has only those)')
+    ap.add_argument('--jobs', type=int, default=1, help='events laid side by side, one process each (the output is the same)')
     args = ap.parse_args()
     only = {int(e) for e in args.only.split(',')} if args.only else None
-    global TRACK
-    TRACK = args.track
-    city_track = args.track == 'L4RA'
-    free_nodes, free_links = read_roads(args.out / ('roads.n2rd' if city_track else f'roads-{args.track}.n2rd'))
-    city = CityCollision(args.out / ('city.n2cy' if city_track else f'track-{args.track}.n2cy'))
-    check = EdgeCheck(city, len(free_nodes))
-    out = bytearray()
-    report, kept = [], 0
-    base_city = city
-    net = read_route_net(args.game, args.track)
-    info = n2routes.read_routes(args.game, args.track)
-    route_events = n2routes.route_events(args.game, args.track)
-    lanes_out = bytearray()   # the drags laid on their routes: their lanes (drag_lanes)
-    lanes_kept = 0
-    all_marks = read_markers(args.game, args.track)
-    marks_out = bytearray()
-    for ev in read_catalog(args.game, args.track):
-        if only and ev['id'] not in only:
+    load_context(args, only)
+    city_track, info, route_events = _CTX['city_track'], _CTX['info'], _CTX['route_events']
+    events = [ev for ev in read_catalog(args.game, args.track) if not only or ev['id'] in only]
+    if args.jobs > 1 and len(events) > 1:
+        import concurrent.futures
+        with concurrent.futures.ProcessPoolExecutor(args.jobs, initializer=load_context, initargs=(args, only)) as ex:
+            done = list(ex.map(lay_event_record, events))
+    else:
+        done = [lay_event_record(ev) for ev in events]
+    out, marks_out, lanes_out, report, kept, lanes_kept = bytearray(), bytearray(), bytearray(), [], 0, 0
+    for entry, record, marks_record_, lanes_record in done:
+        report.append(entry)
+        if record is None:
             continue
-        marks = all_marks.get(ev['id'], {})
-        catalog_ev = ev
-        if not ev['circuit'] and marker(marks, 'ForwardStartLine') and marker(marks, 'ForwardFinishLine'):
-            # laid from just behind the start line to past the finish line
-            # (the catalog's outline runs on either side: 4201's 236 m
-            # before its grid; 4107's starts 170 m after its start line)
-            ev = dict(ev, outline=mark_outline(ev['outline'], marker(marks, 'ForwardStartLine'), marker(marks, 'ForwardFinishLine')))
-        if not path_exists(args.game, args.track, ev['id']):
-            report.append(dict(id=ev['id'], error='no paths file'))
-            continue
-        # the event's own barriers over the world (convert_city.py's bar-<id>.n2cy)
-        event_city = base_city.with_overlay(args.out / f"bar-{ev['id']}.n2cy")
-        def lay_event(ev):
-            """The event's course over its roads and the clean-up passes:
-            (points, gates, report fields), or why there is none."""
-            city = event_city
-            nodes, links = race_roads(args.game, ev['id'], free_nodes, free_links, city)
-            # The city's graph is one network (its main component); a closed
-            # track's is several islands, one per course: any of them will do
-            # (the course still has to join its points by road).
-            usable = components(nodes, links) if city_track else [True] * len(nodes)
-            def choose(walls):
-                laid = lay_course(ev, nodes, links, usable, city, len(free_nodes), city_track, median=False, walls=walls)
-                if laid and not walls and (laid['crossings'] or laid['blocked']):
-                    # The race roads off their medians (EdgeCheck): kept only where
-                    # they leave fewer barrier crossings, or as many and fewer
-                    # blocked metres, with no detour. Everywhere, they changed
-                    # courses that drove fine (4126's took a race road over a deck,
-                    # wedging where it joined and left it).
-                    med = lay_course(ev, nodes, links, usable, city, len(free_nodes), city_track, walls=walls)
-                    if med and (med['crossings'], med['blocked']) < (laid['crossings'], laid['blocked']) \
-                            and laid['outline'] * .95 <= med['length'] <= laid['length'] * 1.1:
-                        laid = med
-                if laid and (laid['crossings'] or laid['route_crossings']):
-                    # Through one of the event's barriers (the game's invisible
-                    # PLAYER_BARRIERS_<id>, a 1 m wall: on the diagonal a metre or
-                    # two of a car-wide corridor, under the edges' tolerance): the
-                    # course driver wedges there (4126, Black Tusk, twice). Again
-                    # with those edges closed, kept when that costs no walls and no
-                    # detour (closing them can send the course the long way round,
-                    # or skip a stretch of the outline).
-                    # Also when the route crossed one and nudge took the course round
-                    # the barrier's end: that can cost more walls than the route
-                    # that keeps off it (4124, 4145).
-                    other = lay_course(ev, nodes, links, usable, city, len(free_nodes), city_track, barriers=True, median=False, walls=walls)
-                    # (a barrier closing a road calls for the detour: up to 1.3 times
-                    # the outline, the 4144's 1.2)
-                    if other and not other['crossings'] and other['blocked'] <= laid['blocked'] \
-                            and laid['outline'] * .95 <= other['length'] <= longest_detour(laid, other):
-                        laid = other
-                return laid
-            laid = choose(False)
-            if laid and laid['faults']:
-                # Through a thin wall across the road or off a step (more than
-                # DROP): the 4083's course went through two walls of a single
-                # cell, the 4043's dropped 1.9 m off a terrain block. Again with
-                # those closed (EdgeCheck, nudge), kept when that leaves fewer
-                # faults and crossings, and no detour. Everywhere, they moved
-                # courses that drove fine (4084, 4105).
-                alt = choose(True)
-                if alt and (alt['faults'] + alt['crossings'], alt['blocked']) < (laid['faults'] + laid['crossings'], laid['blocked']) \
-                        and laid['outline'] * .95 <= alt['length'] <= longest_detour(laid, alt):
-                    laid = alt
-            if not laid:
-                return 'no road path'
-            pts, gates, cut, pulled, moved, relayered = (laid[k] for k in ('pts', 'gates', 'cut', 'pulled', 'moved', 'relayered'))
-            followed = walked = 0
-            if city_track:
-                # Where the original game's racers drive (RacerWalk): on a dual
-                # road, the carriageway its signs keep them to (the 4083's ramp
-                # and the road after it: the east one; the course took the west).
-                walk = RacerWalk(*net, n2routes.read_event_barriers(args.game, args.track, ev['id']))
-                pts, gates, walked = follow_walk(pts, gates, ev['circuit'], walk_course(walk, pts, ev['circuit']), city, walk)
-            if str(ev['id']) in REFERENCE:
-                # Where the original game's rivals drive (race_reference.json): the
-                # 4083's course took the west carriageway of a dual ramp and the
-                # road after it, through the median twice; theirs keeps east.
-                pts, gates, followed = follow_reference(pts, gates, REFERENCE[str(ev['id'])], city)
-            axis = None
-            if not city_track and (4200 <= ev['id'] < 4300 or 4400 <= ev['id'] < 4500):
-                # only the routes that stand in the event (n2routes.route_events)
-                mine = {r: p for r, p in net[0].items() if n2routes.route_for(route_events, r, ev['id'])}
-                signs = {key: [sg for sg in v if sg[0] in mine] for key, v in net[1].items() if key[0] in mine}
-                walk = RacerWalk(mine, signs, n2routes.read_event_barriers(args.game, args.track, ev['id']))
-                axis = drag_on_routes_any(ev, pts, gates, walk, info, city)
-                if axis:
-                    pts, gates, _ = axis
-                    walked = len(pts)
-            if not city_track and ev['circuit'] and not axis:
-                # The lap along the event's own routes where the course misses
-                # its outline (the map's drawing of the race) and the routes
-                # keep to it: the Parkade's 4306, laid over the roads of the
-                # floor below, cut a corner of the map 104 m off it, through a
-                # wall on the decks; its routes pass within 9 m of every point.
-                own = f"ROUTES{ev['id']}F.BIN"
-                # (judged on the course without its backtracks, as it will be
-                # raced)
-                clean = drop_backtracks(list(pts), list(gates), ev['circuit'])[0]
-                if route_file_exists(args.game, args.track, own) and off_outline(ev, [(q[2], q[0]) for q in clean]) > OUTLINE_MISS:
-                    lap = event_lap(RacerWalk(*read_route_net(args.game, args.track, own),
-                                              n2routes.read_event_barriers(args.game, args.track, ev['id'])),
-                                    pts, ev['circuit'], city)
-                    if lap and off_outline(ev, [(q[2], q[0]) for q in lap]) <= OUTLINE_KEEP:
-                        gates = sorted(set(min(range(len(lap)), key=lambda j: math.dist(lap[j], pts[g])) for g in gates))
-                        pts, walked = lap, len(lap)
-            if not city_track:
-                pts, gates, back = drop_backtracks(pts, gates, ev['circuit'])
-                start = marker(marks, 'ForwardStartLine') or marker(marks, 'ForwardStartingPosition')
-                anchor = start_anchor(pts, start, city) if start else None
-                ground = pts
-                pts, step = follow_ground(ground, ev['circuit'], city, anchor)
-                if step > 5 and anchor:
-                    # the course's points cut the Parkade's spiral ramp on the way
-                    # down (the 4302, the 4306): no ground joins them on its floor,
-                    # so it stays on the ground floor, as before
-                    pts, step = follow_ground(ground, ev['circuit'], city)
-                elif anchor:
-                    # the lines across the spiral's well, round the ramp instead
-                    pts, gates, threaded = thread_ramps(pts, gates, ev['circuit'], city)
-                if walked and not axis:
-                    # Drag lanes/availability are sampled at these points too.
-                    # Keep their dense route axis: simplifying only its centre
-                    # discards short lane closures and stretches lane changes.
-                    # the lap from its routes (event_lap), a point every 5 m:
-                    # only its turns and its changes of slope kept (the 4306's
-                    # 453 points, 4.5 KB more of races-L4RC.n2rc)
-                    pts, gates = simplify_course(pts, gates)
-                cut += back
-                # On the ground, every closed track's course again: the runway
-                # drags now lay out on the free roam's links (not the channel
-                # fallback), from a race node 45 m behind the wall that closes
-                # the lane channel, and the walls show only at the ground's height
-                if not ev['circuit']:
-                    pts, gates, trimmed = trim_walled_ends(pts, gates, city)
-                    cut += round(trimmed)
-                if step > 5:
-                    # the ground under the line drops away (a deck whose
-                    # collision ends over the road beneath): no car makes it
-                    return f'ground step {step:.0f} m'
-            return pts, gates, dict(kinks_cut=cut, pulled=pulled, nudged=moved, relayered=relayered, walked=walked,
-                                    followed=followed, barrier_crossings=laid['crossings'], axis=axis and axis[2])
-        got = lay_event(ev)
-        if isinstance(got, str) and ev is not catalog_ev:
-            # no road to the lines' points (L4RB's runways: the lane channel
-            # closes behind the grid and past the finish): the catalog's
-            # outline, cut at the lines afterwards (at_markers)
-            ev = catalog_ev
-            got = lay_event(ev)
-        if isinstance(got, str):
-            report.append(dict(id=ev['id'], error=got))
-            continue
-        pts, gates, fields = got
-        cut_pts = at_markers(pts, gates, ev['circuit'], marks)
-        def worst(cut):
-            return max(o for o in cut[3] if o is not None) if any(o is not None for o in cut[3]) else 0.0
-        if ev is not catalog_ev and worst(cut_pts) > 5:
-            # laid to the lines' points, the course still misses one (4141's
-            # start line, 16 m off the road its approach point took): the
-            # catalog's outline cut at the lines, when it passes nearer them
-            other = lay_event(catalog_ev)
-            if not isinstance(other, str):
-                alt = at_markers(other[0], other[1], False, marks)
-                if worst(alt) < worst(cut_pts):
-                    cut_pts, fields, ev = alt, other[2], catalog_ev
-        if ev['circuit'] and cut_pts[3][0] is not None and cut_pts[3][0] > 5:
-            # the circuit's start line on another road than its course (4002,
-            # 22 m off, on the stadium road's other carriageway; L4RC's 4304,
-            # 63 m): again from the line, kept when that brings the line onto
-            # the course and changes it only near the line (4083's laid again
-            # took another way 2 km on)
-            again = lay_event(dict(ev, outline=circuit_from_line(ev['outline'], marker(marks, 'ForwardStartLine'))))
-            if not isinstance(again, str):
-                alt = at_markers(again[0], again[1], True, marks)
-                if alt[3][0] < cut_pts[3][0] and changed_near_start(cut_pts[0], alt[0]):
-                    cut_pts, fields = alt, dict(again[2], from_line=round(cut_pts[3][0], 1))
-        pts, gates, finish, line_off, anchor = cut_pts
-        cut, pulled, moved, relayered, walked, followed = (fields[k] for k in ('kinks_cut', 'pulled', 'nudged', 'relayered', 'walked', 'followed'))
-        crossings = fields['barrier_crossings']
-        length = sum(math.dist(pts[k], pts[k + 1]) for k in range(len(pts) - 1))
-        if ev['circuit']:
-            length += math.dist(pts[-1], pts[0])
-        marks_out += marks_record(ev['id'], pts, ev['circuit'], finish, marks, anchor)
-        outline_len = sum(math.dist(ev['outline'][k], ev['outline'][k + 1]) for k in range(len(ev['outline']) - 1))
-        out += struct.pack('<HBBHHf', ev['id'], ev['circuit'], ev['hint'], len(pts), len(gates), length)
-        for p in pts:
-            out += struct.pack('<3f', *p)
-        out += struct.pack(f'<{len(gates)}H', *gates)
-        out += bytes((-len(out)) % 4)
+        out += record
+        marks_out += marks_record_
         kept += 1
-        if fields.get('axis'):   # (on the course as cut at the lines: at_markers)
-            shapes = barrier_shapes(n2routes.read_event_barriers(args.game, args.track, ev['id']))
-            others = [(num, rt, route_levels(rt, event_city)) for num, rt in info.items()
-                      if DRAG_OTHER_ROUTES and n2routes.route_for(route_events, num, ev['id']) and len(rt) > 1]
-            lanes, where, dist = drag_lanes(pts, fields['axis'], info, shapes, event_city, others)
-            plan = drag_plan(lanes, where, dist, event_city, pts, shapes)
-            lanes_out += struct.pack('<2H', ev['id'], len(pts))
-            for row, go, at, q in zip(lanes, plan, where, pts):
-                lanes_out += struct.pack('<4bB4b', *(NO_LANE if v is None else max(-127, min(127, round(v * LANE_UNITS))) for v in row),
-                                         sum(g << (2 * k) for k, g in enumerate(go)),
-                                         *(max(-127, min(127, round((a[2] - q[1]) * 8))) for a in at))
-            lanes_out += bytes((-len(lanes_out)) % 4)
+        if lanes_record:
+            lanes_out += lanes_record
             lanes_kept += 1
-        report.append(dict(id=ev['id'], circuit=ev['circuit'], points=len(pts), gates=len(gates), kinks_cut=cut, pulled=pulled, nudged=moved,
-                           relayered=relayered, walked=walked, followed=followed, barrier_crossings=crossings, from_line=fields.get('from_line'),
-                           length=round(length), outline=round(outline_len), finish=round(finish),
-                           start_off=None if line_off[0] is None else round(line_off[0], 1),
-                           finish_off=None if line_off[1] is None else round(line_off[1], 1)))
     name = 'races' if city_track else f'races-{args.track}'
     (args.out / f'{name}.n2rc').write_bytes(struct.pack('<4s2I', b'N2RC', 1, kept) + out)
     if not city_track:

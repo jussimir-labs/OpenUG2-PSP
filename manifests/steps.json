@@ -1,0 +1,4693 @@
+{
+ "schema": 1,
+ "sources": [
+  "ps2",
+  "xbox"
+ ],
+ "steps": [
+  {
+   "name": "carro da vitrine",
+   "commands": [
+    [
+     "tools/convert_car.py"
+    ]
+   ],
+   "code": [
+    "presets/350z-showroom.json",
+    "tools/convert_car.py",
+    "tools/convert_garage.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/350Z-ps2-vinyls.json",
+    ".tools/cache/350Z-vinyls.json",
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    ".tools/cache/350Z-ps2-vinyls.json",
+    ".tools/cache/350Z-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-light.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-light.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/conversion.json",
+    "dist/PSP/GAME/NFSU2VIEW/showroom.n2ev"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 8.45,
+   "peak_rss_mb": 171
+  },
+  {
+   "name": "cidade",
+   "commands": [
+    [
+     "tools/convert_city.py",
+     "--no-precull"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_mips.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/step_trace",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/L4RA-objects.json",
+    ".tools/cache/L4RA-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "odr"
+   ],
+   "writes": [
+    ".tools/cache/L4RA-objects.json",
+    ".tools/cache/L4RA-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4001.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4002.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4003.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4004.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4005.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4006.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4011.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4012.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4013.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4014.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4015.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4021.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4022.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4023.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4024.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4041.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4042.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4043.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4044.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4045.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4061.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4062.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4063.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4081.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4082.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4083.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4084.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4085.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4086.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4087.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4088.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4091.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4092.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4093.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4094.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4101.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4102.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4103.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4104.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4105.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4106.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4107.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4121.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4122.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4123.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4124.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4125.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4126.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4127.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4141.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4142.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4143.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4144.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4145.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4161.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4162.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4163.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4164.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4174.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4175.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4176.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4177.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4178.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4179.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free0.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free1.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free2.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free3.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free4.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free5.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/city.json",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2mp"
+   ],
+   "removes": [
+    ".tools/cache/L4RA-objects.tmp",
+    ".tools/cache/L4RA-ps2-objects.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4001.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4002.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4003.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4004.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4005.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4006.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4011.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4012.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4013.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4014.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4015.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4021.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4022.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4023.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4024.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4041.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4042.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4043.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4044.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4045.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4061.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4062.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4063.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4081.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4082.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4083.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4084.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4085.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4086.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4087.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4088.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4091.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4092.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4093.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4094.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4101.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4102.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4103.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4104.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4105.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4106.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4107.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4121.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4122.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4123.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4124.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4125.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4126.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4127.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4141.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4142.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4143.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4144.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4145.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4161.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4162.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4163.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4164.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4174.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4175.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4176.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4177.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4178.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4179.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free0.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free1.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free2.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free3.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free4.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-free5.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2mp.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2pc"
+   ],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 290.58,
+   "peak_rss_mb": 3144
+  },
+  {
+   "name": "visibilidade da cidade",
+   "commands": [
+    [
+     "tools/convert_pvs.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_pvs.py",
+    "tools/convert_world.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/city.n2vz"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.54,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "objetos derrub\u00e1veis",
+   "commands": [
+    [
+     "tools/convert_smokeables.py"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_smokeables.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/L4RA-objects.json",
+    ".tools/cache/L4RA-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/smokeables.json",
+    "dist/PSP/GAME/NFSU2VIEW/smokeables.n2sm"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 2.13,
+   "peak_rss_mb": 259
+  },
+  {
+   "name": "ruas",
+   "commands": [
+    [
+     "tools/convert_routes.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_routes.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/roads.json",
+    "dist/PSP/GAME/NFSU2VIEW/roads.n2rd",
+    "dist/PSP/GAME/NFSU2VIEW/roads.n2ti"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.61,
+   "peak_rss_mb": 460
+  },
+  {
+   "name": "GPS",
+   "commands": [
+    [
+     "tools/convert_gps.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_gps.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/gpsnet.json",
+    "dist/PSP/GAME/NFSU2VIEW/gpsnet.n2gn"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "faixas",
+   "commands": [
+    [
+     "tools/convert_lanes.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_lanes.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/roads.n2rd",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/lanes.json",
+    "dist/PSP/GAME/NFSU2VIEW/lanes.n2tl"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "corridas da cidade",
+   "commands": [
+    [
+     "tools/convert_races.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_races.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py",
+    "tools/race_reference.json"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4001.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4002.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4003.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4004.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4005.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4006.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4011.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4012.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4013.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4014.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4015.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4021.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4022.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4023.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4024.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4041.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4042.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4043.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4044.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4045.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4061.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4062.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4063.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4081.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4082.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4083.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4084.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4085.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4086.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4087.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4088.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4101.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4102.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4103.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4104.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4105.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4106.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4107.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4121.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4122.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4123.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4124.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4125.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4126.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4127.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4141.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4142.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4143.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4144.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4145.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4161.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4162.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4163.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4164.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4174.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4175.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4176.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4177.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4178.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4179.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/roads.n2rd",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/marks.n2mk",
+    "dist/PSP/GAME/NFSU2VIEW/races.json",
+    "dist/PSP/GAME/NFSU2VIEW/races.n2rc"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 197.6,
+   "peak_rss_mb": 2205
+  },
+  {
+   "name": "zonas de reset",
+   "commands": [
+    [
+     "tools/convert_resetzones.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_resetzones.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/resetzones.n2rz"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "pista L4RB",
+   "commands": [
+    [
+     "tools/convert_city.py",
+     "--track",
+     "L4RB",
+     "--no-precull"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_mips.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/step_trace",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/L4RB-objects.json",
+    ".tools/cache/L4RB-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "odr"
+   ],
+   "writes": [
+    ".tools/cache/L4RB-objects.json",
+    ".tools/cache/L4RB-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4211.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4212.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4213.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4221.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4222.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4223.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.json",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2mp"
+   ],
+   "removes": [
+    ".tools/cache/L4RB-objects.tmp",
+    ".tools/cache/L4RB-ps2-objects.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4211.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4212.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4213.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4221.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4222.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4223.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2mp.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2pc"
+   ],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 67.66,
+   "peak_rss_mb": 2223
+  },
+  {
+   "name": "ruas da pista L4RB",
+   "commands": [
+    [
+     "tools/convert_routes.py",
+     "--track",
+     "L4RB"
+    ]
+   ],
+   "code": [
+    "tools/convert_routes.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RB.json",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RB.n2rd"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "corridas da pista L4RB",
+   "commands": [
+    [
+     "tools/convert_races.py",
+     "--track",
+     "L4RB"
+    ]
+   ],
+   "code": [
+    "tools/convert_races.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py",
+    "tools/race_reference.json"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4201.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4202.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4203.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4211.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4212.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4213.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4221.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4222.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4223.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RB.n2rd",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/drag-lanes-L4RB.n2dl",
+    "dist/PSP/GAME/NFSU2VIEW/marks-L4RB.n2mk",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RB.json",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RB.n2rc"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 3.71,
+   "peak_rss_mb": 1309
+  },
+  {
+   "name": "pista L4RC",
+   "commands": [
+    [
+     "tools/convert_city.py",
+     "--track",
+     "L4RC",
+     "--no-precull"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_mips.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/step_trace",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/L4RC-objects.json",
+    ".tools/cache/L4RC-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "odr"
+   ],
+   "writes": [
+    ".tools/cache/L4RC-objects.json",
+    ".tools/cache/L4RC-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4301.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4302.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4303.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4304.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4305.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4306.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4311.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4312.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4313.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4314.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4315.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.json",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2mp"
+   ],
+   "removes": [
+    ".tools/cache/L4RC-objects.tmp",
+    ".tools/cache/L4RC-ps2-objects.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4301.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4302.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4303.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4304.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4305.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4306.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4311.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4312.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4313.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4314.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4315.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2mp.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2pc"
+   ],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 65.49,
+   "peak_rss_mb": 1699
+  },
+  {
+   "name": "ruas da pista L4RC",
+   "commands": [
+    [
+     "tools/convert_routes.py",
+     "--track",
+     "L4RC"
+    ]
+   ],
+   "code": [
+    "tools/convert_routes.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RC.json",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RC.n2rd"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "corridas da pista L4RC",
+   "commands": [
+    [
+     "tools/convert_races.py",
+     "--track",
+     "L4RC"
+    ]
+   ],
+   "code": [
+    "tools/convert_races.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py",
+    "tools/race_reference.json"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4301.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4302.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4303.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4304.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4305.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4306.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4311.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4312.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4313.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4314.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4315.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4341.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RC.n2rd",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/marks-L4RC.n2mk",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RC.json",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RC.n2rc"
+   ],
+   "removes": [
+    "dist/PSP/GAME/NFSU2VIEW/drag-lanes-L4RC.n2dl"
+   ],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 27.67,
+   "peak_rss_mb": 953
+  },
+  {
+   "name": "pista L4RD",
+   "commands": [
+    [
+     "tools/convert_city.py",
+     "--track",
+     "L4RD",
+     "--no-precull"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_mips.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/step_trace",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/L4RD-objects.json",
+    ".tools/cache/L4RD-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "odr"
+   ],
+   "writes": [
+    ".tools/cache/L4RD-objects.json",
+    ".tools/cache/L4RD-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4401.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.json",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2mp"
+   ],
+   "removes": [
+    ".tools/cache/L4RD-objects.tmp",
+    ".tools/cache/L4RD-ps2-objects.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4401.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4402.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4403.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4404.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2mp.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2pc"
+   ],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 151.65,
+   "peak_rss_mb": 3480
+  },
+  {
+   "name": "ruas da pista L4RD",
+   "commands": [
+    [
+     "tools/convert_routes.py",
+     "--track",
+     "L4RD"
+    ]
+   ],
+   "code": [
+    "tools/convert_routes.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RD.json",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RD.n2rd"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "corridas da pista L4RD",
+   "commands": [
+    [
+     "tools/convert_races.py",
+     "--track",
+     "L4RD"
+    ]
+   ],
+   "code": [
+    "tools/convert_races.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py",
+    "tools/race_reference.json"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4401.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4402.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4404.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RD.n2rd",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/drag-lanes-L4RD.n2dl",
+    "dist/PSP/GAME/NFSU2VIEW/marks-L4RD.n2mk",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RD.json",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RD.n2rc"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 4.24,
+   "peak_rss_mb": 1144
+  },
+  {
+   "name": "pista L4RF",
+   "commands": [
+    [
+     "tools/convert_city.py",
+     "--track",
+     "L4RF",
+     "--no-precull"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_mips.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/step_trace",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/L4RF-objects.json",
+    ".tools/cache/L4RF-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "odr"
+   ],
+   "writes": [
+    ".tools/cache/L4RF-objects.json",
+    ".tools/cache/L4RF-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4601.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4602.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4603.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4604.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4605.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4606.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4607.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4608.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.json",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2mp"
+   ],
+   "removes": [
+    ".tools/cache/L4RF-objects.tmp",
+    ".tools/cache/L4RF-ps2-objects.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4601.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4602.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4603.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4604.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4605.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4606.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4607.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4608.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2mp.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2pc"
+   ],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 61.57,
+   "peak_rss_mb": 1589
+  },
+  {
+   "name": "ruas da pista L4RF",
+   "commands": [
+    [
+     "tools/convert_routes.py",
+     "--track",
+     "L4RF"
+    ]
+   ],
+   "code": [
+    "tools/convert_routes.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RF.json",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RF.n2rd"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "corridas da pista L4RF",
+   "commands": [
+    [
+     "tools/convert_races.py",
+     "--track",
+     "L4RF"
+    ]
+   ],
+   "code": [
+    "tools/convert_races.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py",
+    "tools/race_reference.json"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4601.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4602.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4603.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4604.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4605.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4606.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4607.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4608.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RF.n2rd",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/marks-L4RF.n2mk",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RF.json",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RF.n2rc"
+   ],
+   "removes": [
+    "dist/PSP/GAME/NFSU2VIEW/drag-lanes-L4RF.n2dl"
+   ],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 6.89,
+   "peak_rss_mb": 607
+  },
+  {
+   "name": "pista L4RG",
+   "commands": [
+    [
+     "tools/convert_city.py",
+     "--track",
+     "L4RG",
+     "--no-precull"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_mips.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/step_trace",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/L4RG-objects.json",
+    ".tools/cache/L4RG-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "odr"
+   ],
+   "writes": [
+    ".tools/cache/L4RG-objects.json",
+    ".tools/cache/L4RG-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4701.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4702.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4703.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4704.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4705.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4711.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4712.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4713.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4714.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4715.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4716.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.json",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2mp"
+   ],
+   "removes": [
+    ".tools/cache/L4RG-objects.tmp",
+    ".tools/cache/L4RG-ps2-objects.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4701.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4702.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4703.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4704.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4705.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4707.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4708.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4709.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4711.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4712.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4713.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4714.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4715.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4716.n2cy.patch-tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2mp.tmp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2pc"
+   ],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 95.3,
+   "peak_rss_mb": 1895
+  },
+  {
+   "name": "ruas da pista L4RG",
+   "commands": [
+    [
+     "tools/convert_routes.py",
+     "--track",
+     "L4RG"
+    ]
+   ],
+   "code": [
+    "tools/convert_routes.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RG.json",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RG.n2rd"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.54,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "corridas da pista L4RG",
+   "commands": [
+    [
+     "tools/convert_races.py",
+     "--track",
+     "L4RG"
+    ]
+   ],
+   "code": [
+    "tools/convert_races.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py",
+    "tools/race_reference.json"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4701.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4702.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4703.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4704.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4705.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4708.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4709.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4711.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4712.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4713.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4714.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4715.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4716.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/roads-L4RG.n2rd",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/marks-L4RG.n2mk",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RG.json",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RG.n2rc"
+   ],
+   "removes": [
+    "dist/PSP/GAME/NFSU2VIEW/drag-lanes-L4RG.n2dl"
+   ],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 15.01,
+   "peak_rss_mb": 2793
+  },
+  {
+   "name": "c\u00e2meras do replay",
+   "commands": [
+    [
+     "tools/convert_tvcams.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_nis.py",
+    "tools/convert_tvcams.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RD.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RG.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races.n2rc",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/tvcams.n2tv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.08,
+   "peak_rss_mb": 45
+  },
+  {
+   "name": "limites da geometria",
+   "commands": [
+    [
+     "tools/n2cy_bounds.py",
+     "--if-missing",
+     "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+    ],
+    [
+     "tools/n2cy_bounds.py",
+     "--if-missing",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2cy"
+    ],
+    [
+     "tools/n2cy_bounds.py",
+     "--if-missing",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2cy"
+    ],
+    [
+     "tools/n2cy_bounds.py",
+     "--if-missing",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2cy"
+    ],
+    [
+     "tools/n2cy_bounds.py",
+     "--if-missing",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2cy"
+    ],
+    [
+     "tools/n2cy_bounds.py",
+     "--if-missing",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2cy"
+    ]
+   ],
+   "code": [
+    "tools/n2cy_bounds.py"
+   ],
+   "absent_code": [],
+   "game": false,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2cy"
+   ],
+   "writes": [],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 3.79,
+   "peak_rss_mb": 38
+  },
+  {
+   "name": "ordem das texturas da cidade",
+   "commands": [
+    [
+     "tools/n2cy_texorder.py",
+     "--if-unordered",
+     "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+    ]
+   ],
+   "code": [
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_texorder.py"
+   ],
+   "absent_code": [],
+   "game": false,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+   ],
+   "removes": [
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy.texorder-tmp"
+   ],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.67,
+   "peak_rss_mb": 1520
+  },
+  {
+   "name": "horizonte distante",
+   "commands": [
+    [
+     "tools/convert_landmarks.py",
+     "--lod",
+     "--towers",
+     "60",
+     "--tile",
+     "256",
+     "--game",
+     "{game}",
+     "--city",
+     "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+     "--out",
+     "dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_landmarks.py",
+    "tools/convert_shell.py",
+    "tools/convert_world.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/L4RA-objects.json",
+    ".tools/cache/L4RA-ps2-objects.json",
+    "dist",
+    "dist/PSP",
+    "dist/PSP/GAME",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/city-landmarks.json",
+    "dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 6.87,
+   "peak_rss_mb": 340
+  },
+  {
+   "name": "mipmaps",
+   "commands": [
+    [
+     "tools/convert_mips.py",
+     "--if-stale",
+     "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+    ],
+    [
+     "tools/convert_mips.py",
+     "--if-stale",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2cy"
+    ],
+    [
+     "tools/convert_mips.py",
+     "--if-stale",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2cy"
+    ],
+    [
+     "tools/convert_mips.py",
+     "--if-stale",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2cy"
+    ],
+    [
+     "tools/convert_mips.py",
+     "--if-stale",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2cy"
+    ],
+    [
+     "tools/convert_mips.py",
+     "--if-stale",
+     "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2cy"
+    ]
+   ],
+   "code": [
+    "tools/convert_mips.py"
+   ],
+   "absent_code": [],
+   "game": false,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2mp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RB.n2mp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RC.n2mp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RD.n2mp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RF.n2mp",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/track-L4RG.n2mp",
+    "tools"
+   ],
+   "writes": [],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 3.38,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "linhas de corrida",
+   "commands": [
+    [
+     "tools/racing_line.py"
+    ]
+   ],
+   "code": [
+    "tools/min_curv.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/racing_line.py",
+    "tools/step_trace"
+   ],
+   "absent_code": [],
+   "game": false,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW/bar-4001.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4002.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4003.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4004.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4005.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4006.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4011.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4012.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4013.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4014.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4015.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4021.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4022.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4023.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4024.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4041.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4042.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4043.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4044.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4045.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4061.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4062.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4063.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4081.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4082.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4083.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4084.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4085.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4086.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4087.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4088.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4101.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4102.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4103.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4104.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4105.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4106.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4107.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4121.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4122.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4123.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4124.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4125.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4126.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4127.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4141.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4142.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4143.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4144.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4145.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4161.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4162.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4163.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4164.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4174.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4175.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4176.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4177.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4178.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4179.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/marks.n2mk",
+    "dist/PSP/GAME/NFSU2VIEW/races.n2rc",
+    "odr"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/lines.json",
+    "dist/PSP/GAME/NFSU2VIEW/lines.n2rl"
+   ],
+   "removes": [],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 418.02,
+   "peak_rss_mb": 6403
+  },
+  {
+   "name": "velocidade das linhas",
+   "commands": [
+    [
+     "tools/line_speeds.py"
+    ]
+   ],
+   "code": [
+    "tools/line_speeds.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/lines.n2rl",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/linespeed.json",
+    "dist/PSP/GAME/NFSU2VIEW/linespeed.n2ls"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 11.58,
+   "peak_rss_mb": 70
+  },
+  {
+   "name": "desvios das linhas",
+   "commands": [
+    [
+     "tools/line_forks.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_races.py",
+    "tools/line_forks.py",
+    "tools/line_speeds.py",
+    "tools/min_curv.py",
+    "tools/n2city.py",
+    "tools/n2cy_patch.py",
+    "tools/n2formats.py",
+    "tools/n2routes.py",
+    "tools/n2source.py",
+    "tools/race_reference.json",
+    "tools/racing_line.py",
+    "tools/step_trace"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4001.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4002.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4003.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4004.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4005.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4006.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4011.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4012.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4013.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4014.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4015.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4021.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4022.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4023.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4024.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4041.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4042.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4043.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4044.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4045.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4061.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4062.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4063.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4081.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4082.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4083.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4084.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4085.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4086.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4087.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4088.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4101.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4102.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4103.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4104.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4105.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4106.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4107.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4121.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4122.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4123.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4124.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4125.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4126.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4127.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4141.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4142.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4143.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4144.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4145.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4161.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4162.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4163.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4164.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4174.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4175.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4176.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4177.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4178.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/bar-4179.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+    "dist/PSP/GAME/NFSU2VIEW/lines.n2rl",
+    "game",
+    "odr"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/lineforks.json",
+    "dist/PSP/GAME/NFSU2VIEW/lineforks.n2lf"
+   ],
+   "removes": [],
+   "lists": [
+    "tools",
+    "tools/step_trace"
+   ],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 25.29,
+   "peak_rss_mb": 358
+  },
+  {
+   "name": "carreira",
+   "commands": [
+    [
+     "tools/convert_career.py"
+    ]
+   ],
+   "code": [
+    "presets/rivals",
+    "presets/rivals/AL_RX8.json",
+    "presets/rivals/CALEB_GTO.json",
+    "presets/rivals/MARCUS_CELICA.json",
+    "presets/rivals/NIGEL_3000GT.json",
+    "presets/rivals/NIKKI_MUSTANGGT.json",
+    "presets/rivals/SCOTT_TT.json",
+    "presets/rivals/TOM_G35.json",
+    "tools/convert_car.py",
+    "tools/convert_career.py",
+    "tools/convert_hud.py",
+    "tools/convert_magazines.py",
+    "tools/convert_physics.py",
+    "tools/convert_shopzones.py",
+    "tools/n2exe.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RB.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RC.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RD.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RF.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RG.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races.n2rc",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/career-world.json",
+    "dist/PSP/GAME/NFSU2VIEW/career.json",
+    "dist/PSP/GAME/NFSU2VIEW/career.n2cr",
+    "dist/PSP/GAME/NFSU2VIEW/hoods.n2nb",
+    "dist/PSP/GAME/NFSU2VIEW/names.txt",
+    "dist/PSP/GAME/NFSU2VIEW/shopzones.json",
+    "dist/PSP/GAME/NFSU2VIEW/shopzones.n2sz"
+   ],
+   "removes": [
+    "dist/PSP/GAME/NFSU2VIEW/shopzones.n2sz.tmp"
+   ],
+   "lists": [
+    "presets/rivals/*.json"
+   ],
+   "globs": [
+    "dist/PSP/GAME/NFSU2VIEW/races-L4R?.n2rc"
+   ],
+   "programs": [
+    "git"
+   ],
+   "seconds": 2.13,
+   "peak_rss_mb": 58
+  },
+  {
+   "name": "carros",
+   "commands": [
+    [
+     "tools/convert_cars.py"
+    ]
+   ],
+   "code": [
+    "tools/car_ratings.py",
+    "tools/convert_car.py",
+    "tools/convert_career.py",
+    "tools/convert_cars.py",
+    "tools/convert_hud.py",
+    "tools/convert_paints.py",
+    "tools/convert_physics.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/career.json",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/bars.n2br",
+    "dist/PSP/GAME/NFSU2VIEW/car-240SX-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-240SX.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-240SX.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-240SX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-3000GT-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-3000GT.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-3000GT.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-3000GT.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-350Z-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-350Z.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-350Z.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-350Z.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-A3-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-A3.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-A3.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-A3.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-CELICA-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-CELICA.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-CELICA.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-CELICA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-CIVIC-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-CIVIC.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-CIVIC.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-CIVIC.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-COROLLA-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-COROLLA.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-COROLLA.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-COROLLA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-ECLIPSE-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-ECLIPSE.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-ECLIPSE.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-ECLIPSE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-ESCALADE-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-ESCALADE.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-ESCALADE.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-ESCALADE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-FOCUS-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-FOCUS.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-FOCUS.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-FOCUS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-G35-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-G35.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-G35.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-G35.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-GOLF-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-GOLF.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-GOLF.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-GOLF.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-GTO-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-GTO.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-GTO.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-GTO.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-HUMMER-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-HUMMER.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-HUMMER.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-HUMMER.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-IMPREZAWRX-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-IMPREZAWRX.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-IMPREZAWRX.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-IMPREZAWRX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-IS300-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-IS300.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-IS300.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-IS300.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-LANCEREVO8-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-LANCEREVO8.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-LANCEREVO8.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-LANCEREVO8.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-MIATA-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-MIATA.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-MIATA.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-MIATA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-MUSTANGGT-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-MUSTANGGT.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-MUSTANGGT.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-MUSTANGGT.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-NAVIGATOR-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-NAVIGATOR.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-NAVIGATOR.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-NAVIGATOR.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-PEUGOT-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-PEUGOT.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-PEUGOT.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-PEUGOT.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-RSX-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-RSX.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-RSX.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-RSX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX7-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX7.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX7.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX7.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX8-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX8.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX8.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-RX8.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-SENTRA-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-SENTRA.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-SENTRA.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-SENTRA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-SKYLINE-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-SKYLINE.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-SKYLINE.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-SKYLINE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-SUPRA-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-SUPRA.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-SUPRA.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-SUPRA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-TIBURON-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-TIBURON.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-TIBURON.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-TIBURON.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-TT-detail.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/car-TT.json",
+    "dist/PSP/GAME/NFSU2VIEW/car-TT.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/car-TT.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/cars.json",
+    "dist/PSP/GAME/NFSU2VIEW/cars.n2cl"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git",
+    "python3"
+   ],
+   "seconds": 13.85,
+   "peak_rss_mb": 1105
+  },
+  {
+   "name": "pacotes de desempenho",
+   "commands": [
+    [
+     "tools/convert_perf.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_career.py",
+    "tools/convert_hud.py",
+    "tools/convert_perf.py",
+    "tools/convert_physics.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/perf.json",
+    "dist/PSP/GAME/NFSU2VIEW/perf.n2pf"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 0.56,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "regras do drift e do drag",
+   "commands": [
+    [
+     "tools/convert_modes.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_modes.py",
+    "tools/convert_physics.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/modes.n2md"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "estilo",
+   "commands": [
+    [
+     "tools/convert_style.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/convert_style.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/moments.n2sm"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 0.56,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "dificuldade",
+   "commands": [
+    [
+     "tools/convert_difficulty.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_difficulty.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/difficulty.n2df"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.57,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "regras do tr\u00e2nsito",
+   "commands": [
+    [
+     "tools/convert_traffic_rules.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_career.py",
+    "tools/convert_traffic.py",
+    "tools/convert_traffic_rules.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/traffic-rules.json",
+    "dist/PSP/GAME/NFSU2VIEW/traffic.n2tf"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.56,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "pinturas",
+   "commands": [
+    [
+     "tools/convert_paints.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_paints.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/paints.json",
+    "dist/PSP/GAME/NFSU2VIEW/paints.n2pt"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.56,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "garagem",
+   "commands": [
+    [
+     "tools/convert_garage.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_garage.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache",
+    ".tools/cache/240SX-ps2-vinyls.json",
+    ".tools/cache/240SX-vinyls.json",
+    ".tools/cache/3000GT-ps2-vinyls.json",
+    ".tools/cache/3000GT-vinyls.json",
+    ".tools/cache/350Z-ps2-vinyls.json",
+    ".tools/cache/350Z-vinyls.json",
+    ".tools/cache/A3-ps2-vinyls.json",
+    ".tools/cache/A3-vinyls.json",
+    ".tools/cache/CELICA-ps2-vinyls.json",
+    ".tools/cache/CELICA-vinyls.json",
+    ".tools/cache/CIVIC-ps2-vinyls.json",
+    ".tools/cache/CIVIC-vinyls.json",
+    ".tools/cache/COROLLA-ps2-vinyls.json",
+    ".tools/cache/COROLLA-vinyls.json",
+    ".tools/cache/ECLIPSE-ps2-vinyls.json",
+    ".tools/cache/ECLIPSE-vinyls.json",
+    ".tools/cache/ESCALADE-ps2-vinyls.json",
+    ".tools/cache/ESCALADE-vinyls.json",
+    ".tools/cache/FOCUS-ps2-vinyls.json",
+    ".tools/cache/FOCUS-vinyls.json",
+    ".tools/cache/G35-ps2-vinyls.json",
+    ".tools/cache/G35-vinyls.json",
+    ".tools/cache/GOLF-ps2-vinyls.json",
+    ".tools/cache/GOLF-vinyls.json",
+    ".tools/cache/GTO-ps2-vinyls.json",
+    ".tools/cache/GTO-vinyls.json",
+    ".tools/cache/HUMMER-ps2-vinyls.json",
+    ".tools/cache/HUMMER-vinyls.json",
+    ".tools/cache/IMPREZAWRX-ps2-vinyls.json",
+    ".tools/cache/IMPREZAWRX-vinyls.json",
+    ".tools/cache/IS300-ps2-vinyls.json",
+    ".tools/cache/IS300-vinyls.json",
+    ".tools/cache/LANCEREVO8-ps2-vinyls.json",
+    ".tools/cache/LANCEREVO8-vinyls.json",
+    ".tools/cache/MIATA-ps2-vinyls.json",
+    ".tools/cache/MIATA-vinyls.json",
+    ".tools/cache/MUSTANGGT-ps2-vinyls.json",
+    ".tools/cache/MUSTANGGT-vinyls.json",
+    ".tools/cache/NAVIGATOR-ps2-vinyls.json",
+    ".tools/cache/NAVIGATOR-vinyls.json",
+    ".tools/cache/PEUGOT-ps2-vinyls.json",
+    ".tools/cache/PEUGOT-vinyls.json",
+    ".tools/cache/RSX-ps2-vinyls.json",
+    ".tools/cache/RSX-vinyls.json",
+    ".tools/cache/RX7-ps2-vinyls.json",
+    ".tools/cache/RX7-vinyls.json",
+    ".tools/cache/RX8-ps2-vinyls.json",
+    ".tools/cache/RX8-vinyls.json",
+    ".tools/cache/SENTRA-ps2-vinyls.json",
+    ".tools/cache/SENTRA-vinyls.json",
+    ".tools/cache/SKYLINE-ps2-vinyls.json",
+    ".tools/cache/SKYLINE-vinyls.json",
+    ".tools/cache/SUPRA-ps2-vinyls.json",
+    ".tools/cache/SUPRA-vinyls.json",
+    ".tools/cache/TIBURON-ps2-vinyls.json",
+    ".tools/cache/TIBURON-vinyls.json",
+    ".tools/cache/TT-ps2-vinyls.json",
+    ".tools/cache/TT-vinyls.json",
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER/ZDIR.BIN",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/garage.json",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    ".tools/cache/240SX-ps2-vinyls.json",
+    ".tools/cache/240SX-vinyls.json",
+    ".tools/cache/3000GT-ps2-vinyls.json",
+    ".tools/cache/3000GT-vinyls.json",
+    ".tools/cache/A3-ps2-vinyls.json",
+    ".tools/cache/A3-vinyls.json",
+    ".tools/cache/CELICA-ps2-vinyls.json",
+    ".tools/cache/CELICA-vinyls.json",
+    ".tools/cache/CIVIC-ps2-vinyls.json",
+    ".tools/cache/CIVIC-vinyls.json",
+    ".tools/cache/COROLLA-ps2-vinyls.json",
+    ".tools/cache/COROLLA-vinyls.json",
+    ".tools/cache/ECLIPSE-ps2-vinyls.json",
+    ".tools/cache/ECLIPSE-vinyls.json",
+    ".tools/cache/ESCALADE-ps2-vinyls.json",
+    ".tools/cache/ESCALADE-vinyls.json",
+    ".tools/cache/FOCUS-ps2-vinyls.json",
+    ".tools/cache/FOCUS-vinyls.json",
+    ".tools/cache/G35-ps2-vinyls.json",
+    ".tools/cache/G35-vinyls.json",
+    ".tools/cache/GOLF-ps2-vinyls.json",
+    ".tools/cache/GOLF-vinyls.json",
+    ".tools/cache/GTO-ps2-vinyls.json",
+    ".tools/cache/GTO-vinyls.json",
+    ".tools/cache/HUMMER-ps2-vinyls.json",
+    ".tools/cache/HUMMER-vinyls.json",
+    ".tools/cache/IMPREZAWRX-ps2-vinyls.json",
+    ".tools/cache/IMPREZAWRX-vinyls.json",
+    ".tools/cache/IS300-ps2-vinyls.json",
+    ".tools/cache/IS300-vinyls.json",
+    ".tools/cache/LANCEREVO8-ps2-vinyls.json",
+    ".tools/cache/LANCEREVO8-vinyls.json",
+    ".tools/cache/MIATA-ps2-vinyls.json",
+    ".tools/cache/MIATA-vinyls.json",
+    ".tools/cache/MUSTANGGT-ps2-vinyls.json",
+    ".tools/cache/MUSTANGGT-vinyls.json",
+    ".tools/cache/NAVIGATOR-ps2-vinyls.json",
+    ".tools/cache/NAVIGATOR-vinyls.json",
+    ".tools/cache/PEUGOT-ps2-vinyls.json",
+    ".tools/cache/PEUGOT-vinyls.json",
+    ".tools/cache/RSX-ps2-vinyls.json",
+    ".tools/cache/RSX-vinyls.json",
+    ".tools/cache/RX7-ps2-vinyls.json",
+    ".tools/cache/RX7-vinyls.json",
+    ".tools/cache/RX8-ps2-vinyls.json",
+    ".tools/cache/RX8-vinyls.json",
+    ".tools/cache/SENTRA-ps2-vinyls.json",
+    ".tools/cache/SENTRA-vinyls.json",
+    ".tools/cache/SKYLINE-ps2-vinyls.json",
+    ".tools/cache/SKYLINE-vinyls.json",
+    ".tools/cache/SUPRA-ps2-vinyls.json",
+    ".tools/cache/SUPRA-vinyls.json",
+    ".tools/cache/TIBURON-ps2-vinyls.json",
+    ".tools/cache/TIBURON-vinyls.json",
+    ".tools/cache/TT-ps2-vinyls.json",
+    ".tools/cache/TT-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW/carbon.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-5ZIGEN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-5ZIGEN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ABS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ABS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ACAUTOTECHNIC.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ACT.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ACT_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ADR.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ADR_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AEM.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AEM_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ALPINE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ALPINE_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-APEX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-APEXI.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-APEXI_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-APEX_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AROSPEED.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AROSPEED_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AUDIOBAHN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AUDIOBAHN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AVUS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-AVUS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-B&M.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-B&M_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BBS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BBS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BILSTEIN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BILSTEIN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BORLA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BORLA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BREMBO.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BREMBO_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BRIDE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-BRIDE_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-CERAMICOOL.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-CERAMICOOL_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-CLUTCHMASTERS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-COLDFUSION.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-COLDFUSION_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-COMPTECH.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-COMPTECH_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-CROWER.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-CROWER_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-DC.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-DC_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-DO-LUCK.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-DO-LUCK_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-DONZ.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-DONZ_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EDELBROCK.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EDELBROCK_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EIBACH.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EIBACH_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ENDLESS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ENDLESS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ENKEI.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ENKEI_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EUROLITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EUROLITE_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EXTRDIMENSION.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EXTREME.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-EXTREME_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-FALKEN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-FALKEN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-FASTBRAKES.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-FASTBRAKES_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-FIDANZA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-FIDANZA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-GREDDY.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-GREDDY_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HEDMAN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HEDMAN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HENSHIN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HENSHIN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HKS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HKS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HNR.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HNR_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HPRACING.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-HPRACING_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ICEMAN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ICEMAN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-INJEN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-INJEN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-INTRAX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-INTRAX_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JACKSON.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JACKSON_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JAPAN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JAPAN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JICMAGIC.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JICMAGIC_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JLA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JLA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JSP.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-JSP_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KENWOOD.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KENWOOD_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KONI.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KONIG.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KONIG_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KONI_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KVR.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KVR_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KYB.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-KYB_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-LEXANI.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-LEXANI_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-MAGNAFLOW.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-MAGNAFLOW_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-MATRIX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-MATRIX_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-MOMO.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-MOMO_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NEUSPEED.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NEUSPEED_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NOLOGY.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NOLOGY_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NOS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NOS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-NX_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-OZ.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-OZ_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-PIAA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-PIAA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-PLASMAGLOW.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-PLASMAGLOW_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-POWERSLOT.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-POWERSLOT_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-RACINGHART.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-RACINGHART_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-REVHARD.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-REVHARD_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-REVO.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-REVO_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-RKSPORT.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-RKSPORT_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ROJA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ROJA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ROTA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ROTA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SCORPION.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SCORPION_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SKUNK2.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SKUNK2_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SLP.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SLP_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SPARCO.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-SPARCO_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-STILLEN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-STILLEN_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-STOPTECH.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-STOPTECH_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-STREETGLOW.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-STREETGLOW_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-THERMAL.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-THERMAL_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TODA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TODA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TOYO.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TOYO_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TURBONETICS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TURBONETICS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TYC.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-TYC_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-UNORTHODOX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-UNORTHODOX_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-VENOM.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-VENOM_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-VIS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-VIS_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-VOLK.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-VOLK_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-WELD.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-WELD_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-XSENGINEERING.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-YOKOHAMA.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-YOKOHAMA_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ZEX.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/decal-ZEX_WHITE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/garage.json",
+    "dist/PSP/GAME/NFSU2VIEW/garage.n2gr",
+    "dist/PSP/GAME/NFSU2VIEW/neon.n2nn",
+    "dist/PSP/GAME/NFSU2VIEW/opt-240SX-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-3000GT-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-350Z-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-A3-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-CELICA-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-CIVIC-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-COROLLA-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-ECLIPSE-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-ESCALADE-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-FOCUS-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-G35-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-GOLF-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-GTO-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-HUMMER-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-IMPREZAWRX-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-IS300-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-LANCEREVO8-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-MIATA-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-MUSTANGGT-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-NAVIGATOR-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-PEUGOT-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-RSX-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-RX7-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-RX8-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-SENTRA-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-SKYLINE-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-SUPRA-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-TIBURON-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/opt-TT-decal.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/parts-240SX.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-3000GT.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-350Z.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-A3.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-CELICA.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-CIVIC.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-COROLLA.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-ECLIPSE.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-ESCALADE.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-FOCUS.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-G35.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-GOLF.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-GTO.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-HUMMER.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-IMPREZAWRX.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-IS300.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-LANCEREVO8.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-MIATA.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-MUSTANGGT.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-NAVIGATOR.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-PEUGOT.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-RSX.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-RX7.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-RX8.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-SENTRA.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-SKYLINE.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-SUPRA.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-TIBURON.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/parts-TT.n2op",
+    "dist/PSP/GAME/NFSU2VIEW/skin-240SX.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-3000GT.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-350Z.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-A3.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-CELICA.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-CIVIC.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-COROLLA.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-ECLIPSE.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-ESCALADE.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-FOCUS.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-G35.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-GOLF.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-GTO.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-HUMMER.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-IMPREZAWRX.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-IS300.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-LANCEREVO8.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-MIATA.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-MUSTANGGT.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-NAVIGATOR.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-PEUGOT.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-RSX.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-RX7.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-RX8.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-SENTRA.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-SKYLINE.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-SUPRA.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-TIBURON.n2sk",
+    "dist/PSP/GAME/NFSU2VIEW/skin-TT.n2sk"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 181.84,
+   "peak_rss_mb": 1885
+  },
+  {
+   "name": "rodas",
+   "commands": [
+    [
+     "tools/convert_rims.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/convert_rims.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/rims.n2rm",
+    "dist/PSP/GAME/NFSU2VIEW/rimstyles.n2rs"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 17.09,
+   "peak_rss_mb": 1536
+  },
+  {
+   "name": "nomes das rodas",
+   "commands": [
+    [
+     "tools/convert_rims.py",
+     "--styles"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/convert_rims.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/rimstyles.n2rs"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 1.61,
+   "peak_rss_mb": 55
+  },
+  {
+   "name": "nomes das pe\u00e7as",
+   "commands": [
+    [
+     "tools/convert_partnames.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_hud.py",
+    "tools/convert_partnames.py",
+    "tools/convert_physics.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/partnames.n2pn"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 0.55,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "vinis",
+   "commands": [
+    [
+     "tools/convert_vinyls.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/convert_vinyls.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/240SX-ps2-vinyls.json",
+    ".tools/cache/240SX-vinyls.json",
+    ".tools/cache/3000GT-ps2-vinyls.json",
+    ".tools/cache/3000GT-vinyls.json",
+    ".tools/cache/350Z-ps2-vinyls.json",
+    ".tools/cache/350Z-vinyls.json",
+    ".tools/cache/A3-ps2-vinyls.json",
+    ".tools/cache/A3-vinyls.json",
+    ".tools/cache/CELICA-ps2-vinyls.json",
+    ".tools/cache/CELICA-vinyls.json",
+    ".tools/cache/CIVIC-ps2-vinyls.json",
+    ".tools/cache/CIVIC-vinyls.json",
+    ".tools/cache/COROLLA-ps2-vinyls.json",
+    ".tools/cache/COROLLA-vinyls.json",
+    ".tools/cache/ECLIPSE-ps2-vinyls.json",
+    ".tools/cache/ECLIPSE-vinyls.json",
+    ".tools/cache/ESCALADE-ps2-vinyls.json",
+    ".tools/cache/ESCALADE-vinyls.json",
+    ".tools/cache/FOCUS-ps2-vinyls.json",
+    ".tools/cache/FOCUS-vinyls.json",
+    ".tools/cache/G35-ps2-vinyls.json",
+    ".tools/cache/G35-vinyls.json",
+    ".tools/cache/GOLF-ps2-vinyls.json",
+    ".tools/cache/GOLF-vinyls.json",
+    ".tools/cache/GTO-ps2-vinyls.json",
+    ".tools/cache/GTO-vinyls.json",
+    ".tools/cache/HUMMER-ps2-vinyls.json",
+    ".tools/cache/HUMMER-vinyls.json",
+    ".tools/cache/IMPREZAWRX-ps2-vinyls.json",
+    ".tools/cache/IMPREZAWRX-vinyls.json",
+    ".tools/cache/IS300-ps2-vinyls.json",
+    ".tools/cache/IS300-vinyls.json",
+    ".tools/cache/LANCEREVO8-ps2-vinyls.json",
+    ".tools/cache/LANCEREVO8-vinyls.json",
+    ".tools/cache/MIATA-ps2-vinyls.json",
+    ".tools/cache/MIATA-vinyls.json",
+    ".tools/cache/MUSTANGGT-ps2-vinyls.json",
+    ".tools/cache/MUSTANGGT-vinyls.json",
+    ".tools/cache/NAVIGATOR-ps2-vinyls.json",
+    ".tools/cache/NAVIGATOR-vinyls.json",
+    ".tools/cache/PEUGOT-ps2-vinyls.json",
+    ".tools/cache/PEUGOT-vinyls.json",
+    ".tools/cache/RSX-ps2-vinyls.json",
+    ".tools/cache/RSX-vinyls.json",
+    ".tools/cache/RX7-ps2-vinyls.json",
+    ".tools/cache/RX7-vinyls.json",
+    ".tools/cache/RX8-ps2-vinyls.json",
+    ".tools/cache/RX8-vinyls.json",
+    ".tools/cache/SENTRA-ps2-vinyls.json",
+    ".tools/cache/SENTRA-vinyls.json",
+    ".tools/cache/SKYLINE-ps2-vinyls.json",
+    ".tools/cache/SKYLINE-vinyls.json",
+    ".tools/cache/SUPRA-ps2-vinyls.json",
+    ".tools/cache/SUPRA-vinyls.json",
+    ".tools/cache/TIBURON-ps2-vinyls.json",
+    ".tools/cache/TIBURON-vinyls.json",
+    ".tools/cache/TT-ps2-vinyls.json",
+    ".tools/cache/TT-vinyls.json",
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-240SX.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-3000GT.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-350Z.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-A3.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-CELICA.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-CIVIC.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-COROLLA.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-ECLIPSE.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-ESCALADE.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-FOCUS.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-G35.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-GOLF.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-GTO.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-HUMMER.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-IMPREZAWRX.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-IS300.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-LANCEREVO8.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-MIATA.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-MUSTANGGT.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-NAVIGATOR.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-PEUGOT.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-RSX.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-RX7.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-RX8.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-SENTRA.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-SKYLINE.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-SUPRA.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-TIBURON.n2vc",
+    "dist/PSP/GAME/NFSU2VIEW/vinyls-TT.n2vc"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 50.91,
+   "peak_rss_mb": 4277
+  },
+  {
+   "name": "pontos do visual",
+   "commands": [
+    [
+     "tools/convert_rating.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_garage.py",
+    "tools/convert_hud.py",
+    "tools/convert_perf.py",
+    "tools/convert_physics.py",
+    "tools/convert_rating.py",
+    "tools/convert_vinyls.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/preset_dump.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/career-world.json",
+    "dist/PSP/GAME/NFSU2VIEW/garage.json",
+    "dist/PSP/GAME/NFSU2VIEW/rims.n2rm",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/rating.json",
+    "dist/PSP/GAME/NFSU2VIEW/rating.n2vr"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 0.69,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "revistas",
+   "commands": [
+    [
+     "tools/convert_magazines.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_magazines.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/magazines.n2mg"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 12.13,
+   "peak_rss_mb": 645
+  },
+  {
+   "name": "telas e HUD",
+   "commands": [
+    [
+     "tools/convert_hud.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/n2exe.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER/ZDIR.BIN",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RB.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RC.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RD.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RF.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RG.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races.n2rc",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/carlot.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/chyron.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/chyron_ig.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/credits.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/credits.txt",
+    "dist/PSP/GAME/NFSU2VIEW/crib.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/customize.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/damage.n2tx",
+    "dist/PSP/GAME/NFSU2VIEW/dynochart.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/dynoresults.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/engage.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/fopts.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/fx.n2tx",
+    "dist/PSP/GAME/NFSU2VIEW/gdialog.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/gps.n2gp",
+    "dist/PSP/GAME/NFSU2VIEW/help.txt",
+    "dist/PSP/GAME/NFSU2VIEW/help_de.txt",
+    "dist/PSP/GAME/NFSU2VIEW/help_es.txt",
+    "dist/PSP/GAME/NFSU2VIEW/help_fr.txt",
+    "dist/PSP/GAME/NFSU2VIEW/help_it.txt",
+    "dist/PSP/GAME/NFSU2VIEW/help_nl.txt",
+    "dist/PSP/GAME/NFSU2VIEW/helpl.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/helpm.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/helps.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/hud.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/hud_drag.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/hud_drift.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/hudpick.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/hudstyles.n2tx",
+    "dist/PSP/GAME/NFSU2VIEW/icon0.png",
+    "dist/PSP/GAME/NFSU2VIEW/igmap.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/keyboard.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/lang_de.n2lg",
+    "dist/PSP/GAME/NFSU2VIEW/lang_es.n2lg",
+    "dist/PSP/GAME/NFSU2VIEW/lang_fr.n2lg",
+    "dist/PSP/GAME/NFSU2VIEW/lang_it.n2lg",
+    "dist/PSP/GAME/NFSU2VIEW/lang_nl.n2lg",
+    "dist/PSP/GAME/NFSU2VIEW/loadctl.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/loading.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/main.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/maps.n2tx",
+    "dist/PSP/GAME/NFSU2VIEW/minimaps.n2mm",
+    "dist/PSP/GAME/NFSU2VIEW/msgdlg.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/optctl.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/options.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/paint.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/parts.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/pause.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/perfcat.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/perfpkg.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/pic1.png",
+    "dist/PSP/GAME/NFSU2VIEW/popts.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/poptsm.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/postrace.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/qrcar.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/qrmode.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/qropts.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/qrtrack.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/rain.n2tx",
+    "dist/PSP/GAME/NFSU2VIEW/replay.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/results.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/reward.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/shopdlg.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/showcase.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/showdpad.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/showgo.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/skids.n2tx",
+    "dist/PSP/GAME/NFSU2VIEW/sms.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/sponsor.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/sponsorpop.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/stats.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/statusc.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/statusd.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/statusm.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/statusr.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/style.n2st",
+    "dist/PSP/GAME/NFSU2VIEW/title.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/tournres.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/tournstand.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/trax.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/vlayer.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/worldmap.n2ui"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [
+    "dist/PSP/GAME/NFSU2VIEW/races-L4R?.n2rc"
+   ],
+   "programs": [
+    "git"
+   ],
+   "seconds": 55.85,
+   "peak_rss_mb": 587
+  },
+  {
+   "name": "marcadores de evento",
+   "commands": [
+    [
+     "tools/convert_trigfx.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/convert_trigfx.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/trigfx.n2te"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 0.6,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "tela de controles",
+   "commands": [
+    [
+     "tools/convert_psp_pad.py"
+    ]
+   ],
+   "code": [
+    "art/reference/psp-controls/psp-isolated-v1.png",
+    "tools/convert_psp_pad.py"
+   ],
+   "absent_code": [],
+   "game": false,
+   "reads": [
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/psppad.n2tx"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.58,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "chuva",
+   "commands": [
+    [
+     "tools/convert_weather.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_weather.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/rain.n2rr"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.6,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "som ambiente",
+   "commands": [
+    [
+     "tools/convert_envsound.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_audio.py",
+    "tools/convert_career.py",
+    "tools/convert_envsound.py",
+    "tools/n2exe.py",
+    "tools/n2formats.py",
+    "tools/n2mips.py",
+    "tools/n2source.py",
+    "tools/native_runtime.py",
+    "tools/parammaps.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/envsound.n2es",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/envsound.n2es"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 3.76,
+   "peak_rss_mb": 46
+  },
+  {
+   "name": "neblina",
+   "commands": [
+    [
+     "tools/convert_fog.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_fog.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/parammaps.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RB.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RC.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RD.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RF.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RG.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog.n2fg",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RB.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RC.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RD.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RF.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog-L4RG.n2fg",
+    "dist/PSP/GAME/NFSU2VIEW/fog.n2fg"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.57,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "luzes",
+   "commands": [
+    [
+     "tools/convert_lights.py"
+    ]
+   ],
+   "code": [
+    "presets/350z-showroom.json",
+    "presets/opponents",
+    "presets/opponents/eclipse.json",
+    "presets/opponents/imprezawrx.json",
+    "presets/opponents/lancerevo8.json",
+    "presets/opponents/rx8.json",
+    "presets/opponents/skyline.json",
+    "presets/opponents/supra.json",
+    "presets/rivals",
+    "presets/rivals/AL_RX8.json",
+    "presets/rivals/CALEB_GTO.json",
+    "presets/rivals/MARCUS_CELICA.json",
+    "presets/rivals/NIGEL_3000GT.json",
+    "presets/rivals/NIKKI_MUSTANGGT.json",
+    "presets/rivals/SCOTT_TT.json",
+    "presets/rivals/TOM_G35.json",
+    "tools/convert_car.py",
+    "tools/convert_lights.py",
+    "tools/convert_physics.py",
+    "tools/convert_traffic.py",
+    "tools/convert_world.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RB.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RC.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RD.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RF.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RG.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/lamps.n2lm",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RB.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RC.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RD.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RF.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares-L4RG.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/flares.n2fl",
+    "dist/PSP/GAME/NFSU2VIEW/lamps.n2lm"
+   ],
+   "removes": [],
+   "lists": [
+    "presets/opponents/*.json",
+    "presets/rivals/*.json"
+   ],
+   "globs": [],
+   "programs": [],
+   "seconds": 24.82,
+   "peak_rss_mb": 205
+  },
+  {
+   "name": "mundo animado",
+   "commands": [
+    [
+     "tools/convert_worldanim.py"
+    ]
+   ],
+   "code": [
+    "tools/city_owners.py",
+    "tools/convert_car.py",
+    "tools/convert_city.py",
+    "tools/convert_mips.py",
+    "tools/convert_nis.py",
+    "tools/convert_world.py",
+    "tools/convert_worldanim.py",
+    "tools/n2cy_bounds.py",
+    "tools/n2cy_patch.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/tristrip.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/L4RA-objects.json",
+    ".tools/cache/L4RA-ps2-objects.json",
+    ".tools/cache/L4RB-objects.json",
+    ".tools/cache/L4RB-ps2-objects.json",
+    ".tools/cache/L4RD-objects.json",
+    ".tools/cache/L4RD-ps2-objects.json",
+    ".tools/cache/L4RG-objects.json",
+    ".tools/cache/L4RG-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/worldanim-L4RB.n2wa",
+    "dist/PSP/GAME/NFSU2VIEW/worldanim-L4RD.n2wa",
+    "dist/PSP/GAME/NFSU2VIEW/worldanim-L4RG.n2wa",
+    "dist/PSP/GAME/NFSU2VIEW/worldanim.n2wa"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 4.22,
+   "peak_rss_mb": 215
+  },
+  {
+   "name": "cena dos menus",
+   "commands": [
+    [
+     "tools/convert_frontend.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_frontend.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/showroom.n2sc"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 7.36,
+   "peak_rss_mb": 63
+  },
+  {
+   "name": "cenas de largada",
+   "commands": [
+    [
+     "tools/convert_intro_nis.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_audio.py",
+    "tools/convert_car.py",
+    "tools/convert_ending_nis.py",
+    "tools/convert_intro_nis.py",
+    "tools/convert_nis.py",
+    "tools/n2exe.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2mips.py",
+    "tools/n2source.py",
+    "tools/native_runtime.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/intro.n2in",
+    "dist/PSP/GAME/NFSU2VIEW/nis-01.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-02.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-03.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-05.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-06.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-07.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-08.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-10.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-12.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-13.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-14.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-15.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-19.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-20.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-21.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-22.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-24.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-25.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-26.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis-27.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nis.big",
+    "dist/PSP/GAME/NFSU2VIEW/nis.n2sp",
+    "dist/PSP/GAME/NFSU2VIEW/revpat.n2rp"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 42.06,
+   "peak_rss_mb": 73
+  },
+  {
+   "name": "cenas de chegada",
+   "commands": [
+    [
+     "tools/convert_ending_nis.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_ending_nis.py",
+    "tools/convert_nis.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/ending.n2ed",
+    "dist/PSP/GAME/NFSU2VIEW/nisend-01.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nisend-02.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nisend-03.n2ni",
+    "dist/PSP/GAME/NFSU2VIEW/nisend-04.n2ni"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 10.03,
+   "peak_rss_mb": 60
+  },
+  {
+   "name": "cenas das lojas",
+   "commands": [
+    [
+     "tools/convert_shop_nis.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_career.py",
+    "tools/convert_ending_nis.py",
+    "tools/convert_nis.py",
+    "tools/convert_shop_nis.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/shopnis.n2sh"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.56,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "tr\u00e2nsito",
+   "commands": [
+    [
+     "tools/convert_traffic.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_traffic.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/traffic-4DR_SEDAN.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-4DR_SEDAN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-4DR_SEDAN02.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-4DR_SEDAN02.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-AMBULANCE.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-AMBULANCE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-BUS.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-BUS.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-COUPE.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-COUPE.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-FIRETRUCK.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-FIRETRUCK.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-HATCHBACK.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-HATCHBACK.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-HATCHBACK02.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-HATCHBACK02.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-MINIVAN.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-MINIVAN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-PANELVAN.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-PANELVAN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-PARCELVAN.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-PARCELVAN.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-PICKUP.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-PICKUP.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-SUV.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-SUV.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-TAXI.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-TAXI.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-TAXI02.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/traffic-TAXI02.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/traffic.json"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 4.76,
+   "peak_rss_mb": 57
+  },
+  {
+   "name": "c\u00e9u",
+   "commands": [
+    [
+     "tools/convert_sky.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_sky.py",
+    "tools/convert_world.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/L4RA-objects.json",
+    ".tools/cache/L4RA-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/sky-sunrise.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/sky-sunset.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/sky.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 2.65,
+   "peak_rss_mb": 58
+  },
+  {
+   "name": "panoramas",
+   "commands": [
+    [
+     "tools/convert_vista.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_car.py",
+    "tools/convert_vista.py",
+    "tools/convert_world.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/n2world.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/L4RA-objects.json",
+    ".tools/cache/L4RA-ps2-objects.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/vista.n2pv",
+    "dist/PSP/GAME/NFSU2VIEW/vista.n2vv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 2.67,
+   "peak_rss_mb": 193
+  },
+  {
+   "name": "f\u00edsica",
+   "commands": [
+    [
+     "tools/convert_physics.py"
+    ]
+   ],
+   "code": [
+    "presets/350z-showroom.json",
+    "presets/opponents",
+    "presets/opponents/eclipse.json",
+    "presets/opponents/imprezawrx.json",
+    "presets/opponents/lancerevo8.json",
+    "presets/opponents/rx8.json",
+    "presets/opponents/skyline.json",
+    "presets/opponents/supra.json",
+    "tools/convert_physics.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/physics.json",
+    "dist/PSP/GAME/NFSU2VIEW/physics.n2ph"
+   ],
+   "removes": [],
+   "lists": [
+    "presets/opponents/*.json"
+   ],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.56,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "fontes originais da f\u00edsica",
+   "commands": [
+    [
+     "tools/convert_original_data.py",
+     "--game",
+     "{game}"
+    ]
+   ],
+   "code": [
+    "tools/convert_original_data.py",
+    "tools/export_physics.py",
+    "tools/export_road.py",
+    "tools/nitro_constants.json",
+    "tools/road_constants.json",
+    "tools/source_data.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/.original-source-ccu8a05r/original-physics.n2og",
+    "dist/PSP/GAME/.original-source-cr8tzq24/original-physics.n2og",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/MANIFEST.json",
+    "dist/PSP/GAME/.original-source-ccu8a05r/topology",
+    "dist/PSP/GAME/.original-source-cr8tzq24/.topology-8wwgcrkm/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-cr8tzq24/.topology-8wwgcrkm/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-cr8tzq24/.topology-8wwgcrkm/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-cr8tzq24/.topology-8wwgcrkm/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-cr8tzq24/.topology-8wwgcrkm/MANIFEST.json",
+    "dist/PSP/GAME/.original-source-cr8tzq24/topology",
+    "dist/PSP/GAME/NFSU2VIEW/original-physics.n2og",
+    "dist/PSP/GAME/NFSU2VIEW/road-L4RA.n2tr",
+    "dist/PSP/GAME/NFSU2VIEW/road-L4RC.n2tr"
+   ],
+   "removes": [
+    "dist/PSP/GAME/.original-source-ccu8a05r/.original-physics.n2og-o9ej1z8b",
+    "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0",
+    "dist/PSP/GAME/.original-source-ccu8a05r/original-physics.json",
+    "dist/PSP/GAME/.original-source-ccu8a05r/original-physics.n2og",
+    "dist/PSP/GAME/.original-source-ccu8a05r/road-L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-ccu8a05r/road-L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-ccu8a05r/topology/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-ccu8a05r/topology/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-ccu8a05r/topology/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-ccu8a05r/topology/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-ccu8a05r/topology/MANIFEST.json",
+    "dist/PSP/GAME/.original-source-cr8tzq24/.original-physics.n2og-eu04vkko",
+    "dist/PSP/GAME/.original-source-cr8tzq24/.topology-8wwgcrkm",
+    "dist/PSP/GAME/.original-source-cr8tzq24/original-physics.json",
+    "dist/PSP/GAME/.original-source-cr8tzq24/original-physics.n2og",
+    "dist/PSP/GAME/.original-source-cr8tzq24/road-L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-cr8tzq24/road-L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-cr8tzq24/topology/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-cr8tzq24/topology/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-cr8tzq24/topology/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-cr8tzq24/topology/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-cr8tzq24/topology/MANIFEST.json"
+   ],
+   "lists": [
+    "dist/PSP/GAME/.original-source-ccu8a05r",
+    "dist/PSP/GAME/.original-source-ccu8a05r/topology",
+    "dist/PSP/GAME/.original-source-cr8tzq24",
+    "dist/PSP/GAME/.original-source-cr8tzq24/topology"
+   ],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.56,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "\u00e1udio",
+   "commands": [
+    [
+     "tools/convert_audio.py"
+    ]
+   ],
+   "code": [
+    "tools/convert_audio.py",
+    "tools/convert_career.py",
+    "tools/convert_envsound.py",
+    "tools/n2exe.py",
+    "tools/n2formats.py",
+    "tools/n2microtalk.py",
+    "tools/n2mips.py",
+    "tools/n2source.py",
+    "tools/n2world.py",
+    "tools/native_runtime.py",
+    "tools/nos_bank.py",
+    "tools/parammaps.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/engine.n2en",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/aems-00.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-01.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-02.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-03.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-04.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-05.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-06.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-07.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-08.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-09.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-10.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-11.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-12.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-13.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-14.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-15.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-16.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-17.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-18.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-19.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-20.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-21.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-22.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-23.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-24.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-25.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-26.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-27.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-28.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-29.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-30.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-31.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-32.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-33.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-34.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-35.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-36.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-37.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-38.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-39.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/aems-40.n2ab",
+    "dist/PSP/GAME/NFSU2VIEW/audio.json",
+    "dist/PSP/GAME/NFSU2VIEW/carsnd.n2cs",
+    "dist/PSP/GAME/NFSU2VIEW/driveby.n2db",
+    "dist/PSP/GAME/NFSU2VIEW/engine-350Z_01d_shrt2.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-350Z_Jason_shrt2.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Acura_ITR.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Bronco_Comp.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Cavel_v1_Base.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Cavel_v1_Lev1.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Eclipse_5zigen.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Ferrari_360.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-FordFocus_Road.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-FordFocus_comp2.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-G35_350ZX_Comp_v2_AB.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-HondaS2000_Church.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Honda_Prelude.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Honda_S2000_5zigen.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Honda_S2000_APEX.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Honda_S2000_Spugen.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Honda_S2000_spliced.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Hummer.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Mazda_Miata.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Mazda_RX7.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-MitsEclipse_2000.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-MustSal_Ramp_V2_CD.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Mustang_Drag.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Mustang_Nscr_COMP.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Nissan_240SX.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Nissan_300ZX_Street.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Nissan_Skyline.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Porsche_Cayenne.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Protege_Ramp_Lev2_CD.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Protege_Ramp_V2_CD.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-RX8_Ramp_v1_CD.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Toyota_GTS.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-Trueno_AE86.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-VR6_Jetta_M3.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-VR6_Jetta_M4.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-VW_Cabriolet.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-VW_Drag_GTi.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-VW_Scirocco.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-WRXSTi_Pull_09.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-WRX_2F2F.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine-WRX_Street.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/engine.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_LRG_Base.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_LRG_Lev1.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_LRG_Lev2.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_LRG_Lev3.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_MED_Base.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_MED_Lev1.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_MED_Lev2.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_MED_Lev3.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_SML_Base.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_SML_Lev1.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_SML_Lev2.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_SML_Lev3.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_TK_Base.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_TK_Lev1.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_TK_Lev2.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/gear-GEAR_TK_Lev3.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/music.idx",
+    "dist/PSP/GAME/NFSU2VIEW/music.mp3",
+    "dist/PSP/GAME/NFSU2VIEW/nos-0.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/nos-1.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/nos-banks.json",
+    "dist/PSP/GAME/NFSU2VIEW/sfx.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/skid-SKIDS_DRIFT2_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/skid-SKIDS_DRIFT_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/skid-SKID_PAV2_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/skid-SKID_PAV_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/speech.big",
+    "dist/PSP/GAME/NFSU2VIEW/speech.n2sp",
+    "dist/PSP/GAME/NFSU2VIEW/stitch.n2st",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_MED_0_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_MED_1_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_MED_2_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_SML1_0_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_SML1_1_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_SML1_2_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_SML2_0_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_SML2_1_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_SML2_2_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_TRUCK_0_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_TRUCK_1_MB.n2sf",
+    "dist/PSP/GAME/NFSU2VIEW/turbo-TURBO_TRUCK_2_MB.n2sf"
+   ],
+   "removes": [
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-3uklrrm_/nos-0.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-3uklrrm_/nos-1.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-3uklrrm_/nos-banks.json",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua/nos-0.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua/nos-1.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua/nos-banks.json",
+    "dist/PSP/GAME/NFSU2VIEW/engine-dcl.n2en",
+    "dist/PSP/GAME/NFSU2VIEW/music.mus"
+   ],
+   "lists": [
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-3uklrrm_",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua"
+   ],
+   "globs": [
+    "dist/PSP/GAME/NFSU2VIEW/engine-*-dcl.n2en"
+   ],
+   "programs": [
+    "eaxa2pcm",
+    "ffmpeg",
+    "git",
+    "lame",
+    "mt2pcm",
+    "xaencode"
+   ],
+   "seconds": 94.42,
+   "peak_rss_mb": 2127
+  },
+  {
+   "name": "filmes",
+   "commands": [
+    [
+     "tools/convert_movies.py",
+     "--missing"
+    ]
+   ],
+   "code": [
+    "tools/convert_career.py",
+    "tools/convert_movies.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/native_runtime.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW",
+    "dist/PSP/GAME/NFSU2VIEW/movie-DRAGTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-DRIFTTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-EALOGO.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-FMVOPENING.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-INDUSTEAST.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-INDUSTWEST.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-ORGANICSTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-PSA.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE01.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE05.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE06.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE07.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE08.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE09.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE10.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE11.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE12.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE13.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE14.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE15.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE16.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE17.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE18.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE20.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-STREETXTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SUBURBAN.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-THX_LOGO.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-UPPERCLASS.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RB.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RC.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RD.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RF.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races-L4RG.n2rc",
+    "dist/PSP/GAME/NFSU2VIEW/races.n2rc",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/movie-DRAGTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-DRIFTTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-EALOGO.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-FMVOPENING.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-INDUSTEAST.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-INDUSTWEST.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-ORGANICSTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-PSA.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE01.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE05.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE06.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE07.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE08.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE09.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE10.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE11.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE12.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE13.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE14.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE15.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE16.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE17.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE18.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE20.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-STREETXTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SUBURBAN.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-THX_LOGO.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-UPPERCLASS.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movies.txt"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [
+    "dist/PSP/GAME/NFSU2VIEW/races-L4R?.n2rc"
+   ],
+   "programs": [
+    "cjpegli",
+    "ffmpeg",
+    "git",
+    "lame",
+    "movie_audio"
+   ],
+   "seconds": 37.43,
+   "peak_rss_mb": 511
+  },
+  {
+   "name": "confer\u00eancia dos filmes",
+   "commands": [
+    [
+     "tools/movie_release.py",
+     "dist/PSP/GAME/NFSU2VIEW"
+    ]
+   ],
+   "code": [
+    "tools/movie_release.py",
+    "tools/movie_release_contract.json"
+   ],
+   "absent_code": [],
+   "game": false,
+   "reads": [
+    "dist/PSP/GAME/NFSU2VIEW/.assets.json",
+    "dist/PSP/GAME/NFSU2VIEW/movie-DRAGTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-DRIFTTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-EALOGO.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-FMVOPENING.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-INDUSTEAST.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-INDUSTWEST.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-ORGANICSTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-PSA.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE01.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE05.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE06.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE07.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE08.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE09.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE10.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE11.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE12.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE13.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE14.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE15.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE16.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE17.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE18.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SCENE20.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-STREETXTUT.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-SUBURBAN.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-THX_LOGO.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movie-UPPERCLASS.n2mv",
+    "dist/PSP/GAME/NFSU2VIEW/movies.txt"
+   ],
+   "writes": [],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 0.59,
+   "peak_rss_mb": 0
+  },
+  {
+   "name": "carro rival eclipse",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/opponents/eclipse.json",
+     "--tag",
+     "opp-eclipse"
+    ]
+   ],
+   "code": [
+    "presets/opponents/eclipse.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/ECLIPSE-ps2-vinyls.json",
+    ".tools/cache/ECLIPSE-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-eclipse.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-eclipse.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-eclipse.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.68,
+   "peak_rss_mb": 164
+  },
+  {
+   "name": "carro rival imprezawrx",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/opponents/imprezawrx.json",
+     "--tag",
+     "opp-imprezawrx"
+    ]
+   ],
+   "code": [
+    "presets/opponents/imprezawrx.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/IMPREZAWRX-ps2-vinyls.json",
+    ".tools/cache/IMPREZAWRX-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-imprezawrx.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-imprezawrx.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-imprezawrx.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.76,
+   "peak_rss_mb": 124
+  },
+  {
+   "name": "carro rival lancerevo8",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/opponents/lancerevo8.json",
+     "--tag",
+     "opp-lancerevo8"
+    ]
+   ],
+   "code": [
+    "presets/opponents/lancerevo8.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/LANCEREVO8-ps2-vinyls.json",
+    ".tools/cache/LANCEREVO8-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-lancerevo8.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-lancerevo8.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-lancerevo8.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.78,
+   "peak_rss_mb": 159
+  },
+  {
+   "name": "carro rival rx8",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/opponents/rx8.json",
+     "--tag",
+     "opp-rx8"
+    ]
+   ],
+   "code": [
+    "presets/opponents/rx8.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/RX8-ps2-vinyls.json",
+    ".tools/cache/RX8-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-rx8.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-rx8.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-rx8.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.69,
+   "peak_rss_mb": 169
+  },
+  {
+   "name": "carro rival skyline",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/opponents/skyline.json",
+     "--tag",
+     "opp-skyline"
+    ]
+   ],
+   "code": [
+    "presets/opponents/skyline.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/SKYLINE-ps2-vinyls.json",
+    ".tools/cache/SKYLINE-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-skyline.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-skyline.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-skyline.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.8,
+   "peak_rss_mb": 165
+  },
+  {
+   "name": "carro rival supra",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/opponents/supra.json",
+     "--tag",
+     "opp-supra"
+    ]
+   ],
+   "code": [
+    "presets/opponents/supra.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/SUPRA-ps2-vinyls.json",
+    ".tools/cache/SUPRA-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-supra.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-supra.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-supra.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.78,
+   "peak_rss_mb": 165
+  },
+  {
+   "name": "carro rival AL_RX8",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/rivals/AL_RX8.json",
+     "--tag",
+     "opp-AL_RX8"
+    ]
+   ],
+   "code": [
+    "presets/rivals/AL_RX8.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/RX8-ps2-vinyls.json",
+    ".tools/cache/RX8-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-AL_RX8.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-AL_RX8.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-AL_RX8.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.78,
+   "peak_rss_mb": 172
+  },
+  {
+   "name": "carro rival CALEB_GTO",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/rivals/CALEB_GTO.json",
+     "--tag",
+     "opp-CALEB_GTO"
+    ]
+   ],
+   "code": [
+    "presets/rivals/CALEB_GTO.json",
+    "tools/convert_car.py",
+    "tools/convert_garage.py",
+    "tools/convert_hud.py",
+    "tools/convert_physics.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py",
+    "tools/partsdb.py",
+    "tools/ps2_buttons.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/GTO-ps2-vinyls.json",
+    ".tools/cache/GTO-vinyls.json",
+    "Need for Speed - Underground 2 (USA) PS2/disc/NFSUNDER",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-CALEB_GTO.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-CALEB_GTO.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-CALEB_GTO.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [
+    "git"
+   ],
+   "seconds": 2.72,
+   "peak_rss_mb": 164
+  },
+  {
+   "name": "carro rival MARCUS_CELICA",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/rivals/MARCUS_CELICA.json",
+     "--tag",
+     "opp-MARCUS_CELICA"
+    ]
+   ],
+   "code": [
+    "presets/rivals/MARCUS_CELICA.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/CELICA-ps2-vinyls.json",
+    ".tools/cache/CELICA-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-MARCUS_CELICA.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-MARCUS_CELICA.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-MARCUS_CELICA.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.65,
+   "peak_rss_mb": 170
+  },
+  {
+   "name": "carro rival NIGEL_3000GT",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/rivals/NIGEL_3000GT.json",
+     "--tag",
+     "opp-NIGEL_3000GT"
+    ]
+   ],
+   "code": [
+    "presets/rivals/NIGEL_3000GT.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/3000GT-ps2-vinyls.json",
+    ".tools/cache/3000GT-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-NIGEL_3000GT.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-NIGEL_3000GT.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-NIGEL_3000GT.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.65,
+   "peak_rss_mb": 157
+  },
+  {
+   "name": "carro rival NIKKI_MUSTANGGT",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/rivals/NIKKI_MUSTANGGT.json",
+     "--tag",
+     "opp-NIKKI_MUSTANGGT"
+    ]
+   ],
+   "code": [
+    "presets/rivals/NIKKI_MUSTANGGT.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/MUSTANGGT-ps2-vinyls.json",
+    ".tools/cache/MUSTANGGT-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-NIKKI_MUSTANGGT.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-NIKKI_MUSTANGGT.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-NIKKI_MUSTANGGT.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.68,
+   "peak_rss_mb": 174
+  },
+  {
+   "name": "carro rival SCOTT_TT",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/rivals/SCOTT_TT.json",
+     "--tag",
+     "opp-SCOTT_TT"
+    ]
+   ],
+   "code": [
+    "presets/rivals/SCOTT_TT.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/TT-ps2-vinyls.json",
+    ".tools/cache/TT-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-SCOTT_TT.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-SCOTT_TT.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-SCOTT_TT.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.66,
+   "peak_rss_mb": 166
+  },
+  {
+   "name": "carro rival TOM_G35",
+   "commands": [
+    [
+     "tools/convert_car.py",
+     "--preset",
+     "presets/rivals/TOM_G35.json",
+     "--tag",
+     "opp-TOM_G35"
+    ]
+   ],
+   "code": [
+    "presets/rivals/TOM_G35.json",
+    "tools/convert_car.py",
+    "tools/n2feng.py",
+    "tools/n2formats.py",
+    "tools/n2source.py"
+   ],
+   "absent_code": [],
+   "game": true,
+   "reads": [
+    ".tools/cache/G35-ps2-vinyls.json",
+    ".tools/cache/G35-vinyls.json",
+    "dist/PSP/GAME/NFSU2VIEW",
+    "game",
+    "tools"
+   ],
+   "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/opp-TOM_G35.json",
+    "dist/PSP/GAME/NFSU2VIEW/opp-TOM_G35.n2pl",
+    "dist/PSP/GAME/NFSU2VIEW/opp-TOM_G35.n2pv"
+   ],
+   "removes": [],
+   "lists": [],
+   "globs": [],
+   "programs": [],
+   "seconds": 1.63,
+   "peak_rss_mb": 168
+  }
+ ]
+}

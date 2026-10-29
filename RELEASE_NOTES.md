@@ -1,5 +1,24 @@
 # Closed Beta 1 — RC21
 
+## Generator update — 29 October 2026
+
+The game is unchanged: the same RC21 executable and the same verified output. Only the
+generator on your computer changed.
+
+- **Faster complete generation.** Several conversion steps now run at once, in the order their
+  files require, and the audio, race-line, race and screen-map conversions are faster. A
+  complete PS2 conversion took 1 h 41 min instead of 3 h 08 min on a Steam Deck running Windows,
+  and 17 min instead of 55 min on an Apple M5 Pro Mac (Xbox: 20 min instead of 60 min).
+  The output is identical to RC21 on the same computer and passes the same reference verification.
+- **Update instead of regenerating.** Choose the same ISO and your previous output folder:
+  only the steps whose converter, options or inputs changed are converted again. A release
+  that only replaces the game executable updates in seconds. Updating an RC21 folder to this
+  generator takes about as long as a complete generation, because this release changed the
+  slowest converters; the result was verified identical to a complete generation on Mac and Windows.
+- **Not yet tested:** the Intel Mac package, an Xbox conversion on Windows, and updating from
+  the browser page (verified with the command the page runs).
+
+
 **27 October 2026 · build `cdf93ef2c7` · extended-memory beta**
 
 Thank you for joining the first test group. Jussimir tested RC21 and accepted it as good

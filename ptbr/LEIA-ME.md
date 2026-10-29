@@ -131,6 +131,32 @@ só podem ser retomadas com a mesma ISO, fonte, executável, conversores e
 opções. Se a receita mudar, escolha outra pasta; a interface não apaga uma
 saída antiga para recomeçar.
 
+### Atualizar para uma versão nova do gerador
+
+Quando sair uma versão nova do gerador, não é preciso gerar tudo de novo.
+Extraia o download novo, abra-o e escolha **a mesma ISO** e **a pasta de
+saída da geração anterior** (a que contém `PSP`). O gerador atualiza essa
+pasta:
+
+- converte outra vez só as etapas cujo conversor, opções ou entradas
+  mudaram desde a versão que gerou a pasta, e só extrai a ISO de novo se uma
+  delas lê o disco; o resto é reaproveitado da própria pasta. Uma versão que
+  só troca o `EBOOT.PBP` do jogo atualiza em segundos; uma que muda
+  conversores leva o tempo dessas etapas. A primeira atualização a partir da
+  RC21 é a exceção: essa versão mudou os conversores mais demorados, e ela
+  leva quase o tempo de uma geração completa;
+- instala o `EBOOT.PBP` novo e confere o resultado inteiro contra a nova
+  referência, como numa geração completa;
+- a pasta `PSP` anterior fica guardada (em `.anterior`, dentro da saída) até
+  a nova passar na conferência, e volta para o lugar se ela não passar.
+
+A atualização vira uma geração completa, e diz o motivo no registro, quando
+a saída anterior não pode ser aproveitada: outra ISO ou fonte, pasta `PSP`
+alterada ou incompleta, versão do gerador que ele não conhece ou outra
+opção de filmes. Nada derivado do jogo é baixado: todo arquivo convertido
+continua saindo da sua ISO, no seu computador. Depois de atualizar, copie de
+novo a pasta `PSP/GAME/NFSU2VIEW` inteira para o cartão.
+
 Fechar a aba do navegador não encerra o auxiliar local nem um trabalho em
 andamento. Quando não houver trabalho rodando, clique em **Encerrar
 auxiliar**; abra o lançador de novo quando precisar.

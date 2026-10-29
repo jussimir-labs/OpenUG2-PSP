@@ -5,7 +5,7 @@ Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[native generator release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21-native).
+[latest native generator release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21-native-2).
 Windows x64, Apple Silicon and Intel Mac use separate downloads. The original
 [RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21)
 remains available with its older setup requirements.
@@ -35,7 +35,14 @@ Your ISO stays on your computer.
   with the matching Apple Silicon or Intel package. Windows ARM and Linux native packages
   are not included in this release. The original source kit remains available for Linux.
   **You do not need to install Python, WSL, Homebrew, a compiler, or conversion libraries.**
-  A complete PS2 conversion took about 3 hours on a Steam Deck running Windows; a recent Mac is usually faster.
+  A complete PS2 conversion took about 3 hours on a Steam Deck running Windows with RC21, and
+  about 55 minutes on an Apple M5 Pro Mac; the next generator converts several steps at once
+  and takes about 1 hour 40 minutes on that Steam Deck, and about 17 minutes (PS2) and
+  20 minutes (Xbox) on that Mac, with the same verified output.
+- **Not yet tested with the 29 October generator:** the Intel Mac package, an Xbox conversion
+  on Windows, and updating a previous output folder from the browser page (the update was
+  verified on Mac and Windows with the same command the page runs). If you use one of these,
+  please report how it went, even when it works.
 
 ## 1. Open the generator
 
@@ -76,8 +83,31 @@ Packages are not commercially signed or Apple-notarized, so the first launch nee
 
 To stop generation, use **Cancel process** and wait for the converters to exit. A compatible
 interrupted job can resume only with the same ISO, source, executable, tools and options.
-When changing kit versions, use a new output folder. Close the local helper with **Close helper**
-when no conversion is running; closing the browser tab alone does not stop it.
+Close the local helper with **Close helper** when no conversion is running; closing the browser
+tab alone does not stop it.
+
+### Updating to a newer generator
+
+When a new generator version is released, you do not need to generate everything again.
+Extract the new download, open it, and choose **the same ISO** and **the output folder of your
+previous generation** (the folder that contains `PSP`). The generator then updates that folder:
+
+- it re-converts only the steps whose converter, options or inputs changed since the version
+  that made your folder, and extracts your ISO again only if one of those steps reads it;
+  every other file is reused from your folder. A release that only changes the game's
+  `EBOOT.PBP` updates in seconds; one that changes converters takes as long as those steps.
+  The first update from RC21 is the exception: that release changed the slowest converters,
+  so it takes about as long as a complete generation;
+- it installs the new `EBOOT.PBP` and verifies the complete result against the new reference,
+  exactly as a full generation does;
+- your previous `PSP` folder is kept (in `.anterior` inside the output folder) until the new one
+  passes verification, and is restored if it does not.
+
+The update falls back to a complete generation, and says why in the log, when the previous
+output cannot be reused: a different ISO or source, a modified or incomplete `PSP` folder, a
+generator version it does not know, or different movie options. Nothing derived from the game is
+downloaded: every converted file still comes from your own ISO, on your computer. After updating,
+copy the complete `PSP/GAME/NFSU2VIEW` folder to the card again (section 3).
 
 Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface without opening a tab; `./nfsu2-generator doctor` checks the included tools. On Windows, use `nfsu2-generator.exe` instead. Developer/source-only CLI: use your Python environment to run `build_game.py --help`. Some converter logs and CLI option
 names are in Portuguese; the browser instructions are in English.
@@ -98,7 +128,7 @@ names are in Portuguese; the browser instructions are in English.
 4. Eject the card safely, leave USB Connection, and launch **NFSU2 PSP** under
    **Game → Memory Stick** in the XMB.
 
-**Updating an older beta:** generate RC21 in a new output folder and install the complete result.
+**Updating an older beta:** update your previous output folder (above) or generate in a new one, and install the complete result.
 Both `EBOOT.PBP` and `pack.n2pk` changed. Copying only the executable leaves the older physics data.
 Never mix Xbox and PS2 output, and do not delete `PSP/SAVEDATA` when updating.
 

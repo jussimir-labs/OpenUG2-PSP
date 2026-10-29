@@ -3,6 +3,12 @@
 
 Downloads pinned portable CPython, installs pinned wheels, compiles tiny helper
 programs, vendors native tools and their dynamic libraries, and seals a ZIP.
+
+With --runtime-from PACKAGE (an extracted earlier package of the same platform),
+the runtime and the helper are that package's, byte for byte, and only the
+project's files are new: a generator update whose runtime testers already have,
+so an update of their output reuses every step whose code did not change
+(build_game.py --atualizar). It also builds another platform's package.
 """
 
 import argparse
@@ -332,7 +338,94 @@ def windows_utf8(package):
         )
 
 
+def project_files(out):
+    """Only project files intended for distribution, no local datasets/credentials."""
+    names = (
+        subprocess.check_output(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+            cwd=ROOT,
+        )
+        .decode()
+        .split("\0")
+    )
+    for name in names:
+        if not name or name.startswith(
+            ("native/target/", "native/dist/", "native/.cache/", ".git/")
+        ):
+            continue
+        src = ROOT / name
+        if not src.is_file() or src.is_symlink():
+            continue
+        dst = out / name
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dst)
+
+
+def seal(out, target, py, runtime_source):
+    """bundle.json and PACKAGE-INFO.json over the package's files."""
+    files = {
+        p.relative_to(out).as_posix(): sha(p)
+        for p in sorted(out.rglob("*"))
+        if p.is_file() and not p.is_symlink()
+    }
+    manifest = {
+        "schema": 1,
+        "generator_commit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+        ).strip(),
+        "generator_version": "0.1.0",
+        "platform": target,
+        "python": py,
+        "candidate": json.loads((out / "eboot/release.json").read_text())["candidate"],
+        "files": files,
+        "runtime_source": runtime_source,
+        "runtime_installation_required": False,
+    }
+    (out / "PACKAGE-INFO.json").write_text(
+        json.dumps(
+            {
+                "platform": target,
+                "runtime": "CPython 3.12.14",
+                "candidate": manifest["candidate"],
+                "files": len(files) + 1,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    manifest["files"]["PACKAGE-INFO.json"] = sha(out / "PACKAGE-INFO.json")
+    (out / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    return manifest
+
+
+def build_from(args):
+    """A package over an earlier package's runtime and helper."""
+    prev = Path(args.runtime_from).resolve()
+    old = json.loads((prev / "bundle.json").read_text())
+    target = old["platform"]
+    out = Path(args.output).resolve()
+    if out.exists():
+        raise RuntimeError("Use a new empty bundle destination: " + str(out))
+    out.mkdir(parents=True)
+    project_files(out)
+    shutil.copytree(prev / "runtime", out / "runtime", symlinks=False)
+    ext = ".exe" if target.startswith("windows") else ""
+    shutil.copy2(prev / ("nfsu2-generator" + ext), out / ("nfsu2-generator" + ext))
+    for p in list(out.rglob("__pycache__")):
+        if p.is_dir():
+            shutil.rmtree(p)
+    manifest = seal(out, target, old["python"], old["runtime_source"])
+    same = sum(1 for k, v in manifest["files"].items() if k.startswith("runtime/") and old["files"].get(k) == v)
+    if same != sum(1 for k in old["files"] if k.startswith("runtime/")):
+        raise RuntimeError("The copied runtime differs from the earlier package's.")
+    print(json.dumps({"package": str(out), "platform": target, "files": len(manifest["files"]),
+                      "runtime_from": str(prev)}), flush=True)
+    return out
+
+
 def build(args):
+    if args.runtime_from:
+        return build_from(args)
     target = (
         "windows-x64"
         if os.name == "nt"
@@ -562,6 +655,9 @@ if __name__ == "__main__":
     p.add_argument("--output", required=True)
     p.add_argument("--cache", default=ROOT / "native/.cache")
     p.add_argument("--tools")
-    p.add_argument("--helper", required=True)
+    p.add_argument("--helper")
+    p.add_argument("--runtime-from", help="an extracted earlier package of the same platform: its runtime and helper")
     args = p.parse_args()
+    if not args.helper and not args.runtime_from:
+        p.error("--helper is required without --runtime-from")
     build(args)

@@ -33,7 +33,7 @@ included in the converters.
 | Item | Purpose | License |
 |---|---|---|
 | Python 3.12, numpy, scipy, Pillow, matplotlib | the converters | PSF, BSD, HPND |
-| [trajectory_planning_helpers](https://github.com/TUMFTM/trajectory_planning_helpers) (TUM) | rival racing lines | LGPL-3.0 |
+| [trajectory_planning_helpers](https://github.com/TUMFTM/trajectory_planning_helpers) (TUM) | rival racing lines; `tools/min_curv.py` is a modified copy of its `opt_min_curv` (same results, fewer dense matrix products) | LGPL-3.0 |
 | quadprog | dependency of the above | GPL-2.0 or later |
 | ffmpeg, lame | audio and movies | LGPL/GPL |
 | [jpegli](https://github.com/google/jpegli) (`cjpegli`, precompiled in the native package) | movie frames | BSD-3 |

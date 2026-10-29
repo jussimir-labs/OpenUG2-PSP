@@ -290,6 +290,7 @@ def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trus
     try:
         import numpy as np
         import trajectory_planning_helpers as tph
+        import min_curv   # their opt_min_curv without the dense products by selections and diagonals: the same alpha
     except ImportError:
         return None
     coarse = resample(pts, circuit, step)
@@ -352,8 +353,8 @@ def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trus
         alpha = None
         for kb in (kappa_max, 1.0):
             try:
-                alpha, _ = tph.opt_min_curv.opt_min_curv(reftrack=track, normvectors=nv, A=A, kappa_bound=kb, w_veh=0.0,
-                                                         closed=bool(circuit), psi_s=ps, psi_e=pe)
+                alpha, _ = min_curv.opt_min_curv(reftrack=track, normvectors=nv, A=A, kappa_bound=kb, w_veh=0.0,
+                                                 closed=bool(circuit), psi_s=ps, psi_e=pe)
                 break
             except ValueError:
                 continue                           # inconsistent: relax the curvature, then give up
@@ -603,12 +604,21 @@ def main():
         courses = [c for c in courses if c['id'] in args.only]
     table, blob, report = [], bytearray(), {}
     rmin = tightest_radius()
-    # one course per process: the QPs are dense and single-threaded; each
-    # course waits for a core in the Mac's queue (tools/mac_slots.py)
+    # one course per process: the QPs are dense and single-threaded (one BLAS
+    # thread each: the processes are the parallelism; numpy's own threads
+    # only fight them); each course waits for a core in the Mac's queue
+    # (tools/mac_slots.py). The longest courses first, so none starts last;
+    # the file keeps the courses' order.
     import concurrent.futures
     import functools
+    import os
+    for var in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS', 'MKL_NUM_THREADS'):
+        os.environ.setdefault(var, '1')
+    order = sorted(range(len(courses)), key=lambda k: -sum(math.dist(a, b) for a, b in zip(courses[k]['pts'], courses[k]['pts'][1:])))
     with concurrent.futures.ProcessPoolExecutor(args.jobs) as ex:
-        built = list(ex.map(functools.partial(mac_slots.call, 'racing_line', build_in, str(args.out / 'city.n2cy')), courses))
+        done = dict(zip(order, ex.map(functools.partial(mac_slots.call, 'racing_line', build_in, str(args.out / 'city.n2cy')),
+                                      [courses[k] for k in order])))
+    built = [done[k] for k in range(len(courses))]
     for c, (line, kappa, side, bounds, crest) in zip(courses, built):
         table.append((c['id'], c['circuit'], len(line), len(blob)))
         for p, k, (l, r), v in zip(line, kappa, side, crest):

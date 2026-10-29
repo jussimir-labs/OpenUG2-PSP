@@ -49,11 +49,12 @@ import argparse
 import concurrent.futures
 import json
 import math
+import os
 from pathlib import Path
 import shutil
 import struct
 import subprocess
-from native_runtime import helper, tool as runtime_tool
+from native_runtime import binary as native_binary, helper, tool as runtime_tool
 import tempfile
 
 import mac_slots
@@ -551,7 +552,16 @@ def decode_vag(data, nsamples):
 
 def encode_xa(pcm):
     """EA-XA v2 frames (decode_xa's), for the PS2's VAG banks the port
-    plays as XA: per 28 samples the filter and shift with the least error."""
+    plays as XA: per 28 samples the filter and shift with the least error.
+    The native package's xaencode (tools/xaencode.c) writes the same bytes
+    many times faster; without it, the same encoding in Python."""
+    exe = native_binary('xaencode')
+    if exe:
+        data = struct.pack(f'<{len(pcm)}h', *pcm)
+        p = subprocess.run([str(exe)], input=data, capture_output=True, timeout=60)
+        if p.returncode or len(p.stdout) != (len(pcm) + 27) // 28 * 15:
+            raise ValueError('EA-XA encoding failed')
+        return p.stdout
     out, p1, p2 = bytearray(), 0, 0
     for at in range(0, len(pcm), 28):
         x = list(pcm[at:at + 28]) + [0] * max(0, at + 28 - len(pcm))
@@ -601,17 +611,20 @@ def stream_pcm(d, base, f, path):
 
 
 def resample(pcm, src, dst):
-    """Linear resampling (the PS2's banks to the rate a table needs)."""
-    if src == dst or not pcm:
+    """Linear resampling (the PS2's banks to the rate a table needs).
+    Per sample x = i * src / dst, k = int(x), int(a + (b - a) * (x - k)):
+    numpy does the same float64 steps (i * src is exact, the division is
+    rounded once, the truncation is toward zero), so the samples are the
+    ones a loop in Python gives."""
+    if src == dst or not len(pcm):
         return list(pcm)
+    import numpy as np
     n = max(1, len(pcm) * dst // src)
-    out = []
-    for i in range(n):
-        x = i * src / dst
-        k = int(x)
-        a, b = pcm[min(k, len(pcm) - 1)], pcm[min(k + 1, len(pcm) - 1)]
-        out.append(int(a + (b - a) * (x - k)))
-    return out
+    p = np.asarray(pcm, dtype=np.int64)
+    x = np.arange(n, dtype=np.int64) * src / dst
+    k = x.astype(np.int64)
+    a, b = p[np.minimum(k, len(p) - 1)], p[np.minimum(k + 1, len(p) - 1)]
+    return (a + (b - a) * (x - k)).astype(np.int64).tolist()
 
 
 def bank_streams(game, path):
@@ -766,35 +779,45 @@ def speech(game, out):
         from n2microtalk import Decoder
         converted, cache = bytearray(), {}
         with Decoder() as decoder:
+            def line_xa(start, ns):
+                """A line's PCM and EA-XA: its decoder's and encoder's runs, the
+                lines side by side (the order of speech.big stays the lines')."""
+                fields = pt_header(big, start + 8)
+                if fields.get('platform') != 5 or fields.get(0xA0) != 4 or fields.get(0x80) != 3 or fields.get(0x82, 1) != 1:
+                    raise ValueError(f'unsupported PS2 speech header at {start:#x}: {fields}')
+                rate = fields.get(0x84, 22050)
+                at = start
+                while True:
+                    if at + 8 > len(big):
+                        raise ValueError('truncated PS2 speech block')
+                    size = struct.unpack_from('<I', big, at + 4)[0]
+                    if size < 8 or at + size > len(big):
+                        raise ValueError('invalid PS2 speech block size')
+                    end = big[at:at + 4] == b'SCEl'
+                    at += size
+                    if end:break
+                pcm = resample(decoder.decode(big[start:at], ns), rate, 32000)
+                return len(pcm), decoder.encode_xa(pcm)
+            firsts = {}
+            for event_lines in lines_of.values():
+                for start, ns, *_ in event_lines:
+                    firsts.setdefault(start, ns)
+            with concurrent.futures.ThreadPoolExecutor(max(1, min(8, os.cpu_count() or 1))) as pool:
+                coded = dict(zip(firsts, pool.map(lambda item: line_xa(*item), firsts.items())))
             for event_lines in lines_of.values():
                 for i, line in enumerate(event_lines):
                     start, ns, *params = line
                     if start not in cache:
-                        fields = pt_header(big, start + 8)
-                        if fields.get('platform') != 5 or fields.get(0xA0) != 4 or fields.get(0x80) != 3 or fields.get(0x82, 1) != 1:
-                            raise ValueError(f'unsupported PS2 speech header at {start:#x}: {fields}')
-                        rate = fields.get(0x84, 22050)
-                        at = start
-                        while True:
-                            if at + 8 > len(big):
-                                raise ValueError('truncated PS2 speech block')
-                            size = struct.unpack_from('<I', big, at + 4)[0]
-                            if size < 8 or at + size > len(big):
-                                raise ValueError('invalid PS2 speech block size')
-                            end = big[at:at + 4] == b'SCEl'
-                            at += size
-                            if end:break
-                        pcm = resample(decoder.decode(big[start:at], ns), rate, 32000)
-                        xa = decoder.encode_xa(pcm)
+                        length, xa = coded[start]
                         offset = len(converted)
                         converted += struct.pack('<4sI', b'SCHl', 8)
                         # Blocks stay far below audio.c SP_BLOCK/SP_SAMPLES.
-                        for frame in range(0, (len(pcm) + 27)//28, 64):
+                        for frame in range(0, (length + 27)//28, 64):
                             chunk = xa[frame*15:(frame+64)*15]
-                            samples = min(64*28, len(pcm)-frame*28)
+                            samples = min(64*28, length-frame*28)
                             converted += struct.pack('<4s3I', b'SCDl', 16+len(chunk), samples, 0) + chunk
                         converted += struct.pack('<4sI', b'SCEl', 8)
-                        cache[start] = (offset, len(pcm))
+                        cache[start] = (offset, length)
                     event_lines[i] = (*cache[start], *params)
         (out / 'speech.big').write_bytes(converted)
         size = len(converted)

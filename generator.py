@@ -62,7 +62,7 @@ def validate_paths(iso, output, root=ROOT):
             raise UserError('The output must be a folder.')
         if any(out.iterdir()) and not (out / '.nfsu2-psp-build').is_file():
             raise UserError('This folder already contains files. Choose a new folder; nothing will be deleted.')
-        if (out / 'PSP').exists():
+        if (out / 'PSP').exists() and not previous_generation(out):
             raise UserError('This output already contains a PSP folder. Keep it and choose a new output.')
         if any((p.is_symlink() or getattr(p, 'is_junction', lambda: False)()) and p.is_dir() for p in out.rglob('*')):
             raise UserError('The output contains a linked folder. Choose a new output to keep external files untouched.')
@@ -74,6 +74,17 @@ def validate_paths(iso, output, root=ROOT):
     if shutil.disk_usage(parent).free < 12 * 10**9:
         raise UserError('The destination needs at least 12 GB free for conversion.')
     return disc, out
+
+
+def previous_generation(out):
+    """A folder this tool generated before: it is updated in place (build_game.py --atualizar)."""
+    out = Path(out)
+    return (out / '.nfsu2-psp-build').is_file() and (out / 'PSP/GAME/NFSU2VIEW/EBOOT.PBP').is_file()
+
+
+def default_jobs():
+    """Conversion processes: the computer's cores, 2 to 8."""
+    return max(2, min(8, os.cpu_count() or 4))
 
 
 def probe(root=ROOT):
@@ -336,10 +347,11 @@ class Application:
                 return
             out = Path(job['output'])
             validate_paths(job['iso'], str(out), self.root)
-            self.update(status='running', stage='iso', message='Checking your ISO…')
+            update = previous_generation(out)
+            self.update(status='running', stage='iso', message='Checking your ISO and the previous generation…' if update else 'Checking your ISO…')
             timestamp = time.time()
             code = self.run([py, '-u', str(self.root / 'build_game.py'), job['iso'], '--saida', str(out),
-                             '--fonte', source, '--jobs', '4'])
+                             '--fonte', source, '--jobs', str(default_jobs())] + (['--atualizar'] if update else []))
             report = None
             path = out / 'relatorio.json'
             if path.is_file() and path.stat().st_mtime >= timestamp - 1:

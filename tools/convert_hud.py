@@ -966,7 +966,28 @@ def track_lengths(game):
     return out
 
 
-def track_maps(game, ids, table, path):
+def track_map(game, eid):
+    """One event's map for maps.n2tx: (id, texture blob or None, route box)."""
+    try:
+        tpk = FlatTPK(load(game, f'TRACKS/TRACKMAP{eid}.BIN'))
+    except ValueError:
+        return eid, None, (0, 0, 0, 0)   # named, no map
+    tex = tpk.get(next(iter(tpk.records)))
+    px = bytearray(tex.rgba())
+    px[3::4] = bytes([255]) * (len(px) // 4)
+    white = [i for i in range(0, len(px), 4) if min(px[i:i+3]) > 200]
+    xs, ys = [(i // 4) % tex.w for i in white], [(i // 4) // tex.w for i in white]
+    box = (min(xs), min(ys), max(xs), max(ys)) if white else (0, 0, tex.w - 1, tex.h - 1)
+    box = tuple(min(255, c * MAP_SIZE // tex.w) for c in box)
+    class T: pass
+    t = T()
+    t.w, t.h, t.fmt, t.rgba = tex.w, tex.h, tex.fmt, (lambda px=px: px)
+    w, h, blob = texture_blob(t, MAP_SIZE)
+    assert (w, h) == (MAP_SIZE, MAP_SIZE)
+    return eid, blob, box
+
+
+def track_maps(game, ids, table, path, jobs=1):
     """maps.n2tx: every event's name (TRACK_NAME_<id>), whether the quick
     race lists it (quick_race_tracks) and its track map, if it has one
     (TRACKS\\TRACKMAP<id>.BIN: the city map with the route drawn in, the
@@ -976,28 +997,16 @@ def track_maps(game, ids, table, path):
     line's bounds, which the quick race's track screen frames as the
     PS2's, u8 flags: 1 in the quick race, u8 pad, u16 its place in the
     quick race's list, u32 the distance shown, m (track_lengths; 0 none)),
-    then 1024-byte CLUT + 256 x 256 swizzled indices each."""
+    then 1024-byte CLUT + 256 x 256 swizzled indices each. With jobs, the
+    events' maps side by side in processes (the file keeps their order)."""
     quick, lengths = quick_race_tracks(game), track_lengths(game)
-    blobs = []
-    for eid in ids:
-        try:
-            tpk = FlatTPK(load(game, f'TRACKS/TRACKMAP{eid}.BIN'))
-        except ValueError:
-            blobs.append((eid, None, (0, 0, 0, 0)))   # named, no map
-            continue
-        tex = tpk.get(next(iter(tpk.records)))
-        px = bytearray(tex.rgba())
-        px[3::4] = bytes([255]) * (len(px) // 4)
-        white = [i for i in range(0, len(px), 4) if min(px[i:i+3]) > 200]
-        xs, ys = [(i // 4) % tex.w for i in white], [(i // 4) // tex.w for i in white]
-        box = (min(xs), min(ys), max(xs), max(ys)) if white else (0, 0, tex.w - 1, tex.h - 1)
-        box = tuple(min(255, c * MAP_SIZE // tex.w) for c in box)
-        class T: pass
-        t = T()
-        t.w, t.h, t.fmt, t.rgba = tex.w, tex.h, tex.fmt, (lambda px=px: px)
-        w, h, blob = texture_blob(t, MAP_SIZE)
-        assert (w, h) == (MAP_SIZE, MAP_SIZE)
-        blobs.append((eid, blob, box))
+    if jobs > 1 and len(ids) > 1:
+        import concurrent.futures
+        import functools
+        with concurrent.futures.ProcessPoolExecutor(jobs) as ex:
+            blobs = list(ex.map(functools.partial(track_map, game), ids, chunksize=4))
+    else:
+        blobs = [track_map(game, eid) for eid in ids]
     out = bytearray(struct.pack('<4sI', b'N2T3', len(blobs)))
     at = len(out) + (20 + NAME_LEN) * len(blobs)
     at += -at % 16
@@ -1423,6 +1432,7 @@ def main():
     ap.add_argument('--package', default='HUD_SingleRace.fng', help='--preview: any FEng package')
     ap.add_argument('--bundle', default='GLOBAL/INGAMERACE.BUN', help='--preview: the bundle holding it')
     ap.add_argument('--hud-only', action='store_true', help='write only hud.n2ui to an isolated output directory')
+    ap.add_argument('--jobs', type=int, default=1, help='track maps side by side, one process each (the output is the same)')
     args = ap.parse_args()
     pkg = hud_package(args.game, args.package, args.bundle)
     localise(pkg, strings(args.game))
@@ -1479,7 +1489,7 @@ def main():
     # the city's events and the closed tracks' (drag, drift, Street X, URL)
     ids = [struct.unpack_from('<H', d, 0)[0] for f in [args.out / 'races.n2rc', *sorted(args.out.glob('races-L4R?.n2rc'))]
            for d in event_records(f)]
-    print('maps.n2tx', track_maps(args.game, ids, table, args.out / 'maps.n2tx'), 'track maps')
+    print('maps.n2tx', track_maps(args.game, ids, table, args.out / 'maps.n2tx', args.jobs), 'track maps')
     print('minimaps.n2mm', minimaps(args.game, ids, args.out / 'minimaps.n2mm'), 'maps, bytes')
     for code, language in LANGUAGES.items():   # English: the screens' own texts
         if code == 'en':
