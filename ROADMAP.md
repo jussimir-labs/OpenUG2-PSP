@@ -16,6 +16,7 @@ test group on 27 October 2026. [Release notes](RELEASE_NOTES.md) · [Known issue
 ## Next validation and fixes
 
 - [ ] Ship self-contained native generator packages for Windows x64 and macOS, with bundled Python, libraries and prebuilt conversion tools. Remove manual WSL/Homebrew/compiler setup and validate complete generation on clean systems. Implementation resumed on 27 October at Jussimir’s request. Native packages preserve the RC21 executable and reference validation; complete ISO conversion on every OS remains a separate qualification step.
+- [ ] Shorten complete game generation. Measured with the 49fdc46 native packages on 28 October: 57 min (PS2) and 59 min (Xbox) on an Apple M5 Pro Mac, and 3 h 06 min (PS2) on Windows on a Steam Deck. Slowest steps: audio, screens/HUD, race-start scenes and vinyls on the Mac; race lines, city races, city and garage on the Deck. Garage (~20×) and vinyl (~6×) conversions are already faster with identical output. Next: speed up the remaining steps, reuse unchanged work between generations, and re-measure on Mac and Windows with reference verification.
 - [ ] Confirm complete generation and installation on testers' native Windows/macOS setups, and the legacy Linux source kit.
 - [ ] Gather current-device visual/audio feedback and recheck existing reports #1–#5.
 - [ ] Extend Career, natural rewards, sponsor progression and native save/cold-load coverage.
