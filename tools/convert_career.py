@@ -90,6 +90,9 @@ u8 tournament group (0 = none). Entries are in career order. Then:
     char pack[24] opp-NAME, char model[16] its car, char neon[16] its
     underglow by the garage's name, "" none); u32 count, count x 8 bytes per row: u8 x5 each rival's
     preset (0xff: a RANDOM car), u8 pad x3;
+  (version 12) u32 count, count x 16 bytes per row: f32 GU x y z of its
+    record's trigger zone (race_zones: where the street engages it), u32
+    the zone's name hash (0: none, the course's own start stands in);
   u32 size, the text block (zero-terminated strings).
 """
 import argparse
@@ -123,7 +126,9 @@ def career_races(globalb):
         # count in the high half of +0x10; 4: the stage's final, +0x10
         # packs the world, sponsor and URL races won it needs in its bytes
         # 1, 2 and 3; 0: none, or the hash at +0x10 of the race won first),
-        # an SUV race at +0x0D, the rivals at +0x40 (12 bytes each: their
+        # an SUV race at +0x0D, its trigger zone's name hash at +0x28
+        # (CareerEventData: the TrackPathZone the street engages it by,
+        # PlayerCareerState::RecalcUnlockedZones), the rivals at +0x40 (12 bytes each: their
         # name in the career's string pool, how their performance is set
         # at +2 and its rating at +3, its car at +4: the hash of RANDOM or
         # of a preset's name), how many at +0x7C, hidden
@@ -134,7 +139,7 @@ def career_races(globalb):
                         stage=r[0x37], events=[(e, laps) for e, _, laps in events],
                         name=pool[name:pool.index(b'\0', name)].decode('latin-1'),
                         hash=struct.unpack_from('<I', r, 0x08)[0], req=r[0x0C], need=struct.unpack_from('<I', r, 0x10)[0],
-                        suv=int(r[0x0D] == 1), hidden=int(r[0x7F] != 0), rivals=rivals,
+                        suv=int(r[0x0D] == 1), hidden=int(r[0x7F] != 0), rivals=rivals, zone=struct.unpack_from('<I', r, 0x28)[0],
                         rival_names=[struct.unpack_from('<H', r, 0x40 + 12 * i)[0] for i in range(rivals)],
                         rival_perf=[(r[0x42 + 12 * i], struct.unpack_from('<b', r, 0x43 + 12 * i)[0]) for i in range(rivals)],
                         rival_cars=[struct.unpack_from('<I', r, 0x44 + 12 * i)[0] for i in range(rivals)]))
@@ -542,6 +547,13 @@ def career_world(game, globalb, rows, races):
             if c != random and c not in by_hash:
                 raise ValueError(f"{x['record']['name']}: rival num preset 0x{c:08x} sem arquivo em presets/rivals")
         out += struct.pack('<5B3x', *([0xff if c == random else by_hash[c] for c in cars] + [0xff] * 5)[:5])
+    # version 12: per row, its record's trigger zone (the street's place
+    # of the race, often far from the course's start)
+    zones = race_zones(game)
+    out += struct.pack('<I', len(rows))
+    for x in rows:
+        h = x['record']['zone']
+        out += struct.pack('<3fI', *zones[h], h) if h in zones else struct.pack('<3fI', 0, 0, 0, 0)
     text.extend(bytes((-len(text)) % 4))
     out += struct.pack('<I', len(text)) + bytes(text)
     report = dict(stages=stages, rules=rules, sponsors=sponsors, covers=covers, shops=shops, tips=[dict(sms=sms[v['sms']]['name'], pos=v['pos']) for v in tips], cash=cash, shows=shows,
@@ -640,7 +652,7 @@ def main():
     for x in rows:
         if x['reward'] == 1:
             x['flags'] |= 8      # a sponsor race: its purse goes to the signed sponsor's contract
-    out = struct.pack('<4s2I', b'N2CA', 11, len(rows))
+    out = struct.pack('<4s2I', b'N2CA', 12, len(rows))
     for x in rows:
         out += struct.pack('<HBBiBBBB', x['id'], x['stage'], x['type'], x['money'], x['reward'], x['laps'], x['flags'],
                            x['group'])
@@ -701,6 +713,26 @@ def markers(game, kind):
         if typ == kind:
             x0, y0, x1, y1 = struct.unpack_from('<4f', leaf, at + 0x20)
             out.append((struct.unpack_from('<I', leaf, at + 0x30)[0], (x0 + x1) / 2, (y0 + y1) / 2, max(1, min(255, r))))
+        at += step
+    return out
+
+
+def race_zones(game):
+    """{name hash: GU (x, y, z)}: the career races' trigger zones (type
+    0xd records of the trigger pack, a square 8 m across; the game's
+    TrackPathZone: its centre at +0x04, +0x08 in game x y, its height at
+    +0x14; a race's record names its zone at +0x28). The game engages a
+    race there and puts its marker there (UpdateTriggerEffects), not at
+    the course's start: the race's own load takes the car to the grid."""
+    leaf, at, out = trigger_pack(game), 0, {}
+    while at + 0x44 <= len(leaf):
+        typ, = struct.unpack_from('<I', leaf, at)
+        step, = struct.unpack_from('<H', leaf, at + 0x42)
+        if step < 0x44:
+            break
+        if typ == 0xd:
+            gx, gy = struct.unpack_from('<2f', leaf, at + 4)
+            out[struct.unpack_from('<I', leaf, at + 0x30)[0]] = (gy, struct.unpack_from('<f', leaf, at + 0x14)[0], gx)
         at += step
     return out
 

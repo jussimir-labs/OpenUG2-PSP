@@ -47,6 +47,24 @@ class MinCurv(unittest.TestCase):
     def test_open(self):
         self.check(False, 150, 9.0)
 
+    def test_time_limit(self):
+        """A QP past its time limit raises QPTimeout instead of holding the
+        generation for ever; within it, quadprog's own answer."""
+        import quadprog
+        import time
+        from unittest import mock
+        rng = np.random.default_rng(3)
+        n = 400
+        M = rng.standard_normal((n, n))
+        H, a = M @ M.T + n * np.eye(n), rng.standard_normal(n)
+        C, b = np.hstack((np.eye(n), -np.eye(n))), -np.full(2 * n, .01)
+        self.assertEqual(min_curv.solve_qp(H, a, C, b).tobytes(), quadprog.solve_qp(H, a, C, b, 0)[0].tobytes())
+
+        def stuck(*args):          # a solver that does not come back (it cycles)
+            time.sleep(5)
+        with mock.patch.object(min_curv.quadprog, 'solve_qp', stuck), self.assertRaises(min_curv.QPTimeout):
+            min_curv.solve_qp(H, a, C, b, seconds=0.2)
+
 
 if __name__ == '__main__':
     unittest.main()

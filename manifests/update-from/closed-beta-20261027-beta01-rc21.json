@@ -2724,5 +2724,6 @@
   "tools/vendor/utk/utkdec.h": "c3a9527a14e61c4e929a75bdead74e7e1050759a0a2bbe5e874bc6d79fc974c1",
   "tools/xaencode.c": "c1f04fc771c66fe9b478cb2284fea7a3ec419eb96ff39839ba534c5b3c7fd76e"
  },
- "schema": 2
+ "schema": 2,
+ "version": "0.1.1"
 }

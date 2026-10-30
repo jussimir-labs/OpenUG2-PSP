@@ -23,7 +23,7 @@ is more useful than a long description without the device, location or actions.
 
 ## What to include
 
-- **Version:** Closed Beta 1 — RC21 (build `cdf93ef2c7` if shown).
+- **Version:** the version on the title screen or above the debug lines (for example `0.2.0-rc.1`). Closed Beta 1 — RC21 shows none: it is `0.1.0` (build `cdf93ef2c7`). See the [changelog](../CHANGELOG.md).
 - **Environment:** device, firmware/CFW or emulator version, card and game source (US Xbox or PS2).
 - **Location:** mode, track/screen, car, transmission, upgrades and relevant settings.
 - **Steps:** start from launching the game and list the actions in order.

@@ -1,18 +1,21 @@
-# Closed Beta 1 — RC21: known issues
+# NFSU2 PSP closed beta 0.2.0: known issues
 
-RC21 was accepted by Jussimir for the first closed beta after his manual test on 27 October 2026.
-This acceptance is limited to starting the beta. It does not establish full-game completion,
-all-device compatibility, PSP-1000 support or stable 30 fps throughout the game.
+0.2.0 is a closed-beta release candidate. It does not establish full-game completion,
+all-device compatibility, physical PSP-1000 support or stable 30 fps throughout the game.
 
 ## Before testing
 
-- **Extended memory:** this executable uses `PSP_LARGE_MEMORY=1`. PSP-1000 compatibility is
-  not established. Contact the organizer if that is your only device. Other models, firmware,
-  Vita/Adrenaline and PPSSPP combinations need their own reports.
-- **Stability Control:** leave it **Off**. The On option is present but has no implemented
-  effect in this exact RC21 executable.
-- **Updates:** use a new generator output and install the complete result. RC21 changes both
-  `EBOOT.PBP` and `pack.n2pk`; an executable-only update keeps stale physics.
+- **Memory profiles:** one executable for every model. At boot the game picks the extended
+  profile (32 MB or more) or the compact one (PSP-1000, or extended memory off). The compact
+  profile was measured on a PSP-3000 limited to 24 MB for games and in PPSSPP set to the
+  PSP-1000; **no physical PSP-1000 has run it yet**. Other models, firmware, Vita/Adrenaline and
+  PPSSPP combinations need their own reports.
+- **PSP-1000 and Drift:** a Drift right after a city race may use the previous drift handling
+  when memory is tight (a notice says so).
+- **Updates:** update your 0.1.1/0.1.2 output folder with the 0.2.0 generator (same ISO) or
+  generate into a new folder, and install the complete result. 0.2.0 changes `EBOOT.PBP`,
+  `pack.n2pk` and the `parts-*.n2op` car files; an executable-only update keeps old car and
+  career data.
 - Back up your saves. Broad physical save/reload and full-career coverage remain pending.
 - **Xbox source button icons:** the PSP prompts use the PS2 disc's pad icons. A game generated
   from the Xbox ISO uses the port's own drawn icons instead (same buttons, slightly different look).

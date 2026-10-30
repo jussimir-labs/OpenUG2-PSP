@@ -1,4 +1,24 @@
-# Closed Beta 1 — RC21
+# NFSU2 PSP closed beta — release notes
+
+## 0.2.0 — PSP-1000 support and the first tester fixes (30 October 2026)
+
+A new game executable and new game data: update your 0.1.x output folder with this generator (same
+ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
+
+- **PSP-1000 support, in testing.** One download for every model: at boot the game measures the memory
+  it gets and picks the extended profile (32 MB or more) or the compact one (PSP-1000, or extended memory
+  off). Tested on a PSP-3000 limited to the PSP-1000's memory and in PPSSPP; not yet on a physical PSP-1000.
+- **Fixed:** Stability Control On (#12), car lights on the asphalt in PPSSPP (#13), manual transmission in
+  free roam and career (#14), the Hotel Plaza ramp (#15), sponsor events after loading a save (#16), the
+  minimap after Street X (#17), traffic in career Street X (#18), career race trigger zones (#19), exhaust
+  tips (#20), the 350Z's reverse lights (#21), stock spoilers (#22), title-screen menu sounds (#23), and a
+  race-line calculation that could run forever on some processors with the Xbox disc.
+- **Changed:** a loading screen that stops progressing for 40 seconds shows a technical panel to
+  photograph for your report; the game version is on the title screen and above the debug lines.
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
+
+## Closed Beta 1 — RC21 (0.1.x)
 
 ## Generator update — 29 October 2026
 

@@ -110,6 +110,12 @@ def is_mirror(rest):
     return rest.startswith('LEFT_SIDE_MIR') or rest.startswith('RIGHT_SIDE_MIR')
 
 
+def is_spoiler(rest):
+    """A car's own (stock) spoiler: KIT00_SPOILER, the 3000GT's SPOILER_SIDE
+    too. Modelled about the spoiler socket as the shop's (CARS/SPOILER)."""
+    return rest.startswith('SPOILER')
+
+
 def choose_car_parts(all_parts, car, preset):
     """Return {family: [Part,...]} for the preset. KIT00/BASE is the stock car;
     KITnn overrides bumpers/skirts, KITWnn body/doors, STYLEnn hood/lights."""
@@ -136,6 +142,8 @@ def choose_car_parts(all_parts, car, preset):
         if preset.get('rims') and rest.startswith('FRONT_WH'):
             continue
         if preset.get('mirror') and is_mirror(rest):   # the shop's in their place
+            continue
+        if preset.get('spoiler') and is_spoiler(rest):   # the shop's in the stock one's place (one part a slot)
             continue
         slot = slot_of(rest)
         if slot in shell:
@@ -402,10 +410,22 @@ def lamp_textures(textures, car, preset):
     return {h(g): h(r) for g, r in pairs.items() if textures.get(h(r)) is not None}
 
 
+def skin_keys(car):
+    """The keys the game draws with the car's composited skin, whatever
+    the material (CarRenderInfo's replacement table: <CAR>_SKIN1, its
+    _SKIN1B and GLOBAL_SKIN1 beside the CARSKIN's own key). The skin's
+    corners hold small art of the car's own: the 350Z's reverse lamps
+    (CLEARPLASTIC, the white strip at its bottom right), the side
+    markers, the dark underbody."""
+    h = n2feng.bin_hash
+    return {h(f'{car}_SKIN1'), h(f'{car}_SKIN1B'), h('GLOBAL_SKIN1')}
+
+
 class Builder:
-    def __init__(self, textures, paint, window=None, lamps=None):
+    def __init__(self, textures, paint, window=None, lamps=None, skins=()):
         self.textures, self.paint = textures, paint
         self.lamps = lamps or {}  # the lamps' generic keys -> the car's art (lamp_textures)
+        self.skins = set(skins)   # the car's own skin keys on other materials -> the composite (skin_keys)
         self.window = window      # the windows' tint (RGBA), None: the stock glass
         self.slot = 0             # customisation slot of the parts being added
         self.meshes = []          # (vertex bytes list, indices, texref, colour, flags, uvscale)
@@ -424,6 +444,14 @@ class Builder:
             if library or (mat == CARSKIN and self.textures.get(tex) is not None):
                 return None, (*self.paint, 255), F_PAINT, 1.0
             return 'SKIN', white, F_PAINT, 1.0
+        if tex in self.skins and self.textures.get(tex) is None and mat not in (CHROME, MAGCHROME, EXHAUST_TIP):
+            # another material on the composite skin, unpainted: its art
+            # as it is (it was the flat fallback, the 350Z's reverse lamps
+            # a see-through clear glass over the bumper's hole: beta #21).
+            # The chromes keep theirs: all reflection, the skin unseen (the
+            # shop's exhaust tips on GLOBAL_SKIN1)
+            flags = F_METAL if mat in METALS else F_MATTE if mat in MATTE else 0
+            return 'SKIN', white, flags, 1.0
         if mat in GLASS:
             # a window with its own art (the 206's REAR_DEFROSTER: dark, its
             # heater lines in the alpha) is drawn with it, as the PS2's
@@ -511,6 +539,15 @@ def matrix_xform(m):
     return f
 
 
+def exhaust_xform(m):
+    """An exhaust tip at its flame marker m: the marker's matrix after a
+    quarter turn about y (x -> -z, z -> x), as the game's; and whether
+    the marker mirrors it (its triangles' winding turned)."""
+    a, b, c = m[0:3], m[4:7], m[8:11]
+    det = a[0]*(b[1]*c[2] - b[2]*c[1]) - a[1]*(b[0]*c[2] - b[2]*c[0]) + a[2]*(b[0]*c[1] - b[1]*c[0])
+    return matrix_xform((-c[0], -c[1], -c[2], 0, *b, 0, *a, 0, *m[12:15], 1)), det < 0
+
+
 RIM_NATIVE = .03   # a rim within 3% of the axle's tyre radius: drawn at its own size (assemble)
 
 
@@ -568,12 +605,16 @@ def assemble(game, preset, lod, strict=False):
     families = choose_car_parts(all_parts, car, preset)
     # window_tint: the garage's tint level (1..3, the viewer's GARAGE_TINTS),
     # as the PS2's DDAY_PLAYER_CAR, its cabin unseen behind dark glass
-    b = Builder(textures, paint, WINDOW_TINTS.get(preset.get('window_tint', 0)), lamp_textures(textures, car, preset))
+    b = Builder(textures, paint, WINDOW_TINTS.get(preset.get('window_tint', 0)), lamp_textures(textures, car, preset), skin_keys(car))
     report = []
     hood_owner = preset.get('hood', 'KIT00')
     coarser = preset.get('light_lod', {}) if lod and not strict else {}   # family -> level of detail in the light pack (60 Hz on the street)
     if strict:
         families = {f: c for f, c in families.items() if far_has(c, lod) or ('_FRONT_WH' in f and lod < 3)}   # (D: wheels in the body's box)
+    sockets = {}
+    for p in all_parts:
+        for k, m in p.sockets.items():
+            sockets.setdefault(k, m)
     pick = far_pick if strict else pick_lod
     chosen = [pick(choices, coarser.get(family, lod)) for family, choices in sorted(families.items())]
     for (family, choices), part in zip(sorted(families.items()), chosen):
@@ -597,25 +638,33 @@ def assemble(game, preset, lod, strict=False):
                     continue
                 part = (far_pick if strict else pick_lod)(lib, lod)
                 report[-1] = {'name': part.name, 'triangles': part.triangles}
-            # the tips at the rear bumper's two exhaust flame markers (the
+            # the tips at the rear bumper's exhaust flame markers (the
             # chosen bumper's or wide body's, else any), flush with its face
-            # as the PS2's, the right one mirrored: at the model's origin
-            # they sat inside the car, unseen. The game's own matrix (a
-            # quarter turn about y, then the marker's) comes to the same.
+            # as the PS2's: at the model's origin they sat inside the car,
+            # unseen. The game's own matrix (CarRenderInfo::Render): a
+            # quarter turn about y, then the marker's, whose own turn angles
+            # some tips (the Escalade's, the RX-7's) and whose reflection
+            # alone mirrors one: the marker's hash is no side (the MIATA's
+            # and the CIVIC's one tip at the right marker unmirrored; the
+            # MIATA's pipe, mirrored, stuck out of the car's side, issue 20).
             marks = {}
             for p in chosen + all_parts:
                 for k in EXHAUST_MARKERS:
                     if k in p.sockets:
                         marks.setdefault(k, p.sockets[k])
-            for k, side in zip(EXHAUST_MARKERS, (1, -1)):
-                if k not in marks:
-                    continue
-                t = marks[k][12:15]   # the flame marker's place; the tip's own axes (the marker's turn the flame's)
-                f = matrix_xform((1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, t[0], t[1], t[2], 1))
-                b.add(part, f if side > 0 else (lambda x, y, z, nx, ny, nz, f=f: f(x, -y, z, nx, -ny, nz)), side < 0)
+            for k in EXHAUST_MARKERS:
+                if k in marks:
+                    f, mirror = exhaust_xform(marks[k])
+                    b.add(part, f, mirror)
         else:
             first = len(b.meshes)
-            b.add(part, identity, carbon_hood=carbon)
+            # the stock spoiler at the body's spoiler socket, as the game
+            # draws whatever its spoiler slot holds (CarRenderInfo): at
+            # the model's origin it sat inside the car, unseen (beta #22)
+            own_spoiler = is_spoiler(family_rest(car, family))
+            if own_spoiler and SPOILER_SOCKET not in sockets:
+                raise ValueError('aerofólio de série sem socket: ' + family)
+            b.add(part, matrix_xform(sockets[SPOILER_SOCKET]) if own_spoiler else identity, carbon_hood=carbon)
             m = re.match(re.escape(car) + r'_(BASE|KITW?\d+|STYLE\d+)_?(.*)', family)
             inside = inside_flags(m.group(2), preset.get('trunk_audio', 'KIT00'), m.group(1)) if m and preset.get('interior') else 0
             if m and is_mirror(m.group(2)) and m.group(2).startswith('RIGHT'):
@@ -637,10 +686,6 @@ def assemble(game, preset, lod, strict=False):
             break
     if preset.get('decals'):
         report += add_decals(b, game, car, preset)
-    sockets = {}
-    for p in all_parts:
-        for k, m in p.sockets.items():
-            sockets.setdefault(k, m)
     if preset.get('spoiler'):
         lib = list(parts(archived(game, 'CARS/SPOILER/GEOMETRY.BIN'),
                          lambda n: lod_family(n) == preset['spoiler']))
@@ -790,18 +835,25 @@ def plate_face(chosen, plate, at):
     return best
 
 
+def family_rest(car, family):
+    """A part family's name past CAR_ and its owner token."""
+    m = re.match(re.escape(car) + r'_(?:BASE|KITW?\d+|STYLE\d+)_?(.*)', family)
+    return m.group(1) if m else ''
+
+
 def family_slot(car, family):
     """The garage slot of a car part family: bumpers and skirts (the kit),
     the hood, the wheels (tyre and rim; the brakes stay), the head and tail
     lights."""
-    m = re.match(re.escape(car) + r'_(?:BASE|KITW?\d+|STYLE\d+)_?(.*)', family)
-    rest = m.group(1) if m else ''
+    rest = family_rest(car, family)
     if rest.startswith('FRONT_WH'):
         return SLOT_RIMS
     if rest.startswith('EXHAUST'):
         return SLOT_EXHAUST
     if is_mirror(rest):
         return SLOT_MIRROR
+    if is_spoiler(rest):
+        return SLOT_SPOILER
     slot = slot_of(rest)
     return (SLOT_KIT if slot == 'FRONT_BUMPER' else SLOT_REAR_BUMPER if slot == 'REAR_BUMPER' else SLOT_SKIRT if slot == 'SKIRT' else
             SLOT_HOOD if slot == 'HOOD' else SLOT_BODY if slot == 'BODY' else

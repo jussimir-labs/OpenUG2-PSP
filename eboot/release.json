@@ -1,13 +1,15 @@
 {
-  "candidate": "closed-beta-20261027-beta01-rc21",
-  "candidate_id": "closed-beta-1-rc21-42d252df",
-  "release_tag": "beta-1-rc21",
-  "eboot_sha256": "ff35c0a14190edf67de263259bfb9fa3831a75363ee2c7b7ee332196bb29df39",
-  "eboot_bytes": 3920490,
-  "build_id": "cdf93ef2c7",
-  "source_commit": "cdf93ef2c7d8c66b3e40fcd612d281522c986da6",
+  "candidate": "beta-v0.2.0",
+  "candidate_id": "beta-v0.2.0-633f2793",
+  "release_tag": "v0.2.0",
+  "version": "0.2.0",
+  "game_version": "0.2.0",
+  "eboot_sha256": "b64b31554421c469dd90f9ae9db67e71119d6ba6ae520d540bd05c97839fa6fa",
+  "eboot_bytes": 4098394,
+  "build_id": "5e81d1116",
+  "source_commit": "5e81d1116931c843c82d6ad9cc77a8747e15a501",
   "build_flags": [
-    "PGO=use",
+    "PGO=use (RC21 profile)",
     "LTO=1",
     "RELEASE=0",
     "PSP_LARGE_MEMORY=1"
@@ -16,36 +18,41 @@
     "xbox",
     "ps2"
   ],
-  "publication_status": "CLOSED_BETA_RELEASE",
-  "quality_approval": "Jussimir reported RC21 good enough for the first closed beta on 2026-10-27. This is a limited beta acceptance, not final release, PSP-1000, all-device, full-career or global 30fps qualification.",
+  "publication_status": "CLOSED_BETA_CANDIDATE",
+  "quality_approval": "Version 0.2.0 for the closed beta, released with Jussimir's approval to publish once it passes PPSSPP (30 October 2026). Broad tests ran on 0.2.0-rc.1 (the same source without the PSP-1000 drift fix of #16); this executable passed its own confirmation runs. Not a final release, physical PSP-1000, all-device, full-career or global 30fps qualification.",
   "known_issues": [
-    "Extended-memory build; PSP-1000 compatibility and all-device support are not established.",
-    "Stable 30 fps throughout the game is not yet established.",
-    "Full-career completion and all save/reload paths are not qualified on RC21.",
+    "No physical PSP-1000 has run this build: the compact profile was measured on a PSP-3000 limited to the PSP-1000 memory and in PPSSPP set to the PSP-1000.",
+    "On PSP-1000, a Drift right after a city race may use the previous drift handling when memory is tight (a notice says so).",
+    "Stable 30 fps throughout the game is not yet established (University Hill and the densest city areas drop frames in both profiles).",
+    "Full-career completion and all save/reload paths are not qualified.",
     "Drag 4401 rivals may become stuck in repeated recovery.",
-    "Stability Control On has no implemented effect in this executable; leave it Off.",
     "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
     "Custom dyno and special presets use the earlier handling path; collisions retain port adaptations.",
     "Materials, visibility, doors, movies and all audio/camera combinations need broader testing.",
     "The original US PS2 disc image has not been independently verified; PAL and other revisions are refused."
   ],
-  "reference_scope": "File identity against retained RC19 complete package maps plus the exact RC21 physics/pack delta. Full ISO conversion was not repeated for release packaging; output identity does not establish gameplay quality.",
+  "reference_scope": "Full ISO conversions (PS2 and Xbox) by the macOS arm64 native generator of this kit; output identity does not establish gameplay quality.",
   "files_by_source": {
     "xbox": 162,
     "ps2": 159
   },
   "source_data_ids": {
-    "xbox": "bfaa",
-    "ps2": "804e"
+    "xbox": "3bc2",
+    "ps2": "6c78"
   },
-  "data_compatibility": "Use the complete RC21 generator and a new output folder. Both EBOOT.PBP and pack.n2pk differ from RC20/RC19; copying only the EBOOT leaves old physics data. Do not mix Xbox and PS2 output.",
-  "qualification_receipt": "docs/qualification/RC21-QUALIFICATION.json",
-  "elf_sha256": "c636dc599dbf9c508dd6905a49bcecdc6fa2c4fdaafa8323bae4e518db937921",
-  "prx_sha256": "372ccdae3370b07462389e5939a8de9d83c27c9ef757ba0de54fbd0fc7c683cc",
+  "data_compatibility": "Install the complete output of this generator (update a 0.1.1/0.1.2 folder with the same ISO, or generate into a new folder). EBOOT.PBP, pack.n2pk and the parts-*.n2op car files differ from 0.1.x; copying only the EBOOT leaves old car and career data. Do not mix Xbox and PS2 output.",
+  "elf_sha256": "6573afbb06b82f14f7a4f90e157795d673999026ac80a793baf98a9b0ee080e0",
+  "prx_sha256": "20340bd2148fb1d1ffe07aad960f507ac8fcdb09bf9ab81e1c3259bbbb81813b",
   "debug_overlays": true,
   "tester_invitations_sent_by_this_release": false,
-  "qualification_receipts": [
-    "docs/qualification/RC21-QUALIFICATION.json",
-    "docs/qualification/RC21-KIT-IDENTITY.json"
-  ]
+  "qualification_receipts": [],
+  "source_candidate": {
+    "id": "2fbcd8676a704c868a39fb8a863134df",
+    "version": "0.2.0-rc.2",
+    "path": "reports/releases/2fbcd8676a704c868a39fb8a863134df",
+    "final_build": "GAME_VERSION=0.2.0 from the frozen source of 0.2.0-rc.2 (reports/release-v0.2.0/eboot)",
+    "rc2_eboot_sha256": "35c1e46af913b79f0d3ee52bddcb3d4050c2fe4058b5273a7db8357cf8074b57",
+    "rc1_id": "15120c71292049f3b460bc428cea6822",
+    "rc1_eboot_sha256": "d9a222aa24ddf4694926be3c785de70f9742cc4b33ebdf704e683d017cade2b7"
+  }
 }

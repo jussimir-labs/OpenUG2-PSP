@@ -16,14 +16,52 @@ NFSU2 PSP generator:
   dense product (of the last two rows: the kernel and sum of the whole
   product's, checked against it);
 - the curvature error after the solution, which the generator does not
-  use, is not computed (0.0 is returned in its place).
+  use, is not computed (0.0 is returned in its place);
+- the QP is solved under a time limit (solve_qp below).
 
 The QP and its constraints are the original's: the same alpha.
 """
 import math
+import os
+import threading
 
 import numpy as np
 import quadprog
+
+# Seconds one QP may take. quadprog's Goldfarb-Idnani loop has no iteration
+# cap: on a near-degenerate problem a rounding can make it add and drop the
+# same constraints for ever, with no error and the CPU busy. The largest
+# course's QP takes seconds; past this it is taken as stuck.
+QP_SECONDS = float(os.environ.get('NFSU2_QP_SECONDS', 600))
+
+
+class QPTimeout(RuntimeError):
+    pass
+
+
+def solve_qp(H, a, C, b, seconds=None):
+    """quadprog.solve_qp(H, a, C, b, 0)[0], or QPTimeout after `seconds`.
+    quadprog releases the GIL, so it runs in a thread that can be given up
+    on; a stuck one keeps spinning until its process ends (the racing lines
+    give each course a process of its own). The same numbers as a direct
+    call: the same code on the same arrays."""
+    seconds = QP_SECONDS if seconds is None else seconds
+    out = {}
+
+    def run():
+        try:
+            out['x'] = quadprog.solve_qp(H, a, C, b, 0)[0]
+        except BaseException as e:            # noqa: B036 - handed to the caller
+            out['e'] = e
+
+    t = threading.Thread(target=run, name='quadprog', daemon=True)
+    t.start()
+    t.join(seconds)
+    if t.is_alive():
+        raise QPTimeout(f'the minimum-curvature QP ({len(a)} points) did not finish in {seconds:.0f} s')
+    if 'e' in out:
+        raise out['e']
+    return out['x']
 
 
 def _rows(sel, A_inv, closed):
@@ -165,5 +203,5 @@ def opt_min_curv(reftrack: np.ndarray, normvectors: np.ndarray, A: np.ndarray, k
     G = np.vstack((np.eye(no_points), -np.eye(no_points), E_kappa, -E_kappa))
     h = np.append(dev_max_right, dev_max_left)
     h = np.append(h, con_stack)
-    alpha_mincurv = quadprog.solve_qp(H, -f, -G.T, -h, 0)[0]
+    alpha_mincurv = solve_qp(H, -f, -G.T, -h)
     return alpha_mincurv, 0.0

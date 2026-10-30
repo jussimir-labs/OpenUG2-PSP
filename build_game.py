@@ -253,7 +253,7 @@ def build_identity(digest, source, args, release):
         # A resumed output must use the exact included binaries/libraries too.
         inputs['native-bundle.json'] = sha256(Path(os.environ['NFSU2_BUNDLE_ROOT']) / 'bundle.json')
     return {'schema': 2, 'iso_sha256': digest, 'source': source.name,
-            'candidate': release['candidate'], 'eboot_sha256': release['eboot_sha256'],
+            'candidate': release['candidate'], 'version': release.get('version'), 'eboot_sha256': release['eboot_sha256'],
             'movies': not args.sem_filmes, 'jobs': getattr(args, 'jobs', 4),
             'accept_unknown_iso': bool(getattr(args, 'aceitar_iso_desconhecida', False)),
             'tools_sha256': hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(',', ':')).encode()).hexdigest()}
@@ -593,6 +593,21 @@ def identity_hash(inputs):
     return hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
+def previous_version(old):
+    """The published version (CHANGELOG.md) that made the previous
+    generation: its marker's, or, from generators before the marker had one,
+    the update-from table that knows its code."""
+    if old.get('version'):
+        return old['version']
+    for path in sorted(UPDATE_FROM.glob('*.json')):
+        table = json.loads(path.read_text())
+        if table.get('candidate') == old.get('candidate') and any(
+                identity_hash(dict(table['inputs'], **b.get('inputs', {}), **{'native-bundle.json': b['bundle_sha256']}))
+                == old.get('tools_sha256') for b in table['bundles']):
+            return table.get('version')
+    return None
+
+
 def previous_stamps(out, old, graph, source, movies, disc):
     """The previous generation's stamps of these steps: its own record
     (STATE), or worked out from manifests/update-from (the published
@@ -812,6 +827,8 @@ def main():
         iso = args.iso.expanduser().resolve()
         iso_size_ok(iso)
         release = validate_release()
+        if release.get('version'):
+            say(f'Versão {release["version"]} (CHANGELOG.md)\n')
         problems, cjpegli = preflight(args)
         if problems:
             raise Failure('falta preparar o computador:\n' + '\n'.join(f'  - {p}' for p in problems))
@@ -864,7 +881,8 @@ def main():
                               [step_graph.template(cmd, game_rel) for _, _, cmd in todo], runtime, disc) if graph else None
         plan = None
         if old is not None:
-            say('\n  Comparando com a geração anterior (atualização)')
+            since = previous_version(old)
+            say('\n  Comparando com a geração anterior' + (f', da versão {since}' if since else '') + ' (atualização)')
             plan, why = update_plan(out, old, graph, stamps, source, args, disc)
             if plan is None:
                 say(f'  Não dá para atualizar: {why}.\n  Gerando tudo de novo; a pasta anterior fica guardada até a nova ser conferida.')
@@ -937,6 +955,7 @@ def main():
         if not manifest.exists() and source.name == 'xbox':
             manifest = HERE / 'manifests' / f'{release["candidate"]}.json'
         report = {'iso_sha256': digest, 'iso_known': known, 'source': source.name, 'candidate': release.get('candidate'),
+                  'version': release.get('version'), 'game_version': release.get('game_version'),
                   'files': len(list(game.iterdir())), 'bytes': size, 'work_bytes_peak': work_bytes,
                   'seconds': round(time.monotonic() - t_start), 'step_seconds': times,
                   'verification': 'no-reference', 'approved': False, 'eboot_sha256': release['eboot_sha256'],
@@ -963,11 +982,12 @@ def main():
                     f'a mais: {", ".join(extra) or "nenhum"}')
                 say('  (diferenças pequenas podem vir de versões diferentes do ffmpeg, lame ou numpy; o relatório tem a lista)')
         if plan is not None:
-            report['update'] = dict(from_candidate=old.get('candidate'), from_tools_sha256=old.get('tools_sha256'),
+            report['update'] = dict(from_candidate=old.get('candidate'), from_version=previous_version(old),
+                                    from_tools_sha256=old.get('tools_sha256'),
                                     reused=len(todo) - len(plan['rerun']),
                                     rerun={todo[i][0]: why for i, why in sorted(plan['rerun'].items())})
         elif old is not None:
-            report['update'] = dict(from_candidate=old.get('candidate'), full_generation=True)
+            report['update'] = dict(from_candidate=old.get('candidate'), from_version=previous_version(old), full_generation=True)
         (out / 'relatorio.json').write_text(json.dumps(report, indent=1, ensure_ascii=False) + '\n')
         if not report['approved']:
             if (out / '.anterior/PSP').is_dir():

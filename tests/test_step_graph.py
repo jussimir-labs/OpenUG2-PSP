@@ -75,6 +75,12 @@ class GraphTests(unittest.TestCase):
                 self.assertEqual(stamps, g.stamps(code.get, [['x']] * len(g.names), 'rt', 'ps2:1'))
                 lf_marker = dict(win, tools_sha256=bg.identity_hash(dict(code, **{'native-bundle.json': 'w'})))
                 self.assertIsNone(bg.previous_stamps(Path(tmp), lf_marker, g, source, True, 'ps2:1')[0])
+                # the published version of that generation: the marker's, else its table's
+                self.assertIsNone(bg.previous_version(win))
+                (Path(tmp) / 'old.json').write_text(json.dumps(dict(table, version='0.1.1')))
+                self.assertEqual(bg.previous_version(win), '0.1.1')
+                self.assertIsNone(bg.previous_version(lf_marker))
+                self.assertEqual(bg.previous_version(dict(win, version='0.2.0')), '0.2.0')
             finally:
                 bg.UPDATE_FROM = saved
 

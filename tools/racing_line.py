@@ -274,7 +274,7 @@ def band(pts, nrms, bounds, circuit, iterations=(600, 500, 400, 300), levels=(8,
     return off
 
 
-def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trust=2.5, pin_to=None, pin_from=None):
+def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trust=2.5, pin_to=None, pin_from=None, name='line'):
     """Minimum-curvature line from TUM's trajectory_planning_helpers
     (LGPL-3.0; Heilmeier et al., "Minimum Curvature Trajectory Planning and
     Control for an Autonomous Racecar", 2019): a QP over offsets along the
@@ -358,6 +358,10 @@ def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trus
                 break
             except ValueError:
                 continue                           # inconsistent: relax the curvature, then give up
+            except min_curv.QPTimeout as e:        # stuck (no iteration cap): the line of the passes before
+                print(f'{name}: {e}; pass {it + 1} of {iters} given up'
+                      + (f', the line of the {it} before kept' if it else ', the elastic band instead'), flush=True)
+                break
         if alpha is None:
             break
         P = P + nv * alpha[:, None]
@@ -559,7 +563,7 @@ def build(course, city):
     pts = reference(city, resample(despike(course['pts'], course['circuit'], city=city), course['circuit']), course['circuit'])
     pts = despike(pts, course['circuit'], city=city)
     try:
-        tph_line = optimise_tph(city, pts, course['circuit'])
+        tph_line = optimise_tph(city, pts, course['circuit'], name=f"event {course['id']}")
     except Exception as e:                    # a degenerate course: the elastic band below
         print('event', course['id'], 'QP failed:', e, flush=True)
         tph_line = None
@@ -615,7 +619,9 @@ def main():
     for var in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS', 'MKL_NUM_THREADS'):
         os.environ.setdefault(var, '1')
     order = sorted(range(len(courses)), key=lambda k: -sum(math.dist(a, b) for a, b in zip(courses[k]['pts'], courses[k]['pts'][1:])))
-    with concurrent.futures.ProcessPoolExecutor(args.jobs) as ex:
+    # a process per course: a QP given up on (min_curv.solve_qp) spins on
+    # in its thread until its process ends
+    with concurrent.futures.ProcessPoolExecutor(args.jobs, max_tasks_per_child=1) as ex:
         done = dict(zip(order, ex.map(functools.partial(mac_slots.call, 'racing_line', build_in, str(args.out / 'city.n2cy')),
                                       [courses[k] for k in order])))
     built = [done[k] for k in range(len(courses))]

@@ -450,7 +450,7 @@ def seal(out, target, py, runtime_source):
         "generator_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
-        "generator_version": "0.1.0",
+        "generator_version": json.loads((out / "eboot/release.json").read_text()).get("version", "0.1.0"),
         "platform": target,
         "python": py,
         "candidate": json.loads((out / "eboot/release.json").read_text())["candidate"],
@@ -688,7 +688,7 @@ def build(args):
         "generator_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
-        "generator_version": "0.1.0",
+        "generator_version": json.loads((out / "eboot/release.json").read_text()).get("version", "0.1.0"),
         "platform": target,
         "python": py.relative_to(out).as_posix(),
         "candidate": json.loads((out / "eboot/release.json").read_text())["candidate"],

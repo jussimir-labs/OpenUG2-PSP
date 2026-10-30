@@ -1,11 +1,11 @@
-# NFSU2 PSP — Closed Beta 1 (RC21)
+# NFSU2 PSP — Closed Beta, version 0.2.0
 
 Welcome to the first closed beta of the native PSP port of *Need for Speed Underground 2*.
 Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[latest native generator release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.2).
+[v0.2.0 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.0).
 Windows x64, Linux x86-64, Apple Silicon and Intel Mac use separate downloads. The original
 [RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.0)
 remains available with its older setup requirements.
@@ -15,7 +15,7 @@ This kit contains the prebuilt PSP executable and a local game-data generator.
 **No ISO, original game assets or saves are included.** Use a dump of your own game disc.
 Your ISO stays on your computer.
 
-[Release notes](RELEASE_NOTES.md) · [Known issues](KNOWN_ISSUES.md) ·
+[Release notes](RELEASE_NOTES.md) · [Changelog](CHANGELOG.md) · [Known issues](KNOWN_ISSUES.md) ·
 [Testing and bug reports](docs/TESTING.md) · [Roadmap](ROADMAP.md)
 
 ## Before you begin
@@ -24,9 +24,12 @@ Your ISO stays on your computer.
   PAL and other revisions are not supported. The original US PS2 disc image is not independently
   verified; PS2 source support is based on the retained file-level reference. If verification fails,
   keep the report and contact the organizer; do not bypass it.
-- A PSP with custom firmware that can run homebrew. **RC21 is an extended-memory build.**
-  The organizer accepted it for this first beta after testing; PSP-1000 compatibility is not
-  established. If you only have a PSP-1000, contact the organizer before attempting this build.
+- A PSP with custom firmware that can run homebrew. One download serves every model: at boot the
+  game measures the memory it gets and picks the **extended** profile (32 MB or more: PSP-2000,
+  PSP-3000, Go, Street with extended memory) or the **compact** one (PSP-1000, or any model with
+  the extra memory off). The compact profile was tested on a PSP-3000 limited to the PSP-1000's
+  memory and in PPSSPP set to the PSP-1000, **not yet on a physical PSP-1000**: reports from
+  PSP-1000 owners are especially welcome.
   PSP-2000/3000, Go, Street, Vita/Adrenaline and PPSSPP results should be reported separately;
   compatibility with every device and firmware is not guaranteed.
 - At least **2.2 GB free on the Memory Stick** and **12 GB free on the computer**, in addition
@@ -106,7 +109,7 @@ desktop's file dialog (KDE or GNOME); without one, paste full paths into the fie
 2. Choose your ISO and a **new, empty output folder**. Keep source detection on **Automatic**.
    The folder picker creates `NFSU2-PSP` inside the selected folder; a typed path is used as entered.
 3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
-   assets including all 28 movies, and compares the result against the RC21 reference.
+   assets including all 28 movies, and compares the result against the 0.2.0 reference.
 4. Wait for successful identity verification. The game is in `<output>/PSP/GAME/NFSU2VIEW`.
    On Windows, Linux and Intel Macs some movies, audio, geometry and racing-line files are reported as
    **equivalent**: the same structure, with bytes rounded differently by an x86 processor. That
@@ -130,8 +133,9 @@ previous generation** (the folder that contains `PSP`). The generator then updat
   that made your folder, and extracts your ISO again only if one of those steps reads it;
   every other file is reused from your folder. A release that only changes the game's
   `EBOOT.PBP` updates in seconds; one that changes converters takes as long as those steps.
-  The first update from RC21 is the exception: that release changed the slowest converters,
-  so it takes about as long as a complete generation;
+  The first update to 0.2.0 is the exception for folders made with the Windows or macOS 0.1.x
+  packages: a helper every step uses changed, so it converts everything again and takes about as
+  long as a complete generation; a 0.1.0 source-kit folder is generated again;
 - it installs the new `EBOOT.PBP` and verifies the complete result against the new reference,
   exactly as a full generation does;
 - your previous `PSP` folder is kept (in `.anterior` inside the output folder) until the new one
@@ -150,7 +154,7 @@ names are in Portuguese; the browser instructions are in English.
 
 1. Back up `PSP/SAVEDATA`. Connect the PSP by USB and select **Settings → USB Connection**.
 2. Confirm the destination is your PSP's card. Copy the generated `PSP/GAME/NFSU2VIEW` folder
-   to the card's corresponding folder. Keep the complete RC21 folder together.
+   to the card's corresponding folder. Keep the complete folder together.
    On Windows/Linux, merge the generated `PSP` folder with the card's existing `PSP` folder.
 3. On macOS, use the included copy helper to avoid Finder's `._` sidecar files:
 
@@ -163,33 +167,35 @@ names are in Portuguese; the browser instructions are in English.
    **Game → Memory Stick** in the XMB.
 
 **Updating an older beta:** update your previous output folder (above) or generate in a new one, and install the complete result.
-Both `EBOOT.PBP` and `pack.n2pk` changed. Copying only the executable leaves the older physics data.
+0.2.0 changes `EBOOT.PBP`, `pack.n2pk` and the `parts-*.n2op` car files. Copying only the executable leaves the older car and career data.
 Never mix Xbox and PS2 output, and do not delete `PSP/SAVEDATA` when updating.
 
 ## 4. Test and report
 
-Follow the [first-session checklist](docs/TESTING.md). Leave **Stability Control Off** in RC21;
-the On option does not affect this executable. Keep the FPS/build overlays visible in evidence.
+Follow the [first-session checklist](docs/TESTING.md). Stability Control **On** now works as in the
+original game. Keep the FPS/build overlays visible in evidence: the top line shows the version and
+the memory in use against the profile's budget.
 This is an unfinished beta, with known gameplay, visual, audio and performance limitations.
 
 Report one problem per [GitHub issue](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
-Include **Closed Beta 1 — RC21**, device/firmware, game source, car/mode/track, steps, expected
+Include the version (**0.2.0**, on the title screen and above the debug lines), device/firmware, game source, car/mode/track, steps, expected
 and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
 technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.
 See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
 ## Build identity
 
-| Item | RC21 value |
+| Item | 0.2.0 value |
 | --- | --- |
-| Embedded build | `cdf93ef2c7` |
-| EBOOT SHA-256 | `ff35c0a14190edf67de263259bfb9fa3831a75363ee2c7b7ee332196bb29df39` |
-| Xbox data ID | `bfaa` |
-| PS2 data ID | `804e` |
-| Memory profile | Extended memory (`PSP_LARGE_MEMORY=1`) |
+| Version | `0.2.0` (executable `0.2.0`) |
+| Embedded build | `5e81d1116` |
+| EBOOT SHA-256 | `b64b31554421c469dd90f9ae9db67e71119d6ba6ae520d540bd05c97839fa6fa` |
+| Xbox data ID | `3bc2` |
+| PS2 data ID | `6c78` |
+| Memory profile | Chosen at boot: extended (32 MB or more) or compact (PSP-1000) |
 
 These values identify the kit; you do not need to calculate hashes to report a bug.
-See [qualification scope](docs/qualification/RC21-QUALIFICATION.json) and
+See [the changelog](CHANGELOG.md) and
 [third-party notices](THIRD_PARTY.md). Portuguese historical material remains in `ptbr/`;
 the English instructions on this page are authoritative for the native packages. The original RC21 ZIP retains its original setup instructions.
 

@@ -9,8 +9,8 @@ body:
     id: version
     attributes:
       label: Beta version
-      description: Copy the package name you received. No hash calculation needed.
-      placeholder: Closed Beta 1 — RC21
+      description: The version on the title screen (for example 0.2.0-rc.1), or the release name. Closed Beta 1 — RC21 is 0.1.0. No hash calculation needed.
+      placeholder: "0.1.0 (Closed Beta 1 — RC21)"
     validations:
       required: true
   - type: dropdown
