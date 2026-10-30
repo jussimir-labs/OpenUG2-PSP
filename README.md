@@ -1,11 +1,12 @@
-# NFSU2 PSP — Closed Beta, version 0.2.0
+# NFSU2 PSP — Closed Beta, version 0.2.1
 
 Welcome to the first closed beta of the native PSP port of *Need for Speed Underground 2*.
 Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[v0.2.0 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.0).
+[v0.2.1 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.1).
+0.2.1 changes only the generator; the game is the same as 0.2.0.
 Windows x64, Linux x86-64, Apple Silicon and Intel Mac use separate downloads. The original
 [RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.0)
 remains available with its older setup requirements.
@@ -16,7 +17,7 @@ This kit contains the prebuilt PSP executable and a local game-data generator.
 Your ISO stays on your computer.
 
 [Release notes](RELEASE_NOTES.md) · [Changelog](CHANGELOG.md) · [Known issues](KNOWN_ISSUES.md) ·
-[Testing and bug reports](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](ROADMAP.md)
+[Testing and bug reports](docs/TESTING.md) · [Roadmap](ROADMAP.md)
 
 ## Before you begin
 
@@ -133,6 +134,7 @@ previous generation** (the folder that contains `PSP`). The generator then updat
   that made your folder, and extracts your ISO again only if one of those steps reads it;
   every other file is reused from your folder. A release that only changes the game's
   `EBOOT.PBP` updates in seconds; one that changes converters takes as long as those steps.
+  Updating a 0.2.0 folder to 0.2.1 takes seconds: 0.2.1 changes no converter.
   The first update to 0.2.0 is the exception for folders made with the Windows or macOS 0.1.x
   packages: a helper every step uses changed, so it converts everything again and takes about as
   long as a complete generation; a 0.1.0 source-kit folder is generated again;
@@ -178,16 +180,16 @@ the memory in use against the profile's budget.
 This is an unfinished beta, with known gameplay, visual, audio and performance limitations.
 
 Report one problem per [GitHub issue](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
-Include the version (**0.2.0**, on the title screen and above the debug lines), device/firmware, game source, car/mode/track, steps, expected
+Include the game version (**0.2.0**, on the title screen and above the debug lines; 0.2.1 kept the same game), device/firmware, game source, car/mode/track, steps, expected
 and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
 technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.
 See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
 ## Build identity
 
-| Item | 0.2.0 value |
+| Item | 0.2.1 value |
 | --- | --- |
-| Version | `0.2.0` (executable `0.2.0`) |
+| Version | `0.2.1` (executable `0.2.0`) |
 | Embedded build | `5e81d1116` |
 | EBOOT SHA-256 | `b64b31554421c469dd90f9ae9db67e71119d6ba6ae520d540bd05c97839fa6fa` |
 | Xbox data ID | `3bc2` |

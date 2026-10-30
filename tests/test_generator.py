@@ -130,6 +130,19 @@ class HelperTests(Fixture):
         self.app.data['busy']=True
         with self.assertRaises(g.UserError):self.app.launch('prepare',{})
 
+    def test_unwritable_helper_log_does_not_stop_the_job(self):
+        def refuse(*args, **kwargs):
+            raise OSError(22, 'Invalid argument')
+        with patch.object(Path, 'open', refuse), contextlib.redirect_stderr(io.StringIO()) as err:
+            self.app.log('1. first line')
+            self.app.log('second line')
+        logs = self.app.state()['logs']
+        self.assertEqual(logs[0], '1. first line')
+        self.assertEqual(logs[2], 'second line')
+        self.assertIn('could not be written', logs[1])
+        self.assertEqual(err.getvalue().count('could not be written'), 1)
+        self.assertEqual(self.app.state()['stage'], 'iso')
+
     @unittest.skipIf(os.name=='nt','POSIX process group test')
     @unittest.skipIf(os.name == "nt", "POSIX-specific fixture; Windows tree cancellation has a native job test")
     def test_cancel_reaps_orphan_converter_group(self):

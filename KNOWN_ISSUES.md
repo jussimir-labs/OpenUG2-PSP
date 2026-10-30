@@ -1,6 +1,6 @@
-# NFSU2 PSP closed beta 0.2.0: known issues
+# NFSU2 PSP closed beta 0.2.1: known issues
 
-0.2.0 is a closed-beta release candidate. It does not establish full-game completion,
+0.2.1 is 0.2.0 with a generator fix; the game is the same. It is a closed-beta release candidate. It does not establish full-game completion,
 all-device compatibility, physical PSP-1000 support or stable 30 fps throughout the game.
 
 ## Before testing
@@ -12,7 +12,8 @@ all-device compatibility, physical PSP-1000 support or stable 30 fps throughout 
   PPSSPP combinations need their own reports.
 - **PSP-1000 and Drift:** a Drift right after a city race may use the previous drift handling
   when memory is tight (a notice says so).
-- **Updates:** update your 0.1.1/0.1.2 output folder with the 0.2.0 generator (same ISO) or
+- **Updates:** a 0.2.0 output folder updates to 0.2.1 in seconds (no step runs again).
+  Update your 0.1.1/0.1.2 output folder with the 0.2.0 generator (same ISO) or
   generate into a new folder, and install the complete result. 0.2.0 changes `EBOOT.PBP`,
   `pack.n2pk` and the `parts-*.n2op` car files; an executable-only update keeps old car and
   career data.

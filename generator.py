@@ -196,6 +196,7 @@ class Application:
                          result=None, busy=False, can_resume=False, default_output=str(root / 'output'))
         self.data['build'] = json.loads((root / 'eboot/release.json').read_text())
         self.log_path = root / '.tools/browser-generator.log'
+        self.log_broken = False
 
     def update(self, **values):
         with self.lock:
@@ -214,9 +215,7 @@ class Application:
         with self.lock:
             self.data['logs'].append(line)
             self.data['logs'] = self.data['logs'][-2000:]
-        self.log_path.parent.mkdir(exist_ok=True)
-        with self.log_path.open('a', encoding='utf-8') as f:
-            f.write(line + '\n')
+        self.save_log(line)
         stages = {'1': 'iso', '2': 'extraction', '3': 'conversion', '4': 'conversion', '5': 'verification'}
         match = re.match(r'^([1-5])\. ', line)
         if match:
@@ -224,6 +223,24 @@ class Application:
         match = re.search(r'\[\s*(\d+)\s*/\s*(\d+)\]\s*(\d+)%\s*(.+)', line)
         if match:
             self.update(stage='conversion', progress=min(99, int(match[3])), progress_kind='estimated', message='Converting files (step ' + match[1] + ' of ' + match[2] + ')')
+
+    def save_log(self, line):
+        """The helper's copy of the log in .tools, best effort. A disk that
+        refuses it (a tester's Windows answered every append with EINVAL) must
+        not stop the conversion: the page keeps the lines, and each step's
+        log is in the output folder's registros."""
+        if self.log_broken:
+            return
+        try:
+            self.log_path.parent.mkdir(exist_ok=True)
+            with self.log_path.open('a', encoding='utf-8') as f:
+                f.write(line + '\n')
+        except OSError as exc:
+            self.log_broken = True
+            note = f'(The helper log {self.log_path} could not be written: {exc}. The conversion goes on without it.)'
+            with self.lock:
+                self.data['logs'].append(note)
+            print(note, file=sys.stderr, flush=True)
 
     def launch(self, action, values):
         if action not in ('check', 'start', 'prepare'):
@@ -238,6 +255,7 @@ class Application:
                     raise UserError('Invalid source.')
                 self.data['job'] = dict(iso=str(disc), output=str(out), source=source)
             self.cancelled.clear()
+            self.log_broken = False
             self.started = time.monotonic()
             self.duration = None
             self.data.update(status='preparing' if action == 'prepare' else 'checking', busy=True,

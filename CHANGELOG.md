@@ -16,6 +16,19 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-30 — Generator fix for Windows
+
+The game is unchanged: the same 0.2.0 executable and the same game data; only the generator changed.
+Updating a 0.2.0 output folder with this generator (same ISO) takes seconds: no conversion
+step runs again.
+
+### Fixed
+
+- Generator: on some Windows computers the conversion stopped before its first step, with
+  `OSError: [Errno 22] Invalid argument` while writing `.tools/browser-generator.log`. That log
+  is only a copy of what the page shows, so the generator now reports the problem once and
+  carries on with the conversion.
+
 ## [0.2.0] - 2026-10-30 — PSP-1000 support and the first tester fixes
 
 A new game executable and new converted game data: update your 0.1.1/0.1.2 output folder with
@@ -134,7 +147,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.0...v0.1.1

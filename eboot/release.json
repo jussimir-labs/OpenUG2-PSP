@@ -1,8 +1,8 @@
 {
   "candidate": "beta-v0.2.0",
   "candidate_id": "beta-v0.2.0-633f2793",
-  "release_tag": "v0.2.0",
-  "version": "0.2.0",
+  "release_tag": "v0.2.1",
+  "version": "0.2.1",
   "game_version": "0.2.0",
   "eboot_sha256": "b64b31554421c469dd90f9ae9db67e71119d6ba6ae520d540bd05c97839fa6fa",
   "eboot_bytes": 4098394,
@@ -19,7 +19,7 @@
     "ps2"
   ],
   "publication_status": "CLOSED_BETA_CANDIDATE",
-  "quality_approval": "Version 0.2.0 for the closed beta, released with Jussimir's approval to publish once it passes PPSSPP (30 October 2026). Broad tests ran on 0.2.0-rc.1 (the same source without the PSP-1000 drift fix of #16); this executable passed its own confirmation runs. Not a final release, physical PSP-1000, all-device, full-career or global 30fps qualification.",
+  "quality_approval": "Version 0.2.1 is a generator-only update of 0.2.0: the same executable and the same verified output; only the helper's log handling changed (31 October 2026). Version 0.2.0 for the closed beta, released with Jussimir's approval to publish once it passes PPSSPP (30 October 2026). Broad tests ran on 0.2.0-rc.1 (the same source without the PSP-1000 drift fix of #16); this executable passed its own confirmation runs. Not a final release, physical PSP-1000, all-device, full-career or global 30fps qualification.",
   "known_issues": [
     "No physical PSP-1000 has run this build: the compact profile was measured on a PSP-3000 limited to the PSP-1000 memory and in PPSSPP set to the PSP-1000.",
     "On PSP-1000, a Drift right after a city race may use the previous drift handling when memory is tight (a notice says so).",

@@ -1,5 +1,16 @@
 # NFSU2 PSP closed beta — release notes
 
+## 0.2.1 — Generator fix for Windows (30 October 2026)
+
+The game is unchanged: the same 0.2.0 executable and game data. Only the generator changed.
+
+- **Fixed:** on some Windows computers the conversion stopped before its first step, with
+  `OSError: [Errno 22] Invalid argument` while writing `.tools/browser-generator.log`. The generator
+  now reports the problem once and carries on.
+- **Updating:** choose the same ISO and your 0.2.0 output folder; the update takes seconds and
+  converts nothing again. Then copy `PSP/GAME/NFSU2VIEW` to the card as before (or keep the one you
+  have: the game files are identical).
+
 ## 0.2.0 — PSP-1000 support and the first tester fixes (30 October 2026)
 
 A new game executable and new game data: update your 0.1.x output folder with this generator (same
