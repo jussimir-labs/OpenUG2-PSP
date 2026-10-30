@@ -229,6 +229,12 @@ NONE = -(1 << 30)    # no ground in a collision cell (heights are millimetres)
 # up (a guard rail's top lip, awnings, signs) pass over the car; at 1.8 m
 # they stopped it up to half a metre before it touched anything.
 WALL_TOP = 1.45
+# A wall that also rises CAM_WALL_TOP or more above its layer (a building's
+# side, the game's walls of no top, -1000 to 3000 m) is one the chase
+# camera's eye (at most 3.45 m up) cannot look over: wall bit << 4, the
+# camera's alone (psp-viewer world_wall_high). Rails and low fences stay
+# below it, the camera over them as before.
+CAM_WALL_TOP = 3.5
 
 
 def clip_column(tri, x0, y0, x1, y1):
@@ -381,7 +387,8 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
     """1 m grid in game axes. Two ground layers (lowest/highest walkable
     surface, millimetres, NONE = none) and wall bits per layer: bit 0 relative to
     the low layer, bit 1 to the high one. An obstacle is any non-ground
-    surface between 0.5 m and WALL_TOP above that layer. Sloped faces are tested
+    surface between 0.5 m and WALL_TOP above that layer (one that also reaches
+    CAM_WALL_TOP above it sets the bit << 4 too). Sloped faces are tested
     by their plane height at the cell centre; near-vertical faces (whose 2D
     projection is a line) are rasterised along their edges instead of their
     bounding box. Grid origin (ox, oy) in game X/Y, n x n cells.
@@ -502,7 +509,7 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
                         continue
                     base = layer / 1000
                     if zmax > base + .5 and zmin < base + WALL_TOP:
-                        wall[k] |= bit
+                        wall[k] |= bit | (bit << 4 if zmax >= base + CAM_WALL_TOP else 0)
                         if shape_pts is not None:
                             band = clip_z(poly, base + .5, base + WALL_TOP)
                             cx, cy = x0 + step / 2, y0 + step / 2

@@ -97,20 +97,27 @@ def intersection_side(route, dirs, k, other, odirs, ok, node):
 
 
 def heights(route, city):
-    """Pick per point the ground layer closest to the previous one; try
-    both layers for the first point and keep the smoother chain."""
-    best = None
-    for first in city.layers(route[0][0], route[0][1]) or [0.0]:
-        zs, prev, cost = [], first, 0.0
-        for x, y, _, _ in route:
-            ls = city.layers(x, y)
-            z = min(ls, key=lambda v: abs(v - prev)) if ls else prev
-            cost += abs(z - prev)
-            zs.append(z)
-            prev = z
-        if best is None or cost < best[0]:
-            best = (cost, zs)
-    return best[1]
+    """Per point one of the ground layers under it, the whole route at once:
+    the chain with the least sum of dz^2 / run between points, so a ramp
+    climbs at its slope instead of staying on the street under the bridge
+    and stepping up at the end (the layer nearest the previous point alone
+    took the street at a ramp's foot: route 509 then crossed the street
+    under it at grade, beta issue 27). A point with no layer keeps the
+    height before it."""
+    states = None   # per candidate height: (cost, chain)
+    px = py = None
+    for x, y, _, _ in route:
+        ls = city.layers(x, y)
+        if states is None:
+            states = [(0.0, [z]) for z in ls or [0.0]]
+        elif not ls:
+            states = [(c, zs + [zs[-1]]) for c, zs in states]
+        else:
+            run = max(1.0, math.hypot(x - px, y - py))
+            states = [min(((c + (z - zs[-1]) ** 2 / run, zs) for c, zs in states), key=lambda s: s[0]) for z in ls]
+            states = [(c, zs + [z]) for (c, zs), z in zip(states, ls)]
+        px, py = x, y
+    return min(states, key=lambda s: s[0])[1]
 
 
 def main():

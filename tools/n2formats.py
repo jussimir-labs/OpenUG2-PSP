@@ -759,8 +759,10 @@ def ps2_world(leaves):
 class Part:
     """One 0x80134010 object. verts: (x,y,z,u,v,nx,ny,nz) in Xbox car space
     (X forward, Y lateral/left, Z up). subs: (indices, texkey, matkey)."""
-    def __init__(self, name, verts, subs, sockets):
-        self.name, self.verts, self.subs, self.sockets = name, verts, subs, sockets
+    def __init__(self, name, verts, subs, markers):
+        self.name, self.verts, self.subs = name, verts, subs
+        self.markers = list(markers.items() if isinstance(markers, dict) else markers)   # [(key, matrix)], every one, as the file has them
+        self.sockets = dict(self.markers)   # key -> matrix (a key twice: the last)
         self.triangles = sum(len(s[0]) for s in subs) // 3
 
 
@@ -820,15 +822,18 @@ def parts(data, accept=lambda name: True):
 
 
 def sockets_of(leaves, name):
-    """A part's sockets (0x13401a, the same on both discs): key -> matrix."""
-    sockets = {}
+    """A part's sockets (0x13401a, the same on both discs): [(key,
+    matrix)] in the file's order. A key can come twice: the SUV's two
+    headlamps a side under one name, its two tail lamps both
+    BRAKELIGHT_RIGHT (eModel::GetPostionMarker walks them all)."""
+    sockets = []
     if 0x13401a in leaves:
         s = unpad(leaves[0x13401a])
         for at in range(0, len(s) - 79, 80):
             m = struct.unpack_from('<16f', s, at + 16)
             if abs(m[15] - 1) > 1e-3 or any(abs(m[i]) > 1e-3 for i in (3, 7, 11)):
                 raise ValueError(f'invalid socket matrix: {name}')
-            sockets[u32(s, at)] = m
+            sockets.append((u32(s, at), m))
     return sockets
 
 
@@ -855,6 +860,21 @@ def car_record(global_data, car):
                 raise ValueError('wheel record mismatch')
             wheels.append((x, y, z, r, w))
         return wheels
+    raise ValueError(car + ' physics record absent')
+
+
+def wheel_faces(global_data, car):
+    """The car record's wheel faces (+0x1c, +0x20 of each wheel at
+    +0x120+0x30*k): how far out, signed as the wheel's y, the game draws
+    each wheel's outer face, on the stock body and under a wide body kit
+    (CarRenderInfo::UpdateWheelYRenderOffset)."""
+    table = [global_data[p:p+n] for t, p, n in chunks(global_data) if t == 0x34600][0][8:]
+    for at in range(0, len(table), 0x890):
+        if table[at:at+32].split(b'\0')[0] == car.encode():
+            faces = [struct.unpack_from('<2f', table, at + 0x13c + 0x30 * k) for k in range(4)]
+            if not all(.4 < abs(s) < 1.5 and .4 < abs(w) < 1.5 for s, w in faces):
+                raise ValueError('wheel face mismatch')
+            return faces
     raise ValueError(car + ' physics record absent')
 
 

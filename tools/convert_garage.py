@@ -64,7 +64,7 @@ import convert_hud
 import convert_physics
 import n2feng as fe
 import partsdb
-from n2formats import archived, car_record, lod_family, parts
+from n2formats import archived, car_record, lod_family, parts, wheel_faces
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -157,12 +157,12 @@ def car_options(game, car):
 
 
 def wide_track(game, car, kit):
-    """How far a wide body kit takes the wheels out (cc.widebody_track: the
-    tyres flush with its fenders), front and rear, in millimetres."""
-    wheels = car_record(archived(game, 'GLOBAL/GLOBALB.BUN'), car)
-    all_parts = list(parts(archived(game, f'CARS/{car}/GEOMETRY.BIN'), lambda n: n.startswith(car + '_')))
-    wide = cc.widebody_track(all_parts, car, kit, wheels)
-    out = [max(0, round(1000 * (abs(w[1]) - abs(s[1])))) for s, w in zip(wheels[:4], wide[:4])]
+    """How far a wide body kit takes the wheels out (cc.wheel_track: its
+    faces past the stock body's), front and rear, in millimetres."""
+    globalb = archived(game, 'GLOBAL/GLOBALB.BUN')
+    wheels, faces = car_record(globalb, car), wheel_faces(globalb, car)
+    stock, wide = cc.wheel_track(faces, wheels), cc.wheel_track(faces, wheels, kit)
+    out = [max(0, round(1000 * (abs(w[1]) - abs(s[1])))) for s, w in zip(stock[:4], wide[:4])]
     return min(255, max(out[:2])), min(255, max(out[2:]))
 
 
@@ -205,11 +205,18 @@ def option_blobs(game, car, cat, name, lod):
 
 def decal_pack(game, car, out):
     """The car's decal places (see the module doc): the zones found, as bits."""
-    every = list(parts(archived(game, f'CARS/{car}/GEOMETRY.BIN'), lambda n: '_DECAL_' in n))
+    every = list(parts(archived(game, f'CARS/{car}/GEOMETRY.BIN'), lambda n: n.startswith(car + '_')))
     meshes, zones = [], 0
     for wide in range(8):   # the stock body's places, then each wide body kit's (doors and quarters)
         head = f'{car}_DECAL_' if not wide else f'{car}_WIDE{wide}_DECAL_'
         found = [p for p in every if p.name.startswith(head)]
+        # laid on the body they go on (cc.hug), the outermost of its
+        # garage's and street's levels (one pack for both): the stock
+        # body's parts, or the wide kit's KITW0n with the base's
+        owner = f'{car}_KITW{wide:02d}_' if wide else f'{car}_KIT00_'
+        surface = cc.decal_surface([p for p in every if p.name[-2:] in ('_A', '_B', '_C')
+                                    and (p.name.startswith((owner, f'{car}_BASE_')) or (wide and p.name.startswith(f'{car}_KIT00_')
+                                                                                           and 'BODY' not in p.name and 'DOOR' not in p.name))])
         for z, (zone, _) in enumerate(DECAL_ZONES):
             # Names are cut at 27 characters (the RECT_SMALL and RECT_MEDIUM
             # layouts can read the same): a layout is told by its slot count.
@@ -225,8 +232,7 @@ def decal_pack(game, car, out):
                         continue
                     remap = {v: i for i, v in enumerate(sorted(set(ids)))}
                     vertices = []
-                    for vi in remap:
-                        x, y, z3, u, v, nx, ny, nz = part.verts[vi]
+                    for x, y, z3, u, v, nx, ny, nz in cc.hug([part.verts[vi] for vi in remap], surface):
                         vertices.append(struct.pack('<8f', u, v, ny, nz, nx, y, z3, x))   # as convert_car.Builder
                     meshes.append((vertices, [remap[i] for i in ids], DUMMY_DECAL1, 0xffffffff,
                                    F_DECAL | (SLOT_DECAL + z) << cc.SLOT_SHIFT | k << DECAL_SLOT_SHIFT | (DECAL_SMALL if small else 0)

@@ -16,6 +16,87 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-10-30 — Riders on the Storm
+
+A new game executable and new converted game data: update your 0.2.0 or 0.2.1 output folder with
+the 0.2.2 generator (same ISO) or generate into a new folder, and install the complete result.
+The traffic routes, the cars and their lights, the menus' and shops' scenes, the rain, the
+city's walls and the street's markers are converted again; copying only the executable is not
+enough.
+
+### Added
+
+- In the menus the analog stick turns your car on its turntable, as the right stick does in the
+  console versions; the car stays where you leave it, and the D-pad still moves through the
+  menus ([#29]).
+
+### Fixed
+
+- Menus: holding a direction on the D-pad now keeps moving through the options after a short
+  pause, as in the original game. The menu icons are back to the original size and shape (the
+  selected one full size, its neighbours a little smaller) instead of small and squashed, the
+  dot on the bar above them follows the selected option, and the thin lines at both ends of
+  the icon panel are gone ([#29]).
+- The turntable in the menus no longer shows a second striped rim under its own: the extra ring
+  belongs only to the floor's reflection in the original game. The car on it now has its
+  headlights and tail lights off, as in the original, and the EA Trax card slides in at the
+  left edge of the screen instead of covering the car ([#29]).
+- Every shop's door is marked on the street again, as in the original game: the shop's icon
+  over a turning ring of light on the ground, with the glow that pours down the beam from the
+  roof, in the shop's own colour (green at the Body Shop). Hidden shops have theirs too, and in
+  the prologue only the Car Lot and, once you have your own car, The Garage show it. Standing
+  right in the glow as you leave a shop, it fades away near the camera to keep the frame rate
+  ([#34]).
+- Performance packages now cost less than their parts bought one by one, as in the original
+  game: a package with two or more parts still to fit takes 10% off, and Megalow Parts, the
+  hidden shop, takes 20%. The package screen shows the discount above the Total Cost ([#35]).
+- Every shop now has its own room, as in the original game: the Car Lot, the performance
+  shops, the Body Shops, the Graphics shops, the Car Specialties shops and The Garage each show
+  their own interior around the car, instead of the main menu's street ([#36]).
+- The camera stays on the scene during the career's opening at the airport until Rachel hands
+  over the 350Z, as in the original game: the change-camera and look-back buttons wait for it,
+  and with the Bumper or Hood camera chosen in Options the opening's shots are no longer
+  replaced by the view from the car. The same applies to the scene on the grid before a race. ([#25])
+- Career: you can no longer drive away from the Car Lot in Rachel's 350Z without picking your
+  first car. Backing out now keeps you in the lot with Rachel's reminder that she needs her
+  car back, as in the original game, from the street's Car Lot and from The Garage alike; the
+  first car's question no longer offers to trade in a car that is Rachel's ([#26]).
+- Traffic on the on-ramp that climbs to the overpass near the first car lot no longer drops to the
+  street under the overpass and drives across it; the cars stay on the ramp, as in the original
+  game ([#27]).
+- Drafting now shows while it happens: tuck in behind a rival and "DRAFTING" appears above
+  the nitrous gauge with its points counting up, as in the console versions. Before, the word
+  only flashed after you left the slipstream and the points never showed. Power slides, hang
+  time and the other bonuses that last show the same way, and every bonus shows its points
+  in a car with nitrous ([#24]).
+- Pushing against a wall with the throttle held no longer brings a high-pitched buzz every two
+  seconds or so. The engine sound held at its lowest revs ran past the end of its recording
+  and played noise; it now keeps a steady engine note, in every car ([#28]).
+- The decals on Rachel's 350Z (the HKS and Sparco on its rear quarters) and every decal from the
+  Paint Shop now sit on the paint. Before, they hovered a few centimetres off the body and showed
+  as dark slivers beside the rear fenders when seen from behind ([#30]).
+- Wheels sit where the original game puts them, their outer face just inside the fender. The
+  Civic's stood out of its arches as if on spacers, and other cars' sat too deep (the 350Z, the
+  Miata, the Tiburon). Rims from the shop and wide body kits follow the same rule ([#31]).
+- No more rain inside tunnels and under covered roads: as in the original game, the drops stop
+  where the road is covered and start again as you drive out into the open, while a road on
+  top of the tunnel still gets the rain ([#33]).
+- The "i" tips, the cash pickups and the other street markers no longer float above the road:
+  a marker that comes into range before its patch of street has finished loading now waits for
+  the ground instead of taking your car's height at that moment ([#38]).
+- The chase camera no longer slips through tall walls: back the car up against a building or a
+  high concrete wall and the camera now stops short of it and rises over your car, as in the
+  original game, instead of ending up inside the wall with a dark screen ([#37]).
+- Car Specialties: in Custom Gauges the tachometer you are trying out is drawn whole again. Its
+  scale, needle and dial no longer drift apart from the blue ring, the boost gauge sits right
+  against it, and the dark backing fills the frame, as in the console versions ([#40]).
+- SUVs in traffic now light both tail lights, as in the original game; before, only the left one
+  glowed. One of the Peugeot 206's aftermarket tail lights had the same problem and now lights
+  on both sides too ([#39]).
+- A Drift no longer sits on its loading screen for good when its original handling data cannot
+  be read: it starts with the previous drift handling and says so ("No drift data: previous
+  handling"), as it already did when memory ran short ([#16]).
+
 ## [0.2.1] - 2026-10-30 — Generator fix for Windows
 
 The game is unchanged: the same 0.2.0 executable and the same game data; only the generator changed.
@@ -147,7 +228,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.1...v0.1.2
@@ -165,3 +247,19 @@ throughout the game were still pending.
 [#21]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/21
 [#22]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/22
 [#23]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/23
+[#24]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/24
+[#25]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/25
+[#26]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/26
+[#27]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/27
+[#28]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/28
+[#29]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/29
+[#30]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/30
+[#31]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/31
+[#33]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/33
+[#34]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/34
+[#35]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/35
+[#36]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/36
+[#37]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/37
+[#38]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/38
+[#39]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/39
+[#40]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/40

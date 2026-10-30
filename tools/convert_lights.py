@@ -181,13 +181,24 @@ def pack_flares(flares):
 # ------------------------------------------------------------------- cars
 
 def lamps_of(chosen):
-    """The light markers of these parts: [(kind, GU pos, GU dir)]."""
+    """The light markers of these parts: [(kind, GU pos, GU dir)], one a
+    kind and a side of the car (the first part's, its last marker of that
+    name). CreateCarLightFlares makes a flare for every marker; a kind
+    whose markers sit on both sides is the SUV's, its two tail lamps both
+    named BRAKELIGHT_RIGHT (one tail light lit, beta issue 39). The
+    inner and outer lamps some models carry on one side under one name
+    (the SUV's headlamps, the sedans', the 350Z's tail lamps) stay one
+    flare, as before: up to LAMPS_MAX (6) a car in the viewer."""
     out = {}
     for part in chosen:
-        for key, m in part.sockets.items():
+        mine = {}
+        for key, m in part.markers:
             if key in LAMP_KIND:
-                out.setdefault(LAMP_KIND[key], (gu(*m[12:15]), gu(*m[8:11])))
-    return sorted((k, p, d) for k, (p, d) in out.items())
+                p = gu(*m[12:15])
+                mine[LAMP_KIND[key], (p[0] > .05) - (p[0] < -.05)] = (p, gu(*m[8:11]))
+        for k, v in mine.items():
+            out.setdefault(k, v)
+    return sorted((k, p, d) for (k, side), (p, d) in out.items())
 
 
 def car_lamps(game, car, preset):

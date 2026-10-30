@@ -1,12 +1,11 @@
-# NFSU2 PSP — Closed Beta, version 0.2.1
+# NFSU2 PSP — Closed Beta, version 0.2.2
 
 Welcome to the first closed beta of the native PSP port of *Need for Speed Underground 2*.
 Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[v0.2.1 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.1).
-0.2.1 changes only the generator; the game is the same as 0.2.0.
+[v0.2.2 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.2).
 Windows x64, Linux x86-64, Apple Silicon and Intel Mac use separate downloads. The original
 [RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.0)
 remains available with its older setup requirements.
@@ -17,7 +16,7 @@ This kit contains the prebuilt PSP executable and a local game-data generator.
 Your ISO stays on your computer.
 
 [Release notes](RELEASE_NOTES.md) · [Changelog](CHANGELOG.md) · [Known issues](KNOWN_ISSUES.md) ·
-[Testing and bug reports](docs/TESTING.md) · [Roadmap](ROADMAP.md)
+[Testing and bug reports](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](ROADMAP.md)
 
 ## Before you begin
 
@@ -110,7 +109,7 @@ desktop's file dialog (KDE or GNOME); without one, paste full paths into the fie
 2. Choose your ISO and a **new, empty output folder**. Keep source detection on **Automatic**.
    The folder picker creates `NFSU2-PSP` inside the selected folder; a typed path is used as entered.
 3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
-   assets including all 28 movies, and compares the result against the 0.2.0 reference.
+   assets including all 28 movies, and compares the result against the 0.2.2 reference.
 4. Wait for successful identity verification. The game is in `<output>/PSP/GAME/NFSU2VIEW`.
    On Windows, Linux and Intel Macs some movies, audio, geometry and racing-line files are reported as
    **equivalent**: the same structure, with bytes rounded differently by an x86 processor. That
@@ -134,10 +133,11 @@ previous generation** (the folder that contains `PSP`). The generator then updat
   that made your folder, and extracts your ISO again only if one of those steps reads it;
   every other file is reused from your folder. A release that only changes the game's
   `EBOOT.PBP` updates in seconds; one that changes converters takes as long as those steps.
-  Updating a 0.2.0 folder to 0.2.1 takes seconds: 0.2.1 changes no converter.
-  The first update to 0.2.0 is the exception for folders made with the Windows or macOS 0.1.x
-  packages: a helper every step uses changed, so it converts everything again and takes about as
-  long as a complete generation; a 0.1.0 source-kit folder is generated again;
+  An update from 0.2.0 or 0.2.1 to 0.2.2 converts almost every step again (a file most
+  converters read changed), so it takes about as long as a complete generation; it still
+  checks your folder and keeps it until the new one is verified. Folders made with the Windows
+  or macOS 0.1.x packages also convert everything again, and a 0.1.0 source-kit folder is
+  generated again;
 - it installs the new `EBOOT.PBP` and verifies the complete result against the new reference,
   exactly as a full generation does;
 - your previous `PSP` folder is kept (in `.anterior` inside the output folder) until the new one
@@ -169,7 +169,7 @@ names are in Portuguese; the browser instructions are in English.
    **Game → Memory Stick** in the XMB.
 
 **Updating an older beta:** update your previous output folder (above) or generate in a new one, and install the complete result.
-0.2.0 changes `EBOOT.PBP`, `pack.n2pk` and the `parts-*.n2op` car files. Copying only the executable leaves the older car and career data.
+0.2.2 changes `EBOOT.PBP` and converted data (the city, the tracks, the cars and their lights, the menus' and shops' scenes, the rain and the street's markers). Copying only the executable leaves older data that it does not expect.
 Never mix Xbox and PS2 output, and do not delete `PSP/SAVEDATA` when updating.
 
 ## 4. Test and report
@@ -180,20 +180,20 @@ the memory in use against the profile's budget.
 This is an unfinished beta, with known gameplay, visual, audio and performance limitations.
 
 Report one problem per [GitHub issue](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
-Include the game version (**0.2.0**, on the title screen and above the debug lines; 0.2.1 kept the same game), device/firmware, game source, car/mode/track, steps, expected
+Include the version (**0.2.2**, on the title screen and above the debug lines), device/firmware, game source, car/mode/track, steps, expected
 and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
 technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.
 See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
 ## Build identity
 
-| Item | 0.2.1 value |
+| Item | 0.2.2 value |
 | --- | --- |
-| Version | `0.2.1` (executable `0.2.0`) |
-| Embedded build | `5e81d1116` |
-| EBOOT SHA-256 | `b64b31554421c469dd90f9ae9db67e71119d6ba6ae520d540bd05c97839fa6fa` |
-| Xbox data ID | `3bc2` |
-| PS2 data ID | `6c78` |
+| Version | `0.2.2` (executable `0.2.2`) |
+| Embedded build | `9d405874b` |
+| EBOOT SHA-256 | `424c86d1c70e9a1a91efb0857d2d037e9df6f77c035aa7ef090700d8d7b21586` |
+| Xbox data ID | `6fa9` |
+| PS2 data ID | `0e97` |
 | Memory profile | Chosen at boot: extended (32 MB or more) or compact (PSP-1000) |
 
 These values identify the kit; you do not need to calculate hashes to report a bug.

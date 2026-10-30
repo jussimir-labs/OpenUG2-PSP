@@ -39,7 +39,7 @@ import struct
 import convert_car as cc
 import convert_physics
 import mac_slots
-from n2formats import archived, car_record, lod_family, parts
+from n2formats import archived, car_record, lod_family, parts, wheel_faces
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -109,13 +109,18 @@ def brand_rims(game, brand):
 
 
 def car_mounts(game, globalb, car):
-    """The car's four wheels: GU centre, the rim's scale, the side."""
+    """The car's four wheels: GU centre (the rim centred on the axle here:
+    half the stock wheel's width in from the game's face, cc.wheel_track),
+    the rim's scale, the side."""
     data = archived(game, f'CARS/{car}/GEOMETRY.BIN')
     all_parts = list(parts(data, lambda n: n.startswith(car + '_')))
-    wheels = car_record(globalb, car)
-    fit = cc.radius(cc.pick_lod(cc.families_stock_wheel(all_parts, car), 0))
+    wheels = cc.wheel_track(wheel_faces(globalb, car), car_record(globalb, car))
+    stock = cc.pick_lod(cc.families_stock_wheel(all_parts, car), 0)
+    fit = cc.radius(stock)
+    half = (max(v[1] for v in stock.verts) - min(v[1] for v in stock.verts)) / 2
     out = []
     for x, y, z, r, w in wheels[:4]:
+        y -= half if y > 0 else -half
         out.append((y, z, x, fit * (r / wheels[0][3]), 1.0 if y > 0 else -1.0))   # Xbox x forward, y lateral, z up -> GU (y, z, x)
     return out
 

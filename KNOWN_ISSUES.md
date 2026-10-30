@@ -1,6 +1,6 @@
-# NFSU2 PSP closed beta 0.2.1: known issues
+# NFSU2 PSP closed beta 0.2.2: known issues
 
-0.2.1 is 0.2.0 with a generator fix; the game is the same. It is a closed-beta release candidate. It does not establish full-game completion,
+0.2.2 is a closed-beta release. It does not establish full-game completion,
 all-device compatibility, physical PSP-1000 support or stable 30 fps throughout the game.
 
 ## Before testing
@@ -12,16 +12,21 @@ all-device compatibility, physical PSP-1000 support or stable 30 fps throughout 
   PPSSPP combinations need their own reports.
 - **PSP-1000 and Drift:** a Drift right after a city race may use the previous drift handling
   when memory is tight (a notice says so).
-- **Updates:** a 0.2.0 output folder updates to 0.2.1 in seconds (no step runs again).
-  Update your 0.1.1/0.1.2 output folder with the 0.2.0 generator (same ISO) or
-  generate into a new folder, and install the complete result. 0.2.0 changes `EBOOT.PBP`,
-  `pack.n2pk` and the `parts-*.n2op` car files; an executable-only update keeps old car and
-  career data.
+- **Updates:** update your 0.2.0 or 0.2.1 output folder with the 0.2.2 generator (same ISO)
+  or generate into a new folder, and install the complete result. 0.2.2 changes `EBOOT.PBP` and
+  converted data (city, tracks, cars and their lights, menu and shop scenes, rain, street markers); an
+  executable-only update keeps old data that the new executable does not expect.
 - Back up your saves. Broad physical save/reload and full-career coverage remain pending.
 - **Xbox source button icons:** the PSP prompts use the PS2 disc's pad icons. A game generated
   from the Xbox ISO uses the port's own drawn icons instead (same buttons, slightly different look).
 
 ## Gameplay and presentation
+
+- Invisible walls on the open road (#32) were not reproduced at the reported spots; a bug file
+  (L + R + SELECT right after the hit) and a video help most.
+- Menus (#29): still open are the menu camera's height and distance on the stick, the shop
+  rooms' own lighting and reflections, the Body Shop's part browser and camera angles, and
+  each car's own ride height in the menus.
 
 - Rivals may become stuck in repeated recovery in **Tunnel Construction / Drag 4401**.
 - Suspension and handbrake changes have bounded directed checks, not an all-car/all-upgrade

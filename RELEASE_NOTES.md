@@ -1,15 +1,20 @@
 # NFSU2 PSP closed beta — release notes
 
-## 0.2.1 — Generator fix for Windows (30 October 2026)
+## 0.2.2 — Riders on the Storm (30 October 2026)
 
-The game is unchanged: the same 0.2.0 executable and game data. Only the generator changed.
+A new game executable and new game data: update your 0.2.0 or 0.2.1 output folder with this generator
+(same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
 
-- **Fixed:** on some Windows computers the conversion stopped before its first step, with
-  `OSError: [Errno 22] Invalid argument` while writing `.tools/browser-generator.log`. The generator
-  now reports the problem once and carries on.
-- **Updating:** choose the same ISO and your 0.2.0 output folder; the update takes seconds and
-  converts nothing again. Then copy `PSP/GAME/NFSU2VIEW` to the card as before (or keep the one you
-  have: the game files are identical).
+- **Fixed:** drafting and other running bonuses shown while they happen (#24), the camera held on the
+  career's opening and grid scenes (#25), leaving the first Car Lot in Rachel's 350Z (#26), traffic
+  dropping off the overpass ramp (#27), the high-pitched buzz against a wall (#28), the menus' held
+  directions, icons, turntable and lights (#29, in part), decals off the paint (#30), wheel positions
+  (#31), rain inside tunnels (#33), shop markers on the street (#34), package discounts (#35), each
+  shop's own room (#36), the chase camera inside tall walls (#37), floating street markers (#38), the
+  SUVs' tail lights (#39) and the Custom Gauges tachometer (#40).
+- **Added:** the analog stick turns your car in the menus (#29).
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
 
 ## 0.2.0 — PSP-1000 support and the first tester fixes (30 October 2026)
 

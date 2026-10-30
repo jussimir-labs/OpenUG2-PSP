@@ -19,7 +19,7 @@ import struct
 import n2feng
 from n2formats import *  # noqa: F401,F403  (tests import names through here)
 from n2formats import (FlatTPK, SlotTPK, archived, car_record, envmap_faces,
-                       game_hash, lod_family, parts)
+                       game_hash, lod_family, parts, wheel_faces)
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -599,10 +599,17 @@ def assemble(game, preset, lod, strict=False):
     car = preset['car']
     textures = car_textures(game, car)
     paint = hexcolor(preset.get('paint', '2a8a20'))
-    wheels = car_record(global_bun(game), car)
+    globalb = global_bun(game)
     all_parts = list(car_parts(game, car))
-    wheels = widebody_track(all_parts, car, preset.get('widebody'), wheels, bool(preset.get('rims')))
+    wheels = wheel_track(wheel_faces(globalb, car), car_record(globalb, car), preset.get('widebody'))
     families = choose_car_parts(all_parts, car, preset)
+    rim_lib = rim_parts(game, preset['rims']) if preset.get('rims') else None
+    if rim_lib:   # the brakes behind the rims: the rim's marker, at the record's width (assemble's rims)
+        rim = pick_lod(rim_lib, 0)
+        width = max(v[1] for v in rim.verts) - min(v[1] for v in rim.verts)
+        brakes = [brake_mount(m, rim, m[4] / width) for m in wheels]
+    else:
+        brakes = [brake_mount(m, pick_lod(families_stock_wheel(all_parts, car), 0)) for m in wheels]
     # window_tint: the garage's tint level (1..3, the viewer's GARAGE_TINTS),
     # as the PS2's DDAY_PLAYER_CAR, its cabin unseen behind dark glass
     b = Builder(textures, paint, WINDOW_TINTS.get(preset.get('window_tint', 0)), lamp_textures(textures, car, preset), skin_keys(car))
@@ -624,8 +631,9 @@ def assemble(game, preset, lod, strict=False):
         # Names are truncated at 27 characters (IMPREZAWRX_KIT00_FRONT_WHE).
         if any(s in family for s in ('_FRONT_WH', '_FRONT_BR', '_REAR_BR')):
             first = 0 if '_FRONT_WH' in family or '_FRONT_BR' in family else 2
-            mounts = wheels if '_FRONT_WH' in family else wheels[:2] if '_FRONT_BR' in family else wheels[2:]
-            mid = (min(v[1] for v in part.verts) + max(v[1] for v in part.verts)) / 2
+            mounts = wheels if '_FRONT_WH' in family else brakes[:2] if '_FRONT_BR' in family else brakes[2:]
+            # the tyre by its face (wheel_track), a brake by its middle
+            mid = 0 if '_FRONT_WH' in family else (min(v[1] for v in part.verts) + max(v[1] for v in part.verts)) / 2
             for k, mount in enumerate(mounts):
                 f, mirror = wheel_xform(mount, mid, front_flip='_FRONT_WH' in family)
                 b.add(part, f, mirror, wheel=first + k)
@@ -685,7 +693,7 @@ def assemble(game, preset, lod, strict=False):
             report.append({'name': part.name, 'triangles': part.triangles})
             break
     if preset.get('decals'):
-        report += add_decals(b, game, car, preset)
+        report += add_decals(b, game, car, preset, chosen)
     if preset.get('spoiler'):
         lib = list(parts(archived(game, 'CARS/SPOILER/GEOMETRY.BIN'),
                          lambda n: lod_family(n) == preset['spoiler']))
@@ -730,12 +738,8 @@ def assemble(game, preset, lod, strict=False):
             if side == 'RIGHT':
                 b.meshes[first:] = [x[:4] + (x[4] | F_RIGHT,) + x[5:] for x in b.meshes[first:]]
     if preset.get('rims'):
-        brand, style, size = preset['rims']
-        prefix = f'{brand}_{style}_{size}'
-        lib = list(parts(archived(game, f'CARS/WHEELS/GEOMETRY_{brand}.BIN'),
-                         lambda n: lod_family(n) == prefix))
-        if not lib:
-            raise ValueError('roda inexistente: ' + prefix)
+        prefix = '_'.join(preset['rims'])
+        lib = rim_lib
         if strict and lod >= 3:
             return b, textures, report
         part = (far_pick if strict else pick_lod)(lib, coarser.get(prefix, lod))
@@ -750,24 +754,25 @@ def assemble(game, preset, lod, strict=False):
         # Its shop offers each car the rims of its own tyre size; a size far
         # from the car's (the garage's options are a few fixed sizes for
         # every car) is drawn at the record's radius instead.
-        mid = (min(v[1] for v in part.verts) + max(v[1] for v in part.verts)) / 2
         full = pick_lod(lib, 0)   # every level of detail at the full one's size (the coarser's own extents run wider)
         native = radius(full)
         width = max(v[1] for v in full.verts) - min(v[1] for v in full.verts)
         b.slot = SLOT_RIMS
         for k, mount in enumerate(wheels):
             scale = 1.0 if abs(native - mount[3]) <= RIM_NATIVE * mount[3] else mount[3] / native
-            f, mirror = wheel_xform(mount, mid, scale, yscale=mount[4] / width)
+            f, mirror = wheel_xform(mount, 0, scale, yscale=mount[4] / width)   # by its face (wheel_track)
             b.add(part, f, mirror, library=True, wheel=k)
     return b, textures, report
 
 
-def add_decals(b, game, car, preset):
+def add_decals(b, game, car, preset, under=()):
     """The preset's decals ({zone: [art per slot of its medium layout]}, the
     art CARS/TEXTURES.BIN's <ART>_RECT or _WIDE by the zone's shape) on the
     car's decal places, flagged as the garage's (tools/convert_garage.py):
     a wide body kit's own places on the doors and quarters (the game turns
-    the stock body's off under it)."""
+    the stock body's off under it). under: the parts drawn at this level,
+    the decals laid on them (hug)."""
+    surface = decal_surface(under)
     import convert_garage as cg   # (it imports this module)
     store = SlotTPK(archived(game, 'CARS/TEXTURES.BIN'))
     names = {store.name(k): k for k in store.slots}
@@ -796,13 +801,85 @@ def add_decals(b, game, car, preset):
                 raise ValueError(f'decalque inexistente: {art}_{shape} em {zone} {k}')
             remap = {v: i for i, v in enumerate(sorted(set(ids)))}
             vertices = []
-            for vi in remap:
-                x, y, z3, u, v, nx, ny, nz = place.verts[vi]
+            for x, y, z3, u, v, nx, ny, nz in hug([place.verts[vi] for vi in remap], surface):
                 vertices.append(struct.pack('<8f', u, v, ny, nz, nx, y, z3, x))   # as Builder.add
             b.meshes.append((vertices, [remap[i] for i in ids], key, rgba_u32((255, 255, 255, 255)),
                              cg.F_DECAL | (cg.SLOT_DECAL + z) << SLOT_SHIFT | k << cg.DECAL_SLOT_SHIFT, 1.0))
             report.append({'name': f'{place.name}:{k} {art}_{shape}', 'triangles': len(ids) // 3})
     return report
+
+
+DECAL_UNDER = re.compile(r'_(FRONT_WH|FRONT_BR|REAR_BR|EXHAUST|SPOILER|MIRROR|DECAL)')   # parts placed apart, or the decals'
+
+
+def decal_surface(under):
+    """The triangles decals lie on (hug): the parts' drawn in place, each
+    with its outward normal (the winding's, as the vertices') and its box."""
+    out = []
+    for part in under:
+        if DECAL_UNDER.search(part.name):
+            continue
+        for ids, *_ in part.subs:
+            for k in range(0, len(ids) - 2, 3):
+                a, b_, c = (part.verts[i][:3] for i in ids[k:k + 3])
+                e1 = [b_[j] - a[j] for j in range(3)]
+                e2 = [c[j] - a[j] for j in range(3)]
+                n = (e1[1]*e2[2] - e1[2]*e2[1], e1[2]*e2[0] - e1[0]*e2[2], e1[0]*e2[1] - e1[1]*e2[0])
+                size = math.sqrt(sum(q * q for q in n))
+                if size < 1e-12:
+                    continue
+                out.append((a, e1, e2, tuple(q / size for q in n), [min(a[j], b_[j], c[j]) for j in range(3)],
+                            [max(a[j], b_[j], c[j]) for j in range(3)]))
+    return out
+
+
+def hug(verts, surface, inward=.10, outward=.05, gap=.004):
+    """A decal's vertices laid on the body under them, gap out along each
+    one's normal: the outermost outward-facing surface crossed by the
+    normal from inward behind to outward in front. The decal places are
+    modelled on the full detail's body, a few centimetres off its
+    coarser levels (the street's light pack draws Rachel's KITW02 at C)
+    and even off its own: the 350Z's WIDE2 quarters 2 to 5 cm out of
+    the KITW02's, a sliver beside the body from behind (beta #30). A
+    vertex the normal finds no surface for moves as the others did."""
+    if not surface:
+        return verts
+    reach = inward + outward
+    lo = [min(v[j] for v in verts) - reach for j in range(3)]
+    hi = [max(v[j] for v in verts) + reach for j in range(3)]
+    near = [t for t in surface if all(t[4][j] <= hi[j] and t[5][j] >= lo[j] for j in range(3))]
+    moved, shifts = [], []
+    for v in verts:
+        o, d = v[:3], v[5:8]
+        size = math.sqrt(sum(q * q for q in d)) or 1.0
+        d = [q / size for q in d]
+        best = None
+        for a, e1, e2, n, _, _ in near:
+            if n[0]*d[0] + n[1]*d[1] + n[2]*d[2] < .3:   # facing the decal's way (not the arch's lining)
+                continue
+            p = (d[1]*e2[2] - d[2]*e2[1], d[2]*e2[0] - d[0]*e2[2], d[0]*e2[1] - d[1]*e2[0])
+            det = e1[0]*p[0] + e1[1]*p[1] + e1[2]*p[2]
+            if abs(det) < 1e-12:
+                continue
+            s = [o[j] - a[j] for j in range(3)]
+            u = (s[0]*p[0] + s[1]*p[1] + s[2]*p[2]) / det
+            if u < 0 or u > 1:
+                continue
+            q = (s[1]*e1[2] - s[2]*e1[1], s[2]*e1[0] - s[0]*e1[2], s[0]*e1[1] - s[1]*e1[0])
+            w = (d[0]*q[0] + d[1]*q[1] + d[2]*q[2]) / det
+            if w < 0 or u + w > 1:
+                continue
+            t = (e2[0]*q[0] + e2[1]*q[1] + e2[2]*q[2]) / det
+            if -inward <= t <= outward and (best is None or t > best):
+                best = t
+        moved.append((v, d, best))
+        if best is not None:
+            shifts.append([(best + gap) * q for q in d])
+    if not shifts:
+        return verts
+    mean = [sum(s[j] for s in shifts) / len(shifts) for j in range(3)]
+    return [tuple(v[j] + ((best + gap) * d[j] if best is not None else mean[j]) for j in range(3)) + tuple(v[3:])
+            for v, d, best in moved]
 
 
 def plate_face(chosen, plate, at):
@@ -862,35 +939,39 @@ def family_slot(car, family):
             SLOT_HEADLIGHT if slot == 'HEADLIGHT' else SLOT_BRAKELIGHT if slot == 'BRAKELIGHT' else 0)
 
 
-def fender_width(all_parts, family, axle_x):
-    """How far the body reaches sideways over an axle (the full detail's
-    vertices within 0.35 m of it, 0.1 to 0.6 m up)."""
-    reach = 0.0
-    for p in all_parts:
-        if lod_family(p.name) == family and p.name.endswith('_A'):
-            for v in p.verts:
-                if abs(v[0] - axle_x) < 0.35 and 0.1 < v[2] < 0.6:
-                    reach = max(reach, abs(v[1]))
-    return reach
+MARKER_BRAKE = 0xea8dfb05   # bin_hash('MARKER_BRAKE'): on a wheel's model, how far in from its face the brake sits
 
 
-def widebody_track(all_parts, car, widebody, wheels, rims=False):
-    """A wide body kit's wheels out to its fenders, the tyre's outer face
-    flush with the fender over its axle, as the PS2's: its RAM holds Rachel's
-    350Z's rear tyre faces at 0.945 m under a 0.943 m fender (KITW02), and
-    from behind they barely show. On the stock mounts (0.755 m) they sat 5 to
-    7 cm deep in the arches."""
-    if not widebody:
-        return wheels
-    tyre = pick_lod(families_stock_wheel(all_parts, car), 0)
-    stock_half = (max(v[1] for v in tyre.verts) - min(v[1] for v in tyre.verts)) / 2   # the stock wheel's half width
-    out = []
-    for x, y, z, r, w in wheels:
-        half = w / 2 if rims else stock_half   # aftermarket rims: the record's width for the axle (assemble)
-        wide = fender_width(all_parts, f'{car}_{widebody}_BODY', x)
-        track = max(abs(y), wide - half) if wide else abs(y)
-        out.append((x, track if y > 0 else -track, z, r, w))
-    return out
+def wheel_track(faces, wheels, widebody=None):
+    """The wheels' mounts at the game's faces (n2formats.wheel_faces: the
+    stock body's, a wide body kit's), as CarRenderInfo::Render draws them:
+    the wheel model's own face (its y = 0, the plane wheel_xform puts at
+    the mount with mid 0) at the record's, the rest of the wheel inward
+    whatever its width. The record's own y is the physics' contact:
+    centred on it the wheels sat up to 6 cm out of the Civic's arches
+    (beta #31) and 3 to 5 deep in the 350Z's and the Miata's."""
+    return [(x, abs(wide if widebody else stock) * (1 if y > 0 else -1), z, r, w)
+            for (x, y, z, r, w), (stock, wide) in zip(wheels, faces)]
+
+
+def brake_mount(mount, wheel, ys=1.0):
+    """A brake's place, its middle on the axle: its wheel's MARKER_BRAKE
+    in from the face (the wheel's width scale ys on it, as the game's),
+    else half the wheel's width in."""
+    m = wheel.sockets.get(MARKER_BRAKE)
+    depth = (m[13] if m else (max(v[1] for v in wheel.verts) + min(v[1] for v in wheel.verts)) / 2) * ys
+    x, y, z, r, w = mount
+    return x, y - depth if y > 0 else y + depth, z, r, w
+
+
+def rim_parts(game, rims):
+    """A rim's levels of detail (CARS/WHEELS' <BRAND>_<STYLE>_<SIZE>)."""
+    brand, style, size = rims
+    prefix = f'{brand}_{style}_{size}'
+    lib = list(parts(archived(game, f'CARS/WHEELS/GEOMETRY_{brand}.BIN'), lambda n: lod_family(n) == prefix))
+    if not lib:
+        raise ValueError('roda inexistente: ' + prefix)
+    return lib
 
 
 def families_stock_wheel(all_parts, car):

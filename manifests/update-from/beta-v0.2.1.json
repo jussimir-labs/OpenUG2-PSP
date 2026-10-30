@@ -1,0 +1,2626 @@
+{
+ "bundles": [
+  {
+   "bundle_sha256": "813b486716906c39c243c59194c2a60dd312e18f08008876504a530a2a970a9c",
+   "inputs": {},
+   "platform": "macos-arm64",
+   "runtime": "cb03d695162ccc0090be1b25d2f2ed04dacdb0906ce9611b0eee61dbca2d2781"
+  },
+  {
+   "bundle_sha256": "43bd20707ef826a60ee5c2ddaa4305267690e9f4b6e26ccef1c676cc2affaeb3",
+   "inputs": {},
+   "platform": "macos-x64",
+   "runtime": "cd9ab27a8445072d9ab7d04489f92ce5a0668494c000269e6f8e14470c65acec"
+  },
+  {
+   "bundle_sha256": "c0c154bfff1daf64e6806b1901fbbb781808154409584373168da9ab9a51a700",
+   "inputs": {},
+   "platform": "windows-x64",
+   "runtime": "6cad9b6911c1896e52dc1a397e604eae044dac1b0827f7b7d31eb894889e6a26"
+  },
+  {
+   "bundle_sha256": "d5d97fb351fbbdb4f5c2040d3f012bd6afa1ff0f01bf9475e69ceb1ee9907580",
+   "inputs": {},
+   "platform": "linux-x64",
+   "runtime": "81a998b50d8eeb6108f492376fe8e16e49e9edab04d3b5a3be18b5cacd423a93"
+  }
+ ],
+ "candidate": "beta-v0.2.0",
+ "code": {
+  "art/reference/psp-controls/psp-isolated-v1.png": "ee3e8b9bdc245864e545109c54cfc3206090be4a3fadc9990963ed3dafc8d400",
+  "build_game.py": "37785937739ceefa0cf9d637f129950d799a319300f2dd4667ff8ce0a6621463",
+  "presets/350z-showroom.json": "28e5934a5c5614811f3a693cdd0fb4f423af6bfbb619d4a77895a6d4fb9a302e",
+  "presets/opponents/eclipse.json": "935420363176e5736fa9047cbae7c752e4e95c67ca438f298c10541673c0cb51",
+  "presets/opponents/imprezawrx.json": "df16d2714137b83c19e5a158327fa01d36a91c58e6155f331727104ceaf96d52",
+  "presets/opponents/lancerevo8.json": "29a1c8e2abc95376fb156c277b74cb5b71e4d3c662c85869e10338e631d5f565",
+  "presets/opponents/rx8.json": "64b1737de2df594cb805123526b31eefb833b56e8dd1f24eba7de0bf367e79c2",
+  "presets/opponents/skyline.json": "0b21899b33c515ffea2a493c5ff0cbd8f99754dd15db0302d761763d6e39a4c3",
+  "presets/opponents/supra.json": "a8e0498e95a86da55201cd4fcc32082cf4a96a8e055043f5155317a505af20b7",
+  "presets/rivals/AL_RX8.json": "cdb5bc00a74f2a24c72d32e37083b4f763f201287769959898eaee4566fb574a",
+  "presets/rivals/CALEB_GTO.json": "58dad53d1f9a05a231a911231148c32a9e7981ff0f5e628302e398c19819de7c",
+  "presets/rivals/MARCUS_CELICA.json": "8192c93a5f128c09d001be35c71adcaa3f284037b20554bbc5387e577e7e2251",
+  "presets/rivals/NIGEL_3000GT.json": "d1146e8f0e3b04ecf465b629cca0045b0fe7ed54e87540ef918e077bcbf32f88",
+  "presets/rivals/NIKKI_MUSTANGGT.json": "9c022acbb850fa4e6c6ac848f6d42a0921f09117444daccf5e4734364cbf6596",
+  "presets/rivals/SCOTT_TT.json": "0c02961290a735da37e35277aa9b9af04905ac4bdf753f423b65acda324c9557",
+  "presets/rivals/TOM_G35.json": "abcda50b07798ad06bd30559067d670fa1ef2583dcde3b37bbaf447c34ea425f",
+  "sources/__init__.py": "b88ad01bbd3487d25b4bf16c7a19e1d8936de493e67c25a041f28c31575d2567",
+  "sources/ps2-files.json": "e9fd30179c798eb944dc3619bcd913d3e103fa1234f7669f2ac39090a7b0e64c",
+  "sources/ps2.py": "8f0578682e15b6f7643f625661c2d8c6bf10e06f14dfb4af58579bf2d5bc1e62",
+  "sources/xbox-files.json": "9d60e2ec7c0596898c8dc5dc45b60366bbe48466a8ac1955ae93607a91e2db98",
+  "sources/xbox.py": "3e8b0ad1eba67d8ef6dd951b7b28dea7fba9e31a0192704236c4e72ebb2d6126",
+  "tools/PS2_SOURCE.md": "0e3f16548db656ea46661b33ace4bbf027c84f5a7cbbb632355a6fd05372b561",
+  "tools/arch_tolerance.py": "52f3f3ca91821fce129a7396b98b864e34bcdb6a3d3cc7f87313f0092ac18b44",
+  "tools/car_ratings.py": "5c7c02546fa514a296e573e8bf879537e1508caf56fef6b77b9e74c78974bf56",
+  "tools/city_owners.py": "8dc7a94d7fb23723bbad8306cf70f48e7b78319fafd252c309d76448fa34ff27",
+  "tools/convert_audio.py": "5b13276473529382c78fc858fe356476511c24c7cdf2e5ca6529fa8ad4ca545f",
+  "tools/convert_car.py": "e7525be739b2b89064e8a765ecdbe3293b224188274b83a1fd121b9613db6a31",
+  "tools/convert_career.py": "ddbd561bc269750500ccdae2b44ddb9d4465196f21aebd93fbfab9c16ce58675",
+  "tools/convert_cars.py": "8efbf68040fef4ad4755368045106b5a43f9b5ba7d6b860254612ee9332675d0",
+  "tools/convert_city.py": "ecf5fe1f9b8f1d51717349ed367766864d81aee09b4077639b785d55aa859381",
+  "tools/convert_difficulty.py": "e245a16f166d6b441fb4b7ef512944b074ce9ed79daa963da630012318287f27",
+  "tools/convert_ending_nis.py": "e626fa1e945b92356d79594e6935eecb75021a897a88d7d59d66d5ecb6a86a4c",
+  "tools/convert_envsound.py": "d6d3bf24818b24baf04743e869b09339a8213b34cf8fa613372263960f4d5a0e",
+  "tools/convert_fog.py": "674b508567f3440df272e9b8f81b015f78cb29dfa719f7ca168c151be89c1e85",
+  "tools/convert_frontend.py": "b5dc3f3ba1221d85fb0a25a8497bc9d0d38989ddb4e650291d62809dc57cca29",
+  "tools/convert_garage.py": "970f45b38393b9b8632404afa42d60d08463a572e7e06054c157b8b6e0bba737",
+  "tools/convert_gps.py": "4b90623e372d2453f3abf5900237c2b27b8a659e9087b5ea1a357535e0ba918a",
+  "tools/convert_hud.py": "2122c9e844bcdebad4d574d575b1ea24ac7cffb70457f9eadd0a8d484978b2f9",
+  "tools/convert_intro_nis.py": "a986db2176591151d6e98c2984fe0f72f3cec41c4fc5fedf3d2500f8cb5caf5f",
+  "tools/convert_landmarks.py": "275b3cc3ef5c774eeb55d7c3fd99c309198a8634bebe2d18cd740ded79d569b4",
+  "tools/convert_lanes.py": "f13586307b13b50b67cd9145e1f5d43b68cd290b8d9575369cf8884d35cecca8",
+  "tools/convert_lights.py": "134d156d5325fea0cdf36f983627204aacb36c0e9e318e446642f37504600472",
+  "tools/convert_magazines.py": "0260ee9ae699c3f50ceff168b4bfef069a99bcff7dad6c31575ac80652fe2862",
+  "tools/convert_mips.py": "d7e63c70dde0e23f3c15e23be980c6e2d00fa7e31afa0fe9129802911357cb00",
+  "tools/convert_modes.py": "1f37aff1a0fa241494aed18d895b9f404f75e66ebb90afd977d5c5975cbf988e",
+  "tools/convert_movies.py": "8d0967a26e5d3c0125c6144def3da20f3c2a59265f193274e9e5f1827b7488d3",
+  "tools/convert_nis.py": "6e6ece93085597688e463dda48945ecd897664b94b6792da773abd92ffd49fb4",
+  "tools/convert_original_data.py": "66db12449d05b682a840123c1db821bf5d1968ba4e2a57b76c7c6bab3fc5bce6",
+  "tools/convert_paints.py": "4ebf40951e1721375ff1bf100a94ca71eb98a6104acbabf625631c167df4b278",
+  "tools/convert_partnames.py": "8544ab7073a267b3072790813e4971b28a35ecd914d132c96d0347e0b6051616",
+  "tools/convert_perf.py": "5df910e6cf14e4bf240d1420cbfafb425c6d62e137e5c2f5aace58dc4920bce6",
+  "tools/convert_physics.py": "782a1bae6bcef3c2aebc93ea3971012d64188bea979f778c51b3503005f636a4",
+  "tools/convert_psp_pad.py": "e6c9d0c824cb070d7a99da9a01081cbcad7ab9bbc807d7c6e4f6ee02a87277dd",
+  "tools/convert_pvs.py": "85799fe662ef91c02d908a391a49afd67a7d5aa8067e53fe4982c85cf29e624f",
+  "tools/convert_races.py": "c936d700ffdbfe6763909c2e2abc476c4297b46b3ae5660afb5a70ec7cc84fdd",
+  "tools/convert_rating.py": "6c07201d779714e8a4302d2e3c1eefc10ddcfa19f0ccba31678c466830084efb",
+  "tools/convert_resetzones.py": "ffbeb753572a4945471b649b5b2a9556801a92d03ea39a87f4408da947dccfe7",
+  "tools/convert_rims.py": "c93f074cc6bdd1751177779ca074bfc315317453144fc4c45ccbdb61bcc15b66",
+  "tools/convert_routes.py": "304d83bce79f30a71c1d3ac805a539d95c1a0553f7a52e5704006990607a19eb",
+  "tools/convert_shell.py": "10afebdfde3563e1105073152797571a2110dba702c7eeed23a6f4b530bf76f3",
+  "tools/convert_shop_nis.py": "5b9a4f276f78ef9771ac59130b8bfc56be8531efd44030df26bd98ad333511b9",
+  "tools/convert_shopzones.py": "43921e2b0749404c19aace4f8343bdd77557742a03e683697d94384fc0575051",
+  "tools/convert_sky.py": "508c9ba5349238cecf62a327920c3672c0cc6f1a636de39434bc2401362599fb",
+  "tools/convert_smokeables.py": "a2c4286916e4827d6c2c292b1a4b206970e34cc079358309d03679999d247291",
+  "tools/convert_style.py": "111c436d23197fe865edb24b809954a1b2effb19030106f6c1551ee092463eb9",
+  "tools/convert_traffic.py": "3d987edea39385f8e76dc723a9b278ef9a32ae4f10379a52601d68bf403053a1",
+  "tools/convert_traffic_rules.py": "fcd965ec55e338e72c5988f3dd097555963a41f0328eea71d327d327f8344ee0",
+  "tools/convert_trigfx.py": "9b8bc971f2dd67e01d888e50925ac8b58cd3d88807aade493ffd1dacec6bce7d",
+  "tools/convert_tvcams.py": "5f2bd3e119427323034b96dfa5e4ab31535c7260dc6f9d400a57be056b014738",
+  "tools/convert_vinyls.py": "a50d43ab12dbbdb14a28eb553f92086e20b186ddeec9a1bfd15d2e4111a8d73e",
+  "tools/convert_vista.py": "cc01ffe67aaa9a85387f648801b33d02fa32e1b011338cb0cb9c922e02b57a0d",
+  "tools/convert_weather.py": "cf88018d363dfd5b2cde53aa738f42464782c5aee24fc7eed84880315f3186d3",
+  "tools/convert_world.py": "2df9eae83a5db0de157dd1c86ba3d75ab57895be4c2860878229ba9fec94525d",
+  "tools/convert_worldanim.py": "3b2ab37dfc5aa3001313a5586dfc560f1a59fe6db67b3d5c7c8350a2655793b3",
+  "tools/data_id.py": "66ca107cd4d62b3774b08981f63ccda4bbb20bf1e710a1c924737a3f2e804717",
+  "tools/eaxa2pcm.c": "1d4554151c5a46be2da742338488aa349d7964c2d4abf14853436dd7031cc6dd",
+  "tools/export_physics.py": "4a5e1c96dd1280f6cf0199f644485dd60876573cf3efba484ce521a8c752ce5e",
+  "tools/export_road.py": "1d8cad90d42bbda7e1bc5f2652e4c98b38ab24e9c83df6f837afb5048c2438ed",
+  "tools/extract_ps2.py": "173d218bcbb4e2b8c28c9f7c38ee2dd6b293796fb9a6985d3a3dde3d29c7cfd2",
+  "tools/line_forks.py": "dc6dd6054c64492c83c69c2df0b359edc11bf52d913c77a06f48b926b9f528e2",
+  "tools/line_speeds.py": "6611ee8b4555614bd1124ded843a211700449eb4206c57b4ab556d504ec8910c",
+  "tools/mac_slots.py": "39f05bad06a229ec3022467db2771a8bbf1fad11a6d6ffbddcc3e0f3ecb7a8aa",
+  "tools/min_curv.py": "3db46572eba688aa574df301103260f1e6f3fca2242f159370c372386bdfc1f9",
+  "tools/movie_audio.c": "5c1bc3731ed90198558a225c4c3243fc6a5689776ea3d016c43e5841f845c39d",
+  "tools/movie_release.py": "a61bdd45b77492a8dbfc59f1f19b696275976b29fed05baaee9c71b1b86d75d5",
+  "tools/movie_release_contract.json": "b6853507aa6387c2c1fcb3f981a92f011aeb1d71c665a94ecd48296592037a07",
+  "tools/ms_package.py": "6b408eaf17276ffc5ace38f91ac0f527ac676b025377a8b744565c3489370d7c",
+  "tools/mt2pcm.c": "d1982b20cd70b7c7d3a90faca985731ec31f09a63179ad0e62caad40765da680",
+  "tools/n2city.py": "5e5224a8ed20bc89164d8f59d17fd7e899af317b356f7ed2779a6bd04c0e6d7d",
+  "tools/n2cy_bounds.py": "03d88c14ab9396fd4621878a1854cc948baf82fa78d51281a944307cd18f847e",
+  "tools/n2cy_patch.py": "75a0980c0db9f8bb6fcca79c9f1bad7b93e3a55caed392775a3649dfd309f89a",
+  "tools/n2cy_texorder.py": "f2fee91485977b1fc603fbcff652a58afa4271f6d538d4d3109a41944941718e",
+  "tools/n2exe.py": "99458eff9426d047a3755f7aaf38be77e9ce37582222aa369d97f038ebc9b975",
+  "tools/n2feng.py": "6b526e353ffd0d053b683404f623b0ef9b21b8ef07a316e1704eb968c8bdec61",
+  "tools/n2formats.py": "948d003af1ec91ac3be80ec3125e363e70532b8251dc3425d1d159b9c89802df",
+  "tools/n2microtalk.py": "69212a52ab1ca71caf69ce5b83af03c3105748f218355f5b4c0bcb773443beda",
+  "tools/n2mips.py": "d62c3b704420de2a56d6527f9fbdd5ae50354415b44387c261124d5dd6dc4dd4",
+  "tools/n2routes.py": "6ed44872c3feca13f578ce1ba40a7c8877aed5dfdb2c92cbdce36d94237609e1",
+  "tools/n2source.py": "7f59534b6f5dde2c8ee8a1e50f9a4be2d483977a1813216377b51b81af8a3022",
+  "tools/n2world.py": "8022d0c436f8d4cde76139be1eba84712d54994c76936ddaed2ac04fbf771928",
+  "tools/native_runtime.py": "69a616bc06496a4dbae86ee67697640508fb450097d4afdcb00242c936d2843d",
+  "tools/nitro_constants.json": "bc9b2215645649e974df7040307e58eca5fc1f98f4bff1d10e5211b4eed8ca57",
+  "tools/nos_bank.py": "46a12c1391223dbd1ead8053b0d4b4b99875b458a288fff9b312a0aed4d4cf69",
+  "tools/parammaps.py": "f040267a806a6f372aab72db0f66ddb241a51cc32b73f2264ed8c6e561f6d08b",
+  "tools/partsdb.py": "b3c7d56da6e9016aed49edc57891353c9ac3727d9103d7d3fa67c9d275b56546",
+  "tools/ppsspp_run.py": "f711c9da7ec7ca4987616f8aefea309bd25e0300446a5d98ef3c70441e5be2e5",
+  "tools/preset_dump.py": "c10ff097a1fec24db5ec6149d5a21d9167086a81a33678fac875380d844e3c28",
+  "tools/process_control.py": "68cfdd1fe208d45b987fb0a8510e53734f260043267c8e19f9c54c22164d0bca",
+  "tools/ps2_buttons.py": "06bf2d5f2118eea500a39571adfeebc57d33531e2e4904ad77384ea6ddf6f8c9",
+  "tools/race_reference.json": "b7f092befc59cfaa1bc53b3864eb8b5361066595a5acf943d42e044292bfb538",
+  "tools/racing_line.py": "d605941e15b471664343e5de142e0b054ef64612fa40ece2254f703ba18115ab",
+  "tools/road_constants.json": "f7e9e7f571dde408fde957fa9db53b89dfd10376dd86aa11a3b8c4d9edddc469",
+  "tools/source_data.py": "33a5ed74cc8d654c139c145b040c5059bb8db5b73d8b6b9840df799326fe4fa0",
+  "tools/step_graph.py": "6232f927fdd65942004b917148a3c41c62e24d8aa131a1ea55d254a42a4a4f8a",
+  "tools/step_trace/sitecustomize.py": "f20efb484be45c3a65c776fdc068ff3d0722f0adbe0b85c20b9479ecba56ba33",
+  "tools/tristrip.py": "b3ad39a24afaa817fe9652b1ac6ee5a89ce9e60933c21e08bca5f138f095319e",
+  "tools/vendor/utk/PROVENANCE.json": "460aec8760cc0db0e206537c279a1c345c90f6b609deafab5afc013844d71388",
+  "tools/vendor/utk/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+  "tools/vendor/utk/VGMSTREAM-COPYING": "1457b0323191784863916846df32a92a278ec88baef94b57685bdf9bbc67d4ca",
+  "tools/vendor/utk/utkdec.c": "6c4c91723e9283d5fd7ae194e2e5449010cf235b5e01a9ba0e089c6636213ead",
+  "tools/vendor/utk/utkdec.h": "c3a9527a14e61c4e929a75bdead74e7e1050759a0a2bbe5e874bc6d79fc974c1",
+  "tools/xaencode.c": "c1f04fc771c66fe9b478cb2284fea7a3ec419eb96ff39839ba534c5b3c7fd76e"
+ },
+ "commands": {
+  "ps2": {
+   "movies": [
+    [
+     "carro da vitrine",
+     [
+      "tools/convert_car.py"
+     ]
+    ],
+    [
+     "cidade",
+     [
+      "tools/convert_city.py",
+      "--no-precull"
+     ]
+    ],
+    [
+     "visibilidade da cidade",
+     [
+      "tools/convert_pvs.py"
+     ]
+    ],
+    [
+     "objetos derrub\u00e1veis",
+     [
+      "tools/convert_smokeables.py"
+     ]
+    ],
+    [
+     "ruas",
+     [
+      "tools/convert_routes.py"
+     ]
+    ],
+    [
+     "GPS",
+     [
+      "tools/convert_gps.py"
+     ]
+    ],
+    [
+     "faixas",
+     [
+      "tools/convert_lanes.py"
+     ]
+    ],
+    [
+     "corridas da cidade",
+     [
+      "tools/convert_races.py"
+     ]
+    ],
+    [
+     "zonas de reset",
+     [
+      "tools/convert_resetzones.py"
+     ]
+    ],
+    [
+     "pista L4RB",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RB",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RB",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "corridas da pista L4RB",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "pista L4RC",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RC",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RC",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "corridas da pista L4RC",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "pista L4RD",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RD",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RD",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "corridas da pista L4RD",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "pista L4RF",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RF",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RF",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "corridas da pista L4RF",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "pista L4RG",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RG",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RG",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "corridas da pista L4RG",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "c\u00e2meras do replay",
+     [
+      "tools/convert_tvcams.py"
+     ]
+    ],
+    [
+     "limites da geometria",
+     [
+      "glob",
+      "tools/n2cy_bounds.py",
+      "--if-missing"
+     ]
+    ],
+    [
+     "ordem das texturas da cidade",
+     [
+      "tools/n2cy_texorder.py",
+      "--if-unordered",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+     ]
+    ],
+    [
+     "horizonte distante",
+     [
+      "tools/convert_landmarks.py",
+      "--lod",
+      "--towers",
+      "60",
+      "--tile",
+      "256",
+      "--game",
+      "{game}",
+      "--city",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+      "--out",
+      "dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy"
+     ]
+    ],
+    [
+     "mipmaps",
+     [
+      "glob",
+      "tools/convert_mips.py",
+      "--if-stale"
+     ]
+    ],
+    [
+     "linhas de corrida",
+     [
+      "tools/racing_line.py"
+     ]
+    ],
+    [
+     "velocidade das linhas",
+     [
+      "tools/line_speeds.py"
+     ]
+    ],
+    [
+     "desvios das linhas",
+     [
+      "tools/line_forks.py"
+     ]
+    ],
+    [
+     "carreira",
+     [
+      "tools/convert_career.py"
+     ]
+    ],
+    [
+     "carros",
+     [
+      "tools/convert_cars.py"
+     ]
+    ],
+    [
+     "pacotes de desempenho",
+     [
+      "tools/convert_perf.py"
+     ]
+    ],
+    [
+     "regras do drift e do drag",
+     [
+      "tools/convert_modes.py"
+     ]
+    ],
+    [
+     "estilo",
+     [
+      "tools/convert_style.py"
+     ]
+    ],
+    [
+     "dificuldade",
+     [
+      "tools/convert_difficulty.py"
+     ]
+    ],
+    [
+     "regras do tr\u00e2nsito",
+     [
+      "tools/convert_traffic_rules.py"
+     ]
+    ],
+    [
+     "pinturas",
+     [
+      "tools/convert_paints.py"
+     ]
+    ],
+    [
+     "garagem",
+     [
+      "tools/convert_garage.py"
+     ]
+    ],
+    [
+     "rodas",
+     [
+      "tools/convert_rims.py"
+     ]
+    ],
+    [
+     "nomes das rodas",
+     [
+      "tools/convert_rims.py",
+      "--styles"
+     ]
+    ],
+    [
+     "nomes das pe\u00e7as",
+     [
+      "tools/convert_partnames.py"
+     ]
+    ],
+    [
+     "vinis",
+     [
+      "tools/convert_vinyls.py"
+     ]
+    ],
+    [
+     "pontos do visual",
+     [
+      "tools/convert_rating.py"
+     ]
+    ],
+    [
+     "revistas",
+     [
+      "tools/convert_magazines.py"
+     ]
+    ],
+    [
+     "telas e HUD",
+     [
+      "tools/convert_hud.py"
+     ]
+    ],
+    [
+     "marcadores de evento",
+     [
+      "tools/convert_trigfx.py"
+     ]
+    ],
+    [
+     "tela de controles",
+     [
+      "tools/convert_psp_pad.py"
+     ]
+    ],
+    [
+     "chuva",
+     [
+      "tools/convert_weather.py"
+     ]
+    ],
+    [
+     "som ambiente",
+     [
+      "tools/convert_envsound.py"
+     ]
+    ],
+    [
+     "neblina",
+     [
+      "tools/convert_fog.py"
+     ]
+    ],
+    [
+     "luzes",
+     [
+      "tools/convert_lights.py"
+     ]
+    ],
+    [
+     "mundo animado",
+     [
+      "tools/convert_worldanim.py"
+     ]
+    ],
+    [
+     "cena dos menus",
+     [
+      "tools/convert_frontend.py"
+     ]
+    ],
+    [
+     "cenas de largada",
+     [
+      "tools/convert_intro_nis.py"
+     ]
+    ],
+    [
+     "cenas de chegada",
+     [
+      "tools/convert_ending_nis.py"
+     ]
+    ],
+    [
+     "cenas das lojas",
+     [
+      "tools/convert_shop_nis.py"
+     ]
+    ],
+    [
+     "tr\u00e2nsito",
+     [
+      "tools/convert_traffic.py"
+     ]
+    ],
+    [
+     "c\u00e9u",
+     [
+      "tools/convert_sky.py"
+     ]
+    ],
+    [
+     "panoramas",
+     [
+      "tools/convert_vista.py"
+     ]
+    ],
+    [
+     "f\u00edsica",
+     [
+      "tools/convert_physics.py"
+     ]
+    ],
+    [
+     "fontes originais da f\u00edsica",
+     [
+      "tools/convert_original_data.py",
+      "--game",
+      "{game}"
+     ]
+    ],
+    [
+     "\u00e1udio",
+     [
+      "tools/convert_audio.py"
+     ]
+    ],
+    [
+     "filmes",
+     [
+      "tools/convert_movies.py",
+      "--missing"
+     ]
+    ],
+    [
+     "confer\u00eancia dos filmes",
+     [
+      "tools/movie_release.py",
+      "dist/PSP/GAME/NFSU2VIEW"
+     ]
+    ],
+    [
+     "carro rival eclipse",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/eclipse.json",
+      "--tag",
+      "opp-eclipse"
+     ]
+    ],
+    [
+     "carro rival imprezawrx",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/imprezawrx.json",
+      "--tag",
+      "opp-imprezawrx"
+     ]
+    ],
+    [
+     "carro rival lancerevo8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/lancerevo8.json",
+      "--tag",
+      "opp-lancerevo8"
+     ]
+    ],
+    [
+     "carro rival rx8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/rx8.json",
+      "--tag",
+      "opp-rx8"
+     ]
+    ],
+    [
+     "carro rival skyline",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/skyline.json",
+      "--tag",
+      "opp-skyline"
+     ]
+    ],
+    [
+     "carro rival supra",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/supra.json",
+      "--tag",
+      "opp-supra"
+     ]
+    ],
+    [
+     "carro rival AL_RX8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/AL_RX8.json",
+      "--tag",
+      "opp-AL_RX8"
+     ]
+    ],
+    [
+     "carro rival CALEB_GTO",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/CALEB_GTO.json",
+      "--tag",
+      "opp-CALEB_GTO"
+     ]
+    ],
+    [
+     "carro rival MARCUS_CELICA",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/MARCUS_CELICA.json",
+      "--tag",
+      "opp-MARCUS_CELICA"
+     ]
+    ],
+    [
+     "carro rival NIGEL_3000GT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIGEL_3000GT.json",
+      "--tag",
+      "opp-NIGEL_3000GT"
+     ]
+    ],
+    [
+     "carro rival NIKKI_MUSTANGGT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIKKI_MUSTANGGT.json",
+      "--tag",
+      "opp-NIKKI_MUSTANGGT"
+     ]
+    ],
+    [
+     "carro rival SCOTT_TT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/SCOTT_TT.json",
+      "--tag",
+      "opp-SCOTT_TT"
+     ]
+    ],
+    [
+     "carro rival TOM_G35",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/TOM_G35.json",
+      "--tag",
+      "opp-TOM_G35"
+     ]
+    ]
+   ],
+   "none": [
+    [
+     "carro da vitrine",
+     [
+      "tools/convert_car.py"
+     ]
+    ],
+    [
+     "cidade",
+     [
+      "tools/convert_city.py",
+      "--no-precull"
+     ]
+    ],
+    [
+     "visibilidade da cidade",
+     [
+      "tools/convert_pvs.py"
+     ]
+    ],
+    [
+     "objetos derrub\u00e1veis",
+     [
+      "tools/convert_smokeables.py"
+     ]
+    ],
+    [
+     "ruas",
+     [
+      "tools/convert_routes.py"
+     ]
+    ],
+    [
+     "GPS",
+     [
+      "tools/convert_gps.py"
+     ]
+    ],
+    [
+     "faixas",
+     [
+      "tools/convert_lanes.py"
+     ]
+    ],
+    [
+     "corridas da cidade",
+     [
+      "tools/convert_races.py"
+     ]
+    ],
+    [
+     "zonas de reset",
+     [
+      "tools/convert_resetzones.py"
+     ]
+    ],
+    [
+     "pista L4RB",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RB",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RB",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "corridas da pista L4RB",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "pista L4RC",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RC",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RC",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "corridas da pista L4RC",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "pista L4RD",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RD",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RD",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "corridas da pista L4RD",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "pista L4RF",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RF",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RF",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "corridas da pista L4RF",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "pista L4RG",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RG",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RG",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "corridas da pista L4RG",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "c\u00e2meras do replay",
+     [
+      "tools/convert_tvcams.py"
+     ]
+    ],
+    [
+     "limites da geometria",
+     [
+      "glob",
+      "tools/n2cy_bounds.py",
+      "--if-missing"
+     ]
+    ],
+    [
+     "ordem das texturas da cidade",
+     [
+      "tools/n2cy_texorder.py",
+      "--if-unordered",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+     ]
+    ],
+    [
+     "horizonte distante",
+     [
+      "tools/convert_landmarks.py",
+      "--lod",
+      "--towers",
+      "60",
+      "--tile",
+      "256",
+      "--game",
+      "{game}",
+      "--city",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+      "--out",
+      "dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy"
+     ]
+    ],
+    [
+     "mipmaps",
+     [
+      "glob",
+      "tools/convert_mips.py",
+      "--if-stale"
+     ]
+    ],
+    [
+     "linhas de corrida",
+     [
+      "tools/racing_line.py"
+     ]
+    ],
+    [
+     "velocidade das linhas",
+     [
+      "tools/line_speeds.py"
+     ]
+    ],
+    [
+     "desvios das linhas",
+     [
+      "tools/line_forks.py"
+     ]
+    ],
+    [
+     "carreira",
+     [
+      "tools/convert_career.py"
+     ]
+    ],
+    [
+     "carros",
+     [
+      "tools/convert_cars.py"
+     ]
+    ],
+    [
+     "pacotes de desempenho",
+     [
+      "tools/convert_perf.py"
+     ]
+    ],
+    [
+     "regras do drift e do drag",
+     [
+      "tools/convert_modes.py"
+     ]
+    ],
+    [
+     "estilo",
+     [
+      "tools/convert_style.py"
+     ]
+    ],
+    [
+     "dificuldade",
+     [
+      "tools/convert_difficulty.py"
+     ]
+    ],
+    [
+     "regras do tr\u00e2nsito",
+     [
+      "tools/convert_traffic_rules.py"
+     ]
+    ],
+    [
+     "pinturas",
+     [
+      "tools/convert_paints.py"
+     ]
+    ],
+    [
+     "garagem",
+     [
+      "tools/convert_garage.py"
+     ]
+    ],
+    [
+     "rodas",
+     [
+      "tools/convert_rims.py"
+     ]
+    ],
+    [
+     "nomes das rodas",
+     [
+      "tools/convert_rims.py",
+      "--styles"
+     ]
+    ],
+    [
+     "nomes das pe\u00e7as",
+     [
+      "tools/convert_partnames.py"
+     ]
+    ],
+    [
+     "vinis",
+     [
+      "tools/convert_vinyls.py"
+     ]
+    ],
+    [
+     "pontos do visual",
+     [
+      "tools/convert_rating.py"
+     ]
+    ],
+    [
+     "revistas",
+     [
+      "tools/convert_magazines.py"
+     ]
+    ],
+    [
+     "telas e HUD",
+     [
+      "tools/convert_hud.py"
+     ]
+    ],
+    [
+     "marcadores de evento",
+     [
+      "tools/convert_trigfx.py"
+     ]
+    ],
+    [
+     "tela de controles",
+     [
+      "tools/convert_psp_pad.py"
+     ]
+    ],
+    [
+     "chuva",
+     [
+      "tools/convert_weather.py"
+     ]
+    ],
+    [
+     "som ambiente",
+     [
+      "tools/convert_envsound.py"
+     ]
+    ],
+    [
+     "neblina",
+     [
+      "tools/convert_fog.py"
+     ]
+    ],
+    [
+     "luzes",
+     [
+      "tools/convert_lights.py"
+     ]
+    ],
+    [
+     "mundo animado",
+     [
+      "tools/convert_worldanim.py"
+     ]
+    ],
+    [
+     "cena dos menus",
+     [
+      "tools/convert_frontend.py"
+     ]
+    ],
+    [
+     "cenas de largada",
+     [
+      "tools/convert_intro_nis.py"
+     ]
+    ],
+    [
+     "cenas de chegada",
+     [
+      "tools/convert_ending_nis.py"
+     ]
+    ],
+    [
+     "cenas das lojas",
+     [
+      "tools/convert_shop_nis.py"
+     ]
+    ],
+    [
+     "tr\u00e2nsito",
+     [
+      "tools/convert_traffic.py"
+     ]
+    ],
+    [
+     "c\u00e9u",
+     [
+      "tools/convert_sky.py"
+     ]
+    ],
+    [
+     "panoramas",
+     [
+      "tools/convert_vista.py"
+     ]
+    ],
+    [
+     "f\u00edsica",
+     [
+      "tools/convert_physics.py"
+     ]
+    ],
+    [
+     "fontes originais da f\u00edsica",
+     [
+      "tools/convert_original_data.py",
+      "--game",
+      "{game}"
+     ]
+    ],
+    [
+     "\u00e1udio",
+     [
+      "tools/convert_audio.py"
+     ]
+    ],
+    [
+     "carro rival eclipse",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/eclipse.json",
+      "--tag",
+      "opp-eclipse"
+     ]
+    ],
+    [
+     "carro rival imprezawrx",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/imprezawrx.json",
+      "--tag",
+      "opp-imprezawrx"
+     ]
+    ],
+    [
+     "carro rival lancerevo8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/lancerevo8.json",
+      "--tag",
+      "opp-lancerevo8"
+     ]
+    ],
+    [
+     "carro rival rx8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/rx8.json",
+      "--tag",
+      "opp-rx8"
+     ]
+    ],
+    [
+     "carro rival skyline",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/skyline.json",
+      "--tag",
+      "opp-skyline"
+     ]
+    ],
+    [
+     "carro rival supra",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/supra.json",
+      "--tag",
+      "opp-supra"
+     ]
+    ],
+    [
+     "carro rival AL_RX8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/AL_RX8.json",
+      "--tag",
+      "opp-AL_RX8"
+     ]
+    ],
+    [
+     "carro rival CALEB_GTO",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/CALEB_GTO.json",
+      "--tag",
+      "opp-CALEB_GTO"
+     ]
+    ],
+    [
+     "carro rival MARCUS_CELICA",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/MARCUS_CELICA.json",
+      "--tag",
+      "opp-MARCUS_CELICA"
+     ]
+    ],
+    [
+     "carro rival NIGEL_3000GT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIGEL_3000GT.json",
+      "--tag",
+      "opp-NIGEL_3000GT"
+     ]
+    ],
+    [
+     "carro rival NIKKI_MUSTANGGT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIKKI_MUSTANGGT.json",
+      "--tag",
+      "opp-NIKKI_MUSTANGGT"
+     ]
+    ],
+    [
+     "carro rival SCOTT_TT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/SCOTT_TT.json",
+      "--tag",
+      "opp-SCOTT_TT"
+     ]
+    ],
+    [
+     "carro rival TOM_G35",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/TOM_G35.json",
+      "--tag",
+      "opp-TOM_G35"
+     ]
+    ]
+   ]
+  },
+  "xbox": {
+   "movies": [
+    [
+     "carro da vitrine",
+     [
+      "tools/convert_car.py"
+     ]
+    ],
+    [
+     "cidade",
+     [
+      "tools/convert_city.py",
+      "--no-precull"
+     ]
+    ],
+    [
+     "visibilidade da cidade",
+     [
+      "tools/convert_pvs.py"
+     ]
+    ],
+    [
+     "objetos derrub\u00e1veis",
+     [
+      "tools/convert_smokeables.py"
+     ]
+    ],
+    [
+     "ruas",
+     [
+      "tools/convert_routes.py"
+     ]
+    ],
+    [
+     "GPS",
+     [
+      "tools/convert_gps.py"
+     ]
+    ],
+    [
+     "faixas",
+     [
+      "tools/convert_lanes.py"
+     ]
+    ],
+    [
+     "corridas da cidade",
+     [
+      "tools/convert_races.py"
+     ]
+    ],
+    [
+     "zonas de reset",
+     [
+      "tools/convert_resetzones.py"
+     ]
+    ],
+    [
+     "pista L4RB",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RB",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RB",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "corridas da pista L4RB",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "pista L4RC",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RC",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RC",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "corridas da pista L4RC",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "pista L4RD",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RD",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RD",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "corridas da pista L4RD",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "pista L4RF",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RF",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RF",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "corridas da pista L4RF",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "pista L4RG",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RG",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RG",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "corridas da pista L4RG",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "c\u00e2meras do replay",
+     [
+      "tools/convert_tvcams.py"
+     ]
+    ],
+    [
+     "limites da geometria",
+     [
+      "glob",
+      "tools/n2cy_bounds.py",
+      "--if-missing"
+     ]
+    ],
+    [
+     "ordem das texturas da cidade",
+     [
+      "tools/n2cy_texorder.py",
+      "--if-unordered",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+     ]
+    ],
+    [
+     "horizonte distante",
+     [
+      "tools/convert_landmarks.py",
+      "--lod",
+      "--towers",
+      "60",
+      "--tile",
+      "256",
+      "--game",
+      "{game}",
+      "--city",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+      "--out",
+      "dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy"
+     ]
+    ],
+    [
+     "mipmaps",
+     [
+      "glob",
+      "tools/convert_mips.py",
+      "--if-stale"
+     ]
+    ],
+    [
+     "linhas de corrida",
+     [
+      "tools/racing_line.py"
+     ]
+    ],
+    [
+     "velocidade das linhas",
+     [
+      "tools/line_speeds.py"
+     ]
+    ],
+    [
+     "desvios das linhas",
+     [
+      "tools/line_forks.py"
+     ]
+    ],
+    [
+     "carreira",
+     [
+      "tools/convert_career.py"
+     ]
+    ],
+    [
+     "carros",
+     [
+      "tools/convert_cars.py"
+     ]
+    ],
+    [
+     "pacotes de desempenho",
+     [
+      "tools/convert_perf.py"
+     ]
+    ],
+    [
+     "regras do drift e do drag",
+     [
+      "tools/convert_modes.py"
+     ]
+    ],
+    [
+     "estilo",
+     [
+      "tools/convert_style.py"
+     ]
+    ],
+    [
+     "dificuldade",
+     [
+      "tools/convert_difficulty.py"
+     ]
+    ],
+    [
+     "regras do tr\u00e2nsito",
+     [
+      "tools/convert_traffic_rules.py"
+     ]
+    ],
+    [
+     "pinturas",
+     [
+      "tools/convert_paints.py"
+     ]
+    ],
+    [
+     "garagem",
+     [
+      "tools/convert_garage.py"
+     ]
+    ],
+    [
+     "rodas",
+     [
+      "tools/convert_rims.py"
+     ]
+    ],
+    [
+     "nomes das rodas",
+     [
+      "tools/convert_rims.py",
+      "--styles"
+     ]
+    ],
+    [
+     "nomes das pe\u00e7as",
+     [
+      "tools/convert_partnames.py"
+     ]
+    ],
+    [
+     "vinis",
+     [
+      "tools/convert_vinyls.py"
+     ]
+    ],
+    [
+     "pontos do visual",
+     [
+      "tools/convert_rating.py"
+     ]
+    ],
+    [
+     "revistas",
+     [
+      "tools/convert_magazines.py"
+     ]
+    ],
+    [
+     "telas e HUD",
+     [
+      "tools/convert_hud.py"
+     ]
+    ],
+    [
+     "marcadores de evento",
+     [
+      "tools/convert_trigfx.py"
+     ]
+    ],
+    [
+     "tela de controles",
+     [
+      "tools/convert_psp_pad.py"
+     ]
+    ],
+    [
+     "chuva",
+     [
+      "tools/convert_weather.py"
+     ]
+    ],
+    [
+     "som ambiente",
+     [
+      "tools/convert_envsound.py"
+     ]
+    ],
+    [
+     "neblina",
+     [
+      "tools/convert_fog.py"
+     ]
+    ],
+    [
+     "luzes",
+     [
+      "tools/convert_lights.py"
+     ]
+    ],
+    [
+     "mundo animado",
+     [
+      "tools/convert_worldanim.py"
+     ]
+    ],
+    [
+     "cena dos menus",
+     [
+      "tools/convert_frontend.py"
+     ]
+    ],
+    [
+     "cenas de largada",
+     [
+      "tools/convert_intro_nis.py"
+     ]
+    ],
+    [
+     "cenas de chegada",
+     [
+      "tools/convert_ending_nis.py"
+     ]
+    ],
+    [
+     "cenas das lojas",
+     [
+      "tools/convert_shop_nis.py"
+     ]
+    ],
+    [
+     "tr\u00e2nsito",
+     [
+      "tools/convert_traffic.py"
+     ]
+    ],
+    [
+     "c\u00e9u",
+     [
+      "tools/convert_sky.py"
+     ]
+    ],
+    [
+     "panoramas",
+     [
+      "tools/convert_vista.py"
+     ]
+    ],
+    [
+     "f\u00edsica",
+     [
+      "tools/convert_physics.py"
+     ]
+    ],
+    [
+     "fontes originais da f\u00edsica",
+     [
+      "tools/convert_original_data.py",
+      "--game",
+      "{game}"
+     ]
+    ],
+    [
+     "\u00e1udio",
+     [
+      "tools/convert_audio.py"
+     ]
+    ],
+    [
+     "filmes",
+     [
+      "tools/convert_movies.py",
+      "--missing"
+     ]
+    ],
+    [
+     "confer\u00eancia dos filmes",
+     [
+      "tools/movie_release.py",
+      "dist/PSP/GAME/NFSU2VIEW"
+     ]
+    ],
+    [
+     "carro rival eclipse",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/eclipse.json",
+      "--tag",
+      "opp-eclipse"
+     ]
+    ],
+    [
+     "carro rival imprezawrx",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/imprezawrx.json",
+      "--tag",
+      "opp-imprezawrx"
+     ]
+    ],
+    [
+     "carro rival lancerevo8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/lancerevo8.json",
+      "--tag",
+      "opp-lancerevo8"
+     ]
+    ],
+    [
+     "carro rival rx8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/rx8.json",
+      "--tag",
+      "opp-rx8"
+     ]
+    ],
+    [
+     "carro rival skyline",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/skyline.json",
+      "--tag",
+      "opp-skyline"
+     ]
+    ],
+    [
+     "carro rival supra",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/supra.json",
+      "--tag",
+      "opp-supra"
+     ]
+    ],
+    [
+     "carro rival AL_RX8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/AL_RX8.json",
+      "--tag",
+      "opp-AL_RX8"
+     ]
+    ],
+    [
+     "carro rival CALEB_GTO",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/CALEB_GTO.json",
+      "--tag",
+      "opp-CALEB_GTO"
+     ]
+    ],
+    [
+     "carro rival MARCUS_CELICA",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/MARCUS_CELICA.json",
+      "--tag",
+      "opp-MARCUS_CELICA"
+     ]
+    ],
+    [
+     "carro rival NIGEL_3000GT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIGEL_3000GT.json",
+      "--tag",
+      "opp-NIGEL_3000GT"
+     ]
+    ],
+    [
+     "carro rival NIKKI_MUSTANGGT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIKKI_MUSTANGGT.json",
+      "--tag",
+      "opp-NIKKI_MUSTANGGT"
+     ]
+    ],
+    [
+     "carro rival SCOTT_TT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/SCOTT_TT.json",
+      "--tag",
+      "opp-SCOTT_TT"
+     ]
+    ],
+    [
+     "carro rival TOM_G35",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/TOM_G35.json",
+      "--tag",
+      "opp-TOM_G35"
+     ]
+    ]
+   ],
+   "none": [
+    [
+     "carro da vitrine",
+     [
+      "tools/convert_car.py"
+     ]
+    ],
+    [
+     "cidade",
+     [
+      "tools/convert_city.py",
+      "--no-precull"
+     ]
+    ],
+    [
+     "visibilidade da cidade",
+     [
+      "tools/convert_pvs.py"
+     ]
+    ],
+    [
+     "objetos derrub\u00e1veis",
+     [
+      "tools/convert_smokeables.py"
+     ]
+    ],
+    [
+     "ruas",
+     [
+      "tools/convert_routes.py"
+     ]
+    ],
+    [
+     "GPS",
+     [
+      "tools/convert_gps.py"
+     ]
+    ],
+    [
+     "faixas",
+     [
+      "tools/convert_lanes.py"
+     ]
+    ],
+    [
+     "corridas da cidade",
+     [
+      "tools/convert_races.py"
+     ]
+    ],
+    [
+     "zonas de reset",
+     [
+      "tools/convert_resetzones.py"
+     ]
+    ],
+    [
+     "pista L4RB",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RB",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RB",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "corridas da pista L4RB",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RB"
+     ]
+    ],
+    [
+     "pista L4RC",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RC",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RC",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "corridas da pista L4RC",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RC"
+     ]
+    ],
+    [
+     "pista L4RD",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RD",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RD",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "corridas da pista L4RD",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RD"
+     ]
+    ],
+    [
+     "pista L4RF",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RF",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RF",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "corridas da pista L4RF",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RF"
+     ]
+    ],
+    [
+     "pista L4RG",
+     [
+      "tools/convert_city.py",
+      "--track",
+      "L4RG",
+      "--no-precull"
+     ]
+    ],
+    [
+     "ruas da pista L4RG",
+     [
+      "tools/convert_routes.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "corridas da pista L4RG",
+     [
+      "tools/convert_races.py",
+      "--track",
+      "L4RG"
+     ]
+    ],
+    [
+     "c\u00e2meras do replay",
+     [
+      "tools/convert_tvcams.py"
+     ]
+    ],
+    [
+     "limites da geometria",
+     [
+      "glob",
+      "tools/n2cy_bounds.py",
+      "--if-missing"
+     ]
+    ],
+    [
+     "ordem das texturas da cidade",
+     [
+      "tools/n2cy_texorder.py",
+      "--if-unordered",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy"
+     ]
+    ],
+    [
+     "horizonte distante",
+     [
+      "tools/convert_landmarks.py",
+      "--lod",
+      "--towers",
+      "60",
+      "--tile",
+      "256",
+      "--game",
+      "{game}",
+      "--city",
+      "dist/PSP/GAME/NFSU2VIEW/city.n2cy",
+      "--out",
+      "dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy"
+     ]
+    ],
+    [
+     "mipmaps",
+     [
+      "glob",
+      "tools/convert_mips.py",
+      "--if-stale"
+     ]
+    ],
+    [
+     "linhas de corrida",
+     [
+      "tools/racing_line.py"
+     ]
+    ],
+    [
+     "velocidade das linhas",
+     [
+      "tools/line_speeds.py"
+     ]
+    ],
+    [
+     "desvios das linhas",
+     [
+      "tools/line_forks.py"
+     ]
+    ],
+    [
+     "carreira",
+     [
+      "tools/convert_career.py"
+     ]
+    ],
+    [
+     "carros",
+     [
+      "tools/convert_cars.py"
+     ]
+    ],
+    [
+     "pacotes de desempenho",
+     [
+      "tools/convert_perf.py"
+     ]
+    ],
+    [
+     "regras do drift e do drag",
+     [
+      "tools/convert_modes.py"
+     ]
+    ],
+    [
+     "estilo",
+     [
+      "tools/convert_style.py"
+     ]
+    ],
+    [
+     "dificuldade",
+     [
+      "tools/convert_difficulty.py"
+     ]
+    ],
+    [
+     "regras do tr\u00e2nsito",
+     [
+      "tools/convert_traffic_rules.py"
+     ]
+    ],
+    [
+     "pinturas",
+     [
+      "tools/convert_paints.py"
+     ]
+    ],
+    [
+     "garagem",
+     [
+      "tools/convert_garage.py"
+     ]
+    ],
+    [
+     "rodas",
+     [
+      "tools/convert_rims.py"
+     ]
+    ],
+    [
+     "nomes das rodas",
+     [
+      "tools/convert_rims.py",
+      "--styles"
+     ]
+    ],
+    [
+     "nomes das pe\u00e7as",
+     [
+      "tools/convert_partnames.py"
+     ]
+    ],
+    [
+     "vinis",
+     [
+      "tools/convert_vinyls.py"
+     ]
+    ],
+    [
+     "pontos do visual",
+     [
+      "tools/convert_rating.py"
+     ]
+    ],
+    [
+     "revistas",
+     [
+      "tools/convert_magazines.py"
+     ]
+    ],
+    [
+     "telas e HUD",
+     [
+      "tools/convert_hud.py"
+     ]
+    ],
+    [
+     "marcadores de evento",
+     [
+      "tools/convert_trigfx.py"
+     ]
+    ],
+    [
+     "tela de controles",
+     [
+      "tools/convert_psp_pad.py"
+     ]
+    ],
+    [
+     "chuva",
+     [
+      "tools/convert_weather.py"
+     ]
+    ],
+    [
+     "som ambiente",
+     [
+      "tools/convert_envsound.py"
+     ]
+    ],
+    [
+     "neblina",
+     [
+      "tools/convert_fog.py"
+     ]
+    ],
+    [
+     "luzes",
+     [
+      "tools/convert_lights.py"
+     ]
+    ],
+    [
+     "mundo animado",
+     [
+      "tools/convert_worldanim.py"
+     ]
+    ],
+    [
+     "cena dos menus",
+     [
+      "tools/convert_frontend.py"
+     ]
+    ],
+    [
+     "cenas de largada",
+     [
+      "tools/convert_intro_nis.py"
+     ]
+    ],
+    [
+     "cenas de chegada",
+     [
+      "tools/convert_ending_nis.py"
+     ]
+    ],
+    [
+     "cenas das lojas",
+     [
+      "tools/convert_shop_nis.py"
+     ]
+    ],
+    [
+     "tr\u00e2nsito",
+     [
+      "tools/convert_traffic.py"
+     ]
+    ],
+    [
+     "c\u00e9u",
+     [
+      "tools/convert_sky.py"
+     ]
+    ],
+    [
+     "panoramas",
+     [
+      "tools/convert_vista.py"
+     ]
+    ],
+    [
+     "f\u00edsica",
+     [
+      "tools/convert_physics.py"
+     ]
+    ],
+    [
+     "fontes originais da f\u00edsica",
+     [
+      "tools/convert_original_data.py",
+      "--game",
+      "{game}"
+     ]
+    ],
+    [
+     "\u00e1udio",
+     [
+      "tools/convert_audio.py"
+     ]
+    ],
+    [
+     "carro rival eclipse",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/eclipse.json",
+      "--tag",
+      "opp-eclipse"
+     ]
+    ],
+    [
+     "carro rival imprezawrx",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/imprezawrx.json",
+      "--tag",
+      "opp-imprezawrx"
+     ]
+    ],
+    [
+     "carro rival lancerevo8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/lancerevo8.json",
+      "--tag",
+      "opp-lancerevo8"
+     ]
+    ],
+    [
+     "carro rival rx8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/rx8.json",
+      "--tag",
+      "opp-rx8"
+     ]
+    ],
+    [
+     "carro rival skyline",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/skyline.json",
+      "--tag",
+      "opp-skyline"
+     ]
+    ],
+    [
+     "carro rival supra",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/opponents/supra.json",
+      "--tag",
+      "opp-supra"
+     ]
+    ],
+    [
+     "carro rival AL_RX8",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/AL_RX8.json",
+      "--tag",
+      "opp-AL_RX8"
+     ]
+    ],
+    [
+     "carro rival CALEB_GTO",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/CALEB_GTO.json",
+      "--tag",
+      "opp-CALEB_GTO"
+     ]
+    ],
+    [
+     "carro rival MARCUS_CELICA",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/MARCUS_CELICA.json",
+      "--tag",
+      "opp-MARCUS_CELICA"
+     ]
+    ],
+    [
+     "carro rival NIGEL_3000GT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIGEL_3000GT.json",
+      "--tag",
+      "opp-NIGEL_3000GT"
+     ]
+    ],
+    [
+     "carro rival NIKKI_MUSTANGGT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/NIKKI_MUSTANGGT.json",
+      "--tag",
+      "opp-NIKKI_MUSTANGGT"
+     ]
+    ],
+    [
+     "carro rival SCOTT_TT",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/SCOTT_TT.json",
+      "--tag",
+      "opp-SCOTT_TT"
+     ]
+    ],
+    [
+     "carro rival TOM_G35",
+     [
+      "tools/convert_car.py",
+      "--preset",
+      "presets/rivals/TOM_G35.json",
+      "--tag",
+      "opp-TOM_G35"
+     ]
+    ]
+   ]
+  }
+ },
+ "eboot_sha256": "b64b31554421c469dd90f9ae9db67e71119d6ba6ae520d540bd05c97839fa6fa",
+ "inputs": {
+  "art/reference/psp-controls/psp-isolated-v1.png": "ee3e8b9bdc245864e545109c54cfc3206090be4a3fadc9990963ed3dafc8d400",
+  "build_game.py": "37785937739ceefa0cf9d637f129950d799a319300f2dd4667ff8ce0a6621463",
+  "presets/350z-showroom.json": "28e5934a5c5614811f3a693cdd0fb4f423af6bfbb619d4a77895a6d4fb9a302e",
+  "presets/opponents/eclipse.json": "935420363176e5736fa9047cbae7c752e4e95c67ca438f298c10541673c0cb51",
+  "presets/opponents/imprezawrx.json": "df16d2714137b83c19e5a158327fa01d36a91c58e6155f331727104ceaf96d52",
+  "presets/opponents/lancerevo8.json": "29a1c8e2abc95376fb156c277b74cb5b71e4d3c662c85869e10338e631d5f565",
+  "presets/opponents/rx8.json": "64b1737de2df594cb805123526b31eefb833b56e8dd1f24eba7de0bf367e79c2",
+  "presets/opponents/skyline.json": "0b21899b33c515ffea2a493c5ff0cbd8f99754dd15db0302d761763d6e39a4c3",
+  "presets/opponents/supra.json": "a8e0498e95a86da55201cd4fcc32082cf4a96a8e055043f5155317a505af20b7",
+  "presets/rivals/AL_RX8.json": "cdb5bc00a74f2a24c72d32e37083b4f763f201287769959898eaee4566fb574a",
+  "presets/rivals/CALEB_GTO.json": "58dad53d1f9a05a231a911231148c32a9e7981ff0f5e628302e398c19819de7c",
+  "presets/rivals/MARCUS_CELICA.json": "8192c93a5f128c09d001be35c71adcaa3f284037b20554bbc5387e577e7e2251",
+  "presets/rivals/NIGEL_3000GT.json": "d1146e8f0e3b04ecf465b629cca0045b0fe7ed54e87540ef918e077bcbf32f88",
+  "presets/rivals/NIKKI_MUSTANGGT.json": "9c022acbb850fa4e6c6ac848f6d42a0921f09117444daccf5e4734364cbf6596",
+  "presets/rivals/SCOTT_TT.json": "0c02961290a735da37e35277aa9b9af04905ac4bdf753f423b65acda324c9557",
+  "presets/rivals/TOM_G35.json": "abcda50b07798ad06bd30559067d670fa1ef2583dcde3b37bbaf447c34ea425f",
+  "sources/__init__.py": "b88ad01bbd3487d25b4bf16c7a19e1d8936de493e67c25a041f28c31575d2567",
+  "sources/ps2-files.json": "e9fd30179c798eb944dc3619bcd913d3e103fa1234f7669f2ac39090a7b0e64c",
+  "sources/ps2.py": "8f0578682e15b6f7643f625661c2d8c6bf10e06f14dfb4af58579bf2d5bc1e62",
+  "sources/xbox-files.json": "9d60e2ec7c0596898c8dc5dc45b60366bbe48466a8ac1955ae93607a91e2db98",
+  "sources/xbox.py": "3e8b0ad1eba67d8ef6dd951b7b28dea7fba9e31a0192704236c4e72ebb2d6126",
+  "tools/PS2_SOURCE.md": "0e3f16548db656ea46661b33ace4bbf027c84f5a7cbbb632355a6fd05372b561",
+  "tools/arch_tolerance.py": "52f3f3ca91821fce129a7396b98b864e34bcdb6a3d3cc7f87313f0092ac18b44",
+  "tools/car_ratings.py": "5c7c02546fa514a296e573e8bf879537e1508caf56fef6b77b9e74c78974bf56",
+  "tools/city_owners.py": "8dc7a94d7fb23723bbad8306cf70f48e7b78319fafd252c309d76448fa34ff27",
+  "tools/convert_audio.py": "5b13276473529382c78fc858fe356476511c24c7cdf2e5ca6529fa8ad4ca545f",
+  "tools/convert_car.py": "e7525be739b2b89064e8a765ecdbe3293b224188274b83a1fd121b9613db6a31",
+  "tools/convert_career.py": "ddbd561bc269750500ccdae2b44ddb9d4465196f21aebd93fbfab9c16ce58675",
+  "tools/convert_cars.py": "8efbf68040fef4ad4755368045106b5a43f9b5ba7d6b860254612ee9332675d0",
+  "tools/convert_city.py": "ecf5fe1f9b8f1d51717349ed367766864d81aee09b4077639b785d55aa859381",
+  "tools/convert_difficulty.py": "e245a16f166d6b441fb4b7ef512944b074ce9ed79daa963da630012318287f27",
+  "tools/convert_ending_nis.py": "e626fa1e945b92356d79594e6935eecb75021a897a88d7d59d66d5ecb6a86a4c",
+  "tools/convert_envsound.py": "d6d3bf24818b24baf04743e869b09339a8213b34cf8fa613372263960f4d5a0e",
+  "tools/convert_fog.py": "674b508567f3440df272e9b8f81b015f78cb29dfa719f7ca168c151be89c1e85",
+  "tools/convert_frontend.py": "b5dc3f3ba1221d85fb0a25a8497bc9d0d38989ddb4e650291d62809dc57cca29",
+  "tools/convert_garage.py": "970f45b38393b9b8632404afa42d60d08463a572e7e06054c157b8b6e0bba737",
+  "tools/convert_gps.py": "4b90623e372d2453f3abf5900237c2b27b8a659e9087b5ea1a357535e0ba918a",
+  "tools/convert_hud.py": "2122c9e844bcdebad4d574d575b1ea24ac7cffb70457f9eadd0a8d484978b2f9",
+  "tools/convert_intro_nis.py": "a986db2176591151d6e98c2984fe0f72f3cec41c4fc5fedf3d2500f8cb5caf5f",
+  "tools/convert_landmarks.py": "275b3cc3ef5c774eeb55d7c3fd99c309198a8634bebe2d18cd740ded79d569b4",
+  "tools/convert_lanes.py": "f13586307b13b50b67cd9145e1f5d43b68cd290b8d9575369cf8884d35cecca8",
+  "tools/convert_lights.py": "134d156d5325fea0cdf36f983627204aacb36c0e9e318e446642f37504600472",
+  "tools/convert_magazines.py": "0260ee9ae699c3f50ceff168b4bfef069a99bcff7dad6c31575ac80652fe2862",
+  "tools/convert_mips.py": "d7e63c70dde0e23f3c15e23be980c6e2d00fa7e31afa0fe9129802911357cb00",
+  "tools/convert_modes.py": "1f37aff1a0fa241494aed18d895b9f404f75e66ebb90afd977d5c5975cbf988e",
+  "tools/convert_movies.py": "8d0967a26e5d3c0125c6144def3da20f3c2a59265f193274e9e5f1827b7488d3",
+  "tools/convert_nis.py": "6e6ece93085597688e463dda48945ecd897664b94b6792da773abd92ffd49fb4",
+  "tools/convert_original_data.py": "66db12449d05b682a840123c1db821bf5d1968ba4e2a57b76c7c6bab3fc5bce6",
+  "tools/convert_paints.py": "4ebf40951e1721375ff1bf100a94ca71eb98a6104acbabf625631c167df4b278",
+  "tools/convert_partnames.py": "8544ab7073a267b3072790813e4971b28a35ecd914d132c96d0347e0b6051616",
+  "tools/convert_perf.py": "5df910e6cf14e4bf240d1420cbfafb425c6d62e137e5c2f5aace58dc4920bce6",
+  "tools/convert_physics.py": "782a1bae6bcef3c2aebc93ea3971012d64188bea979f778c51b3503005f636a4",
+  "tools/convert_psp_pad.py": "e6c9d0c824cb070d7a99da9a01081cbcad7ab9bbc807d7c6e4f6ee02a87277dd",
+  "tools/convert_pvs.py": "85799fe662ef91c02d908a391a49afd67a7d5aa8067e53fe4982c85cf29e624f",
+  "tools/convert_races.py": "c936d700ffdbfe6763909c2e2abc476c4297b46b3ae5660afb5a70ec7cc84fdd",
+  "tools/convert_rating.py": "6c07201d779714e8a4302d2e3c1eefc10ddcfa19f0ccba31678c466830084efb",
+  "tools/convert_resetzones.py": "ffbeb753572a4945471b649b5b2a9556801a92d03ea39a87f4408da947dccfe7",
+  "tools/convert_rims.py": "c93f074cc6bdd1751177779ca074bfc315317453144fc4c45ccbdb61bcc15b66",
+  "tools/convert_routes.py": "304d83bce79f30a71c1d3ac805a539d95c1a0553f7a52e5704006990607a19eb",
+  "tools/convert_shell.py": "10afebdfde3563e1105073152797571a2110dba702c7eeed23a6f4b530bf76f3",
+  "tools/convert_shop_nis.py": "5b9a4f276f78ef9771ac59130b8bfc56be8531efd44030df26bd98ad333511b9",
+  "tools/convert_shopzones.py": "43921e2b0749404c19aace4f8343bdd77557742a03e683697d94384fc0575051",
+  "tools/convert_sky.py": "508c9ba5349238cecf62a327920c3672c0cc6f1a636de39434bc2401362599fb",
+  "tools/convert_smokeables.py": "a2c4286916e4827d6c2c292b1a4b206970e34cc079358309d03679999d247291",
+  "tools/convert_style.py": "111c436d23197fe865edb24b809954a1b2effb19030106f6c1551ee092463eb9",
+  "tools/convert_traffic.py": "3d987edea39385f8e76dc723a9b278ef9a32ae4f10379a52601d68bf403053a1",
+  "tools/convert_traffic_rules.py": "fcd965ec55e338e72c5988f3dd097555963a41f0328eea71d327d327f8344ee0",
+  "tools/convert_trigfx.py": "9b8bc971f2dd67e01d888e50925ac8b58cd3d88807aade493ffd1dacec6bce7d",
+  "tools/convert_tvcams.py": "5f2bd3e119427323034b96dfa5e4ab31535c7260dc6f9d400a57be056b014738",
+  "tools/convert_vinyls.py": "a50d43ab12dbbdb14a28eb553f92086e20b186ddeec9a1bfd15d2e4111a8d73e",
+  "tools/convert_vista.py": "cc01ffe67aaa9a85387f648801b33d02fa32e1b011338cb0cb9c922e02b57a0d",
+  "tools/convert_weather.py": "cf88018d363dfd5b2cde53aa738f42464782c5aee24fc7eed84880315f3186d3",
+  "tools/convert_world.py": "2df9eae83a5db0de157dd1c86ba3d75ab57895be4c2860878229ba9fec94525d",
+  "tools/convert_worldanim.py": "3b2ab37dfc5aa3001313a5586dfc560f1a59fe6db67b3d5c7c8350a2655793b3",
+  "tools/data_id.py": "66ca107cd4d62b3774b08981f63ccda4bbb20bf1e710a1c924737a3f2e804717",
+  "tools/eaxa2pcm.c": "1d4554151c5a46be2da742338488aa349d7964c2d4abf14853436dd7031cc6dd",
+  "tools/export_physics.py": "4a5e1c96dd1280f6cf0199f644485dd60876573cf3efba484ce521a8c752ce5e",
+  "tools/export_road.py": "1d8cad90d42bbda7e1bc5f2652e4c98b38ab24e9c83df6f837afb5048c2438ed",
+  "tools/extract_ps2.py": "173d218bcbb4e2b8c28c9f7c38ee2dd6b293796fb9a6985d3a3dde3d29c7cfd2",
+  "tools/line_forks.py": "dc6dd6054c64492c83c69c2df0b359edc11bf52d913c77a06f48b926b9f528e2",
+  "tools/line_speeds.py": "6611ee8b4555614bd1124ded843a211700449eb4206c57b4ab556d504ec8910c",
+  "tools/mac_slots.py": "39f05bad06a229ec3022467db2771a8bbf1fad11a6d6ffbddcc3e0f3ecb7a8aa",
+  "tools/min_curv.py": "3db46572eba688aa574df301103260f1e6f3fca2242f159370c372386bdfc1f9",
+  "tools/movie_audio.c": "5c1bc3731ed90198558a225c4c3243fc6a5689776ea3d016c43e5841f845c39d",
+  "tools/movie_release.py": "a61bdd45b77492a8dbfc59f1f19b696275976b29fed05baaee9c71b1b86d75d5",
+  "tools/movie_release_contract.json": "b6853507aa6387c2c1fcb3f981a92f011aeb1d71c665a94ecd48296592037a07",
+  "tools/ms_package.py": "6b408eaf17276ffc5ace38f91ac0f527ac676b025377a8b744565c3489370d7c",
+  "tools/mt2pcm.c": "d1982b20cd70b7c7d3a90faca985731ec31f09a63179ad0e62caad40765da680",
+  "tools/n2city.py": "5e5224a8ed20bc89164d8f59d17fd7e899af317b356f7ed2779a6bd04c0e6d7d",
+  "tools/n2cy_bounds.py": "03d88c14ab9396fd4621878a1854cc948baf82fa78d51281a944307cd18f847e",
+  "tools/n2cy_patch.py": "75a0980c0db9f8bb6fcca79c9f1bad7b93e3a55caed392775a3649dfd309f89a",
+  "tools/n2cy_texorder.py": "f2fee91485977b1fc603fbcff652a58afa4271f6d538d4d3109a41944941718e",
+  "tools/n2exe.py": "99458eff9426d047a3755f7aaf38be77e9ce37582222aa369d97f038ebc9b975",
+  "tools/n2feng.py": "6b526e353ffd0d053b683404f623b0ef9b21b8ef07a316e1704eb968c8bdec61",
+  "tools/n2formats.py": "948d003af1ec91ac3be80ec3125e363e70532b8251dc3425d1d159b9c89802df",
+  "tools/n2microtalk.py": "69212a52ab1ca71caf69ce5b83af03c3105748f218355f5b4c0bcb773443beda",
+  "tools/n2mips.py": "d62c3b704420de2a56d6527f9fbdd5ae50354415b44387c261124d5dd6dc4dd4",
+  "tools/n2routes.py": "6ed44872c3feca13f578ce1ba40a7c8877aed5dfdb2c92cbdce36d94237609e1",
+  "tools/n2source.py": "7f59534b6f5dde2c8ee8a1e50f9a4be2d483977a1813216377b51b81af8a3022",
+  "tools/n2world.py": "8022d0c436f8d4cde76139be1eba84712d54994c76936ddaed2ac04fbf771928",
+  "tools/native_runtime.py": "69a616bc06496a4dbae86ee67697640508fb450097d4afdcb00242c936d2843d",
+  "tools/nitro_constants.json": "bc9b2215645649e974df7040307e58eca5fc1f98f4bff1d10e5211b4eed8ca57",
+  "tools/nos_bank.py": "46a12c1391223dbd1ead8053b0d4b4b99875b458a288fff9b312a0aed4d4cf69",
+  "tools/parammaps.py": "f040267a806a6f372aab72db0f66ddb241a51cc32b73f2264ed8c6e561f6d08b",
+  "tools/partsdb.py": "b3c7d56da6e9016aed49edc57891353c9ac3727d9103d7d3fa67c9d275b56546",
+  "tools/ppsspp_run.py": "f711c9da7ec7ca4987616f8aefea309bd25e0300446a5d98ef3c70441e5be2e5",
+  "tools/preset_dump.py": "c10ff097a1fec24db5ec6149d5a21d9167086a81a33678fac875380d844e3c28",
+  "tools/process_control.py": "68cfdd1fe208d45b987fb0a8510e53734f260043267c8e19f9c54c22164d0bca",
+  "tools/ps2_buttons.py": "06bf2d5f2118eea500a39571adfeebc57d33531e2e4904ad77384ea6ddf6f8c9",
+  "tools/race_reference.json": "b7f092befc59cfaa1bc53b3864eb8b5361066595a5acf943d42e044292bfb538",
+  "tools/racing_line.py": "d605941e15b471664343e5de142e0b054ef64612fa40ece2254f703ba18115ab",
+  "tools/road_constants.json": "f7e9e7f571dde408fde957fa9db53b89dfd10376dd86aa11a3b8c4d9edddc469",
+  "tools/source_data.py": "33a5ed74cc8d654c139c145b040c5059bb8db5b73d8b6b9840df799326fe4fa0",
+  "tools/step_graph.py": "6232f927fdd65942004b917148a3c41c62e24d8aa131a1ea55d254a42a4a4f8a",
+  "tools/step_trace/sitecustomize.py": "f20efb484be45c3a65c776fdc068ff3d0722f0adbe0b85c20b9479ecba56ba33",
+  "tools/tristrip.py": "b3ad39a24afaa817fe9652b1ac6ee5a89ce9e60933c21e08bca5f138f095319e",
+  "tools/vendor/utk/PROVENANCE.json": "460aec8760cc0db0e206537c279a1c345c90f6b609deafab5afc013844d71388",
+  "tools/vendor/utk/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+  "tools/vendor/utk/VGMSTREAM-COPYING": "fcc26d35c4c4365e31f21734f846e4ee362ff0b57ba696085605a7b4768d8763",
+  "tools/vendor/utk/utkdec.c": "6c4c91723e9283d5fd7ae194e2e5449010cf235b5e01a9ba0e089c6636213ead",
+  "tools/vendor/utk/utkdec.h": "c3a9527a14e61c4e929a75bdead74e7e1050759a0a2bbe5e874bc6d79fc974c1",
+  "tools/xaencode.c": "c1f04fc771c66fe9b478cb2284fea7a3ec419eb96ff39839ba534c5b3c7fd76e"
+ },
+ "schema": 2,
+ "version": "0.2.1"
+}

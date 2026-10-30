@@ -1,13 +1,13 @@
 {
-  "candidate": "beta-v0.2.0",
-  "candidate_id": "beta-v0.2.0-633f2793",
-  "release_tag": "v0.2.1",
-  "version": "0.2.1",
-  "game_version": "0.2.0",
-  "eboot_sha256": "b64b31554421c469dd90f9ae9db67e71119d6ba6ae520d540bd05c97839fa6fa",
-  "eboot_bytes": 4098394,
-  "build_id": "5e81d1116",
-  "source_commit": "5e81d1116931c843c82d6ad9cc77a8747e15a501",
+  "candidate": "beta-v0.2.2",
+  "candidate_id": "beta-v0.2.2-9343131f",
+  "release_tag": "v0.2.2",
+  "version": "0.2.2",
+  "game_version": "0.2.2",
+  "eboot_sha256": "424c86d1c70e9a1a91efb0857d2d037e9df6f77c035aa7ef090700d8d7b21586",
+  "eboot_bytes": 4168330,
+  "build_id": "9d405874b",
+  "source_commit": "9d405874b6aefc183debfd56a6b300cc04326fae",
   "build_flags": [
     "PGO=use (RC21 profile)",
     "LTO=1",
@@ -19,7 +19,7 @@
     "ps2"
   ],
   "publication_status": "CLOSED_BETA_CANDIDATE",
-  "quality_approval": "Version 0.2.1 is a generator-only update of 0.2.0: the same executable and the same verified output; only the helper's log handling changed (31 October 2026). Version 0.2.0 for the closed beta, released with Jussimir's approval to publish once it passes PPSSPP (30 October 2026). Broad tests ran on 0.2.0-rc.1 (the same source without the PSP-1000 drift fix of #16); this executable passed its own confirmation runs. Not a final release, physical PSP-1000, all-device, full-career or global 30fps qualification.",
+  "quality_approval": "Version 0.2.2 for the closed beta, prepared under Jussimir's approval of 30 October 2026 to publish with the same rules as 0.2.0, once it passes PPSSPP (numbered 0.2.2 after 0.2.1 became a generator-only release). Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-career or global 30fps qualification.",
   "known_issues": [
     "No physical PSP-1000 has run this build: the compact profile was measured on a PSP-3000 limited to the PSP-1000 memory and in PPSSPP set to the PSP-1000.",
     "On PSP-1000, a Drift right after a city race may use the previous drift handling when memory is tight (a notice says so).",
@@ -29,7 +29,8 @@
     "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
     "Custom dyno and special presets use the earlier handling path; collisions retain port adaptations.",
     "Materials, visibility, doors, movies and all audio/camera combinations need broader testing.",
-    "The original US PS2 disc image has not been independently verified; PAL and other revisions are refused."
+    "The original US PS2 disc image has not been independently verified; PAL and other revisions are refused.",
+    "Invisible walls on the open road (#32) were not reproduced; menu camera height on the stick, shop rooms' own lighting, the Body Shop part browser and per-car menu ride height (#29) are still open."
   ],
   "reference_scope": "Full ISO conversions (PS2 and Xbox) by the macOS arm64 native generator of this kit; output identity does not establish gameplay quality.",
   "files_by_source": {
@@ -37,22 +38,23 @@
     "ps2": 159
   },
   "source_data_ids": {
-    "xbox": "3bc2",
-    "ps2": "6c78"
+    "xbox": "6fa9",
+    "ps2": "0e97"
   },
-  "data_compatibility": "Install the complete output of this generator (update a 0.1.1/0.1.2 folder with the same ISO, or generate into a new folder). EBOOT.PBP, pack.n2pk and the parts-*.n2op car files differ from 0.1.x; copying only the EBOOT leaves old car and career data. Do not mix Xbox and PS2 output.",
-  "elf_sha256": "6573afbb06b82f14f7a4f90e157795d673999026ac80a793baf98a9b0ee080e0",
-  "prx_sha256": "20340bd2148fb1d1ffe07aad960f507ac8fcdb09bf9ab81e1c3259bbbb81813b",
+  "data_compatibility": "Install the complete output of this generator (update a 0.2.0 or 0.2.1 folder with the same ISO, or generate into a new folder). 0.2.2 changes EBOOT.PBP and converted data (traffic routes, cars and their lights, garage and shop scenes, rain zones, city walls and event markers); copying only the EBOOT leaves old data that this executable does not expect. Do not mix Xbox and PS2 output.",
+  "elf_sha256": "37e4a1f4ae9994f653648e8128fa9e303f30368d606cb28a42e5980bb15e6f4d",
+  "prx_sha256": "2255abde892984d28db967991d38df014d419e918d394673b4241624ce6da631",
   "debug_overlays": true,
   "tester_invitations_sent_by_this_release": false,
   "qualification_receipts": [],
   "source_candidate": {
-    "id": "2fbcd8676a704c868a39fb8a863134df",
-    "version": "0.2.0-rc.2",
-    "path": "reports/releases/2fbcd8676a704c868a39fb8a863134df",
-    "final_build": "GAME_VERSION=0.2.0 from the frozen source of 0.2.0-rc.2 (reports/release-v0.2.0/eboot)",
-    "rc2_eboot_sha256": "35c1e46af913b79f0d3ee52bddcb3d4050c2fe4058b5273a7db8357cf8074b57",
-    "rc1_id": "15120c71292049f3b460bc428cea6822",
-    "rc1_eboot_sha256": "d9a222aa24ddf4694926be3c785de70f9742cc4b33ebdf704e683d017cade2b7"
+    "id": "fad288ca71204b53866d95709ed46790",
+    "version": "0.2.2-rc.2",
+    "path": "reports/releases/fad288ca71204b53866d95709ed46790",
+    "final_build": "GAME_VERSION=0.2.2 from the frozen source of 0.2.2-rc.2 (reports/release-v0.2.2/eboot)",
+    "rc2_eboot_sha256": "2f56056a8ae2df93e154d9572ca45f77bb0c2369a63e93b32beea150936939fa",
+    "rc1_id": "0a2a73a6515d48efbf46b568455805d1",
+    "rc1_eboot_sha256": "e950511bd2ff372015518ffb0d6d689dd86e8f0df0a65a724a08fb17a3638a68",
+    "earlier_final_without_drift_fallback": "51cb32fbcb1d7c7b9ee681fa81dbb8a4a7d789bf539ceae1c073bebf0706ffc6"
   }
 }

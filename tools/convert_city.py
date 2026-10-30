@@ -30,7 +30,9 @@ Archive N2CY v2 (little endian, blobs 16-byte aligned):
     cells heights span more than +-32 m), u32 the terrain section's offset
     (0: none, all road), 4 bytes pad, then 64x64 s16 low
     ground, 64x64 s16 high ground (height = base + value * unit), 64x64 u8
-    wall bits (bit 0 low layer, bit 1 high, bit 2 middle), 64x64 s16 middle
+    wall bits (bit 0 low layer, bit 1 high, bit 2 middle, bit 3 the second
+    middle; the same << 4: the wall rises over the chase camera,
+    convert_world.CAM_WALL_TOP), 64x64 s16 middle
     ground (three-level interchanges); -32768 = none; then 64x64 u16 wall
     shapes (convert_world.shape_code: the strip of each wall cell its
     geometry occupies, 0xffff = whole cell). v1 stored absolute

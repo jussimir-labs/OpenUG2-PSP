@@ -18,14 +18,25 @@ intensity when 0.5 + 0.5 sin((x / 50 + t) degrees), x the car's game x and
 t the clock in seconds (0x2026c0), is at most the region's threshold: a band
 sweeping the city, back over a place every six minutes.
 
-rain.n2rr: 'N2RR', u32 version 1, f32 x min, y min, x max, y max, u32 nodes,
-u32 regions, nodes x u16[4], regions x f32[2] (intensity, threshold).
+Under cover it does not rain: Rain::Update looks for a TrackPathZone of
+types 5 and 6 (TrackPathManager::FindZone, mask 0x60) at the car and 9.5 m
+ahead of it; in one, with the car below the zone's height (+0x14), no drop
+is drawn on that side of 9.5 m. Those zones are the free roam's tunnels and
+covered roads (TRACKS/ROUTESL4RA/PathsFreeRoam.bin, chunk 0x3414A: a
+68-byte header, u32 type at +0, f32 height at +0x14, the bounding box
+(x min, y min, x max, y max) at +0x20, u16 vertices at +0x40 and the
+record's size at +0x42, then the vertices, f32 x y each).
+
+rain.n2rr: 'N2RR', u32 version 2, f32 x min, y min, x max, y max, u32 nodes,
+u32 regions, nodes x u16[4], regions x f32[2] (intensity, threshold); then
+u32 cover zones, u32 vertices, zones x (f32 x min, y min, x max, y max,
+height, u16 first vertex, u16 vertices), vertices x f32[2] (game x, y).
 """
 import argparse
 from pathlib import Path
 import struct
 
-from n2formats import archived
+from n2formats import archived, chunks
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,6 +73,24 @@ def region_set(game, name):
     raise ValueError(f'no region set {name} in L4RA')
 
 
+def cover_zones(game):
+    """The zones the rain stops in: [(bounds, height, vertices)], types 5 and 6."""
+    path = archived(game, 'TRACKS/ROUTESL4RA/PathsFreeRoam.bin')
+    tables = [path[p:p + n] for t, p, n in chunks(path) if t == 0x3414a]
+    if len(tables) != 1:
+        raise ValueError('free-roam zone table')
+    data, at, out = tables[0], 0, []
+    while at + 68 <= len(data):
+        n, size = struct.unpack_from('<2H', data, at + 64)
+        if size < 68 or at + size > len(data) or n > (size - 68) // 8:
+            raise ValueError('zone record bounds')
+        if struct.unpack_from('<I', data, at)[0] in (5, 6):
+            out.append((struct.unpack_from('<4f', data, at + 32), struct.unpack_from('<f', data, at + 0x14)[0],
+                        [struct.unpack_from('<2f', data, at + 68 + 8 * i) for i in range(n)]))
+        at += size
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     n2source.game_args(ap)
@@ -69,9 +98,17 @@ def main():
     a = ap.parse_args()
     bounds, nodes, regions, per, tree, values = region_set(a.game, 'Rain')
     pairs = [values[per * r:per * r + 2] for r in range(regions)]
-    out = struct.pack('<4sI4f2I', b'N2RR', 1, *bounds, nodes, regions) + tree + b''.join(struct.pack('<2f', *p) for p in pairs)
+    out = struct.pack('<4sI4f2I', b'N2RR', 2, *bounds, nodes, regions) + tree + b''.join(struct.pack('<2f', *p) for p in pairs)
+    zones = cover_zones(a.game)
+    out += struct.pack('<2I', len(zones), sum(len(z[2]) for z in zones))
+    first = 0
+    for box, height, points in zones:
+        out += struct.pack('<5f2H', *box, height, first, len(points))
+        first += len(points)
+    out += b''.join(struct.pack('<2f', *p) for z in zones for p in z[2])
     (a.out / 'rain.n2rr').write_bytes(out)
-    print(f'rain.n2rr: {nodes} nodes, {regions} regions (intensity, threshold): ' + ', '.join(f'{i:.2f}/{t:.2f}' for i, t in pairs))
+    print(f'rain.n2rr: {nodes} nodes, {regions} regions (intensity, threshold): ' + ', '.join(f'{i:.2f}/{t:.2f}' for i, t in pairs)
+          + f'; {len(zones)} cover zones')
 
 
 if __name__ == '__main__':
