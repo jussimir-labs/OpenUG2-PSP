@@ -16,7 +16,7 @@ This kit contains the prebuilt PSP executable and a local game-data generator.
 Your ISO stays on your computer.
 
 [Release notes](RELEASE_NOTES.md) · [Changelog](CHANGELOG.md) · [Known issues](KNOWN_ISSUES.md) ·
-[Testing and bug reports](docs/TESTING.md) · [Roadmap](ROADMAP.md)
+[Testing and bug reports](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](ROADMAP.md)
 
 ## Before you begin
 
