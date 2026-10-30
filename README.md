@@ -5,9 +5,9 @@ Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[latest native generator release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21-native-2).
+[latest native generator release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.2).
 Windows x64, Linux x86-64, Apple Silicon and Intel Mac use separate downloads. The original
-[RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/beta-1-rc21)
+[RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.0)
 remains available with its older setup requirements.
 Please keep this beta and its generated files within the selected test group.
 
