@@ -34,7 +34,9 @@ for it:
   parts table's type 52 (tools/partsdb.py) in its order: per brand
   <BRAND>_BLACK_DECAL (the brand's own art) and <BRAND>_WHITE_DECAL (its
   white one), 182 with art on the disc;
-- garage.n2gr: per car, the options there are, and the decals.
+- garage.n2gr: per car, the options there are, and the decals;
+- neon.n2nn and neon-halo.n2nh: the neon's tubes and the underglow's light
+  on the ground (neon_tubes, neon_halo).
 
 N2SK: 'N2SK', u32 width, height, kind (0: a layer's RGBA), 1024-byte RGBA
 palette, w*h indices (linear, the CPU composites them).
@@ -64,18 +66,23 @@ import convert_hud
 import convert_physics
 import n2feng as fe
 import partsdb
-from n2formats import archived, car_record, lod_family, parts, wheel_faces
+from n2formats import archived, car_record, lod_family, parts, tyre_size, wheel_faces
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 # the table's categories (psp-viewer/garage.h GCAT_*: kit is the front bumper)
 CATS = ('kit', 'hood', 'spoiler', 'rims', 'vinyl', 'headlight', 'brakelight', 'rear_bumper', 'skirt', 'roof', 'exhaust', 'wide', 'mirror', 'audio')
+# The packs of no shop's table: the front brakes, the performance shop's
+# (BRAKE_STYLE01 to 03, CARS/BRAKES), by their category in parts-*.n2op
+# alone (psp-viewer/garage.c OPT_BRAKES)
+EXTRA = {'brakes': 64}
+BRAKES = ('BRAKE_STYLE01', 'BRAKE_STYLE02', 'BRAKE_STYLE03')
 PARTS = ('kit', 'rear_bumper', 'skirt', 'hood', 'spoiler', 'headlight', 'brakelight', 'roof', 'exhaust', 'wide', 'mirror', 'audio')   # those with packs
 PRESET_KEY = {'kit': 'kit', 'rear_bumper': 'rear_bumper', 'skirt': 'skirt', 'hood': 'hood', 'spoiler': 'spoiler',
-              'headlight': 'headlight', 'brakelight': 'brakelight', 'roof': 'roof', 'exhaust': 'exhaust', 'wide': 'widebody', 'mirror': 'mirror', 'audio': 'trunk_audio'}
+              'headlight': 'headlight', 'brakelight': 'brakelight', 'roof': 'roof', 'exhaust': 'exhaust', 'wide': 'widebody', 'mirror': 'mirror', 'audio': 'trunk_audio', 'brakes': 'brakes'}
 SLOT = {'kit': cc.SLOT_KIT, 'rear_bumper': cc.SLOT_REAR_BUMPER, 'skirt': cc.SLOT_SKIRT, 'hood': cc.SLOT_HOOD,
         'spoiler': cc.SLOT_SPOILER, 'rims': cc.SLOT_RIMS, 'headlight': cc.SLOT_HEADLIGHT, 'brakelight': cc.SLOT_BRAKELIGHT,
-        'roof': cc.SLOT_ROOF, 'exhaust': cc.SLOT_EXHAUST, 'wide': cc.SLOT_BODY, 'mirror': cc.SLOT_MIRROR}
+        'roof': cc.SLOT_ROOF, 'exhaust': cc.SLOT_EXHAUST, 'wide': cc.SLOT_BODY, 'mirror': cc.SLOT_MIRROR, 'brakes': 0}
 MAX = 64
 SUVS = ('HUMMER', 'NAVIGATOR', 'ESCALADE')   # tools/convert_rims.py's: the SUVs' mirrors
 RIM_BRANDS = ('ENKEI', 'VOLK', 'OZ', 'BBS', 'MOMO', 'KONIG', 'ADVAN', '5ZIGEN', 'RACINGHART', 'WORK')
@@ -89,9 +96,11 @@ RIM_INNER = (18, 17, 19, 16, 20, 15)
 
 
 def tyre_inches(game, car):
-    """The car's tyre as a diameter in inches: its record's front radius
-    (GLOBALB, the PS2's the same)."""
-    return 2 * cc.car_record(archived(game, 'GLOBAL/GLOBALB.BUN'), car)[0][3] / 0.0254
+    """The car's tyre as a diameter in inches: its record's (GLOBALB, the
+    PS2's the same; n2formats.tyre_size). Its front radius, the physics',
+    gave the COROLLA's 0.265 m a 21 in tyre (its rims the 23s) where the
+    shop sells it the 24s (beta #56)."""
+    return tyre_size(archived(game, 'GLOBAL/GLOBALB.BUN'), car)
 VINYL_GROUPS = ('FLAME', 'TRIBAL', 'WILD', 'LIGHTNG', 'TEAR', 'STRIPE', 'LIQUID', 'MODERN')
 # The decal shop's zones (the original's order) and the art each takes.
 DECAL_ZONES = (('HOOD', 'RECT'), ('FRONT_WINDOW', 'WIDE'), ('REAR_WINDOW', 'WIDE'), ('LEFT_DOOR', 'RECT'),
@@ -185,6 +194,7 @@ def option_blobs(game, car, cat, name, lod):
     out = {}
     for c in (('kit', 'rear_bumper', 'skirt') if cat == 'kit' else (cat,)):
         meshes = [m for m in b.batched() if (m[4] & cc.F_AUDIO if c == 'audio' else
+                  m[4] & cc.F_WHEEL and not (m[4] >> cc.SLOT_SHIFT) & 15 and (m[4] >> 8) & 3 < 2 if c == 'brakes' else   # the front brakes
                   (m[4] >> cc.SLOT_SHIFT) & 15 in ((SLOT[c], cc.SLOT_DOOR, cc.SLOT_DOOR_RIGHT) if c == 'wide' else (SLOT[c],)))]
         if not meshes:
             continue
@@ -236,7 +246,7 @@ def decal_pack(game, car, out):
                         vertices.append(struct.pack('<8f', u, v, ny, nz, nx, y, z3, x))   # as convert_car.Builder
                     meshes.append((vertices, [remap[i] for i in ids], DUMMY_DECAL1, 0xffffffff,
                                    F_DECAL | (SLOT_DECAL + z) << cc.SLOT_SHIFT | k << DECAL_SLOT_SHIFT | (DECAL_SMALL if small else 0)
-                                   | wide << DECAL_WIDE_SHIFT, 1.0))
+                                   | wide << DECAL_WIDE_SHIFT | (cc.F_LID if zone == 'REAR_WINDOW' and car in cc.HATCHES else 0), 1.0))   # a hatch's rear window: on the lid
                 if not wide:
                     zones |= 1 << z
     if meshes:
@@ -311,6 +321,9 @@ def convert_car(game, out, car):
             for lod in (0, 1):
                 for c, blob in option_blobs(game, car, cat, name, lod).items():
                     packs[(c, name, lod)] = blob
+    for name in BRAKES:
+        for lod in (0, 1):
+            packs.update({(c, name, lod): blob for c, blob in option_blobs(game, car, 'brakes', name, lod).items()})
     for cat in PARTS:   # an option is offered with both its levels of detail (a trunk layout: the garage's alone)
         done[cat] = [n for n in opts[cat] if (cat, n, 0) in packs and ((cat, n, 1) in packs or cat == 'audio')]
     done['rims'] = opts['rims']   # the names alone: the rims are the library's (tools/convert_rims.py), these the looks saved before it
@@ -372,6 +385,38 @@ def neon_tubes(game, out, cars):
     (out / 'neon.n2nn').write_bytes(struct.pack('<4s2I', b'N2NN', 2, len(cars)) + blob)
 
 
+HALO_W, HALO_H = 128, 64
+
+
+def neon_halo(game, out, cars):
+    """neon-halo.n2nh: the underglow's light on the ground, each car's own
+    <CAR>_NEON (its pack, 128 x 64 grey, opaque: the tubes' glow seen from
+    above, u along the car from its rear to its front, v across it), which
+    the original lays over the car's shadow grid in a second pass
+    (CarRenderInfo::Render; its constructor loads it beside <CAR>_SHADOWIG).
+    'N2NH', u32 version 1, u32 cars, u16 width, u16 height; cars x (char
+    model[16], u32 clut[16] (ABGR: grey 0 to the map's brightest, opaque),
+    width*height/2 bytes of 4-bit indices (the left texel the low nibble)).
+    16 greys: within 4 of 255 of the map's own. A car without it is left out."""
+    blob, n = bytearray(), 0
+    for car in cars:
+        try:
+            tpk = cc.SlotTPK(archived(game, f'CARS/{car}/TEXTURES.BIN'))
+            tex = tpk.get(cc.game_hash(f'{car}_NEON'))
+        except (ValueError, KeyError):
+            tex = None
+        if tex is None or (tex.w, tex.h) != (HALO_W, HALO_H):
+            continue
+        grey = tex.rgba()[0::4]
+        top = max(grey) or 1
+        idx = [min(15, (g * 15 + top // 2) // top) for g in grey]
+        clut = [0xff000000 | v * 0x010101 for v in (round(i * top / 15) for i in range(16))]
+        blob += struct.pack('<16s16I', car.encode(), *clut)
+        blob += bytes(idx[i] | idx[i + 1] << 4 for i in range(0, len(idx), 2))
+        n += 1
+    (out / 'neon-halo.n2nh').write_bytes(struct.pack('<4s2I2H', b'N2NH', 1, n, HALO_W, HALO_H) + blob)
+
+
 def carbon_pack(game, out):
     """carbon.n2pv: the carbon fibre (cc.carbon_tile) the PSP puts on the
     pieces bought in it (the hood, trunk, doors, kit), in place of their
@@ -384,17 +429,18 @@ def carbon_pack(game, out):
 
 def write_options(path, packs, pads={}):
     """parts-<MODEL>.n2op: 'N2OP', u32 version 1, u32 count, count x (u8
-    category (CATS' order), u8 detail (0 the garage's, 1 the street's), u16
+    category (CATS' order, EXTRA's), u8 detail (0 the garage's, 1 the street's), u16
     pad (a wide body kit's: how far out the wheels go, mm, the front's in
     the low byte, the rear's in the high; 0 the others), char name[24], u32
     offset, u32 bytes), then the packs."""
-    keys = sorted(packs, key=lambda k: (CATS.index(k[0]), k[1], k[2]))
+    cat = lambda c: CATS.index(c) if c in CATS else EXTRA[c]
+    keys = sorted(packs, key=lambda k: (cat(k[0]), k[1], k[2]))
     base = 12 + 36 * len(keys)
     base += -base % 16
     table, data, at = bytearray(), bytearray(), base
     for c, name, lod in keys:
         blob = packs[(c, name, lod)]
-        table += struct.pack('<2BH24s2I', CATS.index(c), lod, pads.get((c, name, lod), 0), name.encode()[:23], at, len(blob))
+        table += struct.pack('<2BH24s2I', cat(c), lod, pads.get((c, name, lod), 0), name.encode()[:23], at, len(blob))
         data += blob + bytes(-len(blob) % 16)
         at += len(blob) + (-len(blob) % 16)
     head = struct.pack('<4s2I', b'N2OP', 1, len(keys)) + table
@@ -408,10 +454,12 @@ def main():
     ap.add_argument('--cars', help='comma-separated models (default: the fleet)')
     ap.add_argument('--jobs', type=int, default=8)
     ap.add_argument('--decals', action='store_true', help='the decals alone: their art and the table, the cars as garage.json has them')
-    ap.add_argument('--neon', action='store_true', help='neon.n2nn alone (the neon tubes), the cars as garage.json has them')
+    ap.add_argument('--neon', action='store_true', help='neon.n2nn and neon-halo.n2nh alone (the neon tubes, their light on the ground), the cars as garage.json has them')
     args = ap.parse_args()
     if args.neon:
-        neon_tubes(args.game, args.out, list(json.loads((args.out / 'garage.json').read_text())))
+        cars = list(json.loads((args.out / 'garage.json').read_text()))
+        neon_tubes(args.game, args.out, cars)
+        neon_halo(args.game, args.out, cars)
         return
     cars = args.cars.split(',') if args.cars else convert_physics.playable(
         convert_physics.records(archived(args.game, 'GLOBAL/GLOBALB.BUN')))
@@ -428,6 +476,7 @@ def main():
     decals = decal_art(args.game, args.out)
     carbon_pack(args.game, args.out)
     neon_tubes(args.game, args.out, list(known))
+    neon_halo(args.game, args.out, list(known))
     blob = bytearray(struct.pack('<4s2I', b'N2GR', 7, len(known)))
     for car, opts in known.items():
         counts = [min(MAX, len(opts.get(c, []))) for c in CATS]

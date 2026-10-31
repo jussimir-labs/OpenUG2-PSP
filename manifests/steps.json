@@ -50,8 +50,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 13.28,
-   "peak_rss_mb": 192
+   "seconds": 15.71,
+   "peak_rss_mb": 131
   },
   {
    "name": "city",
@@ -247,8 +247,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 738.91,
-   "peak_rss_mb": 2862
+   "seconds": 955.19,
+   "peak_rss_mb": 1624
   },
   {
    "name": "city visibility",
@@ -281,8 +281,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 1.09,
-   "peak_rss_mb": 49
+   "seconds": 1.12,
+   "peak_rss_mb": 50
   },
   {
    "name": "breakable objects",
@@ -325,7 +325,7 @@
     "git"
    ],
    "seconds": 6.89,
-   "peak_rss_mb": 205
+   "peak_rss_mb": 133
   },
   {
    "name": "roads",
@@ -359,7 +359,7 @@
    "globs": [],
    "programs": [],
    "seconds": 3.27,
-   "peak_rss_mb": 440
+   "peak_rss_mb": 398
   },
   {
    "name": "GPS",
@@ -389,8 +389,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 1.75,
-   "peak_rss_mb": 51
+   "seconds": 2.02,
+   "peak_rss_mb": 46
   },
   {
    "name": "lanes",
@@ -517,8 +517,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 208.77,
-   "peak_rss_mb": 2261
+   "seconds": 375.62,
+   "peak_rss_mb": 1623
   },
   {
    "name": "reset zones",
@@ -546,7 +546,7 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 0.63,
+   "seconds": 0.72,
    "peak_rss_mb": 0
   },
   {
@@ -617,8 +617,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 157.77,
-   "peak_rss_mb": 2134
+   "seconds": 216.32,
+   "peak_rss_mb": 989
   },
   {
    "name": "track roads L4RB",
@@ -652,8 +652,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 1.09,
-   "peak_rss_mb": 80
+   "seconds": 1.72,
+   "peak_rss_mb": 0
   },
   {
    "name": "track races L4RB",
@@ -701,8 +701,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 10.74,
-   "peak_rss_mb": 1083
+   "seconds": 12.87,
+   "peak_rss_mb": 721
   },
   {
    "name": "track L4RC",
@@ -782,8 +782,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 141.39,
-   "peak_rss_mb": 1668
+   "seconds": 258.02,
+   "peak_rss_mb": 1596
   },
   {
    "name": "track roads L4RC",
@@ -871,7 +871,7 @@
    "globs": [],
    "programs": [],
    "seconds": 76.47,
-   "peak_rss_mb": 741
+   "peak_rss_mb": 436
   },
   {
    "name": "track L4RD",
@@ -934,8 +934,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 407.71,
-   "peak_rss_mb": 2485
+   "seconds": 560.81,
+   "peak_rss_mb": 1389
   },
   {
    "name": "track roads L4RD",
@@ -970,7 +970,7 @@
    "globs": [],
    "programs": [],
    "seconds": 1.74,
-   "peak_rss_mb": 70
+   "peak_rss_mb": 0
   },
   {
    "name": "track races L4RD",
@@ -1012,8 +1012,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 11.79,
-   "peak_rss_mb": 1020
+   "seconds": 20.91,
+   "peak_rss_mb": 452
   },
   {
    "name": "track L4RF",
@@ -1087,8 +1087,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 116.45,
-   "peak_rss_mb": 2052
+   "seconds": 184.26,
+   "peak_rss_mb": 1327
   },
   {
    "name": "track roads L4RF",
@@ -1172,7 +1172,7 @@
    "globs": [],
    "programs": [],
    "seconds": 35.45,
-   "peak_rss_mb": 418
+   "peak_rss_mb": 284
   },
   {
    "name": "track L4RG",
@@ -1255,8 +1255,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 187.12,
-   "peak_rss_mb": 1506
+   "seconds": 217.55,
+   "peak_rss_mb": 1542
   },
   {
    "name": "track roads L4RG",
@@ -1291,7 +1291,7 @@
    "globs": [],
    "programs": [],
    "seconds": 1.31,
-   "peak_rss_mb": 86
+   "peak_rss_mb": 0
   },
   {
    "name": "track races L4RG",
@@ -1345,7 +1345,7 @@
    "globs": [],
    "programs": [],
    "seconds": 56.51,
-   "peak_rss_mb": 1613
+   "peak_rss_mb": 624
   },
   {
    "name": "replay cameras",
@@ -1379,8 +1379,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 2.43,
-   "peak_rss_mb": 45
+   "seconds": 3.73,
+   "peak_rss_mb": 43
   },
   {
    "name": "geometry bounds",
@@ -1434,7 +1434,7 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 4.83,
+   "seconds": 5.94,
    "peak_rss_mb": 39
   },
   {
@@ -1465,8 +1465,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 3.04,
-   "peak_rss_mb": 936
+   "seconds": 4.93,
+   "peak_rss_mb": 1844
   },
   {
    "name": "distant skyline",
@@ -1526,7 +1526,7 @@
     "git"
    ],
    "seconds": 23.31,
-   "peak_rss_mb": 315
+   "peak_rss_mb": 181
   },
   {
    "name": "mipmaps",
@@ -1686,7 +1686,7 @@
     "git"
    ],
    "seconds": 2255.24,
-   "peak_rss_mb": 7248
+   "peak_rss_mb": 4427
   },
   {
    "name": "racing line speeds",
@@ -1716,8 +1716,8 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 40.93,
-   "peak_rss_mb": 71
+   "seconds": 41.66,
+   "peak_rss_mb": 47
   },
   {
    "name": "racing line forks",
@@ -1823,7 +1823,7 @@
     "git"
    ],
    "seconds": 107.71,
-   "peak_rss_mb": 450
+   "peak_rss_mb": 229
   },
   {
    "name": "career",
@@ -1888,8 +1888,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 6.97,
-   "peak_rss_mb": 66
+   "seconds": 7.84,
+   "peak_rss_mb": 57
   },
   {
    "name": "cars",
@@ -2049,7 +2049,7 @@
     "python3"
    ],
    "seconds": 41.44,
-   "peak_rss_mb": 1231
+   "peak_rss_mb": 573
   },
   {
    "name": "performance packages",
@@ -2087,8 +2087,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 1.38,
-   "peak_rss_mb": 0
+   "seconds": 1.82,
+   "peak_rss_mb": 39
   },
   {
    "name": "drift and drag rules",
@@ -2248,7 +2248,7 @@
    "lists": [],
    "globs": [],
    "programs": [],
-   "seconds": 1.29,
+   "seconds": 1.37,
    "peak_rss_mb": 0
   },
   {
@@ -2580,6 +2580,7 @@
     "dist/PSP/GAME/NFSU2VIEW/decal-ZEX_WHITE.n2pv",
     "dist/PSP/GAME/NFSU2VIEW/garage.json",
     "dist/PSP/GAME/NFSU2VIEW/garage.n2gr",
+    "dist/PSP/GAME/NFSU2VIEW/neon-halo.n2nh",
     "dist/PSP/GAME/NFSU2VIEW/neon.n2nn",
     "dist/PSP/GAME/NFSU2VIEW/opt-240SX-decal.n2pv",
     "dist/PSP/GAME/NFSU2VIEW/opt-3000GT-decal.n2pv",
@@ -2675,8 +2676,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 569.47,
-   "peak_rss_mb": 1312
+   "seconds": 834.4,
+   "peak_rss_mb": 923
   },
   {
    "name": "rims",
@@ -2715,7 +2716,7 @@
     "git"
    ],
    "seconds": 23.11,
-   "peak_rss_mb": 1569
+   "peak_rss_mb": 847
   },
   {
    "name": "rim names",
@@ -2754,7 +2755,7 @@
     "git"
    ],
    "seconds": 5.66,
-   "peak_rss_mb": 54
+   "peak_rss_mb": 46
   },
   {
    "name": "part names",
@@ -2916,7 +2917,7 @@
     "git"
    ],
    "seconds": 340.5,
-   "peak_rss_mb": 1604
+   "peak_rss_mb": 1005
   },
   {
    "name": "visual rating",
@@ -2962,7 +2963,7 @@
     "git"
    ],
    "seconds": 2.41,
-   "peak_rss_mb": 165
+   "peak_rss_mb": 52
   },
   {
    "name": "magazines",
@@ -2991,7 +2992,7 @@
    "globs": [],
    "programs": [],
    "seconds": 29.87,
-   "peak_rss_mb": 221
+   "peak_rss_mb": 481
   },
   {
    "name": "screens and HUD",
@@ -3107,6 +3108,7 @@
     "dist/PSP/GAME/NFSU2VIEW/tournstand.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/trax.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/vlayer.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/vrating.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/worldmap.n2ui"
    ],
    "removes": [],
@@ -3118,7 +3120,7 @@
     "git"
    ],
    "seconds": 256.98,
-   "peak_rss_mb": 396
+   "peak_rss_mb": 311
   },
   {
    "name": "event markers",
@@ -3156,7 +3158,7 @@
     "git"
    ],
    "seconds": 6.74,
-   "peak_rss_mb": 48
+   "peak_rss_mb": 47
   },
   {
    "name": "controls screen",
@@ -3211,7 +3213,7 @@
    "globs": [],
    "programs": [],
    "seconds": 3.85,
-   "peak_rss_mb": 0
+   "peak_rss_mb": 39
   },
   {
    "name": "ambient sound",
@@ -3248,8 +3250,8 @@
    "programs": [
     "git"
    ],
-   "seconds": 4.64,
-   "peak_rss_mb": 61
+   "seconds": 8.46,
+   "peak_rss_mb": 45
   },
   {
    "name": "fog",
@@ -3290,7 +3292,7 @@
    "globs": [],
    "programs": [],
    "seconds": 1.55,
-   "peak_rss_mb": 0
+   "peak_rss_mb": 36
   },
   {
    "name": "lights",
@@ -3356,8 +3358,8 @@
    ],
    "globs": [],
    "programs": [],
-   "seconds": 42.7,
-   "peak_rss_mb": 229
+   "seconds": 90.73,
+   "peak_rss_mb": 183
   },
   {
    "name": "world animation",
@@ -3410,7 +3412,7 @@
     "git"
    ],
    "seconds": 14.25,
-   "peak_rss_mb": 196
+   "peak_rss_mb": 140
   },
   {
    "name": "menu scene",
@@ -3454,7 +3456,7 @@
     "git"
    ],
    "seconds": 73.84,
-   "peak_rss_mb": 68
+   "peak_rss_mb": 47
   },
   {
    "name": "race intro scenes",
@@ -3516,7 +3518,7 @@
     "git"
    ],
    "seconds": 117.75,
-   "peak_rss_mb": 72
+   "peak_rss_mb": 169
   },
   {
    "name": "race ending scenes",
@@ -3552,7 +3554,7 @@
    "globs": [],
    "programs": [],
    "seconds": 27.14,
-   "peak_rss_mb": 49
+   "peak_rss_mb": 52
   },
   {
    "name": "shop scenes",
@@ -3647,7 +3649,7 @@
    "globs": [],
    "programs": [],
    "seconds": 14.16,
-   "peak_rss_mb": 54
+   "peak_rss_mb": 46
   },
   {
    "name": "sky",
@@ -3684,7 +3686,7 @@
    "globs": [],
    "programs": [],
    "seconds": 8.78,
-   "peak_rss_mb": 55
+   "peak_rss_mb": 54
   },
   {
    "name": "panoramas",
@@ -3720,7 +3722,7 @@
    "globs": [],
    "programs": [],
    "seconds": 8.61,
-   "peak_rss_mb": 158
+   "peak_rss_mb": 124
   },
   {
    "name": "physics",
@@ -3782,14 +3784,22 @@
    "absent_code": [],
    "game": true,
    "reads": [
+    "dist/PSP/GAME/.original-source-175zthk8/original-physics.n2og",
     "dist/PSP/GAME/.original-source-ccu8a05r/original-physics.n2og",
     "dist/PSP/GAME/.original-source-cr8tzq24/original-physics.n2og",
     "dist/PSP/GAME/.original-source-l655hugq/original-physics.n2og",
     "dist/PSP/GAME/.original-source-pvbgl7dm/original-physics.n2og",
+    "dist/PSP/GAME/.original-source-ykicukjm/original-physics.n2og",
     "dist/PSP/GAME/NFSU2VIEW",
     "tools"
    ],
    "writes": [
+    "dist/PSP/GAME/.original-source-175zthk8/.topology-onjwd0os/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-175zthk8/.topology-onjwd0os/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-175zthk8/.topology-onjwd0os/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-175zthk8/.topology-onjwd0os/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-175zthk8/.topology-onjwd0os/MANIFEST.json",
+    "dist/PSP/GAME/.original-source-175zthk8/topology",
     "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/L4RA-source.json",
     "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/L4RA.n2tr",
     "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0/L4RC-source.json",
@@ -3814,11 +3824,28 @@
     "dist/PSP/GAME/.original-source-pvbgl7dm/.topology-7oa1i_9n/L4RC.n2tr",
     "dist/PSP/GAME/.original-source-pvbgl7dm/.topology-7oa1i_9n/MANIFEST.json",
     "dist/PSP/GAME/.original-source-pvbgl7dm/topology",
+    "dist/PSP/GAME/.original-source-ykicukjm/.topology-bc8xuv4o/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-ykicukjm/.topology-bc8xuv4o/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-ykicukjm/.topology-bc8xuv4o/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-ykicukjm/.topology-bc8xuv4o/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-ykicukjm/.topology-bc8xuv4o/MANIFEST.json",
+    "dist/PSP/GAME/.original-source-ykicukjm/topology",
     "dist/PSP/GAME/NFSU2VIEW/original-physics.n2og",
     "dist/PSP/GAME/NFSU2VIEW/road-L4RA.n2tr",
     "dist/PSP/GAME/NFSU2VIEW/road-L4RC.n2tr"
    ],
    "removes": [
+    "dist/PSP/GAME/.original-source-175zthk8/.original-physics.n2og-2fja111n",
+    "dist/PSP/GAME/.original-source-175zthk8/.topology-onjwd0os",
+    "dist/PSP/GAME/.original-source-175zthk8/original-physics.json",
+    "dist/PSP/GAME/.original-source-175zthk8/original-physics.n2og",
+    "dist/PSP/GAME/.original-source-175zthk8/road-L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-175zthk8/road-L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-175zthk8/topology/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-175zthk8/topology/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-175zthk8/topology/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-175zthk8/topology/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-175zthk8/topology/MANIFEST.json",
     "dist/PSP/GAME/.original-source-ccu8a05r/.original-physics.n2og-o9ej1z8b",
     "dist/PSP/GAME/.original-source-ccu8a05r/.topology-v5vwfhi0",
     "dist/PSP/GAME/.original-source-ccu8a05r/original-physics.json",
@@ -3862,9 +3889,22 @@
     "dist/PSP/GAME/.original-source-pvbgl7dm/topology/L4RA.n2tr",
     "dist/PSP/GAME/.original-source-pvbgl7dm/topology/L4RC-source.json",
     "dist/PSP/GAME/.original-source-pvbgl7dm/topology/L4RC.n2tr",
-    "dist/PSP/GAME/.original-source-pvbgl7dm/topology/MANIFEST.json"
+    "dist/PSP/GAME/.original-source-pvbgl7dm/topology/MANIFEST.json",
+    "dist/PSP/GAME/.original-source-ykicukjm/.original-physics.n2og-3a8h6ynz",
+    "dist/PSP/GAME/.original-source-ykicukjm/.topology-bc8xuv4o",
+    "dist/PSP/GAME/.original-source-ykicukjm/original-physics.json",
+    "dist/PSP/GAME/.original-source-ykicukjm/original-physics.n2og",
+    "dist/PSP/GAME/.original-source-ykicukjm/road-L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-ykicukjm/road-L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-ykicukjm/topology/L4RA-source.json",
+    "dist/PSP/GAME/.original-source-ykicukjm/topology/L4RA.n2tr",
+    "dist/PSP/GAME/.original-source-ykicukjm/topology/L4RC-source.json",
+    "dist/PSP/GAME/.original-source-ykicukjm/topology/L4RC.n2tr",
+    "dist/PSP/GAME/.original-source-ykicukjm/topology/MANIFEST.json"
    ],
    "lists": [
+    "dist/PSP/GAME/.original-source-175zthk8",
+    "dist/PSP/GAME/.original-source-175zthk8/topology",
     "dist/PSP/GAME/.original-source-ccu8a05r",
     "dist/PSP/GAME/.original-source-ccu8a05r/topology",
     "dist/PSP/GAME/.original-source-cr8tzq24",
@@ -3872,12 +3912,14 @@
     "dist/PSP/GAME/.original-source-l655hugq",
     "dist/PSP/GAME/.original-source-l655hugq/topology",
     "dist/PSP/GAME/.original-source-pvbgl7dm",
-    "dist/PSP/GAME/.original-source-pvbgl7dm/topology"
+    "dist/PSP/GAME/.original-source-pvbgl7dm/topology",
+    "dist/PSP/GAME/.original-source-ykicukjm",
+    "dist/PSP/GAME/.original-source-ykicukjm/topology"
    ],
    "globs": [],
    "programs": [],
    "seconds": 2.03,
-   "peak_rss_mb": 0
+   "peak_rss_mb": 25
   },
   {
    "name": "audio",
@@ -4047,9 +4089,15 @@
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua/nos-0.n2ns",
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua/nos-1.n2ns",
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua/nos-banks.json",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-d7s8qp45/nos-0.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-d7s8qp45/nos-1.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-d7s8qp45/nos-banks.json",
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-q8rfzno1/nos-0.n2ns",
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-q8rfzno1/nos-1.n2ns",
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-q8rfzno1/nos-banks.json",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-x47rsk3k/nos-0.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-x47rsk3k/nos-1.n2ns",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-x47rsk3k/nos-banks.json",
     "dist/PSP/GAME/NFSU2VIEW/engine-dcl.n2en",
     "dist/PSP/GAME/NFSU2VIEW/music.mus"
    ],
@@ -4057,7 +4105,9 @@
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-3uklrrm_",
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-4ejp19hg",
     "dist/PSP/GAME/NFSU2VIEW/.nos-stage-6_8sshua",
-    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-q8rfzno1"
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-d7s8qp45",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-q8rfzno1",
+    "dist/PSP/GAME/NFSU2VIEW/.nos-stage-x47rsk3k"
    ],
    "globs": [
     "dist/PSP/GAME/NFSU2VIEW/engine-*-dcl.n2en"
@@ -4070,8 +4120,8 @@
     "mt2pcm",
     "xaencode"
    ],
-   "seconds": 123.72,
-   "peak_rss_mb": 1355
+   "seconds": 212.49,
+   "peak_rss_mb": 354
   },
   {
    "name": "movies",
@@ -4173,7 +4223,7 @@
     "movie_audio"
    ],
    "seconds": 660.86,
-   "peak_rss_mb": 302
+   "peak_rss_mb": 266
   },
   {
    "name": "movie verification",
@@ -4266,7 +4316,7 @@
    "globs": [],
    "programs": [],
    "seconds": 7.31,
-   "peak_rss_mb": 174
+   "peak_rss_mb": 78
   },
   {
    "name": "opponent car imprezawrx",
@@ -4305,7 +4355,7 @@
    "globs": [],
    "programs": [],
    "seconds": 9.42,
-   "peak_rss_mb": 172
+   "peak_rss_mb": 75
   },
   {
    "name": "opponent car lancerevo8",
@@ -4344,7 +4394,7 @@
    "globs": [],
    "programs": [],
    "seconds": 6.76,
-   "peak_rss_mb": 135
+   "peak_rss_mb": 113
   },
   {
    "name": "opponent car rx8",
@@ -4383,7 +4433,7 @@
    "globs": [],
    "programs": [],
    "seconds": 8.83,
-   "peak_rss_mb": 181
+   "peak_rss_mb": 94
   },
   {
    "name": "opponent car skyline",
@@ -4422,7 +4472,7 @@
    "globs": [],
    "programs": [],
    "seconds": 5.26,
-   "peak_rss_mb": 136
+   "peak_rss_mb": 94
   },
   {
    "name": "opponent car supra",
@@ -4461,7 +4511,7 @@
    "globs": [],
    "programs": [],
    "seconds": 4.62,
-   "peak_rss_mb": 140
+   "peak_rss_mb": 70
   },
   {
    "name": "opponent car AL_RX8",
@@ -4500,7 +4550,7 @@
    "globs": [],
    "programs": [],
    "seconds": 5.81,
-   "peak_rss_mb": 178
+   "peak_rss_mb": 107
   },
   {
    "name": "opponent car CALEB_GTO",
@@ -4547,7 +4597,7 @@
     "git"
    ],
    "seconds": 6.95,
-   "peak_rss_mb": 177
+   "peak_rss_mb": 97
   },
   {
    "name": "opponent car MARCUS_CELICA",
@@ -4586,7 +4636,7 @@
    "globs": [],
    "programs": [],
    "seconds": 10.67,
-   "peak_rss_mb": 173
+   "peak_rss_mb": 80
   },
   {
    "name": "opponent car NIGEL_3000GT",
@@ -4625,7 +4675,7 @@
    "globs": [],
    "programs": [],
    "seconds": 10.52,
-   "peak_rss_mb": 168
+   "peak_rss_mb": 103
   },
   {
    "name": "opponent car NIKKI_MUSTANGGT",
@@ -4664,7 +4714,7 @@
    "globs": [],
    "programs": [],
    "seconds": 9.51,
-   "peak_rss_mb": 181
+   "peak_rss_mb": 108
   },
   {
    "name": "opponent car SCOTT_TT",
@@ -4703,7 +4753,7 @@
    "globs": [],
    "programs": [],
    "seconds": 11.0,
-   "peak_rss_mb": 173
+   "peak_rss_mb": 81
   },
   {
    "name": "opponent car TOM_G35",
@@ -4742,7 +4792,7 @@
    "globs": [],
    "programs": [],
    "seconds": 10.52,
-   "peak_rss_mb": 173
+   "peak_rss_mb": 115
   }
  ]
 }

@@ -91,6 +91,8 @@ class GraphTests(unittest.TestCase):
         self.assertEqual(g.preds[5], {1})            # the races' writer only, not the whole dist's
         self.assertEqual(g.inputs[5], {D + 'races.n2rc': 1})
 
+    @unittest.skipIf(sys.platform == 'win32', 'the step tracer (NFSU2_STEP_TRACE) is a maintainers\' tool, '
+                     'run on macOS and Linux to build manifests/steps.json')
     def test_tracer_globs(self):
         import os
         import subprocess
@@ -106,7 +108,9 @@ class GraphTests(unittest.TestCase):
                     'sorted(os.listdir(d)))')
             out = subprocess.run([sys.executable, '-c', code, str(d)], env=env, capture_output=True, text=True,
                                  check=True).stdout
-            self.assertEqual(out.strip(), f"['a.n2rc'] ['{d}/b.txt'] ['a.n2rc', 'b.txt']")
+            # glob joins with the system's separator, and the printed list is a repr (on
+            # Windows, its backslashes doubled)
+            self.assertEqual(out.strip(), f"['a.n2rc'] {[os.path.join(str(d), 'b.txt')]} ['a.n2rc', 'b.txt']")
             events = [line.split('\t')[::2] for line in log.read_text().splitlines() if line[0] in 'gl']
             self.assertEqual(events, [['g', f'{d}/*.n2rc'], ['g', f'{d}/*.txt'], ['l', str(d)]])
 

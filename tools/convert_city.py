@@ -142,6 +142,49 @@ def _object(key):
     return _objects[key]
 
 
+STACK_MAX = .03   # m: a copy of a triangle at most this far above another is the same floor (drop_stacked_copies)
+
+
+def drop_stacked_copies(batches):
+    """The shops' buildings (XB_PAINTSHOPA, XB_BODYSHOPA... the 7 of them)
+    hold their floor twice, the same triangles 1 cm (the PS2's 1.2 cm) one
+    over the other, laid on the street's ground that runs on under the
+    shop: the upper copy beats the ground in the original's depth buffer.
+    Here the lower copy came within 3 mm of the ground and mark_overlays
+    made the ground's triangles the decal over it, drawn at the same bias
+    as the upper copy, 8 mm over them: the two fought in the 16-bit depth,
+    the courtyard's pale wet ground in sawteeth over the shop's dark floor
+    as a shop's scene drove the car in (beta issue 60, CC_GRAPHICS). Only
+    the highest of such copies is kept (same texture, footprint, mapping
+    and winding, every corner the same height over the other), before
+    mark_overlays. Returns the number of triangles dropped."""
+    def footprint(t):
+        k = min(range(3), key=lambda a: (round(t[a][0], 3), round(t[a][1], 3)))
+        t = t[k:] + t[:k]   # rotated, not reordered: the winding kept
+        return tuple((round(p[0], 3), round(p[1], 3), round(p[3], 4), round(p[4], 4)) for p in t), [p[2] for p in t]
+    dropped = 0
+    for key, tris in list(batches.items()):
+        if key[1] & (cw.F_ALPHA | cw.F_BLEND | cw.F_ADD | cw.F_DECAL):
+            continue
+        same = collections.defaultdict(list)
+        for k, t in enumerate(tris):
+            fp, zs = footprint(list(t))
+            same[fp].append((zs, k))
+        drop = set()
+        for copies in same.values():
+            if len(copies) < 2:
+                continue
+            copies.sort(key=lambda c: sum(c[0]))
+            for (lo, k), (hi, _) in zip(copies, copies[1:]):
+                d = [b - a for a, b in zip(lo, hi)]
+                if 0 < min(d) and max(d) <= STACK_MAX and max(d) - min(d) < 1e-3:
+                    drop.add(k)
+        if drop:
+            batches[key] = [t for k, t in enumerate(tris) if k not in drop]
+            dropped += len(drop)
+    return dropped
+
+
 def mark_overlays(batches):
     """Road paint, kerb stripes and patches are opaque triangles lying on
     (or a few centimetres above) another surface with a different texture.
@@ -735,6 +778,7 @@ def process_tile(task):
                 kinds = cw.terrain_layers(ground[c], terrain[c], (lo, hi), ci * CELL, cj * CELL, GRID)
                 col = pack_collision(lo, hi, wall, mid, shape, mid2, kinds)
             if c in near:
+                drop_stacked_copies(near[c])
                 mark_overlays(near[c])
             if _static_door_owners and not overlay:
                 # Classification sees the complete original context. Filtering

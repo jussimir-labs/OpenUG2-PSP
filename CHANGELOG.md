@@ -16,6 +16,111 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-10-31 — Rocket Ride
+
+A new game executable and new converted game data: update your 0.2.0, 0.2.1 or 0.2.2 output
+folder with the 0.2.3 generator (same ISO) or generate into a new folder, and install the
+complete result. The cars and their rims, brakes and mirrors, the neon underglow, the shops'
+Visual Rating, the city, the tracks and their walls are converted again; copying only the
+executable is not enough, and the 0.2.2 executable cannot read the new cars and rims.
+
+### Added
+
+- Customization: the Visual Rating meter is back at the right of the shop screens, as in the
+  original game: the stars of the car as you browse, with two decimals, and a bar that fills
+  toward the next star. It turns green when the part, paint, rims, vinyl or decal you are
+  looking at would raise your rating and orange when it would lower it, so you can see what
+  will get you onto a magazine cover before you pay. It shows in the parts, paint, rims,
+  spinners, vinyls and decals browsers, in the career's shops and in Customize Car ([#58]).
+
+### Changed
+
+- Underglow: the glow your neon throws on the asphalt is now each car's own light pattern
+  from the original game, laid on the road under the car the way the console versions lay
+  it: a bright arc under the front bumper, a line along each skirt and one under the rear,
+  following the street's slopes and crowns. It fades as the car leaves the ground over a
+  jump and is a little stronger right under the bumper than before. The tubes themselves
+  are unchanged ([#47]).
+
+### Fixed
+
+- No more invisible bumps along walls and highway barriers: where one stretch of a wall ended
+  exactly on the edge of the game's collision grid, a 1 m stub of invisible wall stuck out into
+  the road. Along the diagonal highway walls there was one every metre, so the car rode on
+  their tips more than half a metre from the wall you could see, bumping as it went. Wall rides follow
+  the real wall again, as in the original game ([#32]).
+- The matte black trim on your car no longer catches a bright white glint on the street. Since
+  the trim started using the car's own skin art in 0.2.0, the strip across the 206's rear bumper
+  and other matte parts facing the sky shone like chrome under the streetlights; they stay dark
+  now, as on the PS2 ([#21]).
+- Your crew no longer phones you as Rachel once her 350Z is back in her hands. The two calls
+  that open with "Yo, Rachel!" and "Hey Rachel, what up girl?" belong to the prologue, while
+  you cruise Bayview in her car: they now come 15 and 40 seconds into that first free roam, as
+  in the original game, and never after you've picked your own ride. Before, they kept coming
+  in every session later in the career. The tips about races in other neighbourhoods also no
+  longer pick the Fort Union call meant for Rachel. And as in the original, the prologue's
+  races only show up on the map once that first call comes in, and they all close once the
+  last of them is run, won or not, leaving the Car Lot as the next stop ([#57]).
+- Car Specialties: when the trunk opens for Trunk Audio or Trunk Neon, everything mounted on
+  the lid now lifts with it, as in the original game: the spoiler, the tail light pieces built
+  into the lid and, on cars such as the Civic, the 206 and the Focus, the license plate. The
+  lid's inner panel goes up too, so the trunk's interior and its audio layout show instead of
+  a dark panel left behind, and on hatchbacks a rear window decal rises with the hatch ([#42]).
+- Free roam: the rivals cruising the city, the cars you can challenge to an outrun, now sit on
+  the road on slopes and banked corners, tilted with it like the rest of the traffic. Before,
+  they stayed level and seemed to float along the road at an angle ([#46]).
+- The skid sound no longer loops over the movie when you first pull into The Garage to hand
+  Rachel's 350Z back. Before any movie the street goes quiet (tyres, wind, traffic, turbo, the
+  plane overhead), as in the original game; before, whatever the car was doing on the last frame
+  kept sounding until the movie ended ([#41]).
+- Drag: lane changes are quicker to settle and smoother, as in the original game. The car heads
+  for the new lane at the original's rate and settles in it, instead of swinging a couple of
+  metres past it and weaving back. A short tap moves one lane, and steering into a rival
+  alongside is called off instead of shoving the rival out of its lane ([#43]).
+- Nitrous flames now shoot from the exhaust every time you hit the nitrous, at any speed and
+  with any car. Before, each flame was drawn a frame ahead of the car, so once you were moving
+  it ended up hidden inside the bodywork and only showed when the nitrous was fired almost from
+  a standstill. They also came from a fixed spot high on the rear, near the tail lights, and
+  inside the rear bumper on long cars such as the Escalade. Now your car's flames come out of
+  its own exhaust tips, as in the original game: one flame on cars with a single tip, and the
+  tips you fit at the shop move them too. The race intros and endings show them the same way
+  ([#49]).
+- Underglow neon: its light now lies on the road under the car wherever you drive, on crowned
+  streets, slopes and bumps and while the car leans in a turn. Before, parts of the glow sank
+  under the asphalt and vanished from under the car ([#47]).
+- Suspending the PSP during play no longer cuts the music: after you switch it back on, the EA
+  Trax song carries on from where it was, instead of playing a second of it and starting over
+  from the top ([#48]).
+- Side mirrors from the Body Shop now sit as a matching pair. The right one was flipped and
+  pointed back into the cabin, on every car that takes them, from the Civic to the Hummer
+  ([#50]).
+- Rachel's 350Z now has the parts the original game gives it: every performance package up to
+  the second level, as on the PS2 and PC, not only the turbo and the nitrous. It pulls harder
+  and runs faster, as in the prologue of the console versions ([#45]).
+- Cars turn harder in fast corners, as in the original game, which helps with the understeer
+  some of you reported. The tyres now grip more as the downforce presses the car down at speed,
+  so from about 80 km/h (50 mph) the car follows the stick into a bend instead of running wide
+  and asking for the handbrake: about a quarter more turn at 145 km/h (90 mph), checked against
+  Rachel's 350Z on the PS2. Slow corners are unchanged ([#45], [#55]).
+- Shops: the floor of the City Core Graphics Shop, by the casino, no longer glitches while your
+  car drives in. With the game generated from the PS2 disc, the pale paving of the plaza outside,
+  which runs on under the shop, broke through the shop's dark floor in jagged, flickering
+  stripes. The shops' floors now cover it, as in the original game. The fix is in the converted
+  city, so it takes effect once the game is generated again ([#60]).
+- Body Shop: fitting new side mirrors now takes the car's own off. On ten cars, among them the
+  Corolla, the Tiburon, the Eclipse and the Skyline, the stock mirror stayed on next to the new
+  one; on the Navigator, the Escalade, the Mustang GT, the Lancer and the Impreza WRX STi the
+  shop had no mirrors to sell at all. Now they all do ([#56]).
+- Rims now fit the car they go on, as in the original game. The shop offers each car only the
+  sizes made for its tyres (16 to 18 inches on the Corolla, 18 to 20 on the 350Z), and the rims
+  keep their real size on all four wheels. Before, every car got every size, and on the Corolla
+  the rear rims came out about a quarter bigger than the front ones ([#56]).
+- Brake upgrades now show on the car, as in the original game. The Street, Pro and Extreme
+  brakes from the Performance Shop each fit their own discs and calipers behind the front
+  wheels, and Rachel's 350Z wears her Pro brakes. With upgraded brakes on, Graphics Shop >
+  Paint > Brakes paints their calipers; the stock brakes keep their own look, so that option
+  appears once the brakes are upgraded ([#59]).
+
 ## [0.2.2] - 2026-10-30 — Riders on the Storm
 
 A new game executable and new converted game data: update your 0.2.0 or 0.2.1 output folder with
@@ -228,7 +333,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...HEAD
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...HEAD
+[0.2.3]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.2...v0.2.0
@@ -255,6 +361,7 @@ throughout the game were still pending.
 [#29]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/29
 [#30]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/30
 [#31]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/31
+[#32]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/32
 [#33]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/33
 [#34]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/34
 [#35]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/35
@@ -263,3 +370,18 @@ throughout the game were still pending.
 [#38]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/38
 [#39]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/39
 [#40]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/40
+[#41]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/41
+[#42]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/42
+[#43]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/43
+[#45]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/45
+[#46]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/46
+[#47]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/47
+[#48]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/48
+[#49]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/49
+[#50]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/50
+[#55]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/55
+[#58]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/58
+[#57]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/57
+[#60]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/60
+[#56]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/56
+[#59]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/59

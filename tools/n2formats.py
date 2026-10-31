@@ -878,6 +878,22 @@ def wheel_faces(global_data, car):
     raise ValueError(car + ' physics record absent')
 
 
+def tyre_size(global_data, car):
+    """The car record's byte +0xdc: its tyres' outer diameter in inches
+    (the COROLLA's 24, the 350Z's 26, the HUMMER's 34). The rim shop lists
+    the rims of that diameter alone, their names' second number
+    (ENKEI_STYLE01_17_24: a 17 in rim in a 24 in tyre), as the parts
+    table's OUTER_RADIUS (GetIcePartsList)."""
+    table = [global_data[p:p+n] for t, p, n in chunks(global_data) if t == 0x34600][0][8:]
+    for at in range(0, len(table), 0x890):
+        if table[at:at+32].split(b'\0')[0] == car.encode():
+            size = table[at + 0xdc]
+            if not 20 <= size <= 40:
+                raise ValueError(f'{car}: tyre size {size}')
+            return size
+    raise ValueError(car + ' physics record absent')
+
+
 def envmap_faces(data):
     """FRONTEND/ENVMAPS/*.BIN: six BGRA cube faces named XPOS..ZNEG."""
     tpk = FlatTPK(data)

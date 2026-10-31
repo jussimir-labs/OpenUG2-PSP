@@ -19,7 +19,7 @@ import struct
 import n2feng
 from n2formats import *  # noqa: F401,F403  (tests import names through here)
 from n2formats import (FlatTPK, SlotTPK, archived, car_record, envmap_faces,
-                       game_hash, lod_family, parts, wheel_faces)
+                       game_hash, lod_family, parts, tyre_size, wheel_faces)
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -63,6 +63,18 @@ MIRROR_SOCKETS = ('MIRROR_BODY_LEFT', 'MIRROR_BODY_RIGHT')
 # pack alone, preset 'interior'): drawn only then (psp-viewer/main.c)
 F_INSIDE_HOOD, F_INSIDE_TRUNK, F_AUDIO = 1 << 24, 1 << 25, 1 << 26   # the engine bay; the trunk; its audio (a layout's)
 F_RIGHT = 1 << 27   # the right side mirror's (they break apart: psp-viewer/main.c)
+# On the trunk lid, turned with it when the garage opens it (psp-viewer/main.c
+# piece_push), as the original's CarSlotAnimHookupTable (GLOBALB 0x34608)
+# ties them to the trunk's animation: the lid's underside (TRUNK_UNDER), the
+# tail light's second model (BRAKELIGHT_TRUNK) and, on the cars below, the
+# rear plate. The spoiler, there too, the game turns by its slot.
+F_LID = 1 << 30
+# The original's LinkLicensePlateToTrunk: the cars whose plate is on the lid.
+PLATE_ON_LID = ('PEUGOT', 'FOCUS', 'CIVIC', 'HUMMER', 'NAVIGATOR', 'SENTRA', 'CELICA', 'IS300', 'A3', 'GTO')
+# Its ShowTrunkUnderInFE: the hatches (their rear window in the lid), whose
+# rear window decal turns with the lid (tools/convert_garage.py).
+HATCHES = ('PEUGOT', 'FOCUS', 'COROLLA', '240SX', 'PEUGOT106', 'CORSA', 'HUMMER', 'NAVIGATOR', 'ESCALADE', 'TIBURON',
+           'SUPRA', 'GOLF', 'A3', 'RSX', 'ECLIPSE', 'TT', '350Z', '3000GT', 'RX7')
 
 
 def inside_flags(rest, audio_owner, owner):
@@ -71,7 +83,7 @@ def inside_flags(rest, audio_owner, owner):
     if owner == 'KIT00' and (rest.startswith('ENGINE') or rest == 'HOOD_UNDER'):
         return F_INSIDE_HOOD
     if owner == 'KIT00' and rest == 'TRUNK_UNDER':
-        return F_INSIDE_TRUNK
+        return F_INSIDE_TRUNK | F_LID
     if owner == audio_owner and rest.startswith('TRUNK_AUDIO'):
         return F_INSIDE_TRUNK | F_AUDIO
     return 0   # every car's (by name: bin_hash), whatever the mirrors' kind
@@ -105,9 +117,15 @@ def slot_of(rest):
     return None
 
 
+SIDE_MIRRORS = ('LEFT_SIDE_MIRROR', 'RIGHT_SIDE_MIRROR')
+
+
 def is_mirror(rest):
-    """A car's own side mirror (LEFT_SIDE_MIRROR, cut at 27 characters)."""
-    return rest.startswith('LEFT_SIDE_MIR') or rest.startswith('RIGHT_SIDE_MIR')
+    """A car's own side mirror: LEFT_SIDE_MIRROR or RIGHT_SIDE_MIRROR, its
+    name cut at 27 characters as long as the car's is (COROLLA_KIT00_RIGHT_SIDE_MI,
+    IMPREZAWRX_KIT00_LEFT_SIDE_). Matched on LEFT_SIDE_MIR, ten cars' were
+    missed: kept under the shop's, and on five no mirrors were sold (beta #56)."""
+    return any(rest.startswith(full) or (len(rest) >= 10 and full.startswith(rest)) for full in SIDE_MIRRORS)
 
 
 def is_spoiler(rest):
@@ -140,6 +158,8 @@ def choose_car_parts(all_parts, car, preset):
         if any(s in part.name for s in HIDDEN):
             continue
         if preset.get('rims') and rest.startswith('FRONT_WH'):
+            continue
+        if preset.get('brakes') and rest.startswith('FRONT_BR'):   # the shop's in their place (assemble)
             continue
         if preset.get('mirror') and is_mirror(rest):   # the shop's in their place
             continue
@@ -444,6 +464,12 @@ class Builder:
             if library or (mat == CARSKIN and self.textures.get(tex) is not None):
                 return None, (*self.paint, 255), F_PAINT, 1.0
             return 'SKIN', white, F_PAINT, 1.0
+        if mat == CALIPER and tex in self.skins:
+            # the shop's brakes' calipers (CARS/BRAKES): one texel of
+            # GLOBAL_SKIN1's corner, their colour the brake paint's light
+            # material in the original; unpainted red, as the stock
+            # calipers' and as the PC shows Rachel's (beta #59)
+            return None, (180, 20, 20, 255), 0, 1.0
         if tex in self.skins and self.textures.get(tex) is None and mat not in (CHROME, MAGCHROME, EXHAUST_TIP):
             # another material on the composite skin, unpainted: its art
             # as it is (it was the flat fallback, the 350Z's reverse lamps
@@ -548,7 +574,7 @@ def exhaust_xform(m):
     return matrix_xform((-c[0], -c[1], -c[2], 0, *b, 0, *a, 0, *m[12:15], 1)), det < 0
 
 
-RIM_NATIVE = .03   # a rim within 3% of the axle's tyre radius: drawn at its own size (assemble)
+WHEEL_STANDARD_WIDTH = 0.184   # the original's WheelStandardWidth: a rim model's own, face (y 0) to back
 
 
 def wheel_xform(mount, mid, scale=1.0, front_flip=True, yscale=None):
@@ -564,6 +590,17 @@ def wheel_xform(mount, mid, scale=1.0, front_flip=True, yscale=None):
         x, y, z = x * scale, y * ys, z * scale
         return x + mx, y * side + my, z + mz, nx, ny * side, nz
     return f, side < 0
+
+
+def mirror_xform(m, side):
+    """A shop's side mirror at its socket m. Every car's MIRROR_BODY_RIGHT
+    reflects y, and the RIGHT part is modelled already out to -y: the game
+    turns the marker's y axis back before drawing it (CarRenderInfo::Render).
+    Under the raw marker it pointed into the cabin (beta #50)."""
+    m = list(m)
+    if side == 'RIGHT':
+        m[5] = -m[5]
+    return matrix_xform(m)
 
 
 SPOILER_SOCKET = 0xc93b73fd
@@ -606,8 +643,7 @@ def assemble(game, preset, lod, strict=False):
     rim_lib = rim_parts(game, preset['rims']) if preset.get('rims') else None
     if rim_lib:   # the brakes behind the rims: the rim's marker, at the record's width (assemble's rims)
         rim = pick_lod(rim_lib, 0)
-        width = max(v[1] for v in rim.verts) - min(v[1] for v in rim.verts)
-        brakes = [brake_mount(m, rim, m[4] / width) for m in wheels]
+        brakes = [brake_mount(m, rim, m[4] / WHEEL_STANDARD_WIDTH) for m in wheels]
     else:
         brakes = [brake_mount(m, pick_lod(families_stock_wheel(all_parts, car), 0)) for m in wheels]
     # window_tint: the garage's tint level (1..3, the viewer's GARAGE_TINTS),
@@ -677,6 +713,8 @@ def assemble(game, preset, lod, strict=False):
             inside = inside_flags(m.group(2), preset.get('trunk_audio', 'KIT00'), m.group(1)) if m and preset.get('interior') else 0
             if m and is_mirror(m.group(2)) and m.group(2).startswith('RIGHT'):
                 inside |= F_RIGHT
+            if m and m.group(2).startswith('BRAKELIGHT_TR'):   # BRAKELIGHT_TRUNK, cut at 27 characters
+                inside |= F_LID
             if inside:
                 b.meshes[first:] = [x[:4] + (x[4] | inside,) + x[5:] for x in b.meshes[first:]]
     # the rear licence plate (CARS/PLATES' LICENSE_PLATE_STYLE01_A, its
@@ -689,7 +727,10 @@ def assemble(game, preset, lod, strict=False):
         for part in parts(archived(game, 'CARS/PLATES/GEOMETRY.BIN'), lambda n: n.startswith('LICENSE_PLATE')):
             t = plate[12:15]   # its place; upright (the marker's turn lays the plate flat inside the bumper)
             x = plate_face(chosen, part, t)
+            first = len(b.meshes)
             b.add(part, matrix_xform((1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, t[1], t[2], 1)))
+            if car in PLATE_ON_LID:
+                b.meshes[first:] = [x_[:4] + (x_[4] | F_LID,) + x_[5:] for x_ in b.meshes[first:]]
             report.append({'name': part.name, 'triangles': part.triangles})
             break
     if preset.get('decals'):
@@ -734,9 +775,25 @@ def assemble(game, preset, lod, strict=False):
             part = (far_pick if strict else pick_lod)(mine, lod)
             report.append({'name': part.name, 'triangles': part.triangles})
             first = len(b.meshes)
-            b.add(part, matrix_xform(sockets[key]), library=True)
+            b.add(part, mirror_xform(sockets[key], side), library=True)
             if side == 'RIGHT':
                 b.meshes[first:] = [x[:4] + (x[4] | F_RIGHT,) + x[5:] for x in b.meshes[first:]]
+    if preset.get('brakes'):
+        # The performance shop's front brakes, as the original's
+        # RideInfo::SyncVisualPartsWithPhysics: the brakes' parts 0x28, 0x29
+        # and 0x2b (Street's, Pro's, Extreme's) put BRAKE_STYLE01 to 03 in
+        # the FRONT_BRAKE slot, the rear ones the car's own; their caliper
+        # the one the paint shop's Brakes paints. On the car's own front
+        # brakes' places, by their middle as those (beta #59).
+        lib = brake_parts(game, preset['brakes'])
+        if not strict or far_has(lib, lod):
+            part = (far_pick if strict else pick_lod)(lib, coarser.get(preset['brakes'], lod))
+            report.append({'name': part.name, 'triangles': part.triangles})
+            mid = (min(v[1] for v in part.verts) + max(v[1] for v in part.verts)) / 2
+            b.slot = 0
+            for k, mount in enumerate(brakes[:2]):
+                f, mirror = wheel_xform(mount, mid, front_flip=False)
+                b.add(part, f, mirror, library=True, wheel=k)
     if preset.get('rims'):
         prefix = '_'.join(preset['rims'])
         lib = rim_lib
@@ -749,18 +806,18 @@ def assemble(game, preset, lod, strict=False):
         # never scaled to the car's tyre; only its width follows the car's
         # record for that axle. Its RAM, Rachel's 350Z: the rear wheels'
         # matrices scale 1.0 round the axle and 1.2772 along it (0.235 m over
-        # the model's 0.184), the outer face 0.949 m out. Fitted to the stock
-        # wheel's radius they came out 2.4 to 4% too big and 20% too narrow.
-        # Its shop offers each car the rims of its own tyre size; a size far
-        # from the car's (the garage's options are a few fixed sizes for
-        # every car) is drawn at the record's radius instead.
-        full = pick_lod(lib, 0)   # every level of detail at the full one's size (the coarser's own extents run wider)
-        native = radius(full)
-        width = max(v[1] for v in full.verts) - min(v[1] for v in full.verts)
+        # WheelStandardWidth, 0.184), the outer face 0.949 m out. Fitted to
+        # the stock wheel's radius they came out 2.4 to 4% too big and 20% too
+        # narrow. Its shop offers each car the rims of its own tyre size
+        # (tyre_size); one of another (a few of our opponents' presets) is
+        # drawn at the car's, the same on both axles: by each axle's record
+        # radius (the COROLLA's 0.265 and 0.334, its physics') the rear rims
+        # came out a quarter bigger than the front ones (beta #56).
+        tyre = int(preset['rims'][2].split('_')[1])
+        scale = 1.0 if tyre == tyre_size(globalb, car) else tyre_size(globalb, car) / tyre
         b.slot = SLOT_RIMS
         for k, mount in enumerate(wheels):
-            scale = 1.0 if abs(native - mount[3]) <= RIM_NATIVE * mount[3] else mount[3] / native
-            f, mirror = wheel_xform(mount, 0, scale, yscale=mount[4] / width)   # by its face (wheel_track)
+            f, mirror = wheel_xform(mount, 0, scale, yscale=mount[4] / WHEEL_STANDARD_WIDTH)   # by its face (wheel_track)
             b.add(part, f, mirror, library=True, wheel=k)
     return b, textures, report
 
@@ -964,6 +1021,15 @@ def brake_mount(mount, wheel, ys=1.0):
     return x, y - depth if y > 0 else y + depth, z, r, w
 
 
+def brake_parts(game, style):
+    """A front brake's levels of detail (CARS/BRAKES' BRAKE_STYLE01 to 03:
+    the performance shop's Street, Pro and Extreme brakes)."""
+    lib = list(parts(archived(game, 'CARS/BRAKES/GEOMETRY.BIN'), lambda n: lod_family(n) == style))
+    if not lib:
+        raise ValueError('freio inexistente: ' + style)
+    return lib
+
+
 def rim_parts(game, rims):
     """A rim's levels of detail (CARS/WHEELS' <BRAND>_<STYLE>_<SIZE>)."""
     brand, style, size = rims
@@ -976,12 +1042,6 @@ def rim_parts(game, rims):
 
 def families_stock_wheel(all_parts, car):
     return [p for p in all_parts if lod_family(p.name).startswith(f'{car}_KIT00_FRONT_WH')]
-
-
-def radius(part):
-    xs = [v[0] for v in part.verts]
-    zs = [v[2] for v in part.verts]
-    return .25 * ((max(xs) - min(xs)) + (max(zs) - min(zs)))
 
 
 # ----------------------------------------------------------------------- pack

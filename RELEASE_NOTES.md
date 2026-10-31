@@ -1,5 +1,22 @@
 # NFSU2 PSP closed beta — release notes
 
+## 0.2.3 — Rocket Ride (31 October 2026)
+
+A new game executable and new game data: update your 0.2.0, 0.2.1 or 0.2.2 output folder with this
+generator (same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
+
+- **Added:** the Visual Rating meter in the shops (#58).
+- **Changed:** the underglow's light on the road is each car's own pattern from the original game (#47).
+- **Fixed:** the white glint on matte trim (#21), invisible stubs along walls and highway barriers (#32),
+  the skid sound over the first Garage movie (#41), what lifts with the trunk lid (#42), drag lane
+  changes (#43), Rachel's 350Z parts and the turn in fast corners (#45, in part; #55), the free-roam
+  rivals on slopes (#46), the neon's light under the asphalt (#47), the music after suspending the PSP
+  (#48), nitrous flames from the car's own exhaust tips (#49), the side mirrors (#50, #56), rim sizes per
+  car (#56), Rachel's calls after the prologue (#57), brake upgrades on the car (#59) and the City Core
+  Graphics Shop floor (#60).
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
+
 ## 0.2.2 — Riders on the Storm (30 October 2026)
 
 A new game executable and new game data: update your 0.2.0 or 0.2.1 output folder with this generator

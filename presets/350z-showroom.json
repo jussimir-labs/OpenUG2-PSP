@@ -1,5 +1,5 @@
 {
-  "source": "GLOBALB.BUN preset DDAY_PLAYER_CAR (chunk 0x30220): Rachel's 350Z, its slots read by tools/preset_dump.py",
+  "source": "GLOBALB.BUN preset DDAY_PLAYER_CAR (chunk 0x30220): Rachel's 350Z, its slots read by tools/preset_dump.py; its front brakes the Pro brakes' (BRAKE_STYLE02): the preset's performance level 2, RideInfo::SyncVisualPartsWithPhysics",
   "car": "350Z",
   "paint": "144e0e",
   "window_tint": 2,
@@ -11,6 +11,7 @@
   "brakelight": "STYLE04",
   "spoiler": "SPOILER_STYLE02",
   "exhaust": "EXHAUST_STYLE08_LEVEL1",
+  "brakes": "BRAKE_STYLE02",
   "rims": [
     "RACINGHART",
     "STYLE07",

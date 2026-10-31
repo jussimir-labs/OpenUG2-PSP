@@ -45,6 +45,12 @@ python native/test_bundle.py native/dist/NFSU2-Generator-macos-arm64 --archive
 
 Use the platform name and `.exe` helper on Windows. Builds pin CPython archives by SHA-256,
 Python library versions, FFmpeg/LAME source archives by SHA-256 and jpegli by Git commit.
+The FFmpeg archive is shipped as published. The shipped LAME archive is the published one
+with a single file re-encoded: `ACM/tinyxml/readme.txt` (TinyXML's zlib license text) from
+Windows-1252 to UTF-8, so the content check can read it; `build_tools.sh` still verifies the
+upstream archive's SHA-256 before building. The jpegli archive is a tar of its pinned checkout
+without its test data and fuzz/crash fixtures (`testdata`, libpng `contrib/testpngs`, skcms
+test profiles), which are not sources of the built tool.
 The builder preserves third-party licenses and corresponding native-tool sources, audits
 library dependencies, and records file hashes in `bundle.json`. Output ZIPs and SHA-256 files
 are release assets. Never put game ISOs, game data, access keys or private sign-up data in a release.

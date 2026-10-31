@@ -235,6 +235,9 @@ WALL_TOP = 1.45
 # camera's alone (psp-viewer world_wall_high). Rails and low fences stay
 # below it, the camera over them as before.
 CAM_WALL_TOP = 3.5
+# m: a wall face whose part in a 1 m column spans less than this across is a
+# point of contact with the column's border, not a wall in it
+POINT_CONTACT = .01
 
 
 def clip_column(tri, x0, y0, x1, y1):
@@ -501,6 +504,13 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
                 x0, y0 = ox + i * step, oy + j * step
                 poly = clip_column(tri, x0, y0, x0 + step, y0 + step)
                 if not poly:
+                    continue
+                # A face that only meets the column at a point (a wall's end
+                # on the cell's border) stands in the next cell, not this one.
+                # Kept, its strip had no direction: shape_code took angle 0
+                # and drew a 1 m stub across the cell, square to the wall
+                # (beta issue 32: the car hit one reversing along a wall).
+                if all(abs(p[0] - poly[0][0]) < POINT_CONTACT and abs(p[1] - poly[0][1]) < POINT_CONTACT for p in poly):
                     continue
                 zmin, zmax = min(p[2] for p in poly), max(p[2] for p in poly)
                 k = j * n + i

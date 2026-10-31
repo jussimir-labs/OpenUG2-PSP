@@ -9,18 +9,29 @@ Racing Hart, Rota, Volk, Work; 15 to 20 inches) and the SUVs' (Donz, Foxx,
 Gianelle, Giovanna, Kaizer, O.Z., NFSU 2, StreetSpin (SPINNER), Weld
 (WELDWHEEL); 20 to 26 inches); the cars' spinners are StreetSpin's 15 to
 20 inches, sold apart (Car Specialties Shop > Spinners). Each
-rim is stored once, in a wheel's own space: its face outward (+x in GU, a
-left wheel), centred, its radius 1. The PSP fits it on each car as
-tools/convert_car.py's assemble() does: per wheel the stock wheel's radius
-(that axle's share) and its mount, mirrored for the right side.
+rim is stored once, in a wheel's own space and at its own size (the
+second number of its name the tyre's diameter in inches: 0.3048 m of
+radius for a 24): its face, the model's y = 0, at 0 and outward (+x in
+GU, a left wheel), the rest of it inward. The PSP fits it on each car as
+the original's CarRenderInfo::Render: that size on all four wheels, the
+face at the record's (cc.wheel_track), and across the axle the record's
+tyre width over WheelStandardWidth (0.184 m, the rims' own), mirrored for
+the right side. The shop lists a car the rims of its tyre size alone
+(n2formats.tyre_size: the COROLLA's 24, 16 to 18 inches). Fitted to the
+stock wheel's radius times each axle's record radius, the COROLLA's rear
+rims (0.334 m against 0.265 at the front, its physics') came out a
+quarter bigger than the front ones (beta #56).
 
-rims.n2rm: 'N2RM', u32 version 2, u32 cars, u32 rims; cars x (char
-model[16], u32 1 for an SUV, 4 x (f32 x, y, z (GU, the wheel's centre),
-scale, side (1 left, -1 right))); rims x (char name[24] (ENKEI_STYLE01_17_25), u8 brand (the
+rims.n2rm: 'N2RM', u32 version 3, u32 cars, u32 rims; cars x (char
+model[16], u8 1 for an SUV, u8 its tyre size, u16 0, 4 x (f32 x, y, z
+(GU, the wheel's outer face on its axle), width scale, side (1 left, -1
+right))); rims x (char name[24] (ENKEI_STYLE01_17_25), u8 brand (the
 shop's order), u8 style, u8 inches, u8 tyre, u32 offset and bytes of its
 detailed pack, of its street pack); then the packs (N2PV v3, one wheel,
 flagged F_WHEEL in the rims' slot, wheel 0; a spinner's spinning part,
 <family>_SPIN_ at the rim's level, F_SPINNER: it turns on its own).
+Version 2 (until 0.2.2): centred, radius 1, each wheel's mount its centre
+and the stock wheel's radius.
 
 rimstyles.n2rs, the styles' names as the shop shows them ("GRAVIS I", the
 5Zigen's style 02): the parts table's rims (tools/partsdb.py) carry their
@@ -39,7 +50,7 @@ import struct
 import convert_car as cc
 import convert_physics
 import mac_slots
-from n2formats import archived, car_record, lod_family, parts, wheel_faces
+from n2formats import archived, car_record, lod_family, parts, tyre_size, wheel_faces
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,20 +63,18 @@ BRANDS = (('5ZIGEN', '5Zigen'), ('AVUS', 'Avus'), ('BBS', 'BBS'), ('ENKEI', 'Enk
           ('WELDWHEEL', 'Weld'))
 SUVS = ('HUMMER', 'NAVIGATOR', 'ESCALADE')   # the game's big rims (20-26 inches) and their brands
 FAMILY = re.compile(r'(.+)_STYLE(\d+)_(\d+)_(\d+)$')
+WHEEL_STANDARD_WIDTH = 0.184   # the original's WheelStandardWidth: every rim model's, its face at y 0 to its back at 0.184
 F_SPINNER = 0x100000   # psp-viewer/main.c: a spinner's part that turns on its own
 
 
 def rim_pack(game, textures, lib, family, lod, spin=None):
-    """One wheel of a rim family, in its own space, as an N2PV v3 blob;
-    spin: a spinner's spinning part (its levels), in the same space."""
+    """One wheel of a rim family, in its own space and size, as an N2PV v3
+    blob; spin: a spinner's spinning part (its levels), in the same space."""
     part = cc.pick_lod(lib[family], lod)
-    full = cc.radius(cc.pick_lod(lib[family], 0))   # every level at the full one's scale
-    mid = (min(v[1] for v in part.verts) + max(v[1] for v in part.verts)) / 2
-    s = 1.0 / full
     b = cc.Builder(textures, (128, 128, 128))
     b.slot = cc.SLOT_RIMS
-    # wheel_xform's front flip (the face outward) at unit radius, about the axle
-    xf = lambda x, y, z, nx, ny, nz: (-x * s, (mid - y) * s, z * s, -nx, -ny, nz)
+    # wheel_xform's front flip about the face: the model's y = 0 at 0, outward
+    xf = lambda x, y, z, nx, ny, nz: (-x, -y, z, -nx, -ny, nz)
     b.add(part, xf, library=True, wheel=0)
     if spin:
         first = len(b.meshes)
@@ -108,21 +117,13 @@ def brand_rims(game, brand):
     return brand, out
 
 
-def car_mounts(game, globalb, car):
-    """The car's four wheels: GU centre (the rim centred on the axle here:
-    half the stock wheel's width in from the game's face, cc.wheel_track),
-    the rim's scale, the side."""
-    data = archived(game, f'CARS/{car}/GEOMETRY.BIN')
-    all_parts = list(parts(data, lambda n: n.startswith(car + '_')))
+def car_mounts(globalb, car):
+    """The car's four wheels: GU outer face on the axle (the game's,
+    cc.wheel_track), the width scale (the record's tyre width over the
+    rims' own), the side."""
     wheels = cc.wheel_track(wheel_faces(globalb, car), car_record(globalb, car))
-    stock = cc.pick_lod(cc.families_stock_wheel(all_parts, car), 0)
-    fit = cc.radius(stock)
-    half = (max(v[1] for v in stock.verts) - min(v[1] for v in stock.verts)) / 2
-    out = []
-    for x, y, z, r, w in wheels[:4]:
-        y -= half if y > 0 else -half
-        out.append((y, z, x, fit * (r / wheels[0][3]), 1.0 if y > 0 else -1.0))   # Xbox x forward, y lateral, z up -> GU (y, z, x)
-    return out
+    return [(y, z, x, w / WHEEL_STANDARD_WIDTH, 1.0 if y > 0 else -1.0)   # Xbox x forward, y lateral, z up -> GU (y, z, x)
+            for x, y, z, r, w in wheels[:4]]
 
 
 STYLE_FAMILY = 0x10c98090   # a rim part's attribute: bin hash of its family (5ZIGEN_STYLE02)
@@ -159,7 +160,7 @@ def main():
         return
     globalb = archived(args.game, 'GLOBAL/GLOBALB.BUN')
     cars = convert_physics.playable(convert_physics.records(globalb))
-    mounts = {car: car_mounts(args.game, globalb, car) for car in cars}
+    mounts = {car: car_mounts(globalb, car) for car in cars}
     with concurrent.futures.ProcessPoolExecutor() as pool:
         # one core per brand from the Mac's queue (tools/mac_slots.py)
         rims = dict(pool.map(functools.partial(mac_slots.call, 'convert_rims', brand_rims), [args.game] * len(BRANDS), [b for b, _ in BRANDS]))
@@ -169,8 +170,9 @@ def main():
             table.append((name, k, style, inches, tyre, at, len(detail), at + len(detail), len(street)))
             blobs += [detail, street]
             at += len(detail) + len(street)
-    head = struct.pack('<4s3I', b'N2RM', 2, len(cars), len(table))
-    head += b''.join(struct.pack('<16sI', c.encode(), c in SUVS) + b''.join(struct.pack('<5f', *m) for m in mounts[c]) for c in cars)
+    head = struct.pack('<4s3I', b'N2RM', 3, len(cars), len(table))
+    head += b''.join(struct.pack('<16s2BH', c.encode(), c in SUVS, tyre_size(globalb, c), 0) + b''.join(struct.pack('<5f', *m) for m in mounts[c])
+                     for c in cars)
     base = len(head) + len(table) * 44
     base += -base % 16
     head += b''.join(struct.pack('<24s4B4I', n.encode()[:23], b, s, i, t, base + o1, l1, base + o2, l2)

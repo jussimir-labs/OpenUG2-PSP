@@ -154,7 +154,7 @@ def is_headless(emulator):
 # channel (probe.c); bug-*.n2bug and repro-*: the bug rewind.
 GAME_OUTPUTS = ('track-smoke.txt', 'smoke-test.txt', 'language.txt', 'frame-log.bin', 'marks.txt', 'probe.bin', 'probe-pass.bin',
                 'probe-detail.txt', 'boot.txt', 'hostcmd.txt', 'repro.txt', 'repro-replay.txt', 'repro.n2bug',
-                'card-bench.txt', 'open-bench.txt', 'race-hold.jsonl', 'bench-dir.txt', 'ms-runs.txt', 'ms-done.txt', 'outrun-engage.txt',
+                'card-bench.txt', 'open-bench.txt', 'race-hold.jsonl', 'bench-dir.txt', 'ms-runs.txt', 'ms-done.txt', 'outrun-engage.txt', 'outrun-near.txt',
                 # main.c admission_log appends to it: linked, every run on
                 # the Mac appended to the dist's own (24 MB on 14/10)
                 'memory-admission.jsonl', 'alloc-sites.txt', 'outrun-engage.txt',

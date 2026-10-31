@@ -1,6 +1,6 @@
-# NFSU2 PSP closed beta 0.2.2: known issues
+# NFSU2 PSP closed beta 0.2.3: known issues
 
-0.2.2 is a closed-beta release. It does not establish full-game completion,
+0.2.3 is a closed-beta release. It does not establish full-game completion,
 all-device compatibility, physical PSP-1000 support or stable 30 fps throughout the game.
 
 ## Before testing
@@ -12,18 +12,20 @@ all-device compatibility, physical PSP-1000 support or stable 30 fps throughout 
   PPSSPP combinations need their own reports.
 - **PSP-1000 and Drift:** a Drift right after a city race may use the previous drift handling
   when memory is tight (a notice says so).
-- **Updates:** update your 0.2.0 or 0.2.1 output folder with the 0.2.2 generator (same ISO)
-  or generate into a new folder, and install the complete result. 0.2.2 changes `EBOOT.PBP` and
-  converted data (city, tracks, cars and their lights, menu and shop scenes, rain, street markers); an
-  executable-only update keeps old data that the new executable does not expect.
+- **Updates:** update your 0.2.0, 0.2.1 or 0.2.2 output folder with the 0.2.3 generator (same ISO)
+  or generate into a new folder, and install the complete result. 0.2.3 changes `EBOOT.PBP` and
+  converted data (cars, rims, brakes and mirrors, neon underglow, the shops' Visual Rating, city,
+  tracks and walls); an executable-only update keeps old data that the new executable does not
+  expect, and the old executable cannot read the new cars and rims.
 - Back up your saves. Broad physical save/reload and full-career coverage remain pending.
 - **Xbox source button icons:** the PSP prompts use the PS2 disc's pad icons. A game generated
   from the Xbox ISO uses the port's own drawn icons instead (same buttons, slightly different look).
 
 ## Gameplay and presentation
 
-- Invisible walls on the open road (#32) were not reproduced at the reported spots; a bug file
-  (L + R + SELECT right after the hit) and a video help most.
+- Handling (#45): fast corners now turn harder with the downforce, about 88% of the PS2's turn
+  rate in the case we measured; the analog stick's travel and the weight transfer some of you
+  reported are still open.
 - Menus (#29): still open are the menu camera's height and distance on the stick, the shop
   rooms' own lighting and reflections, the Body Shop's part browser and camera angles, and
   each car's own ride height in the menus.

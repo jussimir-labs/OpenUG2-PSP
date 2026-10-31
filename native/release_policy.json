@@ -391,6 +391,542 @@
         "160f29f8a6d541bc32143d7e186d5af109c63214ae12d26945a8c8691b37b31b"
       ],
       "reason": "English guide quoting a historical on-screen confirmation and an earlier package filename."
+    },
+    {
+      "path": "runtime/bin/ffmpeg",
+      "sha256": "fee7e46d3da486a56621bab1fb35220a9481167bc6fe995ec6dabdcd0ec23ccd",
+      "tokens": [
+        "b6a0005c7e9085a729bb395b3d30aac3ee4c5155f9dd570a41bc3a82614b31af"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/DLLs/_ssl.pdb",
+      "sha256": "292e49f36f16407c9b86acff145ba11dc487ff6c1ca237a21209dece981ba8d3",
+      "tokens": [
+        "4bed1230753f0569781a9454b993b2b55f5d317340c237c8eb8ce6447c077c7a"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/fontTools/cu2qu/cu2qu.c",
+      "sha256": "2a7ab2690c46e3a8f194cdd1948fe5a33a3d8b9376211317e42bce27bf065784",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/fontTools/feaLib/lexer.c",
+      "sha256": "e0618822cea50b7292a1f4c0511be5f507b0aeb22e7ae7813619868387ecaf2d",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/fontTools/misc/bezierTools.c",
+      "sha256": "d25d5468bdc063c22087f0190d942e7c8c4fac8b69067cb3fc5e813cc61f8cac",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/fontTools/pens/momentsPen.c",
+      "sha256": "dcb7fb9558be4d6d672e40e2a73f7d3ac0e1494f8dd3da7ad48ec79b45357d8c",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/fontTools/qu2cu/qu2cu.c",
+      "sha256": "b1850df9ab5a2c597b44e4dd8e7b43aaa72197d0356c965e21e6efb77e5d1967",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/fontTools/varLib/iup.c",
+      "sha256": "c3c3b0f3eacd12728dba881d3195f83a546595211ea2ac63315c278920d8ab3e",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/matplotlib/ft2font.cp312-win_amd64.pyd",
+      "sha256": "e3e98e3b5bdd2d2174338cc53724893127b04c4ae5c366a6d90e11c785a3385f",
+      "tokens": [
+        "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "3d9fc4bde7ceef058d65b00186e79c1f14b42687b491644c303065135b644e18",
+        "3ea6bc47a6277afef178e3a230f945fca1153690cafc7f61be2738f5abb5165f",
+        "c57b7501cd843672550c711a346dd93e9bdc2c97a640874d54b4c9cf4b12ee81"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/quadprog.cp312-win_amd64.pyd",
+      "sha256": "fd057aae9aea9d2a309c520cd483814bc7c6330ae56e90dff3648011917b7f56",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/scipy/optimize/_highspy/_core.cp312-win_amd64.pyd",
+      "sha256": "e6beb8321a4905c9bd0ba0eec2dfa7e27d76a01ab7d0abeab81fcce9ae6732e1",
+      "tokens": [
+        "4bed1230753f0569781a9454b993b2b55f5d317340c237c8eb8ce6447c077c7a"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/scipy/optimize/_trustregion_exact.py",
+      "sha256": "90070fe63ebbf1762f236984943d7a3123047bb0b4ea10ad903b1a632b746659",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/bin/python3",
+      "sha256": "55b45d6d820174cc419046721124bdf34c7b4ebd5cb230f86e2de08f0c2a864a",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/bin/python3",
+      "sha256": "7b3ffda5ba67ee0413f587e1aabe701e31ffc5dd26ea340df28f46eafd1e8dce",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/bin/python3",
+      "sha256": "9b1522a474140400cc6f64d475ad49c045f8034696e4df09c3f9792dd41bdf2c",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/bin/python3.12",
+      "sha256": "55b45d6d820174cc419046721124bdf34c7b4ebd5cb230f86e2de08f0c2a864a",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/bin/python3.12",
+      "sha256": "7b3ffda5ba67ee0413f587e1aabe701e31ffc5dd26ea340df28f46eafd1e8dce",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/bin/python3.12",
+      "sha256": "9b1522a474140400cc6f64d475ad49c045f8034696e4df09c3f9792dd41bdf2c",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/libpython3.12.so.1.0",
+      "sha256": "f7ec5ccc218ab4b002a67dff22c7d15270e9bc82cb2393ba175d6a210db00532",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/ensurepip/_bundled/pip-25.0.1-py3-none-any.whl/pip/_vendor/rich/_emoji_codes.py",
+      "sha256": "86ed552fd9db55da6926b5688a356c85195c4517bfbf7763bb7326776b0a65d6",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream pip wheel bundled by CPython ensurepip, unchanged: the vendored rich emoji name table, not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/http/server.py",
+      "sha256": "12f8db637047c12ec053bfaa6671ad1cb7ca9ca8d1dae82b562e5866c5b02990",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/PIL/.dylibs/libharfbuzz.0.dylib",
+      "sha256": "7e6800c210dcc2b6faa1e05ef42d1d4fdd0bb0dc88cd4640c7cd86ac715c51fd",
+      "tokens": [
+        "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "3d9fc4bde7ceef058d65b00186e79c1f14b42687b491644c303065135b644e18",
+        "3ea6bc47a6277afef178e3a230f945fca1153690cafc7f61be2738f5abb5165f",
+        "c57b7501cd843672550c711a346dd93e9bdc2c97a640874d54b4c9cf4b12ee81"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/PIL/.dylibs/libharfbuzz.0.dylib",
+      "sha256": "f661b84b75620ec2e4960855c57540ce474d6efe6c2bb279ce76661678ab516c",
+      "tokens": [
+        "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "3d9fc4bde7ceef058d65b00186e79c1f14b42687b491644c303065135b644e18",
+        "3ea6bc47a6277afef178e3a230f945fca1153690cafc7f61be2738f5abb5165f",
+        "c57b7501cd843672550c711a346dd93e9bdc2c97a640874d54b4c9cf4b12ee81"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/contourpy/_contourpy.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f97ffa0fffb9bbb02afdd778bd5e421bdf2d4b1deb37b4e88a6c24bd0db0cd3b",
+      "tokens": [
+        "053ea4804ef1bb33d4a3d6fb024a614b6d257cebc2bc7cd915da9c9522f37ffc"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/fontTools/cu2qu/cu2qu.c",
+      "sha256": "677b3855c3c675f49133085352fa6bc87c0b341e43d0803fbd845a8d6a96a573",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/fontTools/feaLib/lexer.c",
+      "sha256": "ce655e58eddd5d104dc74ad8f4b64b956afb0f573c077f0df1470be9665f3107",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/fontTools/misc/bezierTools.c",
+      "sha256": "21d58240c4353422ec81e542201745188dffcdef3da26dc7ec33985e7f4f2f7d",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/fontTools/pens/momentsPen.c",
+      "sha256": "1e29159c155af09ec9f27fd9843346a77cb7382e5a835d9494eec99b71889ae9",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/fontTools/qu2cu/qu2cu.c",
+      "sha256": "715de3ba5848074a299d3008da4fb093fa69d53903770f0e56eecace55d0397b",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/fontTools/varLib/iup.c",
+      "sha256": "51e11691a8290967e20b7d840db6fed4d8a25f8d316a6a05c7fff278e1289ad9",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/matplotlib/ft2font.cpython-312-darwin.so",
+      "sha256": "8067caff7a73c076d55b88059f05a7d4b2cbcbf99c9768845a4dcfa9288c035c",
+      "tokens": [
+        "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "3d9fc4bde7ceef058d65b00186e79c1f14b42687b491644c303065135b644e18",
+        "3ea6bc47a6277afef178e3a230f945fca1153690cafc7f61be2738f5abb5165f",
+        "c57b7501cd843672550c711a346dd93e9bdc2c97a640874d54b4c9cf4b12ee81"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/matplotlib/ft2font.cpython-312-darwin.so",
+      "sha256": "9cf2e00dc2fa36a0e5e08766a96228e4506c8ed0d4e956261aa59f7774d4b785",
+      "tokens": [
+        "0a7cb27e52927eacabbb7ecc738b0fea50b3967945257c43a67eb753cb465bd0",
+        "3d9fc4bde7ceef058d65b00186e79c1f14b42687b491644c303065135b644e18",
+        "3ea6bc47a6277afef178e3a230f945fca1153690cafc7f61be2738f5abb5165f",
+        "c57b7501cd843672550c711a346dd93e9bdc2c97a640874d54b4c9cf4b12ee81"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/quadprog.cpython-312-darwin.so",
+      "sha256": "196f79ee54719a0bf381b2404ea2413881ed8067922248b48ca7ee818a9cebeb",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/quadprog.cpython-312-darwin.so",
+      "sha256": "fafcde70c2e485cd8afc4810b4c305067437f3adb5c11fe6a9e84ff7a310a87d",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/quadprog.cpython-312-x86_64-linux-gnu.so",
+      "sha256": "f401c6b11205211087731be2361b301f4176810fd8b2469a65d8029648c60b3e",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/scipy/optimize/_highspy/_core.cpython-312-darwin.so",
+      "sha256": "8671fdce03919d3011372926798beff2bdab157e4e52cd052adbc8e4e4df6a79",
+      "tokens": [
+        "4bed1230753f0569781a9454b993b2b55f5d317340c237c8eb8ce6447c077c7a"
+      ],
+      "reason": "Upstream third-party binary (FFmpeg, CPython, HarfBuzz, FreeType or HiGHS), unchanged since the published 0.2.2 runtime: built-in language tables or incidental strings, not project text."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/site-packages/scipy/optimize/_trustregion_exact.py",
+      "sha256": "1bfd42a070caf31367d17b5a3f567bd4baa4f7a332d14eabe41f41916f5769a4",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/python3.12/urllib/request.py",
+      "sha256": "6ffc7d993de64319a40fad631966bd1fd643d355a5c154c1a8b1821f49e5c470",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/python/lib/tcl9.0/cookiejar0.2/public_suffix_list.dat",
+      "sha256": "6d5a41890175e65826f2a3532369925067d840e324631eb8b8008dc5f9ffebad",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream Tcl/Tk data shipped with CPython, unchanged since the published 0.2.2 runtime: localized message catalogs or the public suffix list, not project text."
+    },
+    {
+      "path": "runtime/python/tcl/tk8.6/demos/nl.msg",
+      "sha256": "f527e0117feb1c9aca6d06dda1226c201e6deaf89efca171175d08e80a9712ab",
+      "tokens": [
+        "7564e35420f1314a4345533606b708a7e9c0d6b1c7fdffcc5d8b51ed98a5acf6"
+      ],
+      "reason": "Upstream Tcl/Tk data shipped with CPython, unchanged since the published 0.2.2 runtime: localized message catalogs or the public suffix list, not project text."
+    },
+    {
+      "path": "runtime/python/tcl/tk8.6/msgs/es.msg",
+      "sha256": "d2842b80f1b521eff2d2656a69274b5f2a8f4f5831af2e8ee73e3c37389f981f",
+      "tokens": [
+        "3f1b1d59789a87773ccb7ad038c73e226199cfd1f82b42376e7f3781d9594cc6",
+        "5d47f96d4360c400b977b91bbe5d20d3f9d07a0ffbcaaa4f88b1fb6498364c8f"
+      ],
+      "reason": "Upstream Tcl/Tk data shipped with CPython, unchanged since the published 0.2.2 runtime: localized message catalogs or the public suffix list, not project text."
+    },
+    {
+      "path": "runtime/python/tcl/tk8.6/msgs/pt.msg",
+      "sha256": "d687f71f0432bb0d02efdf576e526d2c19d4136f76c41a3224a2f034168f3f34",
+      "tokens": [
+        "148f9afb9911c4b65827c751263d073e487417df5ff7d61f419f69576e6bafbf",
+        "289c90decf40c8ec15f72f6080f2a4e7cd11d4128530dd5d290fc06ebadba620",
+        "3f1b1d59789a87773ccb7ad038c73e226199cfd1f82b42376e7f3781d9594cc6",
+        "4bed1230753f0569781a9454b993b2b55f5d317340c237c8eb8ce6447c077c7a",
+        "5d47f96d4360c400b977b91bbe5d20d3f9d07a0ffbcaaa4f88b1fb6498364c8f",
+        "8f8475abb9085dfc44786bfdf860f1955913de0504fc3bc939207016f3cc0c9d",
+        "959a45d44e6fcf58361ed004681556fe50129f2109e817dec098c00c9e5d2578",
+        "9cc50439b3aee8afb5b8a6bb206fd44c82abcff4eede668df401f17d982b3f39",
+        "a599d808caaa4890f7d092a3cf8cad7db8a5ae254e41e90210dcde063bf94f5e",
+        "ab0d4d26b12cc84bbb5be9d075bf3a3e54aaafcdadbca8e89e0d02a7e3e0f832",
+        "abd2f3b570ee18f6c9515573900f62f1e8fdda6122c5734677871c1c2141728c",
+        "ac0b52a2ae6ef99999bc08fb31e19188bf0085a4614204068e677e140e1458be",
+        "c01974c13ec08f96ba06838d52c47242e977e890fac177bbdaabcf7c14b7116a",
+        "c1299854f2b209632ab22aeb848c24c2b02da4b37ecf93a830ee9c7f6f809924",
+        "f8671e672c0bf2dde27569b7843fbf6d3e120e4011c69e353ad5972e1aaaf3e3",
+        "fdbf28fe2ad639245777c671716c3c332511549ed6d4f38bffee160d2835d47c"
+      ],
+      "reason": "Upstream Tcl/Tk data shipped with CPython, unchanged since the published 0.2.2 runtime: localized message catalogs or the public suffix list, not project text."
+    },
+    {
+      "path": "runtime/sources/ffmpeg-8.1.2.tar.xz/ffmpeg-8.1.2/.forgejo/pre-commit/ignored-words.txt",
+      "sha256": "570279ce45daf0c6b706b48c9d7e4b56baaa62e8df6f48f40c9dd12aa2fb76bf",
+      "tokens": [
+        "4bed1230753f0569781a9454b993b2b55f5d317340c237c8eb8ce6447c077c7a"
+      ],
+      "reason": "Upstream third-party source (FFmpeg test/spelling tools or jQuery in libjpeg-turbo docs), unchanged: word lists or minified identifiers, not project text."
+    },
+    {
+      "path": "runtime/sources/ffmpeg-8.1.2.tar.xz/ffmpeg-8.1.2/doc/filters.texi",
+      "sha256": "712c2c3943aa1e47a091592ea9ddee4686bbef0fd10dde6e2b6820ee7e57adf0",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/sources/ffmpeg-8.1.2.tar.xz/ffmpeg-8.1.2/libavfilter/avf_showwaves.c",
+      "sha256": "cffffb0d06142b65064c921c55e5868d0cb80affddfa3b65f81676a2c335b5cc",
+      "tokens": [
+        "84829dbd815311888f0e3d85822e9b07d14be89a480a3c09ee67353f0e806e3b"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: a source or compiled identifier (Cython line bookkeeping or a filter option), not a development attribution."
+    },
+    {
+      "path": "runtime/sources/ffmpeg-8.1.2.tar.xz/ffmpeg-8.1.2/tests/fate-run.sh",
+      "sha256": "d8236ebe9e4d92a37ccfe6fcede1c4bb0105531ad8fdf2aa30dfb9aa40b0e011",
+      "tokens": [
+        "4bed1230753f0569781a9454b993b2b55f5d317340c237c8eb8ce6447c077c7a"
+      ],
+      "reason": "Upstream third-party source (FFmpeg test/spelling tools or jQuery in libjpeg-turbo docs), unchanged: word lists or minified identifiers, not project text."
+    },
+    {
+      "path": "runtime/sources/ffmpeg-8.1.2.tar.xz/ffmpeg-8.1.2/tests/reference.pnm",
+      "sha256": "3dc183afed4cf446e272f87d2042e2eef1971c644c26a4f7e1b9764ae0ebb928",
+      "tokens": [
+        "053ea4804ef1bb33d4a3d6fb024a614b6d257cebc2bc7cd915da9c9522f37ffc"
+      ],
+      "reason": "Upstream third-party binary or test data, unchanged since the published 0.2.2 runtime: an incidental byte sequence or data string, not a development attribution."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/highway/README.md",
+      "sha256": "5d46f283364c18f67543a2bb2dcbaccd9d3a105094d260d43df94c006b47d97a",
+      "tokens": [
+        "3fb22a5597fb91ee4f9abbf30ea69d318be150e0fcf3ca1db8ca334b520d2894",
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream Google Highway documentation in the jpegli source tree, unchanged: it names machine-learning projects that use the library; not a development attribution."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/highway/g3doc/highway_intro.pdf",
+      "sha256": "8a7669f1e5d41b009ef12c2bfdbf5c0aa0b99fd6a0cdc422943770dbc512a6c0",
+      "tokens": [
+        "3fb22a5597fb91ee4f9abbf30ea69d318be150e0fcf3ca1db8ca334b520d2894",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream Google Highway documentation in the jpegli source tree, unchanged: it names machine-learning projects that use the library; not a development attribution."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/highway/hwy/detect_compiler_arch.h",
+      "sha256": "bafe7183a6f5cde463311b701a1881e32645403e2f21edf7fe8e6d5a6c73d67f",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/lcms/aclocal.m4",
+      "sha256": "42746a6032d03d45cfd294ed03dd2c1f44cfaac8e1b21efd2b38c0a379e7d700",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/lcms/configure",
+      "sha256": "9c154f3eb18c5431663807fcaaafd6f7235dd17ffd63750f7c16c9b7554c8c28",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/libjpeg-turbo/doc/html/jquery.js",
+      "sha256": "8ee7b87eaf2a8b20244ab3ad78faa880c4d1b5b01258036ef429f208d64c9d75",
+      "tokens": [
+        "9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "959a45d44e6fcf58361ed004681556fe50129f2109e817dec098c00c9e5d2578",
+        "aa58b21b01d6b8a99c1a5856962dbac36c758a79dc0a77c2e013ce2c39ecdc8a",
+        "ac0b52a2ae6ef99999bc08fb31e19188bf0085a4614204068e677e140e1458be"
+      ],
+      "reason": "Upstream third-party source (FFmpeg test/spelling tools or jQuery in libjpeg-turbo docs), unchanged: word lists or minified identifiers, not project text."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/libpng/aclocal.m4",
+      "sha256": "b22632d3d472d4ce56d2c6e5e3a1c80a8920917ef161c7e86583f8fefb853d6b",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/sources/jpegli-031a0077.tar.gz/jpegli/third_party/libpng/configure",
+      "sha256": "3d3a04c5f28cae6bdbb86888f249f7e9b0a2ba34034812f47d7ac685cd26947c",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/sources/lame-4.0.tar.gz/lame-4.0/aclocal.m4",
+      "sha256": "07d1710fb87e46649516445d2f8ec80103fc00988de048f27ef057f25ab5ba12",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/sources/lame-4.0.tar.gz/lame-4.0/configure",
+      "sha256": "ffff524ddb4c7817c377c7ccd00cc2cfa295f5a00b8190c46ce0c33b01ddfc87",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/ensurepip/_bundled/pip-25.0.1-py3-none-any.whl/pip/_vendor/rich/_emoji_codes.py",
+      "sha256": "86ed552fd9db55da6926b5688a356c85195c4517bfbf7763bb7326776b0a65d6",
+      "tokens": [
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream pip wheel bundled by CPython ensurepip, unchanged: the vendored rich emoji name table, not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/http/server.py",
+      "sha256": "12f8db637047c12ec053bfaa6671ad1cb7ca9ca8d1dae82b562e5866c5b02990",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/urllib/request.py",
+      "sha256": "6ffc7d993de64319a40fad631966bd1fd643d355a5c154c1a8b1821f49e5c470",
+      "tokens": [
+        "add92b9cde2bdbf3daaf65a0db79e9b1a7fa428b71b4d6ce38c742eb6dca0c1c"
+      ],
+      "reason": "Upstream third-party file, unchanged since the published 0.2.2 runtime: an ordinary English verb in GNU autotools, compiler or standard-library text, not a development attribution."
+    },
+    {
+      "path": "runtime/python/Lib/site-packages/pip/_vendor/rich/_emoji_codes.py",
+      "sha256": "86ed552fd9db55da6926b5688a356c85195c4517bfbf7763bb7326776b0a65d6",
+      "tokens": [
+        "c857d09db23e6822e3600bc06ad8d58f92ed62bc8efd81c753f77048662cb97d",
+        "5d72436256ada53828b51895a94bb8489e9f1ac4fe937a8024ef1594e7045ff6",
+        "fc5a1047f5919892fcdf8aa79ea5d6bb6531b5c176939ef0110906cb225941c1"
+      ],
+      "reason": "Upstream pip package installed in the Windows runtime, unchanged since the published 0.2.2 runtime: the vendored rich emoji name table, not a development attribution."
     }
   ],
   "restricted_phrases": [

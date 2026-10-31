@@ -1156,6 +1156,7 @@ SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS
            ('paint.n2ui', 'UI_Paint.fng', 'FRONTEND/FRONTB.LZC', ('PAINT_MOD_BASE', 'PAINT_MOD_PART_SPOILER', 'PAINT_MOD_PART_RIMS',
                                                                'PAINT_MOD_PART_BRAKE_CA', 'VINYL_COLOR', 'GENERIC_LOCK_ICON')),   # the paint shop's grid (a vinyl's colours too)
            ('hudpick.n2ui', 'UI_ChooseCustomHUD.fng', 'FRONTEND/FRONTB.LZC', ()),   # Custom Gauges: the tachometer and its colours
+           ('vrating.n2ui', 'UI_Menu_Asset_Reputation.fng', 'FRONTEND/FRONTB.LZC', ()),   # the shops' Visual Rating: the stars, its bar
            ('vlayer.n2ui', 'UI_ChooseVinylLayer.fng', 'FRONTEND/FRONTB.LZC',   # the vinyl shop's four layers
             ('VINYL_LAYER_1', 'VINYL_LAYER_2', 'VINYL_LAYER_3', 'VINYL_LAYER_4', 'GENERIC_LOCK_ICON')),
             ('trax.n2ui', 'EA_TRAX_Jukebox.fng', 'FRONTEND/FRONTB.LZC', ()),   # the EA Trax jukebox (Options)

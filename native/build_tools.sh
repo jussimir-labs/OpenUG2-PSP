@@ -80,8 +80,26 @@ if [ ! -d "$CACHE/jpegli/.git" ]; then git clone --recursive https://github.com/
 # Retain complete corresponding sources, pinned archive hashes and build recipe.
 mkdir -p "$OUT/sources" "$OUT/licenses"
 cp "$CACHE/ffmpeg.tar.xz" "$OUT/sources/ffmpeg-8.1.2.tar.xz"
-cp "$CACHE/lame.tar.gz" "$OUT/sources/lame-4.0.tar.gz"
-tar --exclude=.git --exclude=native-build -czf "$OUT/sources/jpegli-031a0077.tar.gz" -C "$CACHE" jpegli
+# LAME's archive as published, but for one readme (TinyXML's zlib license) in
+# Windows-1252: re-encoded to UTF-8 so the package content check can read it.
+python3 - "$CACHE/lame.tar.gz" "$OUT/sources/lame-4.0.tar.gz" <<'PY'
+import gzip, io, sys, tarfile
+raw = io.BytesIO()
+with tarfile.open(sys.argv[1], 'r:gz') as t, tarfile.open(fileobj=raw, mode='w', format=t.format) as o:
+    for m in t:
+        data = t.extractfile(m).read() if m.isfile() else None
+        if m.name == 'lame-4.0/ACM/tinyxml/readme.txt':
+            data = data.decode('cp1252').encode('utf-8')
+        if data is not None:
+            m.size = len(data)
+        o.addfile(m, io.BytesIO(data) if data is not None else None)
+with open(sys.argv[2], 'wb') as f, gzip.GzipFile(fileobj=f, mode='wb', mtime=0, filename='') as z:
+    z.write(raw.getvalue())
+PY
+# jpegli's checkout without its test data and fuzz/crash fixtures, which are
+# not sources of the built tool.
+tar --exclude=.git --exclude=native-build --exclude=jpegli/testdata --exclude=jpegli/third_party/libpng/contrib/testpngs \
+  --exclude=jpegli/third_party/skcms/profiles -czf "$OUT/sources/jpegli-031a0077.tar.gz" -C "$CACHE" jpegli
 cp "$CACHE/ffmpeg-8.1.2/COPYING.LGPLv2.1" "$OUT/licenses/FFmpeg-LGPL-2.1.txt"
 cp "$CACHE/lame-4.0/COPYING" "$OUT/licenses/LAME.txt"
 cp "$CACHE/jpegli/LICENSE" "$OUT/licenses/jpegli.txt"
