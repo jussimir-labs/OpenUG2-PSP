@@ -27,7 +27,7 @@ class Source:
     note = ''
     known_isos = {
         '769d86d47798d8702cccd5d74743456aca7bac74b2042c5ed67ac6647df0fdbd':
-            'Need for Speed Underground 2 (USA), Xbox, imagem da partição do jogo (2.724.986.880 bytes)',
+            'Need for Speed Underground 2 (USA), Xbox, game partition image (2,724,986,880 bytes)',
     }
 
     def __init__(self):
@@ -45,7 +45,7 @@ class Source:
         try:
             image = Xiso(str(iso))
         except XisoError as e:
-            raise SourceError(f'{iso.name} não é uma imagem de disco do Xbox ({e}).')
+            raise SourceError(f'{iso.name} is not an Xbox disc image ({e}).')
         with image:
             entries = list(image.walk())
             total = sum(e.size for _, e in entries) or 1
@@ -56,16 +56,16 @@ class Source:
                 if rel.is_absolute() or '..' in rel.parts:
                     raise SourceError(f'caminho inseguro na ISO: {rel}')
                 if entry.sector * 2048 + entry.size + image.base > size:
-                    raise SourceError(f'{rel} passa do fim da ISO: a imagem está incompleta.')
+                    raise SourceError(f'{rel} extends past the end of the ISO: incomplete image.')
                 out = dest / rel
                 image.extract(entry, str(out))
                 if out.stat().st_size != entry.size:
-                    raise SourceError(f'{rel} saiu com o tamanho errado: a imagem está corrompida.')
+                    raise SourceError(f'{rel} has the wrong extracted size: corrupted image.')
                 done += entry.size
                 if time.monotonic() - last > 2:
                     last = time.monotonic()
-                    print(f'\r  extraindo: {done * 100 // total}% ({len(entries)} arquivos)', end='', flush=True)
-        say(f'\r  extraídos {len(entries)} arquivos, {total / 2**30:.1f} GB')
+                    print(f'\r  extracting: {done * 100 // total}% ({len(entries)} files)', end='', flush=True)
+        say(f'\r  extracted {len(entries)} files, {total / 2**30:.1f} GB')
 
     def verify(self, dest):
         bad = []

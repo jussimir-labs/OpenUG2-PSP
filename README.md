@@ -149,8 +149,7 @@ generator version it does not know, or different movie options. Nothing derived 
 downloaded: every converted file still comes from your own ISO, on your computer. After updating,
 copy the complete `PSP/GAME/NFSU2VIEW` folder to the card again (section 3).
 
-Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface without opening a tab; `./nfsu2-generator doctor` checks the included tools. On Windows, use `nfsu2-generator.exe` instead; on Linux and Mac, run these from the extracted folder. Developer/source-only CLI: use your Python environment to run `build_game.py --help`. Some converter logs and CLI option
-names are in Portuguese; the browser instructions are in English.
+Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface without opening a tab; `./nfsu2-generator doctor` checks the included tools. On Windows, use `nfsu2-generator.exe` instead; on Linux and Mac, run these from the extracted folder. Developer/source-only CLI: use your Python environment to run `build_game.py --help`. The interface, converter logs, CLI help and documentation are in English.
 
 ## 3. Install on the PSP
 
@@ -198,7 +197,6 @@ See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
 These values identify the kit; you do not need to calculate hashes to report a bug.
 See [the changelog](CHANGELOG.md) and
-[third-party notices](THIRD_PARTY.md). Portuguese historical material remains in `ptbr/`;
-the English instructions on this page are authoritative for the native packages. The original RC21 ZIP retains its original setup instructions.
+[third-party notices](THIRD_PARTY.md). The instructions on this page are authoritative for the native packages. The original RC21 ZIP retains its original setup instructions.
 
 See [native packaging and validation](native/README.md) for the exact qualification scope. A successful tools check does not prove a complete ISO conversion on every OS.

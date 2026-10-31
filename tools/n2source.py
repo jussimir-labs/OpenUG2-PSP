@@ -43,7 +43,7 @@ def game_args(ap):
     (mark_out())."""
     src = selected()
     ap.add_argument('--source', choices=SOURCES, default=src,
-                    help='o disco lido: xbox (game/xbox) ou ps2 (game/ps2, tools/extract_ps2.py); padrão NFSU2_SOURCE ou xbox')
+                    help='source disc: xbox (game/xbox) or ps2 (game/ps2, tools/extract_ps2.py); defaults to NFSU2_SOURCE or xbox')
     ap.add_argument('--game', type=Path, default=default_game(src) if src in SOURCES else None)
     parse = ap.parse_args
 
@@ -67,8 +67,8 @@ def mark_out(out, source):
     if marker.exists():
         have = marker.read_text().split()[0] if marker.read_text().split() else ''
         if have != source:
-            raise SystemExit(f'{out} já tem arquivos convertidos do disco do {have}; esta conversão é do {source}. '
-                             f'Use outra pasta (--out) ou apague a dist: as fontes não se misturam')
+            raise SystemExit(f'{out} already contains files converted from {have}; this conversion uses {source}. '
+                             f'Choose another folder (--out) or remove dist: sources cannot be mixed')
         return
     Path(out).mkdir(parents=True, exist_ok=True)
     marker.write_text(f'{source}\n')
@@ -82,7 +82,7 @@ def platform(game):
         return 'ps2'
     if (disc / 'default.xbe').exists():
         return 'xbox'
-    raise SystemExit(f'{game}: não sei de que console é o disco (sem SYSTEM.CNF nem default.xbe ao lado de NFSUNDER)')
+    raise SystemExit(f'{game}: unknown disc platform (no SYSTEM.CNF or default.xbe next to NFSUNDER)')
 
 
 def check(game, source=None):
@@ -90,8 +90,8 @@ def check(game, source=None):
     source asked for, the disc's own)."""
     have = platform(game)
     if source is not None and have != source:
-        raise SystemExit(f'{game} é o disco do {have}, mas a fonte pedida é {source}: '
-                         f'passe --source {have} ou outro --game (as fontes não se misturam)')
+        raise SystemExit(f'{game} is a {have} disc, but {source} was requested: '
+                         f'use --source {have} or another --game (sources cannot be mixed)')
     return have
 
 
@@ -100,7 +100,7 @@ def executable(game):
     read from it: default.xbe on the Xbox, SLUS_210.65 on the PS2)."""
     p = Path(game).parent / EXECUTABLES[platform(game)]
     if not p.exists():
-        raise SystemExit(f'{p} não existe: a extração do disco está incompleta')
+        raise SystemExit(f'{p} does not exist: incomplete disc extraction')
     return p
 
 
@@ -109,5 +109,5 @@ def require(game, *platforms, what='este conversor'):
     with the reason, instead of writing something half from nowhere."""
     have = platform(game)
     if have not in platforms:
-        raise SystemExit(f'{what}: ainda não lê o disco do {have} (falta o leitor; ver tools/PS2_SOURCE.md)')
+        raise SystemExit(f'{what}: cannot read {have} discs yet (missing reader; see tools/PS2_SOURCE.md)')
     return have

@@ -56,7 +56,7 @@ def validate_paths(iso, output, root=ROOT):
     if out == root or out in root.parents or disc == out or out in disc.parents:
         raise UserError('Choose an output folder separate from the tool and ISO.')
     if root in out.parents and out.relative_to(root).parts[0] not in {'output', 'saida'}:
-        raise UserError('Inside the tool, use output (or the existing saida folder). Otherwise choose an external output folder.')
+        raise UserError('Inside the tool, use the output folder. Otherwise choose an external output folder.')
     if out.exists():
         if not out.is_dir():
             raise UserError('The output must be a folder.')
@@ -77,7 +77,7 @@ def validate_paths(iso, output, root=ROOT):
 
 
 def previous_generation(out):
-    """A folder this tool generated before: it is updated in place (build_game.py --atualizar)."""
+    """A folder this tool generated before: it is updated in place (build_game.py --update)."""
     out = Path(out)
     return (out / '.nfsu2-psp-build').is_file() and (out / 'PSP/GAME/NFSU2VIEW/EBOOT.PBP').is_file()
 
@@ -92,7 +92,7 @@ def probe(root=ROOT):
     sys.path.insert(0, str(root))
     try:
         import build_game as builder
-        problems, _ = builder.preflight(argparse.Namespace(sem_filmes=False, cjpegli=None))
+        problems, _ = builder.preflight(argparse.Namespace(skip_movies=False, cjpegli=None))
         try:
             builder.validate_release()
         except Exception as exc:
@@ -100,13 +100,13 @@ def probe(root=ROOT):
         def friendly(problem):
             if native_runtime.bundled():
                 return 'An included converter or library is missing. Extract the complete native download again. Details: ' + problem
-            if problem.startswith('faltam módulos do Python:'):
+            if problem.startswith('missing Python modules:'):
                 return 'Python conversion libraries need setup. Use Prepare this computer.'
-            if problem.startswith('falta o cjpegli'):
+            if problem.startswith('missing cjpegli'):
                 return 'The movie encoder needs setup. All 28 movies are included in this workflow.'
-            if problem.startswith('falta o programa '):
-                return 'The ' + problem.split()[3] + ' program is missing. Setup can install it where supported.'
-            if problem.startswith('falta um compilador C'):
+            if problem.startswith('missing program '):
+                return 'The ' + problem.split()[2] + ' program is missing. Setup can install it where supported.'
+            if problem.startswith('missing C compiler'):
                 return 'A C compiler is required. Install the system developer tools, then prepare again.'
             return problem
         return dict(ready=not problems, problems=[friendly(p) for p in problems], details=problems, platform=sys.platform,
@@ -368,8 +368,8 @@ class Application:
             update = previous_generation(out)
             self.update(status='running', stage='iso', message='Checking your ISO and the previous generation…' if update else 'Checking your ISO…')
             timestamp = time.time()
-            code = self.run([py, '-u', str(self.root / 'build_game.py'), job['iso'], '--saida', str(out),
-                             '--fonte', source, '--jobs', str(default_jobs())] + (['--atualizar'] if update else []))
+            code = self.run([py, '-u', str(self.root / 'build_game.py'), job['iso'], '--output', str(out),
+                             '--source', source, '--jobs', str(default_jobs())] + (['--update'] if update else []))
             report = None
             path = out / 'relatorio.json'
             if path.is_file() and path.stat().st_mtime >= timestamp - 1:
@@ -469,9 +469,9 @@ def handler_for(app, token):
                 return
             files = {'/': app.root / 'web/index.html', '/index.html': app.root / 'web/index.html',
                      '/app.js': app.root / 'web/app.js', '/style.css': app.root / 'web/style.css'}
-            if path in ('/ptbr/manual-reportar-bugs.pdf', '/docs/bug-reporting-guide-EN.pdf'):
+            if path == '/docs/bug-reporting-guide-EN.pdf':
                 files[path] = app.root / path.lstrip('/')
-            if path in ('/ptbr/LIMITACOES.md', '/KNOWN_ISSUES.md'):
+            if path == '/KNOWN_ISSUES.md':
                 files[path] = app.root / path.lstrip('/')
             file = files.get(path)
             if not file or not file.is_file():

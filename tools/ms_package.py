@@ -19,7 +19,7 @@
       --release: the players' package (an EBOOT of make RELEASE=1): no
       ms-runs.txt (no measurement runs), none of the dist's tools and test
       files (PSPLink's PRX, the ARK's notes, the tests' control files), the
-      PARAM.SFO's MEMSIZE=1 checked, and a LEIA-ME for the player.
+      PARAM.SFO's MEMSIZE=1 checked, and a README for the player.
   tools/ms_package.py push VOLUME OUT [--fresh]
       the package onto the card the XMB's USB connection mounts (VOLUME,
       e.g. /Volumes/PSP): the one way to copy it. rsync with no extended
@@ -141,7 +141,7 @@ def sfo_of(eboot):
     import struct
     b = Path(eboot).read_bytes()
     if b[:4] != b'\0PBP':
-        sys.exit(f'{eboot} não é um EBOOT.PBP')
+        sys.exit(f'{eboot} is not an EBOOT.PBP')
     start, end = struct.unpack_from('<2I', b, 8)
     b = b[start:end]
     _, _, keys, data, n = struct.unpack_from('<4sIIII', b, 0)
@@ -173,10 +173,10 @@ def pack_names(path):
 def make(out, dist, eboot, runs, patch_bars=True, pack=False, release=False):
     dest = Path(out) / 'PSP/GAME/NFSU2VIEW'
     if dest.exists():
-        sys.exit(f'{dest} já existe: escolha outra pasta')
+        sys.exit(f'{dest} already exists: choose another folder')
     sfo = sfo_of(eboot)
     if release and sfo.get('MEMSIZE') != 1:   # (MEMSIZE=0: the compact profile on the 64 MB models too)
-        sys.exit(f'{eboot}: PARAM.SFO sem MEMSIZE=1 ({sfo})')
+        sys.exit(f'{eboot}: PARAM.SFO has no MEMSIZE=1 ({sfo})')
     dest.mkdir(parents=True)
     n = size = skipped = skipped_bytes = 0
     for p in sorted(Path(dist).iterdir()):
@@ -213,69 +213,68 @@ def make(out, dist, eboot, runs, patch_bars=True, pack=False, release=False):
     if pack:   # (an EBOOT from 17/10 on: one before it reads no pack.n2pk, and its files are gone)
         packed, packed_bytes = write_pack(dest)
         n -= packed - 1
-        print(f'pack.n2pk: {packed} arquivos, {packed_bytes / 2**20:.0f} MB')
+        print(f'pack.n2pk: {packed} files, {packed_bytes / 2**20:.0f} MB')
     if release:
-        (Path(out) / 'LEIA-ME.txt').write_text(player_steps(sfo, size))
+        (Path(out) / 'README.txt').write_text(player_steps(sfo, size))
     else:
-        (Path(out) / 'LEIA-ME-cartao.txt').write_text(steps(runs, size))
-    print(f'{dest}: {n + 1 + bool(runs)} arquivos, {size / 2**20:.0f} MB (fora {skipped} arquivos, {skipped_bytes / 2**20:.0f} MB: '
-          f'saídas de teste, os .json dos conversores e o legado opt-/vinyl-)')
-    print('rodadas:', ', '.join(runs) or 'nenhuma')
+        (Path(out) / 'README-card.txt').write_text(steps(runs, size))
+    print(f'{dest}: {n + 1 + bool(runs)} files, {size / 2**20:.0f} MB (excluding {skipped} files, {skipped_bytes / 2**20:.0f} MB: '
+          f'test outputs, converter .json files and legacy opt-/vinyl- files)')
+    print('runs:', ', '.join(runs) or 'none')
     print(f"PARAM.SFO: {sfo.get('TITLE')} {sfo.get('DISC_VERSION')}, MEMSIZE={sfo.get('MEMSIZE')}")
 
 
-WHAT = {'bench': 'a medida do cartão: texto na tela, ~1 min',
-        '4101': 'a corrida 4101 (Bayview Plaza) sozinha, ~3 min',
-        'outer': 'a Outer Ring sozinha, ~7 min',
-        '4101-512': 'a 4101 de novo, lendo a cidade em pedaços maiores, ~3 min',
-        '4101-32': 'a 4101 de novo, lendo a cidade em pedaços pequenos (a comparação), ~3 min'}
+WHAT = {'bench': 'memory card benchmark: on-screen text, about 1 minute',
+        '4101': 'race 4101 (Bayview Plaza), about 3 minutes',
+        'outer': 'Outer Ring, about 7 minutes',
+        '4101-512': '4101 with larger city read chunks, about 3 minutes',
+        '4101-32': '4101 with smaller city read chunks (comparison), about 3 minutes'}
 
 
 def steps(runs, size):
-    """The user's step by step, in the package (Portuguese, as the user)."""
+    """Instructions included with the memory card benchmark package."""
     order = '\n'.join(f'   {k + 1}. {WHAT[r]}' for k, r in enumerate(runs))
-    return f"""NFSU2 PSP: medida do Memory Stick
+    return f"""NFSU2 PSP: Memory Stick benchmark
 
-O jogo roda as medidas sozinho. Não precisa do PSPLink nem do Mac ligado ao PSP
-durante as corridas.
+The game runs these benchmarks automatically. PSPLink and a connected Mac
+are not required during the races.
 
-1. Ligue o PSP ao Mac pelo cabo USB e, no XMB, abra Ajustes > Conexão USB.
-   O cartão aparece no Finder.
-2. Não copie pelo Finder: o macOS deixa um arquivo ._ ao lado de cada um, e o
-   jogo fica mais lento no cartão. No Mac, rode
-   tools/ms_package.py push /Volumes/<cartão> <este pacote> --fresh
-   ({f'{size / 2**30:.1f}'.replace('.', ',')} GB; leva alguns minutos; os saves ficam).
-3. Ejete o cartão no Finder e saia da Conexão USB (botão O).
-4. No XMB, em Jogo > Memory Stick, inicie "NFSU2 PSP" {len(runs)} vezes. Em cada
-   início o jogo roda uma medida sem que você toque em nada e volta sozinho
-   ao XMB:
+1. Connect the PSP to the Mac by USB. In the XMB, open Settings > USB Connection.
+   The memory card appears in Finder.
+2. Use the copy helper to avoid macOS ._ sidecar files, which slow card access.
+   On the Mac, run:
+   tools/ms_package.py push /Volumes/<card> <this-package> --fresh
+   ({size / 2**30:.1f} GB; takes a few minutes; saves are preserved).
+3. Eject the card in Finder, then leave USB Connection with the Circle button.
+4. In XMB Game > Memory Stick, start "NFSU2 PSP" {len(runs)} times. Each launch
+   runs one benchmark automatically and returns to the XMB:
 {order}
-   Se o jogo travar, segure o botão de ligar até desligar, ligue de novo e
-   inicie outra vez: ele repete a medida que não terminou.
-5. Abra a Conexão USB de novo e avise. Nós copiamos os resultados da pasta
-   NFSU2VIEW do cartão (os arquivos que começam com {', '.join(r + '-' for r in runs)}
-   e o ms-done.txt).
+   If the game freezes, hold the power switch until it shuts down, turn it
+   back on and launch again. The unfinished benchmark will repeat.
+5. Open USB Connection again and report that the results are ready. Results
+   are in the card's NFSU2VIEW folder: files starting with {', '.join(r + '-' for r in runs)}
+   and ms-done.txt.
 
-Depois de todas as medidas o jogo abre normalmente pelo XMB.
+After all benchmarks, the game starts normally from the XMB.
 """
 
 
 def player_steps(sfo, size):
-    """The player's step by step (Portuguese, as the user)."""
-    return f"""{sfo.get('TITLE', 'NFSU2 PSP')} (versão {sfo.get('DISC_VERSION', '?')})
+    """Installation instructions included with the player package."""
+    return f"""{sfo.get('TITLE', 'NFSU2 PSP')} (version {sfo.get('DISC_VERSION', '?')})
 
-Instalação no PSP (Memory Stick ou microSD no adaptador)
+Install on PSP (Memory Stick or microSD with an adapter)
 
-1. Ligue o PSP ao Mac pelo cabo USB e, no XMB, abra Ajustes > Conexão USB.
-2. Não copie pelo Finder: o macOS deixa um arquivo ._ ao lado de cada um, e o
-   jogo fica mais lento no cartão. No Mac, rode
-   tools/ms_package.py push /Volumes/<cartão> <este pacote> --fresh
-   ({f'{size / 2**30:.1f}'.replace('.', ',')} GB; leva alguns minutos; os saves ficam).
-3. Ejete o cartão no Finder e saia da Conexão USB (botão O).
-4. No XMB, em Jogo > Memory Stick, abra "{sfo.get('TITLE', 'NFSU2 PSP')}".
+1. Connect the PSP to the Mac by USB. In the XMB, open Settings > USB Connection.
+2. Use the copy helper to avoid macOS ._ sidecar files, which slow card access.
+   On the Mac, run:
+   tools/ms_package.py push /Volumes/<card> <this-package> --fresh
+   ({size / 2**30:.1f} GB; takes a few minutes; saves are preserved).
+3. Eject the card in Finder, then leave USB Connection with the Circle button.
+4. In XMB Game > Memory Stick, open "{sfo.get('TITLE', 'NFSU2 PSP')}".
 
-O jogo escolhe sozinho o perfil de memória: ampliado no PSP-2000, 3000 e Go,
-compacto no PSP-1000. Os saves ficam em Dados salvos do XMB.
+The game selects its memory profile automatically: extended on PSP-2000,
+PSP-3000 and Go, compact on PSP-1000. Saves appear in XMB Saved Data Utility.
 """
 
 
@@ -322,7 +321,7 @@ def bench(path):
         for t, at in zip(us[case], o):
             q[min(3, at * 4 // size)].append(t)
         med = ['%.2f' % (sorted(x)[len(x) // 2] / 1000) if x else '-' for x in q]
-        print(f'{case}: mediana (ms) por quarto do arquivo: {" / ".join(med)}')
+        print(f'{case}: median (ms) per quarter of the file: {" / ".join(med)}')
 
 
 def verdict(st):
@@ -337,8 +336,8 @@ def verdict(st):
     holes = (st.get('popin') or {}).get('hole_frames')
     done = race.get('state') == 3 and race['racers'][0].get('finished') == 1
     ok = done and on_time >= 99 and holes == 0
-    print(f"  veredito: pedaço {piece if piece is not None else '?'} KB, corrida {'até o fim' if done else 'incompleta'}, "
-          f"{on_time:.1f}% em 2 vblanks, buracos à vista em {holes} quadros -> {'OK' if ok else 'FORA DA META'}")
+    print(f"  verdict: chunk {piece if piece is not None else '?'} KB, race {'finished' if done else 'incomplete'}, "
+          f"{on_time:.1f}% in 2 vblanks, visible holes in {holes} frames -> {'OK' if ok else 'BELOW TARGET'}")
 
 
 def summary(folder):
@@ -353,23 +352,23 @@ def summary(folder):
         st = json.loads((folder / 'viewer-stats.json').read_text())
         io, lat = st.get('io'), st.get('io_lat')
         if io:
-            print(f"  E/S do jogo inteiro: {io['reads']} leituras, {io['kb'] / 1024:.1f} MB, {io['ms'] / 1000:.1f} s lendo, "
-                  f"{io['opens']} aberturas, {io['seeks']} seeks")
+            print(f"  whole-game I/O: {io['reads']} reads, {io['kb'] / 1024:.1f} MB, {io['ms'] / 1000:.1f} s reading, "
+                  f"{io['opens']} opens, {io['seeks']} seeks")
         if lat:
             edges = lat['edges_ms']
             for k, kb in enumerate(lat['sizes_kb']):
                 h = lat['hist'][k]
                 if not lat['reads'][k]:
                     continue
-                label = f'até {kb} KB' if kb else 'maiores'
+                label = f'up to {kb} KB' if kb else 'larger'
                 tail = sum(h[b] for b in range(len(h)) if b and edges[b - 1] >= 16)
-                print(f"  leituras {label:10}: {lat['reads'][k]:6}, {lat['kb'][k] / 1024:7.1f} MB, "
-                      f"média {lat['ms'][k] / max(lat['reads'][k], 1):6.2f} ms, {tail} acima de 16 ms")
-            print(f"  leitura mais longa: {lat['max_ms']:.1f} ms ({lat['max_kb']} KB)")
+                print(f"  reads {label:10}: {lat['reads'][k]:6}, {lat['kb'][k] / 1024:7.1f} MB, "
+                      f"average {lat['ms'][k] / max(lat['reads'][k], 1):6.2f} ms, {tail} over 16 ms")
+            print(f"  longest read: {lat['max_ms']:.1f} ms ({lat['max_kb']} KB)")
         pop = st.get('world', {}).get('popin') if isinstance(st.get('world'), dict) else st.get('popin')
         if pop:
-            print(f"  pop-in: buracos à vista em {pop['hole_frames']} de {pop['frames']} quadros "
-                  f"({pop['near_hole_frames']} a menos de 70 m)")
+            print(f"  pop-in: visible holes in {pop['hole_frames']} of {pop['frames']} frames "
+                  f"({pop['near_hole_frames']} within 70 m)")
         verdict(st)
     if (folder / 'boot.txt').exists():
         text = (folder / 'boot.txt').read_text().split('\n')
@@ -377,8 +376,8 @@ def summary(folder):
             print(f'  boot.txt {note}')
         rows = [r for r in text if not r.startswith('#')]
         last = [r for r in rows if r.strip()][-1].split()
-        print(f'  boot.txt: {len(rows) - 2} passos, último "{" ".join(last[:-7])}" em {last[-7]} ms, '
-              f'{last[-6]} leituras, {int(last[-3]) / 1024:.1f} MB, {last[-2]} ms lendo')
+        print(f'  boot.txt: {len(rows) - 2} steps, last "{" ".join(last[:-7])}" at {last[-7]} ms, '
+              f'{last[-6]} reads, {int(last[-3]) / 1024:.1f} MB, {last[-2]} ms reading')
 
 
 def litter(folder):
@@ -391,7 +390,7 @@ def litter(folder):
 def card_folder(volume):
     vol = Path(volume)
     if not (vol / 'PSP').is_dir():
-        sys.exit(f'{vol} não parece o cartão do PSP (sem a pasta PSP): monte-o pela Conexão USB do XMB')
+        sys.exit(f'{vol} does not look like a PSP memory card (no PSP folder): mount it through XMB USB Connection')
     return vol / 'PSP/GAME/NFSU2VIEW'
 
 
@@ -402,7 +401,7 @@ def tidy(dest, env):
     subprocess.run(['dot_clean', '-m', str(dest)], env=env)
     left = litter(dest)
     if left:
-        print(f'ERRO: sobraram {len(left)} arquivos do macOS na pasta do jogo: {left[:10]}')
+        print(f'ERROR: {len(left)} macOS files remain in the game folder: {left[:10]}')
     return bool(left)
 
 
@@ -414,26 +413,26 @@ def put(volume, files, backup=None):
     import subprocess
     dest = card_folder(volume)
     if not dest.is_dir():
-        sys.exit(f'{dest} não existe: o jogo vai ao cartão pelo push')
+        sys.exit(f'{dest} does not exist: use push to copy the game to the card')
     env = dict(os.environ, COPYFILE_DISABLE='1')
     for f in files:
         name, _, path = f.partition('=') if '=' in f else (Path(f).name, '', f)
         src, to = Path(path), dest / name
         if not src.is_file() or name.startswith('.') or '/' in name:
-            sys.exit(f'arquivo inválido: {f}')
+            sys.exit(f'invalid file: {f}')
         if backup and to.exists():
             bak = to.with_name(f'{to.stem}-{backup}{to.suffix}.bak')
             to.rename(bak)
             print(f'{name} anterior -> {bak.name}', flush=True)
         r = subprocess.run(['cp', '-X', str(src), str(to)], env=env)
         if r.returncode:
-            print(f'cp falhou ({r.returncode}): {name}')
+            print(f'cp failed ({r.returncode}): {name}')
             return r.returncode
         print(f'{name} <- {src} ({src.stat().st_size} bytes)', flush=True)
     if tidy(dest, env):
         return 2
     subprocess.run(['sync'])
-    print('Ejete o cartão no Finder antes de sair da Conexão USB.')
+    print('Eject the card in Finder before leaving USB Connection.')
     return 0
 
 
@@ -446,7 +445,7 @@ def clean(volume):
     subprocess.run(['dot_clean', '-m', str(dest)], env=dict(os.environ, COPYFILE_DISABLE='1'))
     for n in litter(dest):
         (dest / n).unlink()
-    print(f'{dest}: {len(before)} arquivos do macOS removidos' + (f', restam {len(litter(dest))}' if litter(dest) else ''))
+    print(f'{dest}: {len(before)} macOS files removed' + (f', {len(litter(dest))} remain' if litter(dest) else ''))
     return 2 if litter(dest) else 0
 
 
@@ -466,9 +465,9 @@ def push(volume, package, fresh):
     src = Path(package) / 'PSP/GAME/NFSU2VIEW'
     dest = card_folder(volume)
     if not (src / 'EBOOT.PBP').is_file():
-        sys.exit(f'{src} não é um pacote (sem EBOOT.PBP): faça antes tools/ms_package.py make')
+        sys.exit(f'{src} is not a package (no EBOOT.PBP): run tools/ms_package.py make first')
     if litter(src):
-        sys.exit(f'o pacote tem arquivos do macOS: {litter(src)[:5]}')
+        sys.exit(f'the package contains macOS files: {litter(src)[:5]}')
     env = dict(os.environ, COPYFILE_DISABLE='1')
     if dest.is_dir():   # the runs' files and the rest the game wrote (not the saves, kept on the card): on the Mac before they go
         kept = [p for p in dest.iterdir() if p.is_file() and ppsspp_run.game_output(p.name) and not p.name.endswith('.sav')
@@ -483,7 +482,7 @@ def push(volume, package, fresh):
             where.mkdir(parents=True, exist_ok=True)
             for p in kept:
                 shutil.copy2(p, where / p.name)
-            print(f'{len(kept)} saídas do jogo no cartão guardadas em {where}', flush=True)
+            print(f'{len(kept)} game outputs from the card saved in {where}', flush=True)
     old = None
     if fresh and dest.exists():
         old = dest.with_name('NFSU2VIEW-old-' + time.strftime('%Y%m%d%H%M%S'))
@@ -498,7 +497,7 @@ def push(volume, package, fresh):
     print(' '.join(cmd), flush=True)
     r = subprocess.run(cmd, env=env)
     if r.returncode:
-        print(f'rsync falhou ({r.returncode})' + (f'; a pasta anterior está em {old}' if old else ''))
+        print(f'rsync failed ({r.returncode})' + (f'; previous folder is at {old}' if old else ''))
         return r.returncode
     if tidy(dest, env):
         return 2
@@ -506,8 +505,8 @@ def push(volume, package, fresh):
         shutil.rmtree(old)
     subprocess.run(['sync'])
     have = sorted(p.name for p in dest.iterdir())
-    print(f'{dest}: {len(have)} arquivos, nenhum ._ nem .DS_Store' + ('; pasta nova (a antiga apagada, os saves mantidos)' if old else ''))
-    print('Ejete o cartão no Finder antes de sair da Conexão USB.')
+    print(f'{dest}: {len(have)} files, no ._ or .DS_Store' + ('; new folder (old folder removed, saves preserved)' if old else ''))
+    print('Eject the card in Finder before leaving USB Connection.')
     return 0
 
 
@@ -544,7 +543,7 @@ def main():
         runs = [] if a.release else [r for r in a.runs.split(',') if r]
         bad = [r for r in runs if r not in RUNS]
         if bad:
-            ap.error(f'rodadas desconhecidas: {bad} (há {", ".join(RUNS)})')
+            ap.error(f'unknown runs: {bad} (available: {", ".join(RUNS)})')
         make(a.out, a.dist, a.eboot, runs, not a.whole_bars, a.pack, a.release)
     elif a.cmd == 'push':
         sys.exit(push(a.volume, a.package, a.fresh))

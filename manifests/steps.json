@@ -6,7 +6,7 @@
  ],
  "steps": [
   {
-   "name": "carro da vitrine",
+   "name": "showroom car",
    "commands": [
     [
      "tools/convert_car.py"
@@ -54,7 +54,7 @@
    "peak_rss_mb": 192
   },
   {
-   "name": "cidade",
+   "name": "city",
    "commands": [
     [
      "tools/convert_city.py",
@@ -251,7 +251,7 @@
    "peak_rss_mb": 2862
   },
   {
-   "name": "visibilidade da cidade",
+   "name": "city visibility",
    "commands": [
     [
      "tools/convert_pvs.py"
@@ -285,7 +285,7 @@
    "peak_rss_mb": 49
   },
   {
-   "name": "objetos derrub\u00e1veis",
+   "name": "breakable objects",
    "commands": [
     [
      "tools/convert_smokeables.py"
@@ -328,7 +328,7 @@
    "peak_rss_mb": 205
   },
   {
-   "name": "ruas",
+   "name": "roads",
    "commands": [
     [
      "tools/convert_routes.py"
@@ -393,7 +393,7 @@
    "peak_rss_mb": 51
   },
   {
-   "name": "faixas",
+   "name": "lanes",
    "commands": [
     [
      "tools/convert_lanes.py"
@@ -424,7 +424,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "corridas da cidade",
+   "name": "city races",
    "commands": [
     [
      "tools/convert_races.py"
@@ -521,7 +521,7 @@
    "peak_rss_mb": 2261
   },
   {
-   "name": "zonas de reset",
+   "name": "reset zones",
    "commands": [
     [
      "tools/convert_resetzones.py"
@@ -550,7 +550,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "pista L4RB",
+   "name": "track L4RB",
    "commands": [
     [
      "tools/convert_city.py",
@@ -621,7 +621,7 @@
    "peak_rss_mb": 2134
   },
   {
-   "name": "ruas da pista L4RB",
+   "name": "track roads L4RB",
    "commands": [
     [
      "tools/convert_routes.py",
@@ -656,7 +656,7 @@
    "peak_rss_mb": 80
   },
   {
-   "name": "corridas da pista L4RB",
+   "name": "track races L4RB",
    "commands": [
     [
      "tools/convert_races.py",
@@ -705,7 +705,7 @@
    "peak_rss_mb": 1083
   },
   {
-   "name": "pista L4RC",
+   "name": "track L4RC",
    "commands": [
     [
      "tools/convert_city.py",
@@ -786,7 +786,7 @@
    "peak_rss_mb": 1668
   },
   {
-   "name": "ruas da pista L4RC",
+   "name": "track roads L4RC",
    "commands": [
     [
      "tools/convert_routes.py",
@@ -821,7 +821,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "corridas da pista L4RC",
+   "name": "track races L4RC",
    "commands": [
     [
      "tools/convert_races.py",
@@ -874,7 +874,7 @@
    "peak_rss_mb": 741
   },
   {
-   "name": "pista L4RD",
+   "name": "track L4RD",
    "commands": [
     [
      "tools/convert_city.py",
@@ -938,7 +938,7 @@
    "peak_rss_mb": 2485
   },
   {
-   "name": "ruas da pista L4RD",
+   "name": "track roads L4RD",
    "commands": [
     [
      "tools/convert_routes.py",
@@ -973,7 +973,7 @@
    "peak_rss_mb": 70
   },
   {
-   "name": "corridas da pista L4RD",
+   "name": "track races L4RD",
    "commands": [
     [
      "tools/convert_races.py",
@@ -1016,7 +1016,7 @@
    "peak_rss_mb": 1020
   },
   {
-   "name": "pista L4RF",
+   "name": "track L4RF",
    "commands": [
     [
      "tools/convert_city.py",
@@ -1091,7 +1091,7 @@
    "peak_rss_mb": 2052
   },
   {
-   "name": "ruas da pista L4RF",
+   "name": "track roads L4RF",
    "commands": [
     [
      "tools/convert_routes.py",
@@ -1126,7 +1126,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "corridas da pista L4RF",
+   "name": "track races L4RF",
    "commands": [
     [
      "tools/convert_races.py",
@@ -1175,7 +1175,7 @@
    "peak_rss_mb": 418
   },
   {
-   "name": "pista L4RG",
+   "name": "track L4RG",
    "commands": [
     [
      "tools/convert_city.py",
@@ -1259,7 +1259,7 @@
    "peak_rss_mb": 1506
   },
   {
-   "name": "ruas da pista L4RG",
+   "name": "track roads L4RG",
    "commands": [
     [
      "tools/convert_routes.py",
@@ -1294,7 +1294,7 @@
    "peak_rss_mb": 86
   },
   {
-   "name": "corridas da pista L4RG",
+   "name": "track races L4RG",
    "commands": [
     [
      "tools/convert_races.py",
@@ -1348,7 +1348,7 @@
    "peak_rss_mb": 1613
   },
   {
-   "name": "c\u00e2meras do replay",
+   "name": "replay cameras",
    "commands": [
     [
      "tools/convert_tvcams.py"
@@ -1383,7 +1383,7 @@
    "peak_rss_mb": 45
   },
   {
-   "name": "limites da geometria",
+   "name": "geometry bounds",
    "commands": [
     [
      "tools/n2cy_bounds.py",
@@ -1438,7 +1438,7 @@
    "peak_rss_mb": 39
   },
   {
-   "name": "ordem das texturas da cidade",
+   "name": "city texture order",
    "commands": [
     [
      "tools/n2cy_texorder.py",
@@ -1469,7 +1469,7 @@
    "peak_rss_mb": 936
   },
   {
-   "name": "horizonte distante",
+   "name": "distant skyline",
    "commands": [
     [
      "tools/convert_landmarks.py",
@@ -1591,7 +1591,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "linhas de corrida",
+   "name": "racing lines",
    "commands": [
     [
      "tools/racing_line.py"
@@ -1689,7 +1689,7 @@
    "peak_rss_mb": 7248
   },
   {
-   "name": "velocidade das linhas",
+   "name": "racing line speeds",
    "commands": [
     [
      "tools/line_speeds.py"
@@ -1720,7 +1720,7 @@
    "peak_rss_mb": 71
   },
   {
-   "name": "desvios das linhas",
+   "name": "racing line forks",
    "commands": [
     [
      "tools/line_forks.py"
@@ -1826,7 +1826,7 @@
    "peak_rss_mb": 450
   },
   {
-   "name": "carreira",
+   "name": "career",
    "commands": [
     [
      "tools/convert_career.py"
@@ -1892,7 +1892,7 @@
    "peak_rss_mb": 66
   },
   {
-   "name": "carros",
+   "name": "cars",
    "commands": [
     [
      "tools/convert_cars.py"
@@ -2052,7 +2052,7 @@
    "peak_rss_mb": 1231
   },
   {
-   "name": "pacotes de desempenho",
+   "name": "performance packages",
    "commands": [
     [
      "tools/convert_perf.py"
@@ -2091,7 +2091,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "regras do drift e do drag",
+   "name": "drift and drag rules",
    "commands": [
     [
      "tools/convert_modes.py"
@@ -2121,7 +2121,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "estilo",
+   "name": "style",
    "commands": [
     [
      "tools/convert_style.py"
@@ -2158,7 +2158,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "dificuldade",
+   "name": "difficulty",
    "commands": [
     [
      "tools/convert_difficulty.py"
@@ -2187,7 +2187,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "regras do tr\u00e2nsito",
+   "name": "traffic rules",
    "commands": [
     [
      "tools/convert_traffic_rules.py"
@@ -2221,7 +2221,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "pinturas",
+   "name": "paints",
    "commands": [
     [
      "tools/convert_paints.py"
@@ -2252,7 +2252,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "garagem",
+   "name": "garage",
    "commands": [
     [
      "tools/convert_garage.py"
@@ -2679,7 +2679,7 @@
    "peak_rss_mb": 1312
   },
   {
-   "name": "rodas",
+   "name": "rims",
    "commands": [
     [
      "tools/convert_rims.py"
@@ -2718,7 +2718,7 @@
    "peak_rss_mb": 1569
   },
   {
-   "name": "nomes das rodas",
+   "name": "rim names",
    "commands": [
     [
      "tools/convert_rims.py",
@@ -2757,7 +2757,7 @@
    "peak_rss_mb": 54
   },
   {
-   "name": "nomes das pe\u00e7as",
+   "name": "part names",
    "commands": [
     [
      "tools/convert_partnames.py"
@@ -2795,7 +2795,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "vinis",
+   "name": "vinyls",
    "commands": [
     [
      "tools/convert_vinyls.py"
@@ -2919,7 +2919,7 @@
    "peak_rss_mb": 1604
   },
   {
-   "name": "pontos do visual",
+   "name": "visual rating",
    "commands": [
     [
      "tools/convert_rating.py"
@@ -2965,7 +2965,7 @@
    "peak_rss_mb": 165
   },
   {
-   "name": "revistas",
+   "name": "magazines",
    "commands": [
     [
      "tools/convert_magazines.py"
@@ -2994,7 +2994,7 @@
    "peak_rss_mb": 221
   },
   {
-   "name": "telas e HUD",
+   "name": "screens and HUD",
    "commands": [
     [
      "tools/convert_hud.py"
@@ -3121,7 +3121,7 @@
    "peak_rss_mb": 396
   },
   {
-   "name": "marcadores de evento",
+   "name": "event markers",
    "commands": [
     [
      "tools/convert_trigfx.py"
@@ -3159,7 +3159,7 @@
    "peak_rss_mb": 48
   },
   {
-   "name": "tela de controles",
+   "name": "controls screen",
    "commands": [
     [
      "tools/convert_psp_pad.py"
@@ -3185,7 +3185,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "chuva",
+   "name": "rain",
    "commands": [
     [
      "tools/convert_weather.py"
@@ -3214,7 +3214,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "som ambiente",
+   "name": "ambient sound",
    "commands": [
     [
      "tools/convert_envsound.py"
@@ -3252,7 +3252,7 @@
    "peak_rss_mb": 61
   },
   {
-   "name": "neblina",
+   "name": "fog",
    "commands": [
     [
      "tools/convert_fog.py"
@@ -3293,7 +3293,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "luzes",
+   "name": "lights",
    "commands": [
     [
      "tools/convert_lights.py"
@@ -3360,7 +3360,7 @@
    "peak_rss_mb": 229
   },
   {
-   "name": "mundo animado",
+   "name": "world animation",
    "commands": [
     [
      "tools/convert_worldanim.py"
@@ -3413,7 +3413,7 @@
    "peak_rss_mb": 196
   },
   {
-   "name": "cena dos menus",
+   "name": "menu scene",
    "commands": [
     [
      "tools/convert_frontend.py"
@@ -3457,7 +3457,7 @@
    "peak_rss_mb": 68
   },
   {
-   "name": "cenas de largada",
+   "name": "race intro scenes",
    "commands": [
     [
      "tools/convert_intro_nis.py"
@@ -3519,7 +3519,7 @@
    "peak_rss_mb": 72
   },
   {
-   "name": "cenas de chegada",
+   "name": "race ending scenes",
    "commands": [
     [
      "tools/convert_ending_nis.py"
@@ -3555,7 +3555,7 @@
    "peak_rss_mb": 49
   },
   {
-   "name": "cenas das lojas",
+   "name": "shop scenes",
    "commands": [
     [
      "tools/convert_shop_nis.py"
@@ -3589,7 +3589,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "tr\u00e2nsito",
+   "name": "traffic",
    "commands": [
     [
      "tools/convert_traffic.py"
@@ -3650,7 +3650,7 @@
    "peak_rss_mb": 54
   },
   {
-   "name": "c\u00e9u",
+   "name": "sky",
    "commands": [
     [
      "tools/convert_sky.py"
@@ -3723,7 +3723,7 @@
    "peak_rss_mb": 158
   },
   {
-   "name": "f\u00edsica",
+   "name": "physics",
    "commands": [
     [
      "tools/convert_physics.py"
@@ -3763,7 +3763,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "fontes originais da f\u00edsica",
+   "name": "original physics data",
    "commands": [
     [
      "tools/convert_original_data.py",
@@ -3880,7 +3880,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "\u00e1udio",
+   "name": "audio",
    "commands": [
     [
      "tools/convert_audio.py"
@@ -4074,7 +4074,7 @@
    "peak_rss_mb": 1355
   },
   {
-   "name": "filmes",
+   "name": "movies",
    "commands": [
     [
      "tools/convert_movies.py",
@@ -4176,7 +4176,7 @@
    "peak_rss_mb": 302
   },
   {
-   "name": "confer\u00eancia dos filmes",
+   "name": "movie verification",
    "commands": [
     [
      "tools/movie_release.py",
@@ -4230,7 +4230,7 @@
    "peak_rss_mb": 0
   },
   {
-   "name": "carro rival eclipse",
+   "name": "opponent car eclipse",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4269,7 +4269,7 @@
    "peak_rss_mb": 174
   },
   {
-   "name": "carro rival imprezawrx",
+   "name": "opponent car imprezawrx",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4308,7 +4308,7 @@
    "peak_rss_mb": 172
   },
   {
-   "name": "carro rival lancerevo8",
+   "name": "opponent car lancerevo8",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4347,7 +4347,7 @@
    "peak_rss_mb": 135
   },
   {
-   "name": "carro rival rx8",
+   "name": "opponent car rx8",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4386,7 +4386,7 @@
    "peak_rss_mb": 181
   },
   {
-   "name": "carro rival skyline",
+   "name": "opponent car skyline",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4425,7 +4425,7 @@
    "peak_rss_mb": 136
   },
   {
-   "name": "carro rival supra",
+   "name": "opponent car supra",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4464,7 +4464,7 @@
    "peak_rss_mb": 140
   },
   {
-   "name": "carro rival AL_RX8",
+   "name": "opponent car AL_RX8",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4503,7 +4503,7 @@
    "peak_rss_mb": 178
   },
   {
-   "name": "carro rival CALEB_GTO",
+   "name": "opponent car CALEB_GTO",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4550,7 +4550,7 @@
    "peak_rss_mb": 177
   },
   {
-   "name": "carro rival MARCUS_CELICA",
+   "name": "opponent car MARCUS_CELICA",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4589,7 +4589,7 @@
    "peak_rss_mb": 173
   },
   {
-   "name": "carro rival NIGEL_3000GT",
+   "name": "opponent car NIGEL_3000GT",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4628,7 +4628,7 @@
    "peak_rss_mb": 168
   },
   {
-   "name": "carro rival NIKKI_MUSTANGGT",
+   "name": "opponent car NIKKI_MUSTANGGT",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4667,7 +4667,7 @@
    "peak_rss_mb": 181
   },
   {
-   "name": "carro rival SCOTT_TT",
+   "name": "opponent car SCOTT_TT",
    "commands": [
     [
      "tools/convert_car.py",
@@ -4706,7 +4706,7 @@
    "peak_rss_mb": 173
   },
   {
-   "name": "carro rival TOM_G35",
+   "name": "opponent car TOM_G35",
    "commands": [
     [
      "tools/convert_car.py",

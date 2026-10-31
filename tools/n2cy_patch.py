@@ -221,7 +221,7 @@ def main():
     a = ap.parse_args()
     if a.dist:
         if not a.out_dir:
-            ap.error('--dist pede --out (a dist não é alterada)')
+            ap.error('--dist requires --out (dist remains unchanged)')
         out = Path(a.out_dir)
         out.mkdir(parents=True, exist_ok=True)
         worlds = [os.path.join(a.dist, 'city.n2cy')] + sorted(glob.glob(os.path.join(a.dist, 'track-*.n2cy')))
@@ -231,7 +231,7 @@ def main():
             b, f, p, w = patch_archive(bar, base, out / os.path.basename(bar))
             before += b
             after += f
-            print(f'{os.path.basename(bar)} sobre {os.path.basename(base)}: {b} -> {f} bytes, {p} células em remendo, {w} inteiras', flush=True)
+            print(f'{os.path.basename(bar)} over {os.path.basename(base)}: {b} -> {f} bytes, {p} patched cells, {w} whole cells', flush=True)
         print(f'total {before / 2**20:.1f} -> {after / 2**20:.1f} MB')
     else:
         if not (a.base and a.bar):

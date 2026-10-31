@@ -104,7 +104,7 @@ def write_mips(src):
     src = Path(src)
     data = src.read_bytes()
     if data[:4] != b'N2CY':
-        raise ValueError(f'{src}: não é um arquivo N2CY')
+        raise ValueError(f'{src}: is not an N2CY file')
     nt, = struct.unpack_from('<I', data, 28)
     to, = struct.unpack_from('<I', data, 52)
     table, blobs, at = [], [], 16 + nt * 16

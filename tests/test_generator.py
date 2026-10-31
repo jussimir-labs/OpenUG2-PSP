@@ -92,10 +92,10 @@ class HelperTests(Fixture):
             with self.assertRaises(g.UserError):g.validate_paths(str(self.iso),str(self.out),self.root)
 
     def test_progress_is_estimate_below_completion(self):
-        self.app.log('3. Convertendo (80 etapas)')
-        self.app.log('  [ 3/80]  25% cidade')
+        self.app.log('3. Converting (80 steps)')
+        self.app.log('  [ 3/80]  25% city')
         s=self.app.state();self.assertEqual(s['stage'],'conversion');self.assertEqual(s['progress'],25);self.assertEqual(s['progress_kind'],'estimated')
-        self.app.log('5. Conferindo contra a build de referência')
+        self.app.log('5. Checking against the reference build')
         self.assertIsNone(self.app.state()['progress'])
 
     def test_snapshot_does_not_expose_mutable_state(self):
@@ -106,8 +106,8 @@ class HelperTests(Fixture):
         self.app.data['job']=dict(iso=str(self.iso),output=str(self.out),source='xbox')
         self.app.data['busy']=True
         def runner(cmd,env=None):
-            self.assertNotIn('--do-zero',cmd);self.assertNotIn('--sem-filmes',cmd)
-            self.assertNotIn('--aceitar-iso-desconhecida',cmd)
+            self.assertNotIn('--fresh',cmd);self.assertNotIn('--skip-movies',cmd)
+            self.assertNotIn('--accept-unknown-iso',cmd)
             self.out.mkdir(exist_ok=True)
             if report is not None:(self.out/'relatorio.json').write_text(json.dumps(report))
             return code

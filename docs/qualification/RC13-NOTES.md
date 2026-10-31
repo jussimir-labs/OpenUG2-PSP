@@ -31,6 +31,6 @@ All 28 movies are structurally present for each source. Skipping movies remains 
 
 No e7ce hardware or Memory Stick run has been performed. Historical PSP-3000/card observations belong to their earlier executable. PSP-1000, PSP-2000, Go, physical saves, full visual parity, all-car/all-track handling, a complete career and global performance remain unapproved. The original PS2 USA disc image remains unverified; the retained 179-input comparison used reconstructed-source evidence. Tunnel Construction/drag 4401 rival recovery remains deferred. See [known issues](../../KNOWN_ISSUES.md).
 
-The portable [qualification receipt](RC13-QUALIFICATION.json) separates current evidence from historical and untested scope. [Português](../../ptbr/NOTAS-NOTURNAS.md).
+The portable [qualification receipt](RC13-QUALIFICATION.json) separates current evidence from historical and untested scope.
 
 A final single run on the same executable completed all three laps of automatic Stadium Drift 2 (4312) through normal controls in 123.4318 simulation seconds, banking 1,880 points across seven drifts. The player finished fourth: the genuine loss is preserved. No player/AI reset, NaN or Core error was recorded. Pause/resume, released event assets and return to Main with advancing music passed. Native files stayed unchanged. This qualifies that complete event and its score, not a Drift win, all-car handling parity or physical audio.

@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""NFSU2 PSP: gera a pasta PSP/GAME/NFSU2VIEW a partir da ISO do próprio jogador.
+"""NFSU2 PSP: generate PSP/GAME/NFSU2VIEW from your own game ISO.
 
-    python3 build_game.py CAMINHO/DA/ISO [--saida PASTA] [--fonte xbox|ps2]
+    python3 build_game.py PATH/TO/ISO [--output FOLDER] [--source xbox|ps2]
 
-O EBOOT vem pronto (eboot/EBOOT.PBP); daqui saem só os dados do jogo,
-convertidos da ISO. A ferramenta confere a ISO, extrai os arquivos,
-roda os conversores (tools/) e monta o pacote do cartão em
-PASTA/PSP/GAME/NFSU2VIEW. Tudo o que ela escreve fica dentro de PASTA:
-a extração e a conversão em PASTA/.trabalho (apagada no fim, a não ser
-com --manter-trabalho), os registros de cada etapa em PASTA/registros.
+The executable is included in eboot/EBOOT.PBP. This tool verifies the ISO,
+extracts its files, runs the converters in tools/, and assembles the memory
+card package in FOLDER/PSP/GAME/NFSU2VIEW. All generated files stay inside
+FOLDER: temporary extraction and conversion files in .trabalho (removed on
+success unless --keep-work is set), and step logs in registros.
 
-Se uma etapa falhar, rode o mesmo comando de novo: as etapas já feitas
-não se repetem (--do-zero recomeça tudo).
+If a step fails, repeat the same command to resume completed steps.
+Use --fresh to start over.
 """
 import argparse
 import hashlib
@@ -38,7 +37,7 @@ RELEASE = HERE / 'eboot/release.json'
 # What the conversion needs on disk beyond the output itself, in GB:
 # the disc's files, the converted folder and the package (hard links into
 # it where the file system has them). Measured on the reference build;
-# see LEIA-ME.md.
+# see README.md.
 DISK_NEEDED_GB = 12
 MIN_PYTHON = (3, 12)
 MODULES = {'numpy': 'numpy', 'scipy': 'scipy', 'PIL': 'pillow', 'trajectory_planning_helpers': 'trajectory-planning-helpers',
@@ -73,70 +72,70 @@ def human(seconds):
 def steps(game_dir, movies=True, jobs=4):
     out = []
     add = lambda name, secs, *cmd: out.append((name, secs, list(cmd)))  # noqa: E731
-    add('carro da vitrine', 20, 'tools/convert_car.py')
+    add('showroom car', 20, 'tools/convert_car.py')
     # the city and the tracks without the preculler's rows, as the
     # candidates' (on the PSP-3000 the split lists cost more than they hide;
     # tools/build.sh still converts with them when a city is missing)
-    add('cidade', 900, 'tools/convert_city.py', '--no-precull')
-    add('visibilidade da cidade', 10, 'tools/convert_pvs.py')
-    add('objetos derrubáveis', 15, 'tools/convert_smokeables.py')
-    add('ruas', 20, 'tools/convert_routes.py')
+    add('city', 900, 'tools/convert_city.py', '--no-precull')
+    add('city visibility', 10, 'tools/convert_pvs.py')
+    add('breakable objects', 15, 'tools/convert_smokeables.py')
+    add('roads', 20, 'tools/convert_routes.py')
     add('GPS', 10, 'tools/convert_gps.py')
-    add('faixas', 20, 'tools/convert_lanes.py')
-    add('corridas da cidade', 400, 'tools/convert_races.py')
-    add('zonas de reset', 5, 'tools/convert_resetzones.py')
+    add('lanes', 20, 'tools/convert_lanes.py')
+    add('city races', 400, 'tools/convert_races.py')
+    add('reset zones', 5, 'tools/convert_resetzones.py')
     for track in ('L4RB', 'L4RC', 'L4RD', 'L4RF', 'L4RG'):
-        add(f'pista {track}', 150, 'tools/convert_city.py', '--track', track, '--no-precull')
-        add(f'ruas da pista {track}', 10, 'tools/convert_routes.py', '--track', track)
-        add(f'corridas da pista {track}', 60, 'tools/convert_races.py', '--track', track)
-    add('câmeras do replay', 60, 'tools/convert_tvcams.py')
-    add('limites da geometria', 60, ('glob', 'tools/n2cy_bounds.py', '--if-missing'))
-    add('ordem das texturas da cidade', 30, 'tools/n2cy_texorder.py', '--if-unordered', 'dist/PSP/GAME/NFSU2VIEW/city.n2cy')
-    add('horizonte distante', 60, 'tools/convert_landmarks.py', '--lod', '--towers', '60', '--tile', '256', '--game', str(game_dir),
+        add(f'track {track}', 150, 'tools/convert_city.py', '--track', track, '--no-precull')
+        add(f'track roads {track}', 10, 'tools/convert_routes.py', '--track', track)
+        add(f'track races {track}', 60, 'tools/convert_races.py', '--track', track)
+    add('replay cameras', 60, 'tools/convert_tvcams.py')
+    add('geometry bounds', 60, ('glob', 'tools/n2cy_bounds.py', '--if-missing'))
+    add('city texture order', 30, 'tools/n2cy_texorder.py', '--if-unordered', 'dist/PSP/GAME/NFSU2VIEW/city.n2cy')
+    add('distant skyline', 60, 'tools/convert_landmarks.py', '--lod', '--towers', '60', '--tile', '256', '--game', str(game_dir),
         '--city', 'dist/PSP/GAME/NFSU2VIEW/city.n2cy', '--out', 'dist/PSP/GAME/NFSU2VIEW/city-landmarks.n2cy')
     add('mipmaps', 120, ('glob', 'tools/convert_mips.py', '--if-stale'))
-    add('linhas de corrida', 900, 'tools/racing_line.py')
-    add('velocidade das linhas', 40, 'tools/line_speeds.py')
-    add('desvios das linhas', 30, 'tools/line_forks.py')
-    add('carreira', 30, 'tools/convert_career.py')
-    add('carros', 120, 'tools/convert_cars.py')
-    add('pacotes de desempenho', 10, 'tools/convert_perf.py')
-    add('regras do drift e do drag', 5, 'tools/convert_modes.py')
-    add('estilo', 5, 'tools/convert_style.py')
-    add('dificuldade', 5, 'tools/convert_difficulty.py')
-    add('regras do trânsito', 5, 'tools/convert_traffic_rules.py')
-    add('pinturas', 5, 'tools/convert_paints.py')
-    add('garagem', 400, 'tools/convert_garage.py')
-    add('rodas', 30, 'tools/convert_rims.py')
-    add('nomes das rodas', 5, 'tools/convert_rims.py', '--styles')
-    add('nomes das peças', 5, 'tools/convert_partnames.py')
-    add('vinis', 500, 'tools/convert_vinyls.py')
-    add('pontos do visual', 10, 'tools/convert_rating.py')
-    add('revistas', 10, 'tools/convert_magazines.py')
-    add('telas e HUD', 90, 'tools/convert_hud.py')
-    add('marcadores de evento', 5, 'tools/convert_trigfx.py')
-    add('tela de controles', 5, 'tools/convert_psp_pad.py')
-    add('chuva', 5, 'tools/convert_weather.py')
-    add('som ambiente', 10, 'tools/convert_envsound.py')
-    add('neblina', 10, 'tools/convert_fog.py')
-    add('luzes', 40, 'tools/convert_lights.py')
-    add('mundo animado', 20, 'tools/convert_worldanim.py')
-    add('cena dos menus', 10, 'tools/convert_frontend.py')
-    add('cenas de largada', 120, 'tools/convert_intro_nis.py')
-    add('cenas de chegada', 60, 'tools/convert_ending_nis.py')
-    add('cenas das lojas', 30, 'tools/convert_shop_nis.py')
-    add('trânsito', 60, 'tools/convert_traffic.py')
-    add('céu', 10, 'tools/convert_sky.py')
+    add('racing lines', 900, 'tools/racing_line.py')
+    add('racing line speeds', 40, 'tools/line_speeds.py')
+    add('racing line forks', 30, 'tools/line_forks.py')
+    add('career', 30, 'tools/convert_career.py')
+    add('cars', 120, 'tools/convert_cars.py')
+    add('performance packages', 10, 'tools/convert_perf.py')
+    add('drift and drag rules', 5, 'tools/convert_modes.py')
+    add('style', 5, 'tools/convert_style.py')
+    add('difficulty', 5, 'tools/convert_difficulty.py')
+    add('traffic rules', 5, 'tools/convert_traffic_rules.py')
+    add('paints', 5, 'tools/convert_paints.py')
+    add('garage', 400, 'tools/convert_garage.py')
+    add('rims', 30, 'tools/convert_rims.py')
+    add('rim names', 5, 'tools/convert_rims.py', '--styles')
+    add('part names', 5, 'tools/convert_partnames.py')
+    add('vinyls', 500, 'tools/convert_vinyls.py')
+    add('visual rating', 10, 'tools/convert_rating.py')
+    add('magazines', 10, 'tools/convert_magazines.py')
+    add('screens and HUD', 90, 'tools/convert_hud.py')
+    add('event markers', 5, 'tools/convert_trigfx.py')
+    add('controls screen', 5, 'tools/convert_psp_pad.py')
+    add('rain', 5, 'tools/convert_weather.py')
+    add('ambient sound', 10, 'tools/convert_envsound.py')
+    add('fog', 10, 'tools/convert_fog.py')
+    add('lights', 40, 'tools/convert_lights.py')
+    add('world animation', 20, 'tools/convert_worldanim.py')
+    add('menu scene', 10, 'tools/convert_frontend.py')
+    add('race intro scenes', 120, 'tools/convert_intro_nis.py')
+    add('race ending scenes', 60, 'tools/convert_ending_nis.py')
+    add('shop scenes', 30, 'tools/convert_shop_nis.py')
+    add('traffic', 60, 'tools/convert_traffic.py')
+    add('sky', 10, 'tools/convert_sky.py')
     add('panoramas', 20, 'tools/convert_vista.py')
-    add('física', 10, 'tools/convert_physics.py')
-    add('fontes originais da física', 2, 'tools/convert_original_data.py', '--game', str(game_dir))
-    add('áudio', 300, 'tools/convert_audio.py')
+    add('physics', 10, 'tools/convert_physics.py')
+    add('original physics data', 2, 'tools/convert_original_data.py', '--game', str(game_dir))
+    add('audio', 300, 'tools/convert_audio.py')
     if movies:
-        add('filmes', 600, 'tools/convert_movies.py', '--missing')
-        add('conferência dos filmes', 5, 'tools/movie_release.py', 'dist/PSP/GAME/NFSU2VIEW')
+        add('movies', 600, 'tools/convert_movies.py', '--missing')
+        add('movie verification', 5, 'tools/movie_release.py', 'dist/PSP/GAME/NFSU2VIEW')
     for group in ('opponents', 'rivals'):
         for preset in sorted((HERE / 'presets' / group).glob('*.json')):
-            add(f'carro rival {preset.stem}', 30, 'tools/convert_car.py', '--preset', f'presets/{group}/{preset.name}',
+            add(f'opponent car {preset.stem}', 30, 'tools/convert_car.py', '--preset', f'presets/{group}/{preset.name}',
                 '--tag', f'opp-{preset.stem}')
     for _, _, command in out:
         if command[0] in ('tools/convert_city.py', 'tools/convert_garage.py', 'tools/racing_line.py', 'tools/convert_races.py',
@@ -147,7 +146,7 @@ def steps(game_dir, movies=True, jobs=4):
 
 def iso_size_ok(iso):
     if not iso.is_file():
-        raise Failure(f'ISO não encontrada: {iso}')
+        raise Failure(f'ISO not found: {iso}')
     return iso.stat().st_size
 
 
@@ -181,17 +180,17 @@ def recipe_problems():
     problems=[]
     for name, _, command in steps(Path('game/xbox/NFSUNDER')):
         tool=command[0][1] if isinstance(command[0],tuple) else command[0]
-        if not (HERE/tool).is_file():problems.append(f'conversor ausente para {name}: {tool}')
+        if not (HERE/tool).is_file():problems.append(f'missing converter for {name}: {tool}')
     # New source-data producers are stdlib-only; their canonical tables and
     # standalone archive reader must be present before any expensive stage.
     for name in ('export_physics.py', 'export_road.py', 'source_data.py',
                  'nitro_constants.json', 'road_constants.json', 'native_runtime.py', 'process_control.py'):
         if not (HERE / 'tools' / name).is_file():
-            problems.append(f'fonte da física original ausente: tools/{name}')
+            problems.append(f'missing original physics source: tools/{name}')
     if not (HERE / 'tools/nos_bank.py').is_file():
         problems.append('Required native NOS/PURGE exporter missing: tools/nos_bank.py')
     for name in ('AL_RX8','CALEB_GTO','MARCUS_CELICA','NIGEL_3000GT','NIKKI_MUSTANGGT','SCOTT_TT','TOM_G35'):
-        if not (HERE/'presets/rivals'/f'{name}.json').is_file():problems.append(f'carro da carreira ausente: presets/rivals/{name}.json')
+        if not (HERE/'presets/rivals'/f'{name}.json').is_file():problems.append(f'missing career car: presets/rivals/{name}.json')
     return problems
 
 
@@ -200,7 +199,7 @@ def preflight(args):
     player sees every missing piece at once."""
     problems = recipe_problems()
     if sys.version_info < MIN_PYTHON:
-        problems.append(f'Python {".".join(map(str, MIN_PYTHON))} ou mais novo (este é {sys.version.split()[0]}).')
+        problems.append(f'Python {".".join(map(str, MIN_PYTHON))} or newer (running {sys.version.split()[0]}).')
     missing = []
     for mod, pkg in MODULES.items():
         try:
@@ -208,13 +207,13 @@ def preflight(args):
         except ImportError:
             missing.append(pkg)
     if missing:
-        problems.append(f'faltam módulos do Python: {", ".join(missing)} (rode o ./setup.sh, que os instala em .venv, e use '
-                        f'o Python de lá: .venv/bin/python build_game.py).')
+        problems.append(f'missing Python modules: {", ".join(missing)} (run ./setup.sh to install them in .venv, then use '
+                        f'its Python interpreter: .venv/bin/python build_game.py).')
     for tool in ('ffmpeg', 'lame'):
         if not native_runtime.binary(tool) and not shutil.which(tool):
-            problems.append(f'falta o programa {tool} (macOS: brew install {tool}; Linux: apt install {tool}).')
+            problems.append(f'missing program {tool} (macOS: brew install {tool}; Linux: apt install {tool}).')
     if not native_runtime.bundled() and not shutil.which('cc'):
-        problems.append('falta um compilador C chamado cc (macOS: xcode-select --install; Linux: apt install build-essential).')
+        problems.append('missing C compiler named cc (macOS: xcode-select --install; Linux: apt install build-essential).')
     if native_runtime.bundled():
         for tool in native_runtime.NAMES:
             try:
@@ -222,22 +221,22 @@ def preflight(args):
             except RuntimeError as exc:
                 problems.append(str(exc))
     cjpegli = None
-    if not args.sem_filmes:
+    if not args.skip_movies:
         cjpegli = find_cjpegli(args.cjpegli)
         if not cjpegli:
-            problems.append('falta o cjpegli, o codificador dos filmes (rode ./setup.sh, que o compila em .tools/jpegli; '
-                            'ou use --sem-filmes).')
+            problems.append('missing cjpegli movie encoder (run ./setup.sh to build it in .tools/jpegli; '
+                            'or use --skip-movies).')
     if not EBOOT.is_file():
-        problems.append(f'falta o EBOOT pré-compilado ({EBOOT}).')
+        problems.append(f'missing prebuilt EBOOT ({EBOOT}).')
     return problems, cjpegli
 
 
 def validate_release():
     if not RELEASE.is_file():
-        raise Failure('release.json ausente: o pacote do gerador está incompleto.')
+        raise Failure('Missing release.json: the generator package is incomplete.')
     release = json.loads(RELEASE.read_text())
     if not EBOOT.is_file() or sha256(EBOOT) != release.get('eboot_sha256') or EBOOT.stat().st_size != release.get('eboot_bytes'):
-        raise Failure('EBOOT não corresponde a release.json. Baixe novamente o pacote completo do beta.')
+        raise Failure('EBOOT does not match release.json. Download the complete beta package again.')
     return release
 
 
@@ -254,8 +253,8 @@ def build_identity(digest, source, args, release):
         inputs['native-bundle.json'] = sha256(Path(os.environ['NFSU2_BUNDLE_ROOT']) / 'bundle.json')
     return {'schema': 2, 'iso_sha256': digest, 'source': source.name,
             'candidate': release['candidate'], 'version': release.get('version'), 'eboot_sha256': release['eboot_sha256'],
-            'movies': not args.sem_filmes, 'jobs': getattr(args, 'jobs', 4),
-            'accept_unknown_iso': bool(getattr(args, 'aceitar_iso_desconhecida', False)),
+            'movies': not args.skip_movies, 'jobs': getattr(args, 'jobs', 4),
+            'accept_unknown_iso': bool(getattr(args, 'accept_unknown_iso', False)),
             'tools_sha256': hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(',', ':')).encode()).hexdigest()}
 
 
@@ -263,25 +262,25 @@ def prepare_out(out, fresh, identity):
     """Only our output, bound to the same disc and exact conversion recipe."""
     marker = out / '.nfsu2-psp-build'
     if out == HERE or out in HERE.parents:
-        raise Failure('a saída não pode ser a ferramenta nem uma pasta que a contém.')
+        raise Failure('the output cannot be the tool folder or one of its parent folders.')
     if out.exists() and any(out.iterdir()):
         if not marker.is_file() or marker.is_symlink():
-            raise Failure(f'a pasta de saída {out} não é desta ferramenta; escolha uma pasta nova.')
+            raise Failure(f'output folder {out} was not created by this tool; choose a new folder.')
         try:
             previous = json.loads(marker.read_text())
         except (ValueError, UnicodeError):
             previous = None
         if not fresh and previous != identity:
-            raise Failure('a ISO, fonte, executável, opções ou conversores mudaram. Use outra saída ou --do-zero; nenhuma etapa antiga foi reutilizada.')
+            raise Failure('the ISO, source, executable, options or converters changed. Choose another output or use --fresh; no previous steps were reused.')
         if fresh:
             if any(p.is_dir() for p in out.rglob('SAVEDATA')) or any(out.rglob('*.sav')):
-                raise Failure('a saída contém saves. Preserve-os e escolha outra pasta de saída.')
+                raise Failure('the output contains saves. Preserve them and choose another output folder.')
             for path in out.iterdir():
                 if path.name != marker.name:
                     shutil.rmtree(path) if path.is_dir() and not path.is_symlink() else path.unlink()
     out.mkdir(parents=True, exist_ok=True)
     if (out / 'PSP').exists():
-        raise Failure(f'{out / "PSP"} já existe: use outra saída ou --do-zero para gerar novamente.')
+        raise Failure(f'{out / "PSP"} already exists: choose another output or use --fresh to generate again.')
     marker.write_text(json.dumps(identity, sort_keys=True) + '\n')
 
 
@@ -338,7 +337,7 @@ def step_env(work, source):
 
 # the long single-core steps tools/build.sh sends through the developers'
 # Mac queue (the pooled converters ask for their own places)
-QUEUED = ('corridas', 'limites da geometria', 'horizonte distante')
+QUEUED = ('city races', 'track races', 'geometry bounds', 'distant skyline')
 
 
 def queued(name, cmd, env):
@@ -427,7 +426,7 @@ def run_step(i, name, secs, cmd, work, logs, env):
                     say(f'           … {name}: {human(time.monotonic() - t0)} (esperado ~{human(secs)})')
             if p.returncode:
                 tail = log.read_text(errors='replace').splitlines()[-25:]
-                raise Failure(f'a etapa "{name}" falhou (código {p.returncode}). Últimas linhas do registro {log}:\n'
+                raise Failure(f'step "{name}" failed (exit code {p.returncode}). Last lines from {log}:\n'
                               + '\n'.join('    ' + t for t in tail))
             if TRACE:
                 commands.append(c)
@@ -531,7 +530,7 @@ def run_steps(todo, graph, jobs, finished, run_one):
     done = set(i for i in range(n) if todo[i][0] in finished)
     pending = [i for i in range(n) if i not in done]
     for i in done:
-        say(f'  [{i + 1:2d}/{n}] {sum(expected[j] for j in done) * 100 // total:3.0f}% {todo[i][0]}: já feita')
+        say(f'  [{i + 1:2d}/{n}] {sum(expected[j] for j in done) * 100 // total:3.0f}% {todo[i][0]}: already complete')
     lock = threading.Condition()
     running, errors, times = {}, [], {}
     started = len(done)
@@ -563,7 +562,7 @@ def run_steps(todo, graph, jobs, finished, run_one):
             elif not running:
                 break
             if not running and pending and not errors:
-                raise Failure('as etapas restantes esperam umas pelas outras (manifests/steps.json inconsistente).')
+                raise Failure('the remaining steps depend on one another (inconsistent manifests/steps.json).')
             lock.wait(1)
     if errors:
         raise errors[0][1]
@@ -631,7 +630,7 @@ def previous_stamps(out, old, graph, source, movies, disc):
                 commands = [listed.get(name) for name in graph.names]
                 code = table.get('code', table['inputs'])
                 return graph.stamps(lambda p: code.get(p), commands, bundle['runtime'], disc), None
-    return None, 'esta versão do gerador não conhece a que gerou a pasta (sem os carimbos dela)'
+    return None, 'this generator version does not recognize the version that created the folder (no step stamps)'
 
 
 def update_plan(out, old, graph, stamps, source, args, disc):
@@ -640,33 +639,33 @@ def update_plan(out, old, graph, stamps, source, args, disc):
     why) and the previous folder's files."""
     game = out / 'PSP/GAME/NFSU2VIEW'
     if old.get('source') != source.name:
-        return None, f'a geração anterior é da fonte {old.get("source")}, não {source.name}'
+        return None, f'the previous generation used {old.get("source")}, not {source.name}'
     if old.get('iso_sha256') != disc.split(':', 1)[1]:
-        return None, 'a geração anterior veio de outra ISO'
-    if bool(old.get('movies')) != (not args.sem_filmes):
-        return None, 'a geração anterior foi feita com outra opção de filmes'
+        return None, 'the previous generation used a different ISO'
+    if bool(old.get('movies')) != (not args.skip_movies):
+        return None, 'the previous generation used a different movie option'
     if not (game / 'EBOOT.PBP').is_file():
-        return None, 'a pasta PSP/GAME/NFSU2VIEW da geração anterior está incompleta'
+        return None, 'the previous PSP/GAME/NFSU2VIEW folder is incomplete'
     if graph is None:
-        return None, 'esta versão não tem o mapa das etapas (manifests/steps.json)'
-    before, why = previous_stamps(out, old, graph, source, not args.sem_filmes, disc)
+        return None, 'this version has no step graph (manifests/steps.json)'
+    before, why = previous_stamps(out, old, graph, source, not args.skip_movies, disc)
     if before is None:
         return None, why
     manifest = HERE / 'manifests' / f'{old.get("candidate")}-{source.name}.json'
     if not manifest.exists() and source.name == 'xbox':
         manifest = HERE / 'manifests' / f'{old.get("candidate")}.json'
     if not manifest.is_file():
-        return None, 'sem a referência da versão anterior para conferir a pasta'
-    say('  conferindo a pasta anterior contra a referência dela')
+        return None, 'no previous-version reference is available to verify the folder'
+    say('  checking the previous folder against its reference')
     _, _, differ, missing, extra = compare(game, manifest)
     if differ or missing or extra:
-        return None, ('a pasta anterior foi alterada ou está incompleta (diferentes: ' + ', '.join(differ[:5] or ['nenhum'])
-                      + '; faltando: ' + ', '.join(missing[:5] or ['nenhum']) + ')')
+        return None, ('the previous folder was changed or is incomplete (different: ' + ', '.join(differ[:5] or ['none'])
+                      + '; missing: ' + ', '.join(missing[:5] or ['none']) + ')')
     files = package_files(game)
     cached = {p.relative_to(out / CACHE).as_posix(): (p, 0, None) for p in (out / CACHE).rglob('*') if p.is_file()} \
         if (out / STATE).is_file() and (out / CACHE).is_dir() else {}
     n = len(graph.names)
-    rerun = {i: 'mudou' for i in range(n) if stamps[i] != before[i]}
+    rerun = {i: 'changed' for i in range(n) if stamps[i] != before[i]}
     restorable = lambda p: p in cached or (p.startswith(DIST) and p[len(DIST):] in files)   # noqa: E731
     changed = True
     while changed:
@@ -674,7 +673,7 @@ def update_plan(out, old, graph, stamps, source, args, disc):
         for i in sorted(rerun):
             for p, j in graph.inputs[i].items():
                 if j not in rerun and not (restorable(p) and graph.final.get(p) == j):
-                    rerun[j] = f'dá {p.rsplit("/", 1)[-1]} a {graph.names[i]}'
+                    rerun[j] = f'provides {p.rsplit("/", 1)[-1]} to {graph.names[i]}'
                     changed = True
     return dict(rerun=rerun, files=files, cached=cached, before=before), None
 
@@ -743,13 +742,13 @@ def previous_generation(out):
     if (out / '.anterior/PSP').is_dir() and not (out / 'PSP').exists():
         shutil.move(str(out / '.anterior/PSP'), str(out / 'PSP'))
     if not marker.is_file() or marker.is_symlink() or not (out / 'PSP').is_dir():
-        raise Failure(f'{out} não tem uma geração anterior desta ferramenta para atualizar; escolha a pasta da geração anterior.')
+        raise Failure(f'{out} has no previous generation from this tool to update; choose the previous output folder.')
     if any(p.is_dir() for p in out.rglob('SAVEDATA')) or any(out.rglob('*.sav')):
-        raise Failure('a saída contém saves. Preserve-os e escolha outra pasta de saída.')
+        raise Failure('the output contains saves. Preserve them and choose another output folder.')
     try:
         return json.loads(marker.read_text())
     except (ValueError, UnicodeError):
-        raise Failure('o marcador da geração anterior está corrompido; gere de novo numa pasta nova.')
+        raise Failure('the previous generation marker is corrupted; generate again in a new folder.')
 
 
 def set_aside(out):
@@ -773,7 +772,7 @@ def package(work, out, logs, env):
         r = subprocess.run([sys.executable, 'tools/ms_package.py', 'make', str(stage), '--dist', str(dist), '--eboot', str(EBOOT),
                             '--release', '--pack', '--whole-bars'], cwd=work, env=env, stdout=f, stderr=subprocess.STDOUT)
     if r.returncode:
-        raise Failure(f'a montagem do pacote falhou: veja {logs / "pacote.log"}')
+        raise Failure(f'the package assembly failed: see {logs / "pacote.log"}')
     shutil.move(str(stage / 'PSP'), str(out / 'PSP'))
 
 
@@ -804,57 +803,66 @@ def compare(game, manifest_path):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('iso', nargs='?', type=Path, help='a ISO do jogo (sem ela, a ferramenta pergunta)')
-    ap.add_argument('--saida', type=Path, default=HERE / 'output', help='pasta de saída (padrão: output/ ao lado desta ferramenta)')
-    ap.add_argument('--fonte', choices=sorted(SOURCES), help='de qual console é a ISO (padrão: reconhecida pela ISO)')
-    ap.add_argument('--jobs', type=int, choices=range(1, 17), default=4, metavar='1..16', help='máximo de processos nas conversões paralelas (padrão: 4)')
-    ap.add_argument('--do-zero', action='store_true', help='recomeça tudo, sem aproveitar as etapas já feitas')
-    ap.add_argument('--manter-trabalho', action='store_true', help='não apaga a pasta .trabalho no fim (extração e conversão)')
-    ap.add_argument('--sem-filmes', action='store_true', help='não converte os 28 filmes (dispensa o cjpegli; o jogo os pula)')
-    ap.add_argument('--cjpegli', type=Path, help='caminho do cjpegli, se não estiver em .tools/jpegli')
-    ap.add_argument('--aceitar-iso-desconhecida', action='store_true',
-                    help='segue com uma ISO de hash desconhecido se os arquivos extraídos baterem')
-    ap.add_argument('--so-conferir', action='store_true', help='só confere a ISO e o que falta instalar, sem converter')
-    ap.add_argument('--atualizar', action='store_true',
-                    help='atualiza a geração anterior em --saida: refaz só as etapas que mudaram (com a mesma ISO)')
+    ap.add_argument('iso', nargs='?', type=Path, help='game ISO (prompted if omitted)')
+    ap.add_argument('--output', type=Path, default=HERE / 'output', help='output folder (default: output/ next to this tool)')
+    ap.add_argument('--source', choices=sorted(SOURCES), help='source console (default: detected from the ISO)')
+    ap.add_argument('--jobs', type=int, choices=range(1, 17), default=4, metavar='1..16', help='maximum parallel conversion processes (default: 4)')
+    ap.add_argument('--fresh', action='store_true', help='start over without reusing completed steps')
+    ap.add_argument('--keep-work', action='store_true', help='keep the work folder after extraction and conversion')
+    ap.add_argument('--skip-movies', action='store_true', help='skip conversion of all 28 movies (cjpegli is not required; the game skips them)')
+    ap.add_argument('--cjpegli', type=Path, help='cjpegli path when it is not in .tools/jpegli')
+    ap.add_argument('--accept-unknown-iso', action='store_true',
+                    help='allow an unknown ISO hash when extracted files match')
+    ap.add_argument('--check-only', action='store_true', help='check the ISO and prerequisites without converting')
+    ap.add_argument('--update', action='store_true',
+                    help='update the previous --output generation: rerun only changed steps (same ISO)')
+    # Accept existing scripts while keeping all documented options in English.
+    ap.add_argument('--saida', dest='output', type=Path, default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+    ap.add_argument('--fonte', dest='source', choices=sorted(SOURCES), default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+    ap.add_argument('--do-zero', dest='fresh', action='store_true', default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+    ap.add_argument('--manter-trabalho', dest='keep_work', action='store_true', default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+    ap.add_argument('--sem-filmes', dest='skip_movies', action='store_true', default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+    ap.add_argument('--aceitar-iso-desconhecida', dest='accept_unknown_iso', action='store_true', default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+    ap.add_argument('--so-conferir', dest='check_only', action='store_true', default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+    ap.add_argument('--atualizar', dest='update', action='store_true', default=argparse.SUPPRESS, help=argparse.SUPPRESS)
     args = ap.parse_args()
     t_start = time.monotonic()
     try:
-        say('NFSU2 PSP: gerar o jogo a partir da sua ISO\n')
+        say('NFSU2 PSP: generate the game from your own ISO\n')
         if args.iso is None:
-            entered = input('Arraste a ISO para esta janela e tecle Enter: ').strip().strip('"\'')
+            entered = input('Drag the ISO into this window and press Enter: ').strip().strip('"\'')
             args.iso = Path(entered.replace('\\ ', ' ')).expanduser()
         iso = args.iso.expanduser().resolve()
         iso_size_ok(iso)
         release = validate_release()
         if release.get('version'):
-            say(f'Versão {release["version"]} (CHANGELOG.md)\n')
+            say(f'Version {release["version"]} (CHANGELOG.md)\n')
         problems, cjpegli = preflight(args)
         if problems:
-            raise Failure('falta preparar o computador:\n' + '\n'.join(f'  - {p}' for p in problems))
-        say('1. Conferindo a ISO')
-        source = SOURCES[args.fonte] if args.fonte else next((s for s in SOURCES.values() if s.recognise(iso)), None)
+            raise Failure('this computer needs preparation:\n' + '\n'.join(f'  - {p}' for p in problems))
+        say('1. Checking the ISO')
+        source = SOURCES[args.source] if args.source else next((s for s in SOURCES.values() if s.recognise(iso)), None)
         if source is None:
-            raise Failure(f'{iso.name} não parece uma ISO de NFSU2 de nenhuma fonte suportada ({", ".join(sorted(SOURCES))}).')
+            raise Failure(f'{iso.name} does not look like a supported NFSU2 ISO ({", ".join(sorted(SOURCES))}).')
         if source.available and not source.recognise(iso):
-            raise Failure(f'{iso.name} não parece uma imagem de disco do {source.name}.')
+            raise Failure(f'{iso.name} does not look like a {source.name} disc image.')
         if not source.available:
-            raise Failure(f'a fonte {source.name} ainda não está disponível nesta versão: {source.note}')
-        digest = sha256(iso, 'hash da ISO')
+            raise Failure(f'the {source.name} source is not available in this version yet: {source.note}')
+        digest = sha256(iso, 'ISO hash')
         known = source.known_isos.get(digest)
         if known:
-            say(f'  ISO reconhecida: {known}')
+            say(f'  Recognized ISO: {known}')
         else:
-            say(f'  hash {digest[:16]}… desconhecido: os arquivos extraídos serão conferidos um a um.')
-        if args.so_conferir:
-            say('\nTudo pronto para converter.')
+            say(f'  hash {digest[:16]}… is unknown: extracted files will be checked individually.')
+        if args.check_only:
+            say('\nReady to convert.')
             return 0
-        out = args.saida.expanduser().resolve()
+        out = args.output.expanduser().resolve()
         identity = build_identity(digest, source, args, release)
         disc = f'{source.name}:{digest}'
         work, logs = out / '.trabalho', out / 'registros'
         old = None
-        if args.atualizar:
+        if args.update:
             old = previous_generation(out)
             # an update starts afresh (a full generation's steps done are not this one's)
             if work.exists():
@@ -862,10 +870,10 @@ def main():
             if logs.exists():
                 shutil.rmtree(logs)
         else:
-            prepare_out(out, args.do_zero, identity)
+            prepare_out(out, args.fresh, identity)
         free = disk_free_gb(out)
         if free < DISK_NEEDED_GB:
-            raise Failure(f'pouco espaço em disco: {free:.0f} GB livres em {out}, a conversão precisa de ~{DISK_NEEDED_GB} GB.')
+            raise Failure(f'low disk space: {free:.0f} GB free at {out}; conversion needs about {DISK_NEEDED_GB} GB.')
         work.mkdir(exist_ok=True)
         logs.mkdir(exist_ok=True)
         done_file = work / 'etapas-feitas.txt'
@@ -874,7 +882,7 @@ def main():
 
         game_dir = work / 'game' / source.name
         game_rel = source.game_root(game_dir).relative_to(work)
-        todo = steps(game_rel, movies=not args.sem_filmes, jobs=args.jobs)
+        todo = steps(game_rel, movies=not args.skip_movies, jobs=args.jobs)
         graph = graph_for(todo, source)
         runtime = runtime_identity()
         stamps = graph.stamps(lambda p: step_graph.code_sha256(HERE / p) if (HERE / p).is_file() else None,
@@ -882,43 +890,43 @@ def main():
         plan = None
         if old is not None:
             since = previous_version(old)
-            say('\n  Comparando com a geração anterior' + (f', da versão {since}' if since else '') + ' (atualização)')
+            say('\n  Comparing with the previous generation' + (f', from version {since}' if since else '') + ' (update)')
             plan, why = update_plan(out, old, graph, stamps, source, args, disc)
             if plan is None:
-                say(f'  Não dá para atualizar: {why}.\n  Gerando tudo de novo; a pasta anterior fica guardada até a nova ser conferida.')
+                say(f'  Cannot update: {why}.\n  Generating everything again; the previous folder is kept until the new one is verified.')
                 set_aside(out)
             else:
                 reused = len(todo) - len(plan['rerun'])
-                say(f'  {reused} de {len(todo)} etapas reaproveitadas da geração anterior; refazendo {len(plan["rerun"])}:')
+                say(f'  {reused} of {len(todo)} steps reused from the previous generation; rerunning {len(plan["rerun"])}:')
                 for i in sorted(plan['rerun']):
                     say(f'    - {todo[i][0]} ({plan["rerun"][i]})')
-        say('\n2. Extraindo os arquivos da ISO')
+        say('\n2. Extracting ISO files')
         if plan is not None and not any(graph.node[i]['game'] for i in plan['rerun']):
-            say('  dispensada: nenhuma etapa a refazer lê o disco (a ISO é a mesma pelo hash).')
-        elif 'extração' not in done:
+            say('  skipped: no rerun step reads the disc (the ISO hash matches).')
+        elif 'extraction' not in done:
             if game_dir.exists():
                 shutil.rmtree(game_dir)
             source.extract(iso, game_dir, say)
             bad = source.verify(game_dir)
             if bad:
-                if not args.aceitar_iso_desconhecida:
-                    raise Failure(f'{len(bad)} arquivos extraídos diferem do jogo esperado (ex.: {", ".join(bad[:5])}). '
-                                  f'A ISO pode ser de outra região ou versão. Para tentar assim mesmo: --aceitar-iso-desconhecida.')
-                say(f'  aviso: {len(bad)} arquivos diferem do esperado; seguindo por --aceitar-iso-desconhecida.')
+                if not args.accept_unknown_iso:
+                    raise Failure(f'{len(bad)} extracted files differ from the expected game (e.g.: {", ".join(bad[:5])}). '
+                                  f'The ISO may use a different region or version. To continue anyway: --accept-unknown-iso.')
+                say(f'  warning: {len(bad)} files differ from the reference; continuing with --accept-unknown-iso.')
             else:
-                say(f'  {source.file_count} arquivos conferidos, iguais aos do jogo esperado.')
+                say(f'  {source.file_count} files verified against the expected game.')
             with open(done_file, 'a') as f:
-                f.write('extração\n')
-            done.add('extração')
+                f.write('extraction\n')
+            done.add('extraction')
         else:
-            say('  já feita.')
+            say('  already complete.')
         setup_work(work, cjpegli)
         # the dist's source mark (n2source.mark_out), before any step: no step's output
         (work / DIST / 'source.txt').write_text(f'{source.name}\n')
 
         total = sum(s for _, s, _ in todo)
-        mode = 'várias etapas ao mesmo tempo' if graph else 'uma etapa por vez'
-        say(f'\n3. Convertendo ({len(todo)} etapas, {mode}, até {args.jobs} processos)')
+        mode = 'several steps at once' if graph else 'one step at a time'
+        say(f'\n3. Converting ({len(todo)} steps, {mode}, up to {args.jobs} processes)')
 
         def run_one(i):
             name, secs, cmd = todo[i]
@@ -939,7 +947,7 @@ def main():
                 p.unlink()
         subprocess.run([sys.executable, 'tools/data_id.py'], cwd=work, env=env, stdout=subprocess.DEVNULL, check=True)
 
-        say('\n4. Montando a pasta do cartão')
+        say('\n4. Assembling the memory card folder')
         set_aside(out)
         package(work, out, logs, env)
         # Bind the marker to actual final logical payloads, including patched bars.
@@ -950,7 +958,7 @@ def main():
         size = sum(p.stat().st_size for p in game.iterdir())
         work_bytes = sum(p.stat().st_size for p in work.rglob('*') if p.is_file() and not p.is_symlink())
 
-        say('\n5. Conferindo contra a build de referência')
+        say('\n5. Checking against the reference build')
         manifest = HERE / 'manifests' / f'{release["candidate"]}-{source.name}.json'
         if not manifest.exists() and source.name == 'xbox':
             manifest = HERE / 'manifests' / f'{release["candidate"]}.json'
@@ -973,14 +981,14 @@ def main():
             # issues or the release's quality status.
             report['reference_verified'] = report['approved']
             total = len(same) + len(equivalent) + len(differ) + len(missing)
-            say(f'  {len(same)} de {total} arquivos idênticos à build de referência.')
+            say(f'  {len(same)} of {total} files identical to the reference build.')
             if equivalent:
-                say(f'  {len(equivalent)} equivalentes: mesma estrutura, bytes arredondados de outro jeito por este processador '
-                    f'(filmes, áudio, geometria ou linhas de corrida; normal fora de um Mac Apple Silicon).')
+                say(f'  {len(equivalent)} equivalent: same structure, different rounding on this processor '
+                    f'(movies, audio, geometry or racing lines; expected outside Apple Silicon Macs).')
             if differ or missing or extra:
-                say(f'  diferentes: {", ".join(differ) or "nenhum"}; faltando: {", ".join(missing) or "nenhum"}; '
-                    f'a mais: {", ".join(extra) or "nenhum"}')
-                say('  (diferenças pequenas podem vir de versões diferentes do ffmpeg, lame ou numpy; o relatório tem a lista)')
+                say(f'  different: {", ".join(differ) or "none"}; missing: {", ".join(missing) or "none"}; '
+                    f'extra: {", ".join(extra) or "none"}')
+                say('  (small differences may come from different ffmpeg, lame or numpy versions; see the report for details)')
         if plan is not None:
             report['update'] = dict(from_candidate=old.get('candidate'), from_version=previous_version(old),
                                     from_tools_sha256=old.get('tools_sha256'),
@@ -993,8 +1001,8 @@ def main():
             if (out / '.anterior/PSP').is_dir():
                 shutil.move(str(out / 'PSP'), str(work / 'PSP-nova'))
                 shutil.move(str(out / '.anterior/PSP'), str(out / 'PSP'))
-                say('A pasta nova não passou na conferência: ficou em .trabalho/PSP-nova, e a anterior voltou para PSP.')
-            say('Pacote gerado para diagnóstico, mas NÃO validado contra a referência. Veja relatorio.json; o trabalho foi preservado.')
+                say('The new folder failed verification: it remains in .trabalho/PSP-nova, and the previous folder was restored to PSP.')
+            say('Diagnostic package generated, but NOT verified against the reference. See relatorio.json; working files were preserved.')
             return 2
         if (out / '.anterior').exists():
             shutil.rmtree(out / '.anterior')
@@ -1004,18 +1012,18 @@ def main():
             keep_inputs(graph, work, out, package_files(game))
             (out / STATE).write_text(json.dumps(dict(schema=1, tools_sha256=identity['tools_sha256'], disc=disc, runtime=runtime,
                                                      stamps=dict(zip(graph.names, stamps))), indent=0) + '\n')
-        if not args.manter_trabalho:
+        if not args.keep_work:
             shutil.rmtree(work)
-        say(f'\nPronto em {human(time.monotonic() - t_start)}: {game}')
-        say(f'  {report["files"]} arquivos, {size / 2**30:.1f} GB. Para instalar no PSP, veja LEIA-ME.md, "Instalar no PSP".')
+        say(f'\nFinished in {human(time.monotonic() - t_start)}: {game}')
+        say(f'  {report["files"]} files, {size / 2**30:.1f} GB. For PSP installation, see README.md, "Install on PSP".')
         if report['known_issues']:
-            say('  Limitações conhecidas deste beta: veja LIMITACOES.md.')
+            say('  Known beta limitations: see KNOWN_ISSUES.md.')
         return 0
     except (Failure, SourceError) as e:
-        say(f'\nERRO: {e}')
+        say(f'\nERROR: {e}')
         return 1
     except KeyboardInterrupt:
-        say('\nInterrompido. Rode o mesmo comando para continuar de onde parou.')
+        say('\nInterrupted. Run the same command to resume.')
         return 130
 
 

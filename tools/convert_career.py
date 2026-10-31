@@ -545,7 +545,7 @@ def career_world(game, globalb, rows, races):
         cars = x['record']['rival_cars']
         for c in cars:
             if c != random and c not in by_hash:
-                raise ValueError(f"{x['record']['name']}: rival num preset 0x{c:08x} sem arquivo em presets/rivals")
+                raise ValueError(f"{x['record']['name']}: rival in preset 0x{c:08x} has no file in presets/rivals")
         out += struct.pack('<5B3x', *([0xff if c == random else by_hash[c] for c in cars] + [0xff] * 5)[:5])
     # version 12: per row, its record's trigger zone (the street's place
     # of the race, often far from the course's start)

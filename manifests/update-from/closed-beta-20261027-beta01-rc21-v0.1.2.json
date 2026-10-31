@@ -156,32 +156,32 @@
   "ps2": {
    "movies": [
     [
-     "carro da vitrine",
+     "showroom car",
      [
       "tools/convert_car.py"
      ]
     ],
     [
-     "cidade",
+     "city",
      [
       "tools/convert_city.py",
       "--no-precull"
      ]
     ],
     [
-     "visibilidade da cidade",
+     "city visibility",
      [
       "tools/convert_pvs.py"
      ]
     ],
     [
-     "objetos derrub\u00e1veis",
+     "breakable objects",
      [
       "tools/convert_smokeables.py"
      ]
     ],
     [
-     "ruas",
+     "roads",
      [
       "tools/convert_routes.py"
      ]
@@ -193,25 +193,25 @@
      ]
     ],
     [
-     "faixas",
+     "lanes",
      [
       "tools/convert_lanes.py"
      ]
     ],
     [
-     "corridas da cidade",
+     "city races",
      [
       "tools/convert_races.py"
      ]
     ],
     [
-     "zonas de reset",
+     "reset zones",
      [
       "tools/convert_resetzones.py"
      ]
     ],
     [
-     "pista L4RB",
+     "track L4RB",
      [
       "tools/convert_city.py",
       "--track",
@@ -220,7 +220,7 @@
      ]
     ],
     [
-     "ruas da pista L4RB",
+     "track roads L4RB",
      [
       "tools/convert_routes.py",
       "--track",
@@ -228,7 +228,7 @@
      ]
     ],
     [
-     "corridas da pista L4RB",
+     "track races L4RB",
      [
       "tools/convert_races.py",
       "--track",
@@ -236,7 +236,7 @@
      ]
     ],
     [
-     "pista L4RC",
+     "track L4RC",
      [
       "tools/convert_city.py",
       "--track",
@@ -245,7 +245,7 @@
      ]
     ],
     [
-     "ruas da pista L4RC",
+     "track roads L4RC",
      [
       "tools/convert_routes.py",
       "--track",
@@ -253,7 +253,7 @@
      ]
     ],
     [
-     "corridas da pista L4RC",
+     "track races L4RC",
      [
       "tools/convert_races.py",
       "--track",
@@ -261,7 +261,7 @@
      ]
     ],
     [
-     "pista L4RD",
+     "track L4RD",
      [
       "tools/convert_city.py",
       "--track",
@@ -270,7 +270,7 @@
      ]
     ],
     [
-     "ruas da pista L4RD",
+     "track roads L4RD",
      [
       "tools/convert_routes.py",
       "--track",
@@ -278,7 +278,7 @@
      ]
     ],
     [
-     "corridas da pista L4RD",
+     "track races L4RD",
      [
       "tools/convert_races.py",
       "--track",
@@ -286,7 +286,7 @@
      ]
     ],
     [
-     "pista L4RF",
+     "track L4RF",
      [
       "tools/convert_city.py",
       "--track",
@@ -295,7 +295,7 @@
      ]
     ],
     [
-     "ruas da pista L4RF",
+     "track roads L4RF",
      [
       "tools/convert_routes.py",
       "--track",
@@ -303,7 +303,7 @@
      ]
     ],
     [
-     "corridas da pista L4RF",
+     "track races L4RF",
      [
       "tools/convert_races.py",
       "--track",
@@ -311,7 +311,7 @@
      ]
     ],
     [
-     "pista L4RG",
+     "track L4RG",
      [
       "tools/convert_city.py",
       "--track",
@@ -320,7 +320,7 @@
      ]
     ],
     [
-     "ruas da pista L4RG",
+     "track roads L4RG",
      [
       "tools/convert_routes.py",
       "--track",
@@ -328,7 +328,7 @@
      ]
     ],
     [
-     "corridas da pista L4RG",
+     "track races L4RG",
      [
       "tools/convert_races.py",
       "--track",
@@ -336,13 +336,13 @@
      ]
     ],
     [
-     "c\u00e2meras do replay",
+     "replay cameras",
      [
       "tools/convert_tvcams.py"
      ]
     ],
     [
-     "limites da geometria",
+     "geometry bounds",
      [
       "glob",
       "tools/n2cy_bounds.py",
@@ -350,7 +350,7 @@
      ]
     ],
     [
-     "ordem das texturas da cidade",
+     "city texture order",
      [
       "tools/n2cy_texorder.py",
       "--if-unordered",
@@ -358,7 +358,7 @@
      ]
     ],
     [
-     "horizonte distante",
+     "distant skyline",
      [
       "tools/convert_landmarks.py",
       "--lod",
@@ -383,194 +383,194 @@
      ]
     ],
     [
-     "linhas de corrida",
+     "racing lines",
      [
       "tools/racing_line.py"
      ]
     ],
     [
-     "velocidade das linhas",
+     "racing line speeds",
      [
       "tools/line_speeds.py"
      ]
     ],
     [
-     "desvios das linhas",
+     "racing line forks",
      [
       "tools/line_forks.py"
      ]
     ],
     [
-     "carreira",
+     "career",
      [
       "tools/convert_career.py"
      ]
     ],
     [
-     "carros",
+     "cars",
      [
       "tools/convert_cars.py"
      ]
     ],
     [
-     "pacotes de desempenho",
+     "performance packages",
      [
       "tools/convert_perf.py"
      ]
     ],
     [
-     "regras do drift e do drag",
+     "drift and drag rules",
      [
       "tools/convert_modes.py"
      ]
     ],
     [
-     "estilo",
+     "style",
      [
       "tools/convert_style.py"
      ]
     ],
     [
-     "dificuldade",
+     "difficulty",
      [
       "tools/convert_difficulty.py"
      ]
     ],
     [
-     "regras do tr\u00e2nsito",
+     "traffic rules",
      [
       "tools/convert_traffic_rules.py"
      ]
     ],
     [
-     "pinturas",
+     "paints",
      [
       "tools/convert_paints.py"
      ]
     ],
     [
-     "garagem",
+     "garage",
      [
       "tools/convert_garage.py"
      ]
     ],
     [
-     "rodas",
+     "rims",
      [
       "tools/convert_rims.py"
      ]
     ],
     [
-     "nomes das rodas",
+     "rim names",
      [
       "tools/convert_rims.py",
       "--styles"
      ]
     ],
     [
-     "nomes das pe\u00e7as",
+     "part names",
      [
       "tools/convert_partnames.py"
      ]
     ],
     [
-     "vinis",
+     "vinyls",
      [
       "tools/convert_vinyls.py"
      ]
     ],
     [
-     "pontos do visual",
+     "visual rating",
      [
       "tools/convert_rating.py"
      ]
     ],
     [
-     "revistas",
+     "magazines",
      [
       "tools/convert_magazines.py"
      ]
     ],
     [
-     "telas e HUD",
+     "screens and HUD",
      [
       "tools/convert_hud.py"
      ]
     ],
     [
-     "marcadores de evento",
+     "event markers",
      [
       "tools/convert_trigfx.py"
      ]
     ],
     [
-     "tela de controles",
+     "controls screen",
      [
       "tools/convert_psp_pad.py"
      ]
     ],
     [
-     "chuva",
+     "rain",
      [
       "tools/convert_weather.py"
      ]
     ],
     [
-     "som ambiente",
+     "ambient sound",
      [
       "tools/convert_envsound.py"
      ]
     ],
     [
-     "neblina",
+     "fog",
      [
       "tools/convert_fog.py"
      ]
     ],
     [
-     "luzes",
+     "lights",
      [
       "tools/convert_lights.py"
      ]
     ],
     [
-     "mundo animado",
+     "world animation",
      [
       "tools/convert_worldanim.py"
      ]
     ],
     [
-     "cena dos menus",
+     "menu scene",
      [
       "tools/convert_frontend.py"
      ]
     ],
     [
-     "cenas de largada",
+     "race intro scenes",
      [
       "tools/convert_intro_nis.py"
      ]
     ],
     [
-     "cenas de chegada",
+     "race ending scenes",
      [
       "tools/convert_ending_nis.py"
      ]
     ],
     [
-     "cenas das lojas",
+     "shop scenes",
      [
       "tools/convert_shop_nis.py"
      ]
     ],
     [
-     "tr\u00e2nsito",
+     "traffic",
      [
       "tools/convert_traffic.py"
      ]
     ],
     [
-     "c\u00e9u",
+     "sky",
      [
       "tools/convert_sky.py"
      ]
@@ -582,13 +582,13 @@
      ]
     ],
     [
-     "f\u00edsica",
+     "physics",
      [
       "tools/convert_physics.py"
      ]
     ],
     [
-     "fontes originais da f\u00edsica",
+     "original physics data",
      [
       "tools/convert_original_data.py",
       "--game",
@@ -596,27 +596,27 @@
      ]
     ],
     [
-     "\u00e1udio",
+     "audio",
      [
       "tools/convert_audio.py"
      ]
     ],
     [
-     "filmes",
+     "movies",
      [
       "tools/convert_movies.py",
       "--missing"
      ]
     ],
     [
-     "confer\u00eancia dos filmes",
+     "movie verification",
      [
       "tools/movie_release.py",
       "dist/PSP/GAME/NFSU2VIEW"
      ]
     ],
     [
-     "carro rival eclipse",
+     "opponent car eclipse",
      [
       "tools/convert_car.py",
       "--preset",
@@ -626,7 +626,7 @@
      ]
     ],
     [
-     "carro rival imprezawrx",
+     "opponent car imprezawrx",
      [
       "tools/convert_car.py",
       "--preset",
@@ -636,7 +636,7 @@
      ]
     ],
     [
-     "carro rival lancerevo8",
+     "opponent car lancerevo8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -646,7 +646,7 @@
      ]
     ],
     [
-     "carro rival rx8",
+     "opponent car rx8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -656,7 +656,7 @@
      ]
     ],
     [
-     "carro rival skyline",
+     "opponent car skyline",
      [
       "tools/convert_car.py",
       "--preset",
@@ -666,7 +666,7 @@
      ]
     ],
     [
-     "carro rival supra",
+     "opponent car supra",
      [
       "tools/convert_car.py",
       "--preset",
@@ -676,7 +676,7 @@
      ]
     ],
     [
-     "carro rival AL_RX8",
+     "opponent car AL_RX8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -686,7 +686,7 @@
      ]
     ],
     [
-     "carro rival CALEB_GTO",
+     "opponent car CALEB_GTO",
      [
       "tools/convert_car.py",
       "--preset",
@@ -696,7 +696,7 @@
      ]
     ],
     [
-     "carro rival MARCUS_CELICA",
+     "opponent car MARCUS_CELICA",
      [
       "tools/convert_car.py",
       "--preset",
@@ -706,7 +706,7 @@
      ]
     ],
     [
-     "carro rival NIGEL_3000GT",
+     "opponent car NIGEL_3000GT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -716,7 +716,7 @@
      ]
     ],
     [
-     "carro rival NIKKI_MUSTANGGT",
+     "opponent car NIKKI_MUSTANGGT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -726,7 +726,7 @@
      ]
     ],
     [
-     "carro rival SCOTT_TT",
+     "opponent car SCOTT_TT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -736,7 +736,7 @@
      ]
     ],
     [
-     "carro rival TOM_G35",
+     "opponent car TOM_G35",
      [
       "tools/convert_car.py",
       "--preset",
@@ -748,32 +748,32 @@
    ],
    "none": [
     [
-     "carro da vitrine",
+     "showroom car",
      [
       "tools/convert_car.py"
      ]
     ],
     [
-     "cidade",
+     "city",
      [
       "tools/convert_city.py",
       "--no-precull"
      ]
     ],
     [
-     "visibilidade da cidade",
+     "city visibility",
      [
       "tools/convert_pvs.py"
      ]
     ],
     [
-     "objetos derrub\u00e1veis",
+     "breakable objects",
      [
       "tools/convert_smokeables.py"
      ]
     ],
     [
-     "ruas",
+     "roads",
      [
       "tools/convert_routes.py"
      ]
@@ -785,25 +785,25 @@
      ]
     ],
     [
-     "faixas",
+     "lanes",
      [
       "tools/convert_lanes.py"
      ]
     ],
     [
-     "corridas da cidade",
+     "city races",
      [
       "tools/convert_races.py"
      ]
     ],
     [
-     "zonas de reset",
+     "reset zones",
      [
       "tools/convert_resetzones.py"
      ]
     ],
     [
-     "pista L4RB",
+     "track L4RB",
      [
       "tools/convert_city.py",
       "--track",
@@ -812,7 +812,7 @@
      ]
     ],
     [
-     "ruas da pista L4RB",
+     "track roads L4RB",
      [
       "tools/convert_routes.py",
       "--track",
@@ -820,7 +820,7 @@
      ]
     ],
     [
-     "corridas da pista L4RB",
+     "track races L4RB",
      [
       "tools/convert_races.py",
       "--track",
@@ -828,7 +828,7 @@
      ]
     ],
     [
-     "pista L4RC",
+     "track L4RC",
      [
       "tools/convert_city.py",
       "--track",
@@ -837,7 +837,7 @@
      ]
     ],
     [
-     "ruas da pista L4RC",
+     "track roads L4RC",
      [
       "tools/convert_routes.py",
       "--track",
@@ -845,7 +845,7 @@
      ]
     ],
     [
-     "corridas da pista L4RC",
+     "track races L4RC",
      [
       "tools/convert_races.py",
       "--track",
@@ -853,7 +853,7 @@
      ]
     ],
     [
-     "pista L4RD",
+     "track L4RD",
      [
       "tools/convert_city.py",
       "--track",
@@ -862,7 +862,7 @@
      ]
     ],
     [
-     "ruas da pista L4RD",
+     "track roads L4RD",
      [
       "tools/convert_routes.py",
       "--track",
@@ -870,7 +870,7 @@
      ]
     ],
     [
-     "corridas da pista L4RD",
+     "track races L4RD",
      [
       "tools/convert_races.py",
       "--track",
@@ -878,7 +878,7 @@
      ]
     ],
     [
-     "pista L4RF",
+     "track L4RF",
      [
       "tools/convert_city.py",
       "--track",
@@ -887,7 +887,7 @@
      ]
     ],
     [
-     "ruas da pista L4RF",
+     "track roads L4RF",
      [
       "tools/convert_routes.py",
       "--track",
@@ -895,7 +895,7 @@
      ]
     ],
     [
-     "corridas da pista L4RF",
+     "track races L4RF",
      [
       "tools/convert_races.py",
       "--track",
@@ -903,7 +903,7 @@
      ]
     ],
     [
-     "pista L4RG",
+     "track L4RG",
      [
       "tools/convert_city.py",
       "--track",
@@ -912,7 +912,7 @@
      ]
     ],
     [
-     "ruas da pista L4RG",
+     "track roads L4RG",
      [
       "tools/convert_routes.py",
       "--track",
@@ -920,7 +920,7 @@
      ]
     ],
     [
-     "corridas da pista L4RG",
+     "track races L4RG",
      [
       "tools/convert_races.py",
       "--track",
@@ -928,13 +928,13 @@
      ]
     ],
     [
-     "c\u00e2meras do replay",
+     "replay cameras",
      [
       "tools/convert_tvcams.py"
      ]
     ],
     [
-     "limites da geometria",
+     "geometry bounds",
      [
       "glob",
       "tools/n2cy_bounds.py",
@@ -942,7 +942,7 @@
      ]
     ],
     [
-     "ordem das texturas da cidade",
+     "city texture order",
      [
       "tools/n2cy_texorder.py",
       "--if-unordered",
@@ -950,7 +950,7 @@
      ]
     ],
     [
-     "horizonte distante",
+     "distant skyline",
      [
       "tools/convert_landmarks.py",
       "--lod",
@@ -975,194 +975,194 @@
      ]
     ],
     [
-     "linhas de corrida",
+     "racing lines",
      [
       "tools/racing_line.py"
      ]
     ],
     [
-     "velocidade das linhas",
+     "racing line speeds",
      [
       "tools/line_speeds.py"
      ]
     ],
     [
-     "desvios das linhas",
+     "racing line forks",
      [
       "tools/line_forks.py"
      ]
     ],
     [
-     "carreira",
+     "career",
      [
       "tools/convert_career.py"
      ]
     ],
     [
-     "carros",
+     "cars",
      [
       "tools/convert_cars.py"
      ]
     ],
     [
-     "pacotes de desempenho",
+     "performance packages",
      [
       "tools/convert_perf.py"
      ]
     ],
     [
-     "regras do drift e do drag",
+     "drift and drag rules",
      [
       "tools/convert_modes.py"
      ]
     ],
     [
-     "estilo",
+     "style",
      [
       "tools/convert_style.py"
      ]
     ],
     [
-     "dificuldade",
+     "difficulty",
      [
       "tools/convert_difficulty.py"
      ]
     ],
     [
-     "regras do tr\u00e2nsito",
+     "traffic rules",
      [
       "tools/convert_traffic_rules.py"
      ]
     ],
     [
-     "pinturas",
+     "paints",
      [
       "tools/convert_paints.py"
      ]
     ],
     [
-     "garagem",
+     "garage",
      [
       "tools/convert_garage.py"
      ]
     ],
     [
-     "rodas",
+     "rims",
      [
       "tools/convert_rims.py"
      ]
     ],
     [
-     "nomes das rodas",
+     "rim names",
      [
       "tools/convert_rims.py",
       "--styles"
      ]
     ],
     [
-     "nomes das pe\u00e7as",
+     "part names",
      [
       "tools/convert_partnames.py"
      ]
     ],
     [
-     "vinis",
+     "vinyls",
      [
       "tools/convert_vinyls.py"
      ]
     ],
     [
-     "pontos do visual",
+     "visual rating",
      [
       "tools/convert_rating.py"
      ]
     ],
     [
-     "revistas",
+     "magazines",
      [
       "tools/convert_magazines.py"
      ]
     ],
     [
-     "telas e HUD",
+     "screens and HUD",
      [
       "tools/convert_hud.py"
      ]
     ],
     [
-     "marcadores de evento",
+     "event markers",
      [
       "tools/convert_trigfx.py"
      ]
     ],
     [
-     "tela de controles",
+     "controls screen",
      [
       "tools/convert_psp_pad.py"
      ]
     ],
     [
-     "chuva",
+     "rain",
      [
       "tools/convert_weather.py"
      ]
     ],
     [
-     "som ambiente",
+     "ambient sound",
      [
       "tools/convert_envsound.py"
      ]
     ],
     [
-     "neblina",
+     "fog",
      [
       "tools/convert_fog.py"
      ]
     ],
     [
-     "luzes",
+     "lights",
      [
       "tools/convert_lights.py"
      ]
     ],
     [
-     "mundo animado",
+     "world animation",
      [
       "tools/convert_worldanim.py"
      ]
     ],
     [
-     "cena dos menus",
+     "menu scene",
      [
       "tools/convert_frontend.py"
      ]
     ],
     [
-     "cenas de largada",
+     "race intro scenes",
      [
       "tools/convert_intro_nis.py"
      ]
     ],
     [
-     "cenas de chegada",
+     "race ending scenes",
      [
       "tools/convert_ending_nis.py"
      ]
     ],
     [
-     "cenas das lojas",
+     "shop scenes",
      [
       "tools/convert_shop_nis.py"
      ]
     ],
     [
-     "tr\u00e2nsito",
+     "traffic",
      [
       "tools/convert_traffic.py"
      ]
     ],
     [
-     "c\u00e9u",
+     "sky",
      [
       "tools/convert_sky.py"
      ]
@@ -1174,13 +1174,13 @@
      ]
     ],
     [
-     "f\u00edsica",
+     "physics",
      [
       "tools/convert_physics.py"
      ]
     ],
     [
-     "fontes originais da f\u00edsica",
+     "original physics data",
      [
       "tools/convert_original_data.py",
       "--game",
@@ -1188,13 +1188,13 @@
      ]
     ],
     [
-     "\u00e1udio",
+     "audio",
      [
       "tools/convert_audio.py"
      ]
     ],
     [
-     "carro rival eclipse",
+     "opponent car eclipse",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1204,7 +1204,7 @@
      ]
     ],
     [
-     "carro rival imprezawrx",
+     "opponent car imprezawrx",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1214,7 +1214,7 @@
      ]
     ],
     [
-     "carro rival lancerevo8",
+     "opponent car lancerevo8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1224,7 +1224,7 @@
      ]
     ],
     [
-     "carro rival rx8",
+     "opponent car rx8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1234,7 +1234,7 @@
      ]
     ],
     [
-     "carro rival skyline",
+     "opponent car skyline",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1244,7 +1244,7 @@
      ]
     ],
     [
-     "carro rival supra",
+     "opponent car supra",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1254,7 +1254,7 @@
      ]
     ],
     [
-     "carro rival AL_RX8",
+     "opponent car AL_RX8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1264,7 +1264,7 @@
      ]
     ],
     [
-     "carro rival CALEB_GTO",
+     "opponent car CALEB_GTO",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1274,7 +1274,7 @@
      ]
     ],
     [
-     "carro rival MARCUS_CELICA",
+     "opponent car MARCUS_CELICA",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1284,7 +1284,7 @@
      ]
     ],
     [
-     "carro rival NIGEL_3000GT",
+     "opponent car NIGEL_3000GT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1294,7 +1294,7 @@
      ]
     ],
     [
-     "carro rival NIKKI_MUSTANGGT",
+     "opponent car NIKKI_MUSTANGGT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1304,7 +1304,7 @@
      ]
     ],
     [
-     "carro rival SCOTT_TT",
+     "opponent car SCOTT_TT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1314,7 +1314,7 @@
      ]
     ],
     [
-     "carro rival TOM_G35",
+     "opponent car TOM_G35",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1328,32 +1328,32 @@
   "xbox": {
    "movies": [
     [
-     "carro da vitrine",
+     "showroom car",
      [
       "tools/convert_car.py"
      ]
     ],
     [
-     "cidade",
+     "city",
      [
       "tools/convert_city.py",
       "--no-precull"
      ]
     ],
     [
-     "visibilidade da cidade",
+     "city visibility",
      [
       "tools/convert_pvs.py"
      ]
     ],
     [
-     "objetos derrub\u00e1veis",
+     "breakable objects",
      [
       "tools/convert_smokeables.py"
      ]
     ],
     [
-     "ruas",
+     "roads",
      [
       "tools/convert_routes.py"
      ]
@@ -1365,25 +1365,25 @@
      ]
     ],
     [
-     "faixas",
+     "lanes",
      [
       "tools/convert_lanes.py"
      ]
     ],
     [
-     "corridas da cidade",
+     "city races",
      [
       "tools/convert_races.py"
      ]
     ],
     [
-     "zonas de reset",
+     "reset zones",
      [
       "tools/convert_resetzones.py"
      ]
     ],
     [
-     "pista L4RB",
+     "track L4RB",
      [
       "tools/convert_city.py",
       "--track",
@@ -1392,7 +1392,7 @@
      ]
     ],
     [
-     "ruas da pista L4RB",
+     "track roads L4RB",
      [
       "tools/convert_routes.py",
       "--track",
@@ -1400,7 +1400,7 @@
      ]
     ],
     [
-     "corridas da pista L4RB",
+     "track races L4RB",
      [
       "tools/convert_races.py",
       "--track",
@@ -1408,7 +1408,7 @@
      ]
     ],
     [
-     "pista L4RC",
+     "track L4RC",
      [
       "tools/convert_city.py",
       "--track",
@@ -1417,7 +1417,7 @@
      ]
     ],
     [
-     "ruas da pista L4RC",
+     "track roads L4RC",
      [
       "tools/convert_routes.py",
       "--track",
@@ -1425,7 +1425,7 @@
      ]
     ],
     [
-     "corridas da pista L4RC",
+     "track races L4RC",
      [
       "tools/convert_races.py",
       "--track",
@@ -1433,7 +1433,7 @@
      ]
     ],
     [
-     "pista L4RD",
+     "track L4RD",
      [
       "tools/convert_city.py",
       "--track",
@@ -1442,7 +1442,7 @@
      ]
     ],
     [
-     "ruas da pista L4RD",
+     "track roads L4RD",
      [
       "tools/convert_routes.py",
       "--track",
@@ -1450,7 +1450,7 @@
      ]
     ],
     [
-     "corridas da pista L4RD",
+     "track races L4RD",
      [
       "tools/convert_races.py",
       "--track",
@@ -1458,7 +1458,7 @@
      ]
     ],
     [
-     "pista L4RF",
+     "track L4RF",
      [
       "tools/convert_city.py",
       "--track",
@@ -1467,7 +1467,7 @@
      ]
     ],
     [
-     "ruas da pista L4RF",
+     "track roads L4RF",
      [
       "tools/convert_routes.py",
       "--track",
@@ -1475,7 +1475,7 @@
      ]
     ],
     [
-     "corridas da pista L4RF",
+     "track races L4RF",
      [
       "tools/convert_races.py",
       "--track",
@@ -1483,7 +1483,7 @@
      ]
     ],
     [
-     "pista L4RG",
+     "track L4RG",
      [
       "tools/convert_city.py",
       "--track",
@@ -1492,7 +1492,7 @@
      ]
     ],
     [
-     "ruas da pista L4RG",
+     "track roads L4RG",
      [
       "tools/convert_routes.py",
       "--track",
@@ -1500,7 +1500,7 @@
      ]
     ],
     [
-     "corridas da pista L4RG",
+     "track races L4RG",
      [
       "tools/convert_races.py",
       "--track",
@@ -1508,13 +1508,13 @@
      ]
     ],
     [
-     "c\u00e2meras do replay",
+     "replay cameras",
      [
       "tools/convert_tvcams.py"
      ]
     ],
     [
-     "limites da geometria",
+     "geometry bounds",
      [
       "glob",
       "tools/n2cy_bounds.py",
@@ -1522,7 +1522,7 @@
      ]
     ],
     [
-     "ordem das texturas da cidade",
+     "city texture order",
      [
       "tools/n2cy_texorder.py",
       "--if-unordered",
@@ -1530,7 +1530,7 @@
      ]
     ],
     [
-     "horizonte distante",
+     "distant skyline",
      [
       "tools/convert_landmarks.py",
       "--lod",
@@ -1555,194 +1555,194 @@
      ]
     ],
     [
-     "linhas de corrida",
+     "racing lines",
      [
       "tools/racing_line.py"
      ]
     ],
     [
-     "velocidade das linhas",
+     "racing line speeds",
      [
       "tools/line_speeds.py"
      ]
     ],
     [
-     "desvios das linhas",
+     "racing line forks",
      [
       "tools/line_forks.py"
      ]
     ],
     [
-     "carreira",
+     "career",
      [
       "tools/convert_career.py"
      ]
     ],
     [
-     "carros",
+     "cars",
      [
       "tools/convert_cars.py"
      ]
     ],
     [
-     "pacotes de desempenho",
+     "performance packages",
      [
       "tools/convert_perf.py"
      ]
     ],
     [
-     "regras do drift e do drag",
+     "drift and drag rules",
      [
       "tools/convert_modes.py"
      ]
     ],
     [
-     "estilo",
+     "style",
      [
       "tools/convert_style.py"
      ]
     ],
     [
-     "dificuldade",
+     "difficulty",
      [
       "tools/convert_difficulty.py"
      ]
     ],
     [
-     "regras do tr\u00e2nsito",
+     "traffic rules",
      [
       "tools/convert_traffic_rules.py"
      ]
     ],
     [
-     "pinturas",
+     "paints",
      [
       "tools/convert_paints.py"
      ]
     ],
     [
-     "garagem",
+     "garage",
      [
       "tools/convert_garage.py"
      ]
     ],
     [
-     "rodas",
+     "rims",
      [
       "tools/convert_rims.py"
      ]
     ],
     [
-     "nomes das rodas",
+     "rim names",
      [
       "tools/convert_rims.py",
       "--styles"
      ]
     ],
     [
-     "nomes das pe\u00e7as",
+     "part names",
      [
       "tools/convert_partnames.py"
      ]
     ],
     [
-     "vinis",
+     "vinyls",
      [
       "tools/convert_vinyls.py"
      ]
     ],
     [
-     "pontos do visual",
+     "visual rating",
      [
       "tools/convert_rating.py"
      ]
     ],
     [
-     "revistas",
+     "magazines",
      [
       "tools/convert_magazines.py"
      ]
     ],
     [
-     "telas e HUD",
+     "screens and HUD",
      [
       "tools/convert_hud.py"
      ]
     ],
     [
-     "marcadores de evento",
+     "event markers",
      [
       "tools/convert_trigfx.py"
      ]
     ],
     [
-     "tela de controles",
+     "controls screen",
      [
       "tools/convert_psp_pad.py"
      ]
     ],
     [
-     "chuva",
+     "rain",
      [
       "tools/convert_weather.py"
      ]
     ],
     [
-     "som ambiente",
+     "ambient sound",
      [
       "tools/convert_envsound.py"
      ]
     ],
     [
-     "neblina",
+     "fog",
      [
       "tools/convert_fog.py"
      ]
     ],
     [
-     "luzes",
+     "lights",
      [
       "tools/convert_lights.py"
      ]
     ],
     [
-     "mundo animado",
+     "world animation",
      [
       "tools/convert_worldanim.py"
      ]
     ],
     [
-     "cena dos menus",
+     "menu scene",
      [
       "tools/convert_frontend.py"
      ]
     ],
     [
-     "cenas de largada",
+     "race intro scenes",
      [
       "tools/convert_intro_nis.py"
      ]
     ],
     [
-     "cenas de chegada",
+     "race ending scenes",
      [
       "tools/convert_ending_nis.py"
      ]
     ],
     [
-     "cenas das lojas",
+     "shop scenes",
      [
       "tools/convert_shop_nis.py"
      ]
     ],
     [
-     "tr\u00e2nsito",
+     "traffic",
      [
       "tools/convert_traffic.py"
      ]
     ],
     [
-     "c\u00e9u",
+     "sky",
      [
       "tools/convert_sky.py"
      ]
@@ -1754,13 +1754,13 @@
      ]
     ],
     [
-     "f\u00edsica",
+     "physics",
      [
       "tools/convert_physics.py"
      ]
     ],
     [
-     "fontes originais da f\u00edsica",
+     "original physics data",
      [
       "tools/convert_original_data.py",
       "--game",
@@ -1768,27 +1768,27 @@
      ]
     ],
     [
-     "\u00e1udio",
+     "audio",
      [
       "tools/convert_audio.py"
      ]
     ],
     [
-     "filmes",
+     "movies",
      [
       "tools/convert_movies.py",
       "--missing"
      ]
     ],
     [
-     "confer\u00eancia dos filmes",
+     "movie verification",
      [
       "tools/movie_release.py",
       "dist/PSP/GAME/NFSU2VIEW"
      ]
     ],
     [
-     "carro rival eclipse",
+     "opponent car eclipse",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1798,7 +1798,7 @@
      ]
     ],
     [
-     "carro rival imprezawrx",
+     "opponent car imprezawrx",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1808,7 +1808,7 @@
      ]
     ],
     [
-     "carro rival lancerevo8",
+     "opponent car lancerevo8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1818,7 +1818,7 @@
      ]
     ],
     [
-     "carro rival rx8",
+     "opponent car rx8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1828,7 +1828,7 @@
      ]
     ],
     [
-     "carro rival skyline",
+     "opponent car skyline",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1838,7 +1838,7 @@
      ]
     ],
     [
-     "carro rival supra",
+     "opponent car supra",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1848,7 +1848,7 @@
      ]
     ],
     [
-     "carro rival AL_RX8",
+     "opponent car AL_RX8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1858,7 +1858,7 @@
      ]
     ],
     [
-     "carro rival CALEB_GTO",
+     "opponent car CALEB_GTO",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1868,7 +1868,7 @@
      ]
     ],
     [
-     "carro rival MARCUS_CELICA",
+     "opponent car MARCUS_CELICA",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1878,7 +1878,7 @@
      ]
     ],
     [
-     "carro rival NIGEL_3000GT",
+     "opponent car NIGEL_3000GT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1888,7 +1888,7 @@
      ]
     ],
     [
-     "carro rival NIKKI_MUSTANGGT",
+     "opponent car NIKKI_MUSTANGGT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1898,7 +1898,7 @@
      ]
     ],
     [
-     "carro rival SCOTT_TT",
+     "opponent car SCOTT_TT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1908,7 +1908,7 @@
      ]
     ],
     [
-     "carro rival TOM_G35",
+     "opponent car TOM_G35",
      [
       "tools/convert_car.py",
       "--preset",
@@ -1920,32 +1920,32 @@
    ],
    "none": [
     [
-     "carro da vitrine",
+     "showroom car",
      [
       "tools/convert_car.py"
      ]
     ],
     [
-     "cidade",
+     "city",
      [
       "tools/convert_city.py",
       "--no-precull"
      ]
     ],
     [
-     "visibilidade da cidade",
+     "city visibility",
      [
       "tools/convert_pvs.py"
      ]
     ],
     [
-     "objetos derrub\u00e1veis",
+     "breakable objects",
      [
       "tools/convert_smokeables.py"
      ]
     ],
     [
-     "ruas",
+     "roads",
      [
       "tools/convert_routes.py"
      ]
@@ -1957,25 +1957,25 @@
      ]
     ],
     [
-     "faixas",
+     "lanes",
      [
       "tools/convert_lanes.py"
      ]
     ],
     [
-     "corridas da cidade",
+     "city races",
      [
       "tools/convert_races.py"
      ]
     ],
     [
-     "zonas de reset",
+     "reset zones",
      [
       "tools/convert_resetzones.py"
      ]
     ],
     [
-     "pista L4RB",
+     "track L4RB",
      [
       "tools/convert_city.py",
       "--track",
@@ -1984,7 +1984,7 @@
      ]
     ],
     [
-     "ruas da pista L4RB",
+     "track roads L4RB",
      [
       "tools/convert_routes.py",
       "--track",
@@ -1992,7 +1992,7 @@
      ]
     ],
     [
-     "corridas da pista L4RB",
+     "track races L4RB",
      [
       "tools/convert_races.py",
       "--track",
@@ -2000,7 +2000,7 @@
      ]
     ],
     [
-     "pista L4RC",
+     "track L4RC",
      [
       "tools/convert_city.py",
       "--track",
@@ -2009,7 +2009,7 @@
      ]
     ],
     [
-     "ruas da pista L4RC",
+     "track roads L4RC",
      [
       "tools/convert_routes.py",
       "--track",
@@ -2017,7 +2017,7 @@
      ]
     ],
     [
-     "corridas da pista L4RC",
+     "track races L4RC",
      [
       "tools/convert_races.py",
       "--track",
@@ -2025,7 +2025,7 @@
      ]
     ],
     [
-     "pista L4RD",
+     "track L4RD",
      [
       "tools/convert_city.py",
       "--track",
@@ -2034,7 +2034,7 @@
      ]
     ],
     [
-     "ruas da pista L4RD",
+     "track roads L4RD",
      [
       "tools/convert_routes.py",
       "--track",
@@ -2042,7 +2042,7 @@
      ]
     ],
     [
-     "corridas da pista L4RD",
+     "track races L4RD",
      [
       "tools/convert_races.py",
       "--track",
@@ -2050,7 +2050,7 @@
      ]
     ],
     [
-     "pista L4RF",
+     "track L4RF",
      [
       "tools/convert_city.py",
       "--track",
@@ -2059,7 +2059,7 @@
      ]
     ],
     [
-     "ruas da pista L4RF",
+     "track roads L4RF",
      [
       "tools/convert_routes.py",
       "--track",
@@ -2067,7 +2067,7 @@
      ]
     ],
     [
-     "corridas da pista L4RF",
+     "track races L4RF",
      [
       "tools/convert_races.py",
       "--track",
@@ -2075,7 +2075,7 @@
      ]
     ],
     [
-     "pista L4RG",
+     "track L4RG",
      [
       "tools/convert_city.py",
       "--track",
@@ -2084,7 +2084,7 @@
      ]
     ],
     [
-     "ruas da pista L4RG",
+     "track roads L4RG",
      [
       "tools/convert_routes.py",
       "--track",
@@ -2092,7 +2092,7 @@
      ]
     ],
     [
-     "corridas da pista L4RG",
+     "track races L4RG",
      [
       "tools/convert_races.py",
       "--track",
@@ -2100,13 +2100,13 @@
      ]
     ],
     [
-     "c\u00e2meras do replay",
+     "replay cameras",
      [
       "tools/convert_tvcams.py"
      ]
     ],
     [
-     "limites da geometria",
+     "geometry bounds",
      [
       "glob",
       "tools/n2cy_bounds.py",
@@ -2114,7 +2114,7 @@
      ]
     ],
     [
-     "ordem das texturas da cidade",
+     "city texture order",
      [
       "tools/n2cy_texorder.py",
       "--if-unordered",
@@ -2122,7 +2122,7 @@
      ]
     ],
     [
-     "horizonte distante",
+     "distant skyline",
      [
       "tools/convert_landmarks.py",
       "--lod",
@@ -2147,194 +2147,194 @@
      ]
     ],
     [
-     "linhas de corrida",
+     "racing lines",
      [
       "tools/racing_line.py"
      ]
     ],
     [
-     "velocidade das linhas",
+     "racing line speeds",
      [
       "tools/line_speeds.py"
      ]
     ],
     [
-     "desvios das linhas",
+     "racing line forks",
      [
       "tools/line_forks.py"
      ]
     ],
     [
-     "carreira",
+     "career",
      [
       "tools/convert_career.py"
      ]
     ],
     [
-     "carros",
+     "cars",
      [
       "tools/convert_cars.py"
      ]
     ],
     [
-     "pacotes de desempenho",
+     "performance packages",
      [
       "tools/convert_perf.py"
      ]
     ],
     [
-     "regras do drift e do drag",
+     "drift and drag rules",
      [
       "tools/convert_modes.py"
      ]
     ],
     [
-     "estilo",
+     "style",
      [
       "tools/convert_style.py"
      ]
     ],
     [
-     "dificuldade",
+     "difficulty",
      [
       "tools/convert_difficulty.py"
      ]
     ],
     [
-     "regras do tr\u00e2nsito",
+     "traffic rules",
      [
       "tools/convert_traffic_rules.py"
      ]
     ],
     [
-     "pinturas",
+     "paints",
      [
       "tools/convert_paints.py"
      ]
     ],
     [
-     "garagem",
+     "garage",
      [
       "tools/convert_garage.py"
      ]
     ],
     [
-     "rodas",
+     "rims",
      [
       "tools/convert_rims.py"
      ]
     ],
     [
-     "nomes das rodas",
+     "rim names",
      [
       "tools/convert_rims.py",
       "--styles"
      ]
     ],
     [
-     "nomes das pe\u00e7as",
+     "part names",
      [
       "tools/convert_partnames.py"
      ]
     ],
     [
-     "vinis",
+     "vinyls",
      [
       "tools/convert_vinyls.py"
      ]
     ],
     [
-     "pontos do visual",
+     "visual rating",
      [
       "tools/convert_rating.py"
      ]
     ],
     [
-     "revistas",
+     "magazines",
      [
       "tools/convert_magazines.py"
      ]
     ],
     [
-     "telas e HUD",
+     "screens and HUD",
      [
       "tools/convert_hud.py"
      ]
     ],
     [
-     "marcadores de evento",
+     "event markers",
      [
       "tools/convert_trigfx.py"
      ]
     ],
     [
-     "tela de controles",
+     "controls screen",
      [
       "tools/convert_psp_pad.py"
      ]
     ],
     [
-     "chuva",
+     "rain",
      [
       "tools/convert_weather.py"
      ]
     ],
     [
-     "som ambiente",
+     "ambient sound",
      [
       "tools/convert_envsound.py"
      ]
     ],
     [
-     "neblina",
+     "fog",
      [
       "tools/convert_fog.py"
      ]
     ],
     [
-     "luzes",
+     "lights",
      [
       "tools/convert_lights.py"
      ]
     ],
     [
-     "mundo animado",
+     "world animation",
      [
       "tools/convert_worldanim.py"
      ]
     ],
     [
-     "cena dos menus",
+     "menu scene",
      [
       "tools/convert_frontend.py"
      ]
     ],
     [
-     "cenas de largada",
+     "race intro scenes",
      [
       "tools/convert_intro_nis.py"
      ]
     ],
     [
-     "cenas de chegada",
+     "race ending scenes",
      [
       "tools/convert_ending_nis.py"
      ]
     ],
     [
-     "cenas das lojas",
+     "shop scenes",
      [
       "tools/convert_shop_nis.py"
      ]
     ],
     [
-     "tr\u00e2nsito",
+     "traffic",
      [
       "tools/convert_traffic.py"
      ]
     ],
     [
-     "c\u00e9u",
+     "sky",
      [
       "tools/convert_sky.py"
      ]
@@ -2346,13 +2346,13 @@
      ]
     ],
     [
-     "f\u00edsica",
+     "physics",
      [
       "tools/convert_physics.py"
      ]
     ],
     [
-     "fontes originais da f\u00edsica",
+     "original physics data",
      [
       "tools/convert_original_data.py",
       "--game",
@@ -2360,13 +2360,13 @@
      ]
     ],
     [
-     "\u00e1udio",
+     "audio",
      [
       "tools/convert_audio.py"
      ]
     ],
     [
-     "carro rival eclipse",
+     "opponent car eclipse",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2376,7 +2376,7 @@
      ]
     ],
     [
-     "carro rival imprezawrx",
+     "opponent car imprezawrx",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2386,7 +2386,7 @@
      ]
     ],
     [
-     "carro rival lancerevo8",
+     "opponent car lancerevo8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2396,7 +2396,7 @@
      ]
     ],
     [
-     "carro rival rx8",
+     "opponent car rx8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2406,7 +2406,7 @@
      ]
     ],
     [
-     "carro rival skyline",
+     "opponent car skyline",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2416,7 +2416,7 @@
      ]
     ],
     [
-     "carro rival supra",
+     "opponent car supra",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2426,7 +2426,7 @@
      ]
     ],
     [
-     "carro rival AL_RX8",
+     "opponent car AL_RX8",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2436,7 +2436,7 @@
      ]
     ],
     [
-     "carro rival CALEB_GTO",
+     "opponent car CALEB_GTO",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2446,7 +2446,7 @@
      ]
     ],
     [
-     "carro rival MARCUS_CELICA",
+     "opponent car MARCUS_CELICA",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2456,7 +2456,7 @@
      ]
     ],
     [
-     "carro rival NIGEL_3000GT",
+     "opponent car NIGEL_3000GT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2466,7 +2466,7 @@
      ]
     ],
     [
-     "carro rival NIKKI_MUSTANGGT",
+     "opponent car NIKKI_MUSTANGGT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2476,7 +2476,7 @@
      ]
     ],
     [
-     "carro rival SCOTT_TT",
+     "opponent car SCOTT_TT",
      [
       "tools/convert_car.py",
       "--preset",
@@ -2486,7 +2486,7 @@
      ]
     ],
     [
-     "carro rival TOM_G35",
+     "opponent car TOM_G35",
      [
       "tools/convert_car.py",
       "--preset",

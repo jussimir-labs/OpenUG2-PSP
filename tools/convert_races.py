@@ -1983,7 +1983,7 @@ def string_hash(s):
 
 MARKER_NAMES = ('ForwardStartLine', 'ForwardFinishLine', 'BackwardStartLine', 'BackwardFinishLine',
                 'ForwardStartingPosition', 'BackwardStartingPosition')
-GRID_SLOTS = 8          # vagas do grid por sentido (CalculateRacerPositions pede até 6)
+GRID_SLOTS = 8          # grid slots per direction (CalculateRacerPositions requests up to 6)
 
 
 def read_markers(game, track):

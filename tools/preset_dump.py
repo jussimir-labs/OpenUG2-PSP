@@ -165,7 +165,7 @@ def describe(table, preset, every=False):
     for slot, v in enumerate(preset['slots']):
         if v in (0, 1):
             if every:
-                rows.append(dict(slot=slot, name=SLOT_NAMES[slot], state='vazio' if v == 0 else 'de série'))
+                rows.append(dict(slot=slot, name=SLOT_NAMES[slot], state='empty' if v == 0 else 'stock'))
             continue
         q = table.find(slot, v, preset['car'])
         if q is None:
@@ -225,7 +225,7 @@ def to_convert_car(table, preset, game):
         if v not in (0, 1):
             q = table.find(slot, v, car)
             if q is None and not IGNORED.match(SLOT_NAMES[slot]):
-                raise ValueError(f'{SLOT_NAMES[slot]}: peça 0x{v:08x} fora da tabela')
+                raise ValueError(f'{SLOT_NAMES[slot]}: part 0x{v:08x} is not in the table')
             if q is not None:
                 parts[SLOT_NAMES[slot]] = q
     off = {table.name(val) for q in parts.values() for k, val in table.attributes(q) if k == DISABLES}
@@ -244,7 +244,7 @@ def to_convert_car(table, preset, game):
     if tint is not None and tint['title'] != 'STOCK WINDOW TINT':
         level = tint['title'].split(' ', 1)[0]
         if level not in TINT_LEVEL:
-            raise ValueError('película sem igual no port: ' + tint['title'])
+            raise ValueError('no matching window tint in the port: ' + tint['title'])
         out['window_tint'] = TINT_LEVEL[level]   # (the port's tints are black: a coloured one by its darkness)
     neon = parts.get('NEON')
     if neon is not None and neon['title'] != 'NO NEON':
@@ -290,7 +290,7 @@ def to_convert_car(table, preset, game):
             continue
         layout = next((w for w in ('MEDIUM', 'SMALL') if table.name(place['key']).endswith(w) or place['title'].endswith(w)), None)
         if layout is None:
-            raise ValueError(f'decalques de {zone} fora dos layouts médio e pequeno: {place["title"]}')
+            raise ValueError(f'{zone} decals do not fit the medium or small layouts: {place["title"]}')
         slots = [parts.get(f'DECAL_{zone}_TEX{k}') for k in range(8)]
         art = [arts.get(q['key']) if q else None for q in slots]
         while art and art[-1] is None:
@@ -311,7 +311,7 @@ def main():
     ap.add_argument('preset', nargs='?', default='DDAY_PLAYER_CAR')
     n2source.game_args(ap)
     ap.add_argument('--list', action='store_true')
-    ap.add_argument('--all', action='store_true', help='mostra também os slots vazios e de série')
+    ap.add_argument('--all', action='store_true', help='also show empty and stock slots')
     ap.add_argument('--json', action='store_true')
     ap.add_argument('--convert', action='store_true', help='o preset no formato do tools/convert_car.py')
     args = ap.parse_args()
@@ -331,7 +331,7 @@ def main():
     if args.json:
         print(json.dumps(dict(name=preset['name'], car=preset['car'], perf=preset['perf'], slots=rows), indent=1))
         return
-    print(f"{preset['name']}: {preset['car']}, desempenho nível {preset['perf']}")
+    print(f"{preset['name']}: {preset['car']}, performance level {preset['perf']}")
     for r in rows:
         if 'state' in r:
             print(f"{r['slot']:3} {r['name']:28} {r['state']}")

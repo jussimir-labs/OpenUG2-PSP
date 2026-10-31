@@ -10,4 +10,4 @@ Directed current tests passed: eight native adapter contracts; controller/mixer 
 
 Previous normal-control Drift, fresh-career/reward/native-save/cold proofs belong to RC13 e7ce and remain [historical](docs/qualification/RC13-NOTES.md), with their [original receipt](docs/qualification/RC13-QUALIFICATION.json). They have not been relabelled as new 8c51 runs. Reports #1–#5 remain open for the reporter's checks. PSP models, physical saves, 30 fps across all races, all cars/tracks and visual parity are still unapproved; 4401 rival recovery remains deferred.
 
-[Portable current receipt](docs/qualification/OVERNIGHT-QUALIFICATION.json). [Português](ptbr/NOTAS-NOTURNAS.md).
+[Portable current receipt](docs/qualification/OVERNIGHT-QUALIFICATION.json).

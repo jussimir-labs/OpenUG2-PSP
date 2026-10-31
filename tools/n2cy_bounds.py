@@ -164,7 +164,7 @@ def upgrade(src, dst=None):
         if m[:4] != b'N2MP' or struct.unpack_from('<I', m, 8)[0] != len(data):
             # made for another archive already: world.c refuses it, the
             # city draws without mipmaps (2026-10-14); build.sh redoes it
-            print(f'{mips}: mipmaps de outro arquivo, a refazer (convert_mips.py --if-stale)', file=sys.stderr)
+            print(f'{mips}: mipmaps belong to another archive; regenerate (convert_mips.py --if-stale)', file=sys.stderr)
         else:
             mt = os.stat(mips)
             struct.pack_into('<I', m, 8, len(out))

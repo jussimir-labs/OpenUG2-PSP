@@ -130,7 +130,7 @@ class GraphTests(unittest.TestCase):
 class PlanTests(unittest.TestCase):
     def plan(self, changed, files):
         g = graph()
-        rerun = {i: 'mudou' for i in changed}
+        rerun = {i: 'changed' for i in changed}
         restorable = lambda p: p.startswith(D) and p[len(D):] in files   # noqa: E731
         moved = True
         while moved:
@@ -164,7 +164,7 @@ class PlanTests(unittest.TestCase):
             files = bg.package_files(game)
             self.assertEqual(files['music.mp3'][1:], (32, 3))
             work = out / 'w'
-            plan = dict(rerun={1: 'mudou'}, files=files, cached={})
+            plan = dict(rerun={1: 'changed'}, files=files, cached={})
             bg.restore(2, g, plan, work)
             self.assertEqual((work / D / 'music.mp3').read_bytes(), b'mp3')
 
@@ -212,7 +212,7 @@ class UpdateRefusals(unittest.TestCase):
         game.mkdir(parents=True)
         (game / 'EBOOT.PBP').write_bytes(b'x')
         self.old = dict(source='ps2', iso_sha256='aa', movies=True, candidate='nope', tools_sha256='t')
-        self.args = argparse.Namespace(sem_filmes=False)
+        self.args = argparse.Namespace(skip_movies=False)
         self.source = argparse.Namespace(name='ps2')
 
     def why(self, **change):
@@ -222,12 +222,12 @@ class UpdateRefusals(unittest.TestCase):
         return why
 
     def test_reasons(self):
-        self.assertIn('fonte', self.why(source='xbox'))
-        self.assertIn('outra ISO', self.why(iso_sha256='bb'))
-        self.assertIn('filmes', self.why(movies=False))
-        self.assertIn('não conhece', self.why())     # no STATE, no update-from table for it
+        self.assertIn('used xbox', self.why(source='xbox'))
+        self.assertIn('different ISO', self.why(iso_sha256='bb'))
+        self.assertIn('movie option', self.why(movies=False))
+        self.assertIn('does not recognize', self.why())     # no STATE, no update-from table for it
         (self.out / 'PSP/GAME/NFSU2VIEW/EBOOT.PBP').unlink()
-        self.assertIn('incompleta', self.why())
+        self.assertIn('incomplete', self.why())
 
     def test_previous_generation(self):
         with self.assertRaises(bg.Failure):

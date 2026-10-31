@@ -266,11 +266,11 @@ def brake():
         return _brake[1]
     why = None
     if pressure_level() >= 4:
-        why = 'pressão de memória crítica'
+        why = 'critical memory pressure'
     else:
         d = disk_free_gb()
         if d < MIN_DISK:
-            why = f'disco com {d:.1f} GB livres (mínimo {MIN_DISK:g})'
+            why = f'disk has {d:.1f} GB free (minimum {MIN_DISK:g})'
     _brake[:] = now, why
     return why
 
@@ -381,11 +381,11 @@ class Request:
             if held:
                 why['brake'] = held
                 if self.braked != held:
-                    brake_log(f'freio ({held}): "{self.label}" segurado ({self.info["tree"]}, pid {self.info["pid"]}, peso {self.weight:g}; {len(running)} rodando seguem)')
+                    brake_log(f'emergency brake ({held}): "{self.label}" held ({self.info["tree"]}, pid {self.info["pid"]}, weight {self.weight:g}; {len(running)} running jobs continue)')
                     self.braked = held
                 return False, why
             if self.braked:
-                brake_log(f'freio solto: "{self.label}" ({self.info["tree"]}, pid {self.info["pid"]}) volta à fila')
+                brake_log(f'emergency brake released: "{self.label}" ({self.info["tree"]}, pid {self.info["pid"]}) returns to the queue')
                 self.braked = None
             if place and not running:
                 return False, why   # the oldest goes in first (with nothing running, it will)
@@ -423,17 +423,17 @@ class Request:
                 if lower:
                     lower_priority()
                 if time.time() - t0 >= 10:
-                    say(f'"{self.label}" entrou depois de {time.time() - t0:.0f} s na fila')
+                    say(f'"{self.label}" admitted after {time.time() - t0:.0f} s in the queue')
                 return
             if why.get('brake'):
-                say(f'"{self.label}" segurado pelo freio de emergência ({why["brake"]}); os {why["running"]} que rodam seguem')
+                say(f'"{self.label}" held by the emergency brake ({why["brake"]}); {why["running"]} running jobs continue')
                 time.sleep(4 * POLL)
                 continue
-            cpu = (f'CPU {why["busy"]:.1f} + {why["recent"]:g} recém-admitidos + {self.weight:g} de {capacity():.1f} núcleos'
-                   + (f', {why["free"]:.1f} GB livres de {why["need"]:.1f}' if why['need'] > 0 else '') if 'busy' in why else f'{why["running"]} rodando')
+            cpu = (f'CPU {why["busy"]:.1f} + {why["recent"]:g} newly admitted + {self.weight:g} of {capacity():.1f} cores'
+                   + (f', {why["free"]:.1f} GB free of {why["need"]:.1f} required' if why['need'] > 0 else '') if 'busy' in why else f'{why["running"]} running')
             if why.get('reserved'):
-                cpu += '; ninguém mais passa na frente'
-            say(f'"{self.label}" esperando vaga ({why["place"]}º de {why["waiting"]} na fila; {cpu})')
+                cpu += '; no more backfilling'
+            say(f'"{self.label}" waiting for a slot (position {why["place"]} of {why["waiting"]}; {cpu})')
             time.sleep(POLL if why['place'] == 1 else 4 * POLL)
 
     def release(self):
@@ -494,31 +494,31 @@ def room(weight=1):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
-    r = sub.add_parser('run', help='rodar um comando dentro de uma vaga')
-    r.add_argument('--weight', type=float, default=1, help='núcleos que o comando ocupa (padrão 1)')
-    r.add_argument('--label', help='nome na fila (padrão: o comando)')
-    r.add_argument('command', nargs=argparse.REMAINDER, help='o comando, depois de --')
-    sub.add_parser('status', help='CPU, limite e a fila')
+    r = sub.add_parser('run', help='run a command with a CPU slot')
+    r.add_argument('--weight', type=float, default=1, help='cores used by the command (default: 1)')
+    r.add_argument('--label', help='queue label (default: the command)')
+    r.add_argument('command', nargs=argparse.REMAINDER, help='command, after --')
+    sub.add_parser('status', help='CPU, limit and queue')
     a = ap.parse_args()
     if a.cmd == 'status':
         s = status()
-        floor = f'mínimo {MIN_FREE:g} + {GB_PER_CORE:g} por núcleo' if MIN_FREE or GB_PER_CORE else 'não segura a fila'
-        print(f'CPU ocupada {s["busy"]:.1f} de {s["cores"]:g} núcleos; limite {s["capacity"]:.1f} '
-              f'({LIMIT:.0%}); recém-admitidos {s["recent"]:g}; memória disponível {s["free"]:.1f} GB '
-              f'({floor}); pressão de memória {s["pressure"]} (4: crítica); disco livre {s["disk"]:.0f} GB '
-              f'(freio abaixo de {MIN_DISK:g}); fila em {DIR}')
+        floor = f'minimum {MIN_FREE:g} + {GB_PER_CORE:g} per core' if MIN_FREE or GB_PER_CORE else 'does not hold the queue'
+        print(f'CPU busy {s["busy"]:.1f} of {s["cores"]:g} cores; limit {s["capacity"]:.1f} '
+              f'({LIMIT:.0%}); newly admitted {s["recent"]:g}; available memory {s["free"]:.1f} GB '
+              f'({floor}); memory pressure {s["pressure"]} (4: critical); disk free {s["disk"]:.0f} GB '
+              f'(brake below {MIN_DISK:g}); queue at {DIR}')
         if s['brake']:
-            print(f'FREIO DE EMERGÊNCIA: {s["brake"]}; ninguém entra, os que rodam seguem (registro em {DIR / "brake.log"})')
+            print(f'EMERGENCY BRAKE: {s["brake"]}; no new admissions; running jobs continue (log at {DIR / "brake.log"})')
         now = time.time()
         for e in s['running'] + s['waiting']:
-            state = f'rodando há {now - e["admitted"]:.0f} s' if e['admitted'] else f'esperando há {now - e["queued"]:.0f} s'
+            state = f'running for {now - e["admitted"]:.0f} s' if e['admitted'] else f'waiting for {now - e["queued"]:.0f} s'
             if not e['admitted'] and now - e.get('beat', now) >= STALE:
-                state += f' (parado há {now - e["beat"]:.0f} s, passam na frente)'
-            print(f'  {state:22} peso {e["weight"]:<4g} pid {e["pid"]:<6} {e["tree"]}: {e["label"]}')
+                state += f' (stalled for {now - e["beat"]:.0f} s, backfilling allowed)'
+            print(f'  {state:22} weight {e["weight"]:<4g} pid {e["pid"]:<6} {e["tree"]}: {e["label"]}')
         return 0
     command = a.command[1:] if a.command[:1] == ['--'] else a.command
     if not command:
-        ap.error('faltou o comando (depois de --)')
+        ap.error('missing command (after --)')
     with slot(a.weight, a.label or ' '.join(Path(c).name if k == 0 else c for k, c in enumerate(command[:3]))):
         lower_priority()   # also when the queue is off: the command at nice 15 all the same
         return subprocess.run(command, env=dict(os.environ, **{HELD: '1'})).returncode

@@ -117,9 +117,9 @@ def dump_guard(proc, memstick, every=1.0):
             free = shutil.disk_usage(ms).free if ms.exists() else free_min
             why = (f'PSP/AUDIO com {audio >> 20} MB' if audio > audio_max else
                    f'PSP/VIDEO com {video >> 20} MB' if video > video_max else
-                   f'só {free >> 30} GB livres no disco' if free < free_min else None)
+                   f'only {free >> 30} GB free on disk' if free < free_min else None)
             if why:
-                print(f'ERRO dump_guard: {why} em {ms}; PPSSPP encerrado', file=sys.stderr, flush=True)
+                print(f'ERROR dump_guard: {why} in {ms}; PPSSPP stopped', file=sys.stderr, flush=True)
                 proc.kill()
                 try:
                     (ms / 'dump-guard.txt').write_text(why + '\n')
@@ -251,12 +251,12 @@ def run(game, config_line, frames, emulator=None, log=None, extra_config='', wai
     (dialog_emulator(), savedata-dialog.on); otherwise they save silently."""
     if calibrated:
         if not CALIBRATED.is_file():
-            raise SystemExit(f'PPSSPPHeadless calibrado não compilado ({CALIBRATED}): tools/setup_ppsspp_headless.sh --calib')
+            raise SystemExit(f'Calibrated PPSSPPHeadless has not been built ({CALIBRATED}): tools/setup_ppsspp_headless.sh --calib')
         emulator = str(CALIBRATED)
     if dialog:
         emulator = dialog_emulator()
         if not emulator:
-            raise SystemExit('PPSSPPHeadless de diálogo não compilado (tools/setup_ppsspp_headless.sh, PPSSPP_DIALOG_AUTO)')
+            raise SystemExit('Dialog PPSSPPHeadless has not been built (tools/setup_ppsspp_headless.sh, PPSSPP_DIALOG_AUTO)')
     emulator = emulator or default_emulator()
     game = Path(game)
     dialog_game(game, dialog)

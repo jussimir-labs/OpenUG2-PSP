@@ -147,7 +147,7 @@ def main():
         for car, n, size in pool.map(functools.partial(mac_slots.call, 'convert_vinyls', convert_car), *zip(*[(args.game, args.out, c, items) for c in cars])):
             print(f'{car}: {n} vinis, {size / 1e6:.1f} MB')
             total += size
-    print(f'{len(items)} vinis no catálogo, {len(cars)} carros, {total / 1e6:.1f} MB')
+    print(f'{len(items)} vinyls in the catalog, {len(cars)} cars, {total / 1e6:.1f} MB')
 
 
 if __name__ == '__main__':

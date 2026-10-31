@@ -415,7 +415,7 @@ def main():
     # a parallel run: no step may have read a file before its producer (by
     # the merged graph) had finished; else its order was not the sources'
     for name, path, producer in check_order(graph):
-        print(f'ORDEM: {name} começou antes de {producer} terminar e lê {path}')
+        print(f'ORDER: {name} started before {producer} finished and reads {path}')
     for s in graph:
         s.pop('began', None), s.pop('ended', None)
     args.steps.write_text(json.dumps(dict(schema=1, sources=sources, steps=graph), indent=1) + '\n')

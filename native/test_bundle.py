@@ -59,9 +59,9 @@ def fixture_probe(root):
     assert encoded == convert_audio.encode_xa(pcm), (
         "EA-XA differs from the Python reference"
     )
-    with tempfile.TemporaryDirectory(prefix="native QA ação ") as tmp:
+    with tempfile.TemporaryDirectory(prefix="native QA ☃ ") as tmp:
         tmp = Path(tmp).resolve()
-        wave = tmp / "input áudio.raw"
+        wave = tmp / "input audio.raw"
         wave.write_bytes(raw)
         resampled = execute(
             "ffmpeg",
@@ -137,8 +137,8 @@ def fixture_probe(root):
             assert len(compat) > 100 and compat[:1] == b"\xff", "LAME fallback failed"
         im = Image.new("RGB", (32, 32))
         im.putdata([(i * 19 % 256, i * 41 % 256, i * 17 % 256) for i in range(1024)])
-        ppm = tmp / "imagem ação.ppm"
-        jpg = tmp / "imagem ação.jpg"
+        ppm = tmp / "image ☃.ppm"
+        jpg = tmp / "image ☃.jpg"
         im.save(ppm)
         execute("cjpegli", ppm, jpg, "-p", "0", "--chroma_subsampling=420", "-d", "1.0")
         with Image.open(jpg) as result:
@@ -153,15 +153,15 @@ def fixture_probe(root):
         sound = chunk(
             b"SCDl", struct.pack(">III", 28, 0, len(frame)) + frame + frame
         ) + chunk(b"SCEl")
-        sch = tmp / "música ação.sch"
+        sch = tmp / "music ☃.sch"
         sch.write_bytes(sound)
         decoded = execute("eaxa2pcm", sch, 0).stdout
         assert decoded == struct.pack(
             "<56h", *[x for sample in samples for x in (sample, sample)]
         ), "EA-XA binary output changed"
         header = b"GSTR" + b"\0" * 4 + b"\x82\x01\x02\x84\x02\x7d\x00\xff"
-        movie = tmp / "filme ação.vp6"
-        out = tmp / "áudio ação.raw"
+        movie = tmp / "movie ☃.vp6"
+        out = tmp / "audio ☃.raw"
         movie.write_bytes(chunk(b"SCHl", header) + sound)
         execute("movie_audio", movie, out, 32000)
         movie_data = out.read_bytes()
@@ -215,7 +215,7 @@ def fixture_probe(root):
 def test(root, archive=False):
     # Relocation tests every absolute library reference, Python prefix, and quoting.
     original = root.resolve()
-    root = original.with_name(original.name + " QA ação")
+    root = original.with_name(original.name + " QA ☃")
     if root.exists():
         raise RuntimeError("Relocation destination already exists")
     original.rename(root)

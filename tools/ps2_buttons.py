@@ -78,13 +78,13 @@ def require(game=PS2_GAME):
     drawings stand in (own_icons). NFSU2_ALLOW_TEXT_BUTTONS=1 accepts the text."""
     icons = load(game)
     if not icons:
-        print(f'ps2_buttons: sem o disco do PS2 em {game}: ícones de botão próprios do port', file=sys.stderr)
+        print(f'ps2_buttons: no PS2 disc at {game}: using the port button icons', file=sys.stderr)
         return own_icons()
     missing = [n for n in NAMES if n not in icons]
     if missing and os.environ.get('NFSU2_ALLOW_TEXT_BUTTONS') != '1':
-        sys.exit(f'ps2_buttons: os ícones de botão do PS2 não foram lidos de {game} '
-                 f'(faltam {len(missing)} de {len(NAMES)}): os avisos sairiam em texto. '
-                 'Ponha a pasta do disco do PS2 (USA) na raiz do checkout, ou NFSU2_PS2_GAME=<.../disc/NFSUNDER>; '
+        sys.exit(f'ps2_buttons: PS2 button icons could not be read from {game} '
+                 f'({len(missing)} of {len(NAMES)} missing): prompts would use text. '
+                 'Place the US PS2 disc folder in the checkout root, or set NFSU2_PS2_GAME=<.../disc/NFSUNDER>; '
                  'NFSU2_ALLOW_TEXT_BUTTONS=1 aceita o texto.')
     return icons
 

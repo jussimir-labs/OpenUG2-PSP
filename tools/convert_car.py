@@ -88,7 +88,7 @@ def rgba_u32(c):
 def hexcolor(s):
     s = s.lstrip('#')
     if len(s) != 6:
-        raise ValueError('cor precisa de 6 dígitos hex: ' + s)
+        raise ValueError('color must contain 6 hexadecimal digits: ' + s)
     return (int(s[0:2], 16), int(s[2:4], 16), int(s[4:6], 16))
 
 
@@ -157,7 +157,7 @@ def choose_car_parts(all_parts, car, preset):
             continue
         head = f'{car}_{owner}_'
         if owner != 'KIT00' and not any(f.startswith(head) and slot_of(f[len(head):]) == slot for f in families):
-            raise ValueError(f'{car}: {owner} não tem peça {slot}')
+            raise ValueError(f'{car}: {owner} has no part {slot}')
     return families
 
 
@@ -671,7 +671,7 @@ def assemble(game, preset, lod, strict=False):
             # the model's origin it sat inside the car, unseen (beta #22)
             own_spoiler = is_spoiler(family_rest(car, family))
             if own_spoiler and SPOILER_SOCKET not in sockets:
-                raise ValueError('aerofólio de série sem socket: ' + family)
+                raise ValueError('stock spoiler has no socket: ' + family)
             b.add(part, matrix_xform(sockets[SPOILER_SOCKET]) if own_spoiler else identity, carbon_hood=carbon)
             m = re.match(re.escape(car) + r'_(BASE|KITW?\d+|STYLE\d+)_?(.*)', family)
             inside = inside_flags(m.group(2), preset.get('trunk_audio', 'KIT00'), m.group(1)) if m and preset.get('interior') else 0
@@ -698,7 +698,7 @@ def assemble(game, preset, lod, strict=False):
         lib = list(parts(archived(game, 'CARS/SPOILER/GEOMETRY.BIN'),
                          lambda n: lod_family(n) == preset['spoiler']))
         if not lib or SPOILER_SOCKET not in sockets:
-            raise ValueError('aerofólio ou socket ausente: ' + preset['spoiler'])
+            raise ValueError('missing spoiler or socket: ' + preset['spoiler'])
         if not strict or far_has(lib, lod):
             part = (far_pick if strict else pick_lod)(lib, coarser.get(preset['spoiler'], lod))
             report.append({'name': part.name, 'triangles': part.triangles})
@@ -1100,8 +1100,8 @@ def main():
     n2source.game_args(parser)
     parser.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     parser.add_argument('--skin-png', type=Path, help='grava a skin composta (debug)')
-    parser.add_argument('--tag', help='grava só a versão leve como <tag>.n2pv (oponentes)')
-    parser.add_argument('--detail', action='store_true', help='com --tag: também a detalhada, <tag>-detail.n2pv (frota)')
+    parser.add_argument('--tag', help='write only the low-detail version as <tag>.n2pv (opponents)')
+    parser.add_argument('--detail', action='store_true', help='with --tag: also write the detailed version, <tag>-detail.n2pv (fleet)')
     args = parser.parse_args()
     preset = json.loads(args.preset.read_text())
     args.out.mkdir(parents=True, exist_ok=True)

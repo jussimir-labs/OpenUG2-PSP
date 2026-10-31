@@ -8,7 +8,7 @@ With --runtime-from PACKAGE (an extracted earlier package of the same platform),
 the runtime and the helper are that package's, byte for byte, and only the
 project's files are new: a generator update whose runtime testers already have,
 so an update of their output reuses every step whose code did not change
-(build_game.py --atualizar). It also builds another platform's package.
+(build_game.py --update). It also builds another platform's package.
 """
 
 import argparse

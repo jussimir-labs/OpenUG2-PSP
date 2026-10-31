@@ -1,5 +1,5 @@
 {
- "_": "SHA-256 de cada arquivo do pacote da candidata 4t, gerado da ISO do Xbox NTSC-U no Mac de refer\u00eancia. S\u00f3 os hashes: nenhum dado do jogo.",
+ "_": "SHA-256 of each file in candidate package 4t, generated from the Xbox NTSC-U ISO on the reference Mac. Hashes only; no game data.",
  "files": {
   "EBOOT.PBP": "cbc1f7606482e42e252244268dd21a4a6172577188160d31e07593f522077c4d",
   "bar-4002.n2cy": "eeac9cb88ebcda3c95177f469f15bab27fda3a5a8600c6e6ef4a6ab4d037f281",

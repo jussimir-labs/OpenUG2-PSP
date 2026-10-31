@@ -1,5 +1,5 @@
 {
-"_": "Os arquivos do disco do Xbox (NTSC-U) que a convers\u00e3o espera: caminho, tamanho e SHA-256. S\u00e3o s\u00f3 os hashes, nenhum dado do jogo.",
+"_": "Xbox NTSC-U disc files required by conversion: path, size and SHA-256. Hashes only; no game data.",
 "files": {
 "B3/B3.xbe": [
 4177920,

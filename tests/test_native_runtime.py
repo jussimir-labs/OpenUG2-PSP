@@ -53,7 +53,7 @@ class RuntimeTests(unittest.TestCase):
             manifest = root / "bundle.json"
             manifest.write_text('{"runtime":"first"}')
             args = argparse.Namespace(
-                sem_filmes=False, jobs=4, aceitar_iso_desconhecida=False
+                skip_movies=False, jobs=4, accept_unknown_iso=False
             )
             console = argparse.Namespace(name="xbox")
             release = {"candidate": "fixture", "eboot_sha256": "fixed-game"}
@@ -77,7 +77,7 @@ class RuntimeTests(unittest.TestCase):
     def test_windows_dialog_transport_preserves_unicode(self):
         import generator
 
-        value = "C:\\Users\\ação\\my disc.iso"
+        value = "C:\\Users\\☃\\my disc.iso"
         script = "[Console]::Write('" + value + "')"
         result = generator.powershell_output(script)
         self.assertEqual(result.returncode, 0, result.stderr)

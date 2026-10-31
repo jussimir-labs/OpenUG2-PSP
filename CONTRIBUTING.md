@@ -6,6 +6,14 @@ executable. The game's main source code is not in this repository. Contributions
 here can improve the generator, tools, documentation, and testing; please use an
 issue to report or discuss game bugs.
 
+## Language and published files
+
+Use English for documentation, code comments, interface text, error messages,
+CLI help and new commit subjects. Use neutral project terminology in published
+files, and keep local absolute workspace paths out of shared reports. Preserve
+required copyright, attribution and license notices. Historical commits and
+release artifacts retain their original contents.
+
 ## Before you start
 
 - Accept your invitation to the private beta repository.

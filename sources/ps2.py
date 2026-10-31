@@ -33,11 +33,11 @@ class Source:
             with Iso9660(iso) as image:
                 boot = boot_file(image)
             if boot != self.executable:
-                raise SourceError(f'PS2: executável {boot!r} não suportado. Use a edição americana NTSC-U ({self.executable}).')
+                raise SourceError(f'PS2: unsupported executable {boot!r}. Use the US NTSC-U edition ({self.executable}).')
             dest.mkdir(parents=True, exist_ok=True)
             extract_disc(iso, dest, say)
         except (OSError, ValueError) as exc:
-            raise SourceError(f'ISO PS2 inválida ou incompleta: {exc}') from exc
+            raise SourceError(f'Invalid or incomplete PS2 ISO: {exc}') from exc
 
     def verify(self, dest):
         bad = []

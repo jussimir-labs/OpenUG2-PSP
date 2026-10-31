@@ -10,4 +10,4 @@ The 4u configuration remains PGO=use, LTO=1, RELEASE=0, PSP_LARGE_MEMORY=1, the 
 
 Rival tyre audio from RC14 is retained. Its directed audio fixtures belong to 8c51, while earlier normal-control Drift/career/reward/nativeSAVE/cold evidence belongs toRC13 e7ce. These results remain [historical](docs/qualification/RC14-NOTES.md), not new adb5 runs. Drift/Drag race music uses the original ambience policy; this candidate does not promise new race music. Nitro timbre remains unresolved. Audio and EA TRAX reports remain open for reporter confirmation.
 
-No physical PSP/MemoryStick, all-model, global 30 fps, full-career or original visual/handling parity approval is implied.4401 rival recovery remains deferred. [Current receipt](docs/qualification/OVERNIGHT-QUALIFICATION.json). [Português](ptbr/NOTAS-NOTURNAS.md).
+No physical PSP/MemoryStick, all-model, global 30 fps, full-career or original visual/handling parity approval is implied.4401 rival recovery remains deferred. [Current receipt](docs/qualification/OVERNIGHT-QUALIFICATION.json).

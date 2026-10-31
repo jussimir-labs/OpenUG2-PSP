@@ -25,7 +25,7 @@ class Iso9660:
         try:
             pvd = self.read(16, SECTOR)
             if len(pvd) != SECTOR or pvd[:7] != b'\x01CD001\x01':
-                raise ValueError('não é uma imagem ISO 9660 (sem o descritor primário no setor 16)')
+                raise ValueError('not an ISO 9660 image (no primary descriptor in sector 16)')
             self.root = self.record(pvd, 156)
         except BaseException:
             self.f.close()
@@ -42,7 +42,7 @@ class Iso9660:
 
     def read(self, sector, size):
         if sector < 0 or size < 0 or sector * SECTOR + size > self.size:
-            raise ValueError('a imagem acaba antes do fim de um arquivo: ISO incompleta')
+            raise ValueError('the image ends before a file does: incomplete ISO')
         self.f.seek(sector * SECTOR)
         data = self.f.read(size)
         if len(data) != size:
@@ -56,9 +56,9 @@ class Iso9660:
             raise ValueError('registro ISO truncado')
         n = d[at]
         if n < 34 or at + n > len(d) or at // SECTOR != (at + n - 1) // SECTOR:
-            raise ValueError('tamanho de registro ISO inválido')
+            raise ValueError('invalid ISO record length')
         if d[at + 32] > n - 33 or d[at + 26] or d[at + 27] or d[at + 25] & 128:
-            raise ValueError('registro ISO intercalado ou multi-extent não suportado')
+            raise ValueError('interleaved or multi-extent ISO records are not supported')
         extent, size = struct.unpack_from('<I', d, at + 2)[0], struct.unpack_from('<I', d, at + 10)[0]
         flags, name_len = d[at + 25], d[at + 32]
         name = d[at + 33:at + 33 + name_len].decode('ascii')
@@ -66,7 +66,7 @@ class Iso9660:
 
     def listdir(self, extent, size):
         if size > 4 << 20:
-            raise ValueError('diretório ISO excede o limite')
+            raise ValueError('ISO directory exceeds the limit')
         d = self.read(extent, size)
         at = 0
         names = set()
@@ -104,7 +104,7 @@ class Iso9660:
         # Empty ISO files have no data extent; mastering tools may use a
         # sentinel LBA (e.g. 0xfffffff0). Never seek it or relax nonempty bounds.
         if extent < 0 or size < 0 or (size and extent * SECTOR + size > self.size):
-            raise ValueError(f'{dest.name} passa do fim da ISO: a imagem está incompleta')
+            raise ValueError(f'{dest.name} extends past the end of the ISO: incomplete image')
         if size:
             self.f.seek(extent * SECTOR)
         sha = hashlib.sha256()
@@ -137,14 +137,14 @@ def extract(iso_path, out, say=print):
     with Iso9660(iso_path) as iso:
         boot = boot_file(iso)
         if not boot:
-            raise ValueError('sem SYSTEM.CNF com BOOT2: não é um disco de PS2')
+            raise ValueError('no SYSTEM.CNF with BOOT2: not a PS2 disc')
         entries = list(iso.walk())
         if not any(r.as_posix().upper() == 'NFSUNDER/ZDIR.BIN' for r, _, _ in entries):
-            raise ValueError('o disco não tem NFSUNDER/ZDIR.BIN: não é o Need for Speed Underground 2')
+            raise ValueError('the disc has no NFSUNDER/ZDIR.BIN: not Need for Speed Underground 2')
         total, done = sum(s for _, _, s in entries) or 1, 0
         for rel, ext, size in entries:
             if out.is_symlink() or any((out / Path(*rel.parts[:i])).is_symlink() for i in range(1, len(rel.parts) + 1)):
-                raise ValueError('extração não aceita destino com links simbólicos')
+                raise ValueError('extraction does not accept a destination containing symbolic links')
             dest = out / rel
             dest.parent.mkdir(parents=True, exist_ok=True)
             sha = iso.extract(ext, size, dest)
@@ -161,13 +161,13 @@ def main():
     ap.add_argument('--out', type=Path, default=ROOT / 'game/ps2')
     args = ap.parse_args()
     if args.out.exists():
-        ap.error('destino já existe; use outro diretório para não sobrescrever a extração')
+        ap.error('destination already exists; choose another directory to preserve the extraction')
     args.out.mkdir(parents=True)
     boot, files = extract(args.iso, args.out)
     report = {'iso': str(args.iso.resolve()), 'boot': boot, 'total_bytes': sum(f['size'] for f in files), 'files': files}
     (ROOT / 'reports').mkdir(exist_ok=True)
     (ROOT / 'reports/ps2-extraction.json').write_text(json.dumps(report, indent=2) + '\n')
-    print(f'{len(files)} arquivos extraídos e conferidos em {args.out} (executável {boot})')
+    print(f'{len(files)} files extracted and verified in {args.out} (executable {boot})')
 
 
 if __name__ == '__main__':
