@@ -1,6 +1,6 @@
-# NFSU2 PSP closed beta 0.2.3: known issues
+# NFSU2 PSP closed beta 0.2.4: known issues
 
-0.2.3 is a closed-beta release. It does not establish full-game completion,
+0.2.4 is a closed-beta release. It does not establish full-game completion,
 all-device compatibility, physical PSP-1000 support or stable 30 fps throughout the game.
 
 ## Before testing
@@ -12,11 +12,11 @@ all-device compatibility, physical PSP-1000 support or stable 30 fps throughout 
   PPSSPP combinations need their own reports.
 - **PSP-1000 and Drift:** a Drift right after a city race may use the previous drift handling
   when memory is tight (a notice says so).
-- **Updates:** update your 0.2.0, 0.2.1 or 0.2.2 output folder with the 0.2.3 generator (same ISO)
-  or generate into a new folder, and install the complete result. 0.2.3 changes `EBOOT.PBP` and
-  converted data (cars, rims, brakes and mirrors, neon underglow, the shops' Visual Rating, city,
-  tracks and walls); an executable-only update keeps old data that the new executable does not
-  expect, and the old executable cannot read the new cars and rims.
+- **Updates:** update your 0.2.0 to 0.2.3 output folder with the 0.2.4 generator (same ISO) or
+  generate into a new folder, and install the complete result. 0.2.4 changes `EBOOT.PBP` and
+  converted data (career and sponsor screen); an executable-only update keeps old data that the new
+  executable does not expect. With the Xbox disc, use 0.2.4: every Xbox generation by 0.2.3 ended
+  "NOT verified" (the game itself was fine).
 - Back up your saves. Broad physical save/reload and full-career coverage remain pending.
 - **Xbox source button icons:** the PSP prompts use the PS2 disc's pad icons. A game generated
   from the Xbox ISO uses the port's own drawn icons instead (same buttons, slightly different look).

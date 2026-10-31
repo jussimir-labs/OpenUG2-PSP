@@ -1181,7 +1181,7 @@ SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS
            # the street's world map (Left on the pad): the categories, the GPS
            ('igmap.n2ui', 'UI_InGame_WorldMap.fng', 'GLOBAL/GLOBALB.LZC',
             ('MINIMAP_ICON_TICK', 'MINIMAP_ICON_CIRCUIT', 'MINIMAP_ICON_SAFE_HOUSE', 'MINIMAP_GPS_SELECTOR')),
-           ('sponsor.n2ui', 'UI_Sponsorship_new.fng', 'GLOBAL/INGAMERACE.BUN', ()),
+           ('sponsor.n2ui', 'UI_Sponsorship_new.fng', 'GLOBAL/INGAMERACE.BUN', 'SPONSOR_ICONS'),   # the sponsors' logos (DECAL_ICON_<NAME>: uiSponsorsMain)
            ('sms.n2ui', 'UI_SMS_Mailbox.fng', 'GLOBAL/INGAMECOMMON.LZC', ()),
            ('title.n2ui', 'UG_LS_Splash.fng', 'FRONTEND/FRONTB.LZC', ()),     # the title screen (its "Press START" text is the game's)
            ('loading.n2ui', 'Loading.fng', 'GLOBAL/GLOBALB.LZC', ()),        # LOADING over the title's art, its blocks lit in turn
@@ -1478,9 +1478,11 @@ def main():
     decal_icons = tuple(sorted({r[0] for t in src.flat for r in t.records.values() if r[0].startswith('DECAL_ICON_')}))
     decal_slots = tuple(sorted({r[0] for t in src.flat for r in t.records.values()
                                 if r[0].startswith('DECAL_') and ('SLOT' in r[0] or 'LAYOU' in r[0])}))
+    import convert_career
+    sponsor_icons = tuple(convert_career.sponsor_icon(k) for k in convert_career.sponsor_keys(globalb))
     splash = title_art()
     for out, name, bundle, extra in SCREENS:
-        extra = logos if extra == 'LOGOS' else extra
+        extra = logos if extra == 'LOGOS' else sponsor_icons if extra == 'SPONSOR_ICONS' else extra
         extra = tuple(x for e in extra for x in (decal_icons if e == 'DECAL_ICONS' else decal_slots if e == 'DECAL_SLOTS' else (e,)))
         scr = hud_package(args.game, name, bundle)
         localise(scr, table)

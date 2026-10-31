@@ -16,11 +16,76 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-10-31 — Give It All to Bayview
+
+EA Trax: *Give it All*, Rise Against ([official channel](https://www.youtube.com/user/RiseAgainst)).
+
+Fast, loud and in a hurry, like a release that ships everything that was ready: your garage stops
+pretending to be a dealership, your own builds roll into Quick Race, the sponsors get their real
+contract screen back, the "i" markers finally pay, and Xbox players can verify their games again.
+
+A new game executable and new converted game data: update your 0.2.0 to 0.2.3 output folder
+with the 0.2.4 generator (same ISO) or generate into a new folder, and install the complete
+result. Players of the Xbox disc: this generator also fixes the final check that failed every
+Xbox generation in 0.2.3, so updating an Xbox folder made by 0.2.2 or 0.2.3 now works.
+
+### Added
+
+- If the game stops responding for 2 seconds outside a loading screen, it now shows a panel
+  with what it was waiting for. Please take a photo of it for your report: it tells us where
+  the game got stuck ([#44]).
+
+### Fixed
+
+- Generator: a game made from the Xbox disc passes its final check again. In 0.2.3 the
+  reference the generator checks against had been built with the PS2 controller icons
+  (Cross, Circle, L, R, START) in the menus, which only the developers' machine had, so a
+  complete Xbox generation, new or updated from 0.2.2, ended with "NOT verified" (`parts.n2ui`
+  and `pack.n2pk` different) although the game itself was fine. Your prompts keep the icons
+  drawn for this port, and an Xbox folder made by 0.2.3 is now recognized as such when you
+  update it.
+- Your garage is a garage again, not a dealership. In the career, its menu no longer lets you
+  buy cars, parts, paint or performance upgrades: as in the original game, those are sold at
+  the Car Lot and at Bayview's body, performance, graphics and car specialties shops, so you
+  have to drive out and find them. The garage keeps Resume Career, Save and Main Menu, and
+  now offers Car Select, to switch between the cars you already own for free, and Performance
+  Tuning / Dyno, to tune the parts already fitted ([#67]).
+- Quick Race: the cars you build in Customize Car are now in the car list, ready to race, as in
+  the original game. All Cars shows the stock cars followed by your My Cars, and the list opens
+  on the car you last customized or raced, so its paint, parts and performance go into the race
+  with it. Before, All Cars held only the stock cars and your tuned ride sat behind the My Cars
+  tab, so picking it from the list put you in a stock car. L and R switch between All Cars,
+  Stock Cars and My Cars, in the original's order ([#61]).
+- Sponsorships: the screen where you sign a sponsor at the start of a stage now looks and works
+  like the original. Left and Right flip from one sponsor to the next, with its name in the bar
+  and its logo on the left; the contract terms fill their own panel (Up and Down scroll them),
+  and the signing bonus, each URL victory, the sponsor race purse and the sponsor's races sit
+  in their boxes on the right. Before, the sponsors were a vertical list with the details
+  written over the panels in the wrong places ([#63]).
+- Dawn no longer turns the whole city pink. The red sunrise that suits the
+  airport now follows each neighbourhood's own morning light: on the Resort
+  Loop's grid the sky, the asphalt and the silver cars keep the grey dawn they
+  have on the PS2.
+- Rachel's crew calls at the start of the prologue now come again each time you resume the
+  career while you're still in her 350Z, as in the original game, and no longer reach you once
+  you've driven off the Car Lot in your own ride. The tips about races in other neighbourhoods
+  work as in the original again: cross into another neighbourhood at least 5 minutes after the
+  last tip, and a friend tells you where one of the hidden races is waiting ([#57]).
+- The World Map in the pause now shows each place in its own colour, matching the minimap and
+  the original game: the Circuit races in violet and your garage in purple, as on Rachel's first
+  drive in the 350Z. Before, most rows borrowed another kind's icon, so the garage came up yellow,
+  the Circuit races orange, and Drag, Street X, U.R.L. and the shops traded colours too ([#53]).
+- The "i" info markers on the street now pay out, as in the original game: the first time you
+  drive through one, its message from Rachel comes with cash in your bank, $25 for most of them
+  and $50 for a few. Before, the message came but the money never did. Each marker pays once; the
+  ones you already drove through in an earlier version keep their message but don't pay again
+  ([#62]).
+
 ## [0.2.3] - 2026-10-31 — Rocket Ride
 
-A new game executable and new converted game data: update your 0.2.0, 0.2.1 or 0.2.2 output
-folder with the 0.2.3 generator (same ISO) or generate into a new folder, and install the
-complete result. The cars and their rims, brakes and mirrors, the neon underglow, the shops'
+A new game executable and new converted game data: generate into a new, empty folder with the
+0.2.3 generator and install the complete result (updating a 0.2.2 folder fails its final check in
+this release; the generator then keeps the old folder as it was). The cars and their rims, brakes and mirrors, the neon underglow, the shops'
 Visual Rating, the city, the tracks and their walls are converted again; copying only the
 executable is not enough, and the 0.2.2 executable cannot read the new cars and rims.
 
@@ -333,7 +398,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...HEAD
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.0...v0.2.1
@@ -380,8 +446,14 @@ throughout the game were still pending.
 [#49]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/49
 [#50]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/50
 [#55]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/55
+[#61]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/61
 [#58]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/58
+[#53]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/53
 [#57]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/57
 [#60]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/60
 [#56]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/56
 [#59]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/59
+[#44]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/44
+[#62]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/62
+[#63]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/63
+[#67]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/67

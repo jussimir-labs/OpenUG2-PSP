@@ -93,6 +93,10 @@ u8 tournament group (0 = none). Entries are in career order. Then:
   (version 12) u32 count, count x 16 bytes per row: f32 GU x y z of its
     record's trigger zone (race_zones: where the street engages it), u32
     the zone's name hash (0: none, the course's own start stands in);
+  (version 13) u32 n, n x 12 bytes per sponsor: u32 its contract's terms,
+    its races (the Sponsorship screen's SPONSOR_DETAILS_<NAME> and
+    SPONSOR_INFO_<NAME>), its logo's texture name (DECAL_ICON_<NAME>);
+    offsets in the text block, "" none;
   u32 size, the text block (zero-terminated strings).
 """
 import argparse
@@ -226,6 +230,21 @@ def show_target(sec, h, where, shop_at):
 PERF_SHOWCASE = {1: 3, 2: 7, 3: 5, 4: 2, 5: 1, 6: 0, 7: 8, 8: 6, 9: 4, 10: 9}   # a showcase's byte: 0x34A15's category (0x112f30)
 
 
+def sponsor_icon(key):
+    """A sponsor's logo (uiSponsorsMain::Setup): DECAL_ICON_<NAME>, its
+    texture's name cut at 23 characters (DECAL_ICON_NITROUS_EXPR)."""
+    return ('DECAL_ICON_' + key)[:23]
+
+
+def sponsor_keys(globalb):
+    """The sponsors' names in the career string pool (STREETGLOW...,
+    CareerSponsor 0x34A19), in table order."""
+    sec = sections(globalb)
+    pool = sec[0x34a1d]
+    return [pool[o:pool.index(b'\0', o)].decode('latin-1')
+            for o in (struct.unpack_from('<h', sec[0x34a19], 16 * k)[0] for k in range(len(sec[0x34a19]) // 16))]
+
+
 def career_world(game, globalb, rows, races):
     """Stages, sponsors, covers, SMS and shops (see the module doc)."""
     from convert_hud import strings
@@ -246,7 +265,7 @@ def career_world(game, globalb, rows, races):
         off, purse, t0, t1, t2, _, h, bonus, rep = struct.unpack_from('<hhBBBBIhh', sec[0x34a19], 16 * k)
         name = lang.get(game_hash('SPONSOR_' + pooled(off)), pooled(off))
         index[h] = k
-        sponsors.append(dict(name=name, purse=purse, bonus=bonus, rep=rep, types=[SPONSOR_TYPE.get(v, 0) for v in (t0, t1, t2)]))
+        sponsors.append(dict(name=name, key=pooled(off), purse=purse, bonus=bonus, rep=rep, types=[SPONSOR_TYPE.get(v, 0) for v in (t0, t1, t2)]))
     covers = []
     # Rachel's line for each cover: the game's tables of the cover's name
     # hash (+0x28 of the record) and the line's bit (Xbox default.xbe,
@@ -554,6 +573,14 @@ def career_world(game, globalb, rows, races):
     for x in rows:
         h = x['record']['zone']
         out += struct.pack('<3fI', *zones[h], h) if h in zones else struct.pack('<3fI', 0, 0, 0, 0)
+    # version 13: per sponsor, the Sponsorship screen's texts
+    # (uiSponsorsMain::RefreshHeader, ContractTerms::GetBody): its contract
+    # (SPONSOR_DETAILS_<NAME>), its races (SPONSOR_INFO_<NAME>) and its
+    # logo's texture (DECAL_ICON_<NAME>, cut at 23 as the textures' names)
+    out += struct.pack('<I', len(sponsors))
+    for v in sponsors:
+        out += struct.pack('<3I', put(lang.get(game_hash('SPONSOR_DETAILS_' + v['key']), '')),
+                           put(lang.get(game_hash('SPONSOR_INFO_' + v['key']), '')), put(sponsor_icon(v['key'])))
     text.extend(bytes((-len(text)) % 4))
     out += struct.pack('<I', len(text)) + bytes(text)
     report = dict(stages=stages, rules=rules, sponsors=sponsors, covers=covers, shops=shops, tips=[dict(sms=sms[v['sms']]['name'], pos=v['pos']) for v in tips], cash=cash, shows=shows,
@@ -652,7 +679,7 @@ def main():
     for x in rows:
         if x['reward'] == 1:
             x['flags'] |= 8      # a sponsor race: its purse goes to the signed sponsor's contract
-    out = struct.pack('<4s2I', b'N2CA', 12, len(rows))
+    out = struct.pack('<4s2I', b'N2CA', 13, len(rows))
     for x in rows:
         out += struct.pack('<HBBiBBBB', x['id'], x['stage'], x['type'], x['money'], x['reward'], x['laps'], x['flags'],
                            x['group'])

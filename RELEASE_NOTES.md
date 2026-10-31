@@ -1,5 +1,20 @@
 # NFSU2 PSP closed beta — release notes
 
+## 0.2.4 — Give It All to Bayview (31 October 2026)
+
+EA Trax: *Give it All*, Rise Against ([official channel](https://www.youtube.com/user/RiseAgainst)).
+
+A new game executable and new game data: update your 0.2.0 to 0.2.3 output folder with this generator
+(same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
+
+- **Added:** a panel that shows what the game is waiting for when it stops responding (#44).
+- **Fixed:** the generator's final check with the Xbox disc, the garage selling cars and parts (#67),
+  your own cars in Quick Race (#61), the sponsor screen (#63), the pink dawn over the whole city,
+  the prologue's calls and the hidden-race tips (#57), the World Map's colours (#53) and the "i"
+  markers' cash (#62).
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
+
 ## 0.2.3 — Rocket Ride (31 October 2026)
 
 A new game executable and new game data: update your 0.2.0, 0.2.1 or 0.2.2 output folder with this

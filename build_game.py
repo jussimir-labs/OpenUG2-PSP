@@ -311,8 +311,12 @@ def setup_work(work, cjpegli):
 def step_env(work, source):
     env = dict(os.environ)
     # git must not find a repository above the work folder (data_id.py and
-    # mac_slots.py ask it where to keep their files)
-    env['GIT_CEILING_DIRECTORIES'] = str(work)
+    # mac_slots.py ask it where to keep their files, ps2_buttons.py where the
+    # main checkout's PS2 disc is). The ceiling is the folder git may not
+    # climb into, so the work folder's parent: the work folder itself let it
+    # climb, and the 0.2.3 Xbox reference, generated under the repository,
+    # drew the developer's PS2 pad icons where players get the port's own.
+    env['GIT_CEILING_DIRECTORIES'] = str(Path(work).resolve().parent)
     # The Mac queue of the developers' machine (tools/mac_slots.py): off
     # unless its folder is given.
     if not env.get('NFSU2_MAC_SLOTS_DIR'):
