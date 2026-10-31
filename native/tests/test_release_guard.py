@@ -1,0 +1,199 @@
+"""Release gate regressions, including archive contents and upload ordering."""
+import contextlib
+import hashlib
+import io
+import json
+from pathlib import Path
+import struct
+import sys
+import tarfile
+import tempfile
+import unittest
+from unittest.mock import patch
+import zipfile
+import zlib
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'native'))
+import release_guard as guard
+import publish
+import build_bundle
+import test_bundle
+
+
+def word():
+    return ''.join(map(chr, [67, 111, 100, 101, 120]))
+
+
+def translated():
+    return ''.join(map(chr, [71, 101, 114, 97, 231, 227, 111, 32, 99, 111, 110, 99, 108, 117, 237, 100, 97]))
+
+
+def chunk(tag, value):
+    return struct.pack('>I', len(value)) + tag + value + struct.pack('>I', zlib.crc32(tag + value) & 0xffffffff)
+
+
+def png(extra=b'', pixels=b'\0'):
+    return (b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', len(pixels), 1, 8, 0, 0, 0, 0))
+            + extra + chunk(b'IDAT', zlib.compress(b'\0' + pixels)) + chunk(b'IEND', b''))
+
+
+def zipped(files):
+    out = io.BytesIO()
+    with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
+        for name, value in files.items():
+            z.writestr(name, value)
+    return out.getvalue()
+
+
+class GuardTests(unittest.TestCase):
+    def inspect(self, name, data, **kw):
+        checker = guard.Checker(**kw)
+        checker.member(name, data if isinstance(data, bytes) else data.encode())
+        return checker.issues
+
+    def test_english_and_gameplay_terms_are_allowed(self):
+        self.assertEqual(self.inspect('README.md', 'Generate game data. AI drivers follow racing lines.'), [])
+
+    def test_normalization_case_and_model_version(self):
+        for value in (word(), word().upper(), '.' + word().lower() + '/work', word() + '5'):
+            self.assertTrue(self.inspect('README.md', value))
+
+    def test_portuguese_and_ascii_messages(self):
+        self.assertTrue(self.inspect('README.md', translated()))
+        self.assertTrue(self.inspect('program.bin', b'\0' + bytes([69, 114, 114, 111]) + b'\0'))
+        self.assertTrue(self.inspect('README.md', bytes([69, 114, 114, 111])))
+        # The ASCII-only error was missed by the earlier accent-based audit.
+        message = bytes([114, 101, 116, 114, 111, 118, 105, 115, 111, 114, 32, 111, 117, 32, 115, 111, 99, 107, 101, 116, 32, 97, 117, 115, 101, 110, 116, 101])
+        self.assertTrue(self.inspect('tool.py', 'raise ValueError(' + repr(message.decode()) + ')'))
+
+    def test_decoded_json_and_python_literals(self):
+        literal = ''.join('\\u%04x' % ord(c) for c in word())
+        self.assertTrue(self.inspect('report.json', '{"creator":"' + literal + '"}'))
+        self.assertTrue(self.inspect('source.py', 'name = "' + literal + '"'))
+        value = ('{"creator":"' + literal + '"}').encode()
+        checker = guard.Checker(); checker.member('plain.txt', value); checker.member('decoded.json', value)
+        self.assertTrue(checker.issues)
+
+    def test_restricted_path_even_when_empty(self):
+        self.assertTrue(self.inspect(word() + '/empty.txt', ''))
+        self.assertTrue(self.inspect('manual.pt-BR.md', 'English text'))
+
+    def test_nested_zip_and_tar_contents(self):
+        tar = io.BytesIO()
+        with tarfile.open(fileobj=tar, mode='w:gz') as t:
+            payload = word().encode()
+            info = tarfile.TarInfo('source/NOTICE.txt'); info.size = len(payload)
+            t.addfile(info, io.BytesIO(payload))
+        self.assertTrue(self.inspect('package.zip', zipped({'runtime/source.tar.gz': tar.getvalue()})))
+        self.assertTrue(self.inspect('package.zip', zipped({'docs/help.txt': translated()})))
+
+    def test_upstream_language_does_not_exempt_restricted_references(self):
+        self.assertTrue(self.inspect('runtime/test-data.txt', translated()))
+        self.assertTrue(self.inspect('licenses/NOTICE.txt', translated()))
+        self.assertTrue(self.inspect('program.exe', b'\0\0' + word().encode('utf-16-le')))
+        self.assertTrue(self.inspect('runtime/test-data.txt', word()))
+        self.assertTrue(self.inspect('licenses/NOTICE.txt', word()))
+
+    def test_exact_reviewed_exception_invalidated_by_any_edit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            value = word().encode()
+            policy = json.loads(guard.POLICY.read_text())
+            policy['reviewed_files'] = [{'path': 'runtime/NOTICE.txt', 'sha256': hashlib.sha256(value).hexdigest(),
+                                        'tokens': [guard.fingerprint(word())], 'reason': 'Synthetic named person.'}]
+            p = Path(tmp) / 'policy.json'; p.write_text(json.dumps(policy))
+            self.assertEqual(self.inspect('runtime/NOTICE.txt', value, policy=p), [])
+            folder = Path(tmp)/'runtime'; folder.mkdir(); (folder/'NOTICE.txt').write_bytes(value)
+            self.assertTrue(guard.Checker(policy=p).check([folder])['passed'])
+            self.assertTrue(self.inspect('runtime/NOTICE.txt', value + b' changed', policy=p))
+            self.assertTrue(self.inspect('README.md', value, policy=p))
+
+    def test_png_text_compressed_text_and_provenance(self):
+        self.assertTrue(self.inspect('image.png', png(chunk(b'tEXt', b'Software\0' + word().encode()))))
+        self.assertTrue(self.inspect('image.png', png(chunk(b'zTXt', b'Software\0\0' + zlib.compress(word().encode())))))
+        self.assertTrue(self.inspect('image.png', png(chunk(b'iTXt', b'Software\0\1\0\0\0' + zlib.compress(word().encode())))))
+        self.assertTrue(self.inspect('image.png', png(chunk(b'caBX', b'opaque provenance'))))
+        self.assertEqual(self.inspect('image.png', png(pixels=word().encode())), [])
+
+    def test_jpeg_metadata_not_compressed_pixels(self):
+        payload = word().encode()
+        comment = b'\xff\xfe' + struct.pack('>H', len(payload)+2) + payload
+        self.assertTrue(self.inspect('photo.jpg', b'\xff\xd8' + comment + b'\xff\xda' + b'pixels'))
+        self.assertEqual(self.inspect('photo.jpg', b'\xff\xd8\xff\xda' + payload + b'\xff\xd9'), [])
+
+    def test_pdf_metadata_and_missing_dependency_block(self):
+        from pypdf import PdfWriter
+        writer = PdfWriter(); writer.add_blank_page(100, 100); writer.add_metadata({'/Creator': word()})
+        out = io.BytesIO(); writer.write(out)
+        self.assertTrue(self.inspect('manual.pdf', out.getvalue()))
+        with patch.dict(sys.modules, {'pypdf': None}):
+            self.assertTrue(self.inspect('manual.pdf', out.getvalue()))
+
+    def test_bad_archives_limits_and_unsafe_names_block(self):
+        self.assertTrue(self.inspect('bad.zip', b'not a zip'))
+        self.assertTrue(self.inspect('package.zip', zipped({'../file.txt': 'English'})))
+        self.assertTrue(self.inspect('package.zip', zipped({'file.txt': 'English'}), max_file=8))
+        value = b'English'
+        for _ in range(guard.MAX_DEPTH+1):
+            value = zipped({'nested.zip': value})
+        self.assertTrue(self.inspect('package.zip', value))
+
+    def test_archive_fixture_policy_and_checker_check_themselves(self):
+        result = guard.Checker().check([ROOT/'native/release_guard.py', ROOT/'native/release_policy.json', Path(__file__)])
+        self.assertTrue(result['passed'], result['findings'])
+
+
+class UploadTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.package = self.root/'package.zip'; self.package.write_bytes(zipped({'README.md': 'English package'}))
+        self.checksum = self.root/'package.zip.sha256'
+        self.checksum.write_text(hashlib.sha256(self.package.read_bytes()).hexdigest() + '  package.zip\n')
+
+    def test_checked_upload_can_rehearse_without_credentials_or_network(self):
+        with patch.object(publish.subprocess, 'check_output') as credentials, patch.object(publish.subprocess, 'run') as upload:
+            self.assertEqual(publish.main(['v0.3.0', str(self.package), str(self.checksum), '--check-only']), 0)
+            credentials.assert_not_called(); upload.assert_not_called()
+
+    def test_bad_content_blocks_before_credentials_or_upload(self):
+        self.package.write_bytes(zipped({'README.md': word()}))
+        with patch.object(publish.subprocess, 'check_output') as credentials, patch.object(publish.subprocess, 'run') as upload:
+            self.assertEqual(publish.main(['v0.3.0', str(self.package), str(self.checksum)]), 1)
+            credentials.assert_not_called(); upload.assert_not_called()
+
+    def test_missing_or_stale_checksum_blocks(self):
+        with self.assertRaises(guard.ReleaseCheckError): publish.validate_assets([self.package])
+        self.package.write_bytes(zipped({'README.md': 'Changed English package'}))
+        with self.assertRaises(guard.ReleaseCheckError): publish.validate_assets([self.package, self.checksum])
+
+    def test_archive_rejection_keeps_previous_zip_and_checksum(self):
+        folder = self.root/'bundle'; folder.mkdir()
+        (folder/'bundle.json').write_text('{"files":{}}')
+        (folder/'native-qa.json').write_text('{}')
+        (folder/'README.md').write_text(word())
+        old = folder.with_suffix('.zip'); old.write_bytes(b'previous archive')
+        sidecar = old.with_suffix('.zip.sha256'); sidecar.write_text('previous checksum')
+        with self.assertRaises(guard.ReleaseCheckError): test_bundle.archive_package(folder)
+        self.assertEqual(old.read_bytes(), b'previous archive')
+        self.assertEqual(sidecar.read_text(), 'previous checksum')
+
+    def test_zip_gate_rejection_does_not_publish_partial_archive(self):
+        folder = self.root/'bundle'; folder.mkdir()
+        (folder/'bundle.json').write_text('{"files":{}}'); (folder/'native-qa.json').write_text('{}')
+        with patch.object(test_bundle, 'require_clean', side_effect=[{}, guard.ReleaseCheckError('blocked')]):
+            with self.assertRaises(guard.ReleaseCheckError): test_bundle.archive_package(folder)
+        self.assertFalse(folder.with_suffix('.zip').exists())
+        self.assertFalse(folder.with_suffix('.zip.partial').exists())
+
+    def test_builder_seal_requires_content_gate(self):
+        (self.root/'eboot').mkdir(); (self.root/'eboot/release.json').write_text('{"candidate":"fixture"}')
+        if not hasattr(build_bundle, 'seal'):
+            self.skipTest('Legacy builder has no separate seal operation')
+        with patch.object(build_bundle.subprocess, 'check_output', return_value='0'*40), patch.object(build_bundle, 'require_clean', side_effect=guard.ReleaseCheckError('blocked')) as gate:
+            with self.assertRaises(guard.ReleaseCheckError): build_bundle.seal(self.root, 'fixture', 'python', {})
+            gate.assert_called_once_with(self.root)
+
+
+if __name__ == '__main__':
+    unittest.main()

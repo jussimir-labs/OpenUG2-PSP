@@ -46,7 +46,7 @@ class Iso9660:
         self.f.seek(sector * SECTOR)
         data = self.f.read(size)
         if len(data) != size:
-            raise ValueError('leitura curta da ISO')
+            raise ValueError('short ISO read')
         return data
 
     @staticmethod
@@ -94,7 +94,7 @@ class Iso9660:
         for name, ext, sz, is_dir in self.listdir(extent, size):
             rel = prefix / name
             if rel.is_absolute() or '..' in rel.parts or not name:
-                raise ValueError(f'caminho inseguro na ISO: {rel}')
+                raise ValueError(f'unsafe ISO path: {rel}')
             if is_dir:
                 yield from self.walk(ext, sz, rel, ancestors)
             else:
@@ -113,7 +113,7 @@ class Iso9660:
             while left:
                 chunk = self.f.read(min(left, 1 << 22))
                 if not chunk:
-                    raise ValueError(f'{dest.name}: leitura curta')
+                    raise ValueError(f'{dest.name}: short read')
                 out.write(chunk)
                 sha.update(chunk)
                 left -= len(chunk)

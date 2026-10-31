@@ -11,8 +11,9 @@ issue to report or discuss game bugs.
 Use English for documentation, code comments, interface text, error messages,
 CLI help and new commit subjects. Use neutral project terminology in published
 files, and keep local absolute workspace paths out of shared reports. Preserve
-required copyright, attribution and license notices. Historical commits and
-release artifacts retain their original contents.
+required copyright, attribution and license notices. Historical Git commits and automatic tag archives are preserved.
+Before publishing attachments, follow the required content check in
+[native/README.md](native/README.md#required-publication-check).
 
 ## Before you start
 

@@ -177,7 +177,7 @@ def main():
                      for n, b, s, i, t, o1, l1, o2, l2 in table)
     head += bytes(base - len(head))
     (args.out / 'rims.n2rm').write_bytes(head + b''.join(blobs))
-    print(f'{len(table)} rodas de {len(BRANDS)} marcas, {len(cars)} carros, {(base + at) / 1e6:.1f} MB')
+    print(f'{len(table)} wheels from {len(BRANDS)} brands, {len(cars)} cars, {(base + at) / 1e6:.1f} MB')
 
 
 if __name__ == '__main__':

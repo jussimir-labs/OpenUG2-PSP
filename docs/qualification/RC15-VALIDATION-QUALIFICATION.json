@@ -223,7 +223,7 @@
         "drift4311-nis-01/normal-drift4311/go-after-handover.png",
         "drift4311-nis-01/normal-drift4311/first-motion.png"
       ],
-      "result": "Torcida lateral fora dos carros nas tr\u00eas capturas; poses traseiras2\u00d72 retidas, sem retorno4abreast.",
+      "result": "Side crowds remain outside cars in all three captures; rear 2x2 poses retained, with no return to four abreast.",
       "limit": "Only these sampled4311 views; no all-actor/camera mesh guarantee."
     },
     "phase_limit": "Reported frame_gap0 is the sampled Main frame counter across a same-frame phase change, not a proof of identical moment or complete every-frame trace."

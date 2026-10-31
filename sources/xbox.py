@@ -54,7 +54,7 @@ class Source:
             for directory, entry in entries:
                 rel = Path(directory) / entry.name
                 if rel.is_absolute() or '..' in rel.parts:
-                    raise SourceError(f'caminho inseguro na ISO: {rel}')
+                    raise SourceError(f'unsafe ISO path: {rel}')
                 if entry.sector * 2048 + entry.size + image.base > size:
                     raise SourceError(f'{rel} extends past the end of the ISO: incomplete image.')
                 out = dest / rel

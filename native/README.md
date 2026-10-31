@@ -26,7 +26,7 @@ implementation. Normal OS trust prompts can still appear.
 ## Maintainer build
 
 Packages are built and tested locally on each platform (Windows x64, Linux x86-64, Apple Silicon
-and Intel Macs); no hosted CI is used. Build tools are needed **only on the maintainer machine**: Rust,
+and Intel Macs). The content policy also runs on hosted CI for pushes and pull requests. Build tools are needed **only on the maintainer machine**: Rust,
 Python, uv, C/C++ compiler, CMake, Ninja, Make, patch, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest tool.
 Linux builds in an Ubuntu 22.04 environment (clang for LAME, GCC for the rest, binutils for the
 audit); the builder pins `manylinux_2_28` wheels and fails if any ELF file needs a library outside
@@ -34,6 +34,7 @@ the package other than glibc, the loader, `libgcc_s` and the `libstdc++`/`libz` 
 manylinux wheels leave to the system (`runtime/linux-library-audit.json`).
 
 ```sh
+python -m pip install -r native/release-requirements.txt
 bash native/build_tools.sh native/tools native/.cache/tools
 cargo --config native/.cargo/config.toml test --locked --manifest-path native/Cargo.toml
 cargo --config native/.cargo/config.toml build --locked --release --manifest-path native/Cargo.toml
@@ -70,3 +71,60 @@ The PSP executable is unchanged (`42d252df…436a95`), as are RC21's known game/
 The LAME frontend has a small portability patch: its encoding-dispatched ID3 input
 accepts a generic pointer for either UTF-8 or UTF-16. The audio encoder is unchanged.
 The original source archive, patch and build script accompany each native package.
+
+## Required publication check
+
+Install the maintainer-only dependency before building archives:
+
+```sh
+python -m pip install -r native/release-requirements.txt
+python -m unittest discover -s native/tests
+```
+
+Every build is checked after sealing. `test_bundle.py --archive` checks both
+its input folder and the completed ZIP before replacing the previous archive
+or writing a checksum. The final upload must use:
+
+```sh
+python native/publish.py vX.Y.Z native/dist/*.zip native/dist/*.sha256 --check-only
+python native/publish.py vX.Y.Z native/dist/*.zip native/dist/*.sha256
+```
+
+Add every supplementary JSON or checksum attachment to the same command.
+The uploader validates every attachment and requires matching ZIP checksums
+before it reads credentials or makes a request. It selects the maintainer
+account explicitly and never creates a tag or a release. Publishing still
+requires the owner's approval. Use `--clobber` only for an authorized replacement.
+Hosted workflows must invoke the same content check immediately before upload.
+
+For an independent check, run
+`python native/release_guard.py PACKAGE.zip --report report.json`. The check inspects project text, decoded source/JSON
+strings, image metadata, PDF text/metadata/attachments, binary strings, and
+nested ZIP/TAR/compressed streams. Missing PDF support, unreadable or encrypted
+content, unsafe archive paths, and inspection limits block publication.
+Checks use explicit vocabulary and context signatures; they are not a proof
+that every possible sentence is English. Review new prose and screenshots as
+well: image pixels are preserved, not transcribed by this check.
+
+Project documentation, comments, messages and interface text must be English.
+Upstream notices and fixtures that need
+their original text require a narrow reviewed exception; new runtime or vendor
+text has no directory exemption. Restricted development attributions are
+checked in legal notices too. Reviewed names and
+historical quotations use exact file hashes, paths and token signatures in
+`release_policy.json`. Any edit invalidates the exception. Do not add directory
+exemptions or disable the check to resolve a finding. Review the reported file,
+fix unintended text, and update a narrow exception only when the original
+credit, fixture or quotation must be preserved.
+
+The policy stores fingerprints so it does not reproduce the restricted words
+in distributed files. `python native/release_guard.py --fingerprint TOKEN`
+prints a signature for policy maintenance. Keep policy changes and regression
+fixtures together. Existing historical tags and their automatic source archives
+are outside this publication check.
+
+The source CI job checks maintained text and metadata. The mandatory package
+check also reads executable strings. The current game executable contains
+legacy localized messages and is intentionally blocked for future packages
+until an English executable is rebuilt and validated. No exception is made
+for it; historical releases are not republished by this change.

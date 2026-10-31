@@ -23,6 +23,8 @@ import sys
 import tarfile
 import urllib.request
 
+from release_guard import require_clean
+
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = {
     "macos-arm64": (
@@ -472,6 +474,7 @@ def seal(out, target, py, runtime_source):
     )
     manifest["files"]["PACKAGE-INFO.json"] = sha(out / "PACKAGE-INFO.json")
     (out / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    require_clean(out)
     return manifest
 
 
@@ -485,6 +488,7 @@ def build_from(args):
         raise RuntimeError("Use a new empty bundle destination: " + str(out))
     out.mkdir(parents=True)
     project_files(out)
+    require_clean(out)
     shutil.copytree(prev / "runtime", out / "runtime", symlinks=False)
     ext = ".exe" if target.startswith("windows") else ""
     shutil.copy2(prev / ("nfsu2-generator" + ext), out / ("nfsu2-generator" + ext))
@@ -539,6 +543,7 @@ def build(args):
         dst = out / name
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(src, dst)
+    require_clean(out)
     archive = cache / f"python-{target}.tar.gz"
     url = f"https://github.com/astral-sh/python-build-standalone/releases/download/20260814/cpython-3.12.14%2B20260814-{triple}-install_only.tar.gz"
     download(url, archive, digest)
@@ -720,6 +725,7 @@ def build(args):
     # Include the new metadata in the sealed manifest too.
     manifest["files"]["PACKAGE-INFO.json"] = sha(out / "PACKAGE-INFO.json")
     (out / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    require_clean(out)
     print(
         json.dumps(
             {

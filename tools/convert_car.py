@@ -708,7 +708,7 @@ def assemble(game, preset, lod, strict=False):
         lib = list(parts(archived(game, 'CARS/ROOF/GEOMETRY.BIN'), lambda n: lod_family(n) == preset['roof']))
         key = n2feng.bin_hash(ROOF_SOCKET)
         if not lib or key not in sockets:
-            raise ValueError('entrada de ar ou socket ausente: ' + preset['roof'])
+            raise ValueError('missing roof scoop or socket: ' + preset['roof'])
         if not strict or far_has(lib, lod):
             part = (far_pick if strict else pick_lod)(lib, lod)
             report.append({'name': part.name, 'triangles': part.triangles})
@@ -728,7 +728,7 @@ def assemble(game, preset, lod, strict=False):
                     and any(m == CARBONFIBRE_TEX for _, _, m in p.subs) == cf]
             key = n2feng.bin_hash(socket)
             if not mine or key not in sockets:
-                raise ValueError('retrovisor ou socket ausente: ' + want)
+                raise ValueError('missing mirror or socket: ' + want)
             if strict and not far_has(mine, lod):
                 continue
             part = (far_pick if strict else pick_lod)(mine, lod)

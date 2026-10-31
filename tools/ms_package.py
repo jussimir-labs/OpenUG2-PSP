@@ -423,7 +423,7 @@ def put(volume, files, backup=None):
         if backup and to.exists():
             bak = to.with_name(f'{to.stem}-{backup}{to.suffix}.bak')
             to.rename(bak)
-            print(f'{name} anterior -> {bak.name}', flush=True)
+            print(f'{name} previous -> {bak.name}', flush=True)
         r = subprocess.run(['cp', '-X', str(src), str(to)], env=env)
         if r.returncode:
             print(f'cp failed ({r.returncode}): {name}')

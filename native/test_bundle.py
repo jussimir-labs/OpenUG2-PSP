@@ -16,6 +16,8 @@ import urllib.request
 import urllib.error
 import zipfile
 
+from release_guard import require_clean
+
 
 def fixture_probe(root):
     sys.path.insert(0, str(root / "tools"))
@@ -212,6 +214,29 @@ def fixture_probe(root):
     }
 
 
+def archive_package(original):
+    original = Path(original)
+    manifest = json.loads((original / "bundle.json").read_text())
+    manifest["files"]["native-qa.json"] = hashlib.sha256((original / "native-qa.json").read_bytes()).hexdigest()
+    (original / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    require_clean(original)
+    zipped = original.with_suffix(".zip")
+    staged = zipped.with_suffix(".zip.partial")
+    try:
+        with zipfile.ZipFile(staged, "w", zipfile.ZIP_DEFLATED, compresslevel=6, strict_timestamps=False) as archive:
+            for file in sorted(original.rglob("*")):
+                if file.is_file() and ".tools" not in file.relative_to(original).parts:
+                    archive.write(file, original.name + "/" + file.relative_to(original).as_posix())
+        require_clean(staged)
+        staged.replace(zipped)
+    finally:
+        staged.unlink(missing_ok=True)
+    with zipped.open("rb") as stream:
+        digest = hashlib.file_digest(stream, "sha256").hexdigest()
+    zipped.with_suffix(".zip.sha256").write_text(digest + "  " + zipped.name + "\n", newline="\n")
+    return zipped
+
+
 def test(root, archive=False):
     # Relocation tests every absolute library reference, Python prefix, and quoting.
     original = root.resolve()
@@ -404,24 +429,7 @@ def test(root, archive=False):
         root.rename(original)
     (original / "native-qa.json").write_text(json.dumps(results, indent=2) + "\n")
     if archive:
-        # QA evidence is metadata; seal it before producing an extractable ZIP.
-        manifest["files"]["native-qa.json"] = hashlib.sha256(
-            (original / "native-qa.json").read_bytes()
-        ).hexdigest()
-        (original / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
-        zipped = original.with_suffix(".zip")
-        with zipfile.ZipFile(
-            zipped, "w", zipfile.ZIP_DEFLATED, compresslevel=6, strict_timestamps=False
-        ) as z:
-            for f in sorted(original.rglob("*")):
-                if f.is_file() and ".tools" not in f.relative_to(original).parts:
-                    z.write(f, original.name + "/" + f.relative_to(original).as_posix())
-        with zipped.open("rb") as f:
-            digest = hashlib.file_digest(f, "sha256").hexdigest()
-        # LF so `shasum -c` also accepts the Windows checksum on macOS/Linux.
-        zipped.with_suffix(".zip.sha256").write_text(
-            digest + "  " + zipped.name + "\n", newline="\n"
-        )
+        archive_package(original)
     print(json.dumps(results, indent=2))
 
 
