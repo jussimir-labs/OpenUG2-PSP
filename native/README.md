@@ -26,7 +26,7 @@ implementation. Normal OS trust prompts can still appear.
 ## Maintainer build
 
 Packages are built and tested locally on each platform (Windows x64, Linux x86-64, Apple Silicon
-and Intel Macs). The content policy also runs on hosted CI for pushes and pull requests. Build tools are needed **only on the maintainer machine**: Rust,
+and Intel Macs). A source-policy workflow is configured for pushes and pull requests when GitHub Actions is enabled. Build tools are needed **only on the maintainer machine**: Rust,
 Python, uv, C/C++ compiler, CMake, Ninja, Make, patch, tar and curl. Windows uses MinGW-w64 and the Windows SDK manifest tool.
 Linux builds in an Ubuntu 22.04 environment (clang for LAME, GCC for the rest, binutils for the
 audit); the builder pins `manylinux_2_28` wheels and fails if any ELF file needs a library outside
@@ -128,3 +128,9 @@ check also reads executable strings. The current game executable contains
 legacy localized messages and is intentionally blocked for future packages
 until an English executable is rebuilt and validated. No exception is made
 for it; historical releases are not republished by this change.
+
+GitHub Actions is currently disabled for this repository. Local build, archive
+and upload checks remain mandatory. The native workflow is guarded if Actions
+is enabled later. Existing upstream source archives may also report optional
+documentation and deliberately malformed test fixtures; review those findings
+before approving a future runtime. A source-only CI pass never approves a ZIP.

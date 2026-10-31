@@ -46,7 +46,7 @@ class Checker:
         data = json.loads(Path(policy).read_text())
         if data.get('schema') != 1:
             raise ReleaseCheckError('Unsupported release text policy')
-        for key in ('restricted_tokens', 'portuguese_strong', 'portuguese_context', 'blocked_path_components'):
+        for key in ('restricted_tokens', 'portuguese_strong', 'portuguese_context', 'blocked_path_components', 'restricted_path_components'):
             if not data.get(key) or any(not re.fullmatch(r'[0-9a-f]{64}', v) for v in data[key]):
                 raise ReleaseCheckError('Missing or invalid release policy signatures')
         self.terms = set(data['restricted_tokens'])
@@ -55,6 +55,7 @@ class Checker:
         self.phrases = set(data['restricted_phrases'])
         self.hints = set(data['phrase_hints'])
         self.paths = set(data['blocked_path_components'])
+        self.restricted_paths = set(data['restricted_path_components'])
         self.exceptions = data['reviewed_files']
         self.max_file, self.max_total = max_file, max_total
         self.total = self.files = 0
@@ -104,6 +105,8 @@ class Checker:
             return
         self.text(path + ':name', path, set(), False)
         for component in path.replace('!', '/').split('/'):
+            if fingerprint(component) in self.restricted_paths:
+                self.issue(path, 'restricted-reference', 'Restricted development path')
             if fingerprint(component) in self.paths or fingerprint(PurePosixPath(component).stem) in self.paths:
                 self.issue(path, 'language', 'Localized project path is not allowed')
         if re.search(r'(?:^|[._/!-])pt[-_]?br(?:$|[._/!-])', path, re.I):
@@ -162,7 +165,7 @@ class Checker:
                 else:
                     decoder = bz2.BZ2Decompressor()
                     expanded = decoder.decompress(data, max_length=self.max_file + 1)
-                if len(expanded) > self.max_file or not decoder.eof:
+                if len(expanded) > self.max_file or not decoder.eof or decoder.unused_data:
                     raise ReleaseCheckError('Compressed stream exceeds inspection limit')
                 self.member(path[:-len(suffix)], expanded, depth + 1)
                 return
