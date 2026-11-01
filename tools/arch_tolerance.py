@@ -9,11 +9,17 @@ geometry (.n2cy, a byte or two where a float lands on the other side of a
 decision) and the racing lines (a float's last bit, 0.00024 m). Windows'
 Pillow (MSVC) also quantizes the vinyls' and magazines' palettes a little
 differently (0.006% of a vinyl's pixels on average, most identical), and
-its numpy a few bytes of the line forks (floats), engine sounds (a byte or
-two), the mipmaps' header (their geometry's size) and so the data ID. The
+its numpy a few bytes of the engine sounds (a byte or two), the mipmaps'
+header (their geometry's size) and so the data ID. The line forks' ways
+are pulled tight by the racing line's minimum-curvature QP, whose passes
+converge a little differently on each CPU's linear algebra: the same forks
+(where each leaves and rejoins the line, its signs, its third lane), a
+way a point or two longer or shorter (the 4086's back way: 111 points on
+ARM, 109 on Windows) or, where a pass finds no solution, left as the
+routes draw it. The
 reference manifest keeps, for those files, their shape: the structural
 fields their readers depend on (frame and sample counts, picture size,
-grids, texture keys, line ids and point counts) and their size. A file
+grids, texture keys, line ids and point counts, the forks) and their size. A file
 whose bytes differ from the reference passes as equivalent only when it
 is of one of these kinds, its shape is the reference's and its size is
 within the kind's tolerance. pack.n2pk is checked entry by entry: every
@@ -30,7 +36,7 @@ import sys
 
 # The share of the size a file of each kind may differ by (0: exact).
 TOLERANCE = {'.n2mv': 0.001, '.n2cy': 0.0005, '.n2rl': 0.0, '.mp3': 0.0, '.big': 0.002,
-             '.n2vc': 0.002, '.n2mg': 0.0, '.n2lf': 0.0, '.n2en': 0.0, '.n2mp': 0.0,
+             '.n2vc': 0.002, '.n2mg': 0.0, '.n2lf': 0.01, '.n2en': 0.0, '.n2mp': 0.0,
              'data-id.txt': 0.0}
 PACK = 'pack.n2pk'
 
@@ -65,9 +71,18 @@ def shape(name, data):
         for _ in range(count):
             at += 12 + 8 * data[at + 8]
         return _digest([data[:at].hex()])
-    if k == '.n2lf':    # the forks' table: event, way, fork count, offset
+    if k == '.n2lf':    # per event and way its forks: fork and rejoin point, signs, third, enter
         count = struct.unpack_from('<I', data, 8)[0]
-        return _digest([data[:12 + 8 * count].hex()])
+        forks = []
+        for i in range(count):
+            eid, way, nf, at = struct.unpack_from('<H2BI', data, 12 + 8 * i)
+            heads = []
+            for _ in range(nf):
+                ja, jr, *types, third, _, points, enter, _ = struct.unpack_from('<2H6B3H', data, at)
+                heads.append([ja, jr, types, third, enter])
+                at += 20 + 24 * points
+            forks.append([eid, way, heads])
+        return _digest(forks)
     if k == '.n2mp':    # 'N2MP', version, texture count (not the geometry's size)
         return _digest([data[:8].hex(), data[12:16].hex()])
     if k == '.n2en':
@@ -77,6 +92,14 @@ def shape(name, data):
     if k in ('.mp3', '.big'):
         return _digest([k])
     return None
+
+
+def _legacy_n2lf_shape(data):
+    """The forks' table (event, way, fork count, offset): the shape 0.2.4's
+    manifests recorded for the line forks, with no size tolerance. The
+    update checks the previous folder against its own version's manifest."""
+    count = struct.unpack_from('<I', data, 8)[0]
+    return _digest([data[:12 + 8 * count].hex()])
 
 
 def pack_entries(data):
@@ -123,6 +146,8 @@ def equivalent(name, data, ref):
         return False
     try:
         same_shape = shape(name, data) == ref['shape']
+        if k == '.n2lf' and not same_shape and _legacy_n2lf_shape(data) == ref['shape']:
+            return len(data) == ref['size']
     except struct.error:
         return False
     return same_shape and abs(len(data) - ref['size']) <= TOLERANCE[k] * ref['size']

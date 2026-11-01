@@ -1,5 +1,20 @@
 # NFSU2 PSP closed beta — release notes
 
+## 0.2.5 — Crashing Foreign Cars, Fluently (31 October 2026)
+
+EA Trax: *Crashing Foreign Cars*, Helmet ([Spotify](https://open.spotify.com/artist/0qB0cTENhSUc0feov5qbg0)).
+
+A new game executable and new game data: update your 0.2.0 to 0.2.4 output folder with this generator
+(same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
+
+- **Fixed:** the generator's final check with the PS2 disc on Windows (#86), the free-roam outrun
+  rivals driving through traffic and walls (#72, #74), the start and
+  finish lines of every race (#64), Rachel repeating each shop's tutorial (#68), the paintable parts in
+  the Graphics Shop (#66), the invisible wall beside freeways over streets (#75), button hints, SMS and
+  race offers in your PSP's language (#76, #78, #80).
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
+
 ## 0.2.4 — Give It All to Bayview (31 October 2026)
 
 EA Trax: *Give it All*, Rise Against ([official channel](https://www.youtube.com/user/RiseAgainst)).

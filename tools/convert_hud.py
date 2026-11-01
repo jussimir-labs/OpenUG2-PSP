@@ -21,6 +21,7 @@ down); the PSP draws it at 272/480 scale with the screen-edge groups
 anchored to the PSP's wider edges (tools: --preview renders a PNG).
 """
 import argparse
+import json
 import re
 import math
 from pathlib import Path
@@ -148,12 +149,13 @@ def fnv1a(b):
     return h
 
 
-def language_table(game, language, icons, path, english):
+def language_table(game, language, icons, path, english, career=()):
     """lang_<xx>.n2lg: 'N2LG', u32 count, u32 English count, (u32 label
     hash, u32 offset) sorted by hash, (u32 FNV-1a of the English text, u32
     offset) sorted by hash (the port's own words: the text the label most
-    of the English text's labels agree on), then the texts, zero-terminated,
-    as ui_text makes them."""
+    of the English text's labels agree on; career: convert_career's
+    [English, text] pairs, career.n2cr's texts, over those), then the
+    texts, zero-terminated, as ui_text makes them."""
     table = strings(game, language)
     keys = sorted(table)
     blob, offs, at = bytearray(), [], {}
@@ -172,7 +174,16 @@ def language_table(game, language, icons, path, english):
             votes.setdefault(table[h], []).append(h)
         best = max(votes.values(), key=len)[0]
         pairs.append((k, at[best]))
-    pairs.sort()
+    known = {}
+    for h in keys:
+        known.setdefault(table[h], at[h])
+    by_text = dict(pairs)
+    for e, t in career:   # career.n2cr's English as it is written there (latin-1), its text with the table's when the same
+        if t not in known:
+            known[t] = len(blob)
+            blob += ui_text(t, icons) + b'\0'
+        by_text[fnv1a(e.encode('latin-1', 'replace'))] = known[t]
+    pairs = sorted(by_text.items())
     path.write_bytes(b'N2LG' + struct.pack('<2I', len(keys), len(pairs))
                      + b''.join(struct.pack('<2I', h, o) for h, o in zip(keys, offs))
                      + b''.join(struct.pack('<2I', h, o) for h, o in pairs) + blob)
@@ -1113,6 +1124,10 @@ CUSTOMIZE_ICONS = ('VISUAL_PART_PAINT', 'VISUAL_PART_VINYL', 'VINYL_COLOR', 'VIS
                    'VISUAL_PART_MUFFLERTIP', 'VISUAL_PART_CUSTOM_HUDS', 'VISUAL_PART_SPINNERS', 'VISUAL_PART_WIDE_BODY_KIT', 'VISUAL_PART_SIDE_MIRRORS', 'VISUAL_PART_CARBON_FIBRE', 'VISUAL_PART_SCISSOR_DOORS', 'VISUAL_PART_TRUNK_AUDIO', 'NEON_ICON_CABIN', 'NEON_ICON_ENGINE', 'NEON_ICON_TRUNK', 'U2_OL_LOCKICON',
                    'SHOP_ICON_BODY', 'SHOP_ICON_PERFORMANCE', 'SHOP_ICON_GRAPHIC', 'SHOP_ICON_INTERIORS', 'CRIB_ICON_TEST_TRACK',
                    'VISUAL_PART_DECALS', 'PAINT_MOD_BASE', 'PAINT_MOD_PART_SPOILER', 'PAINT_MOD_PART_RIMS', 'PAINT_MOD_PART_BRAKE_CA')
+# the paint shop's other parts (ChoosePaintScreen: roof scoop, mirrors,
+# engine accents, muffler tip; the spinners take the rims'): its menu's and
+# its grid's, not the parts browser's
+PAINT_PART_ICONS = ('PAINT_MOD_PART_ROOF', 'PAINT_MOD_PART_MIRROR', 'PAINT_MOD_PART_ENGINE_A', 'PAINT_MOD_PART_MUFFLER_')
 PARTS_ICONS = CUSTOMIZE_ICONS + ('VISUAL_PART_FRONT_BUMPE', 'VINYL_REMOVE', 'NEON_COLOR_GENERIC', 'GENERIC_LOCK_ICON',
                'White16x16_pure_white', 'VISUAL_RIMS_BRAND_BBS', 'VISUAL_RIMS_BRAND_ENKEI', 'VISUAL_RIMS_BRAND_KONIG',
                'VISUAL_RIMS_BRAND_MOMO', 'VISUAL_RIMS_BRAND_OZ', 'VISUAL_RIMS_BRAND_RACIN', 'VISUAL_RIMS_BRAND_STOCK') + \
@@ -1146,7 +1161,7 @@ SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS
             ('CRIB_ICON_RESUME_CAREER', 'CRIB_ICON_CAR_SELECT', 'CRIB_ICON_CHANGE_PARTS', 'CRIB_ICON_SWITCH_PERFOR',
              'CRIB_ICON_SAVE_LOAD', 'CRIB_ICON_MAIN_MENU')),
            ('carlot.n2ui', 'UI_CareerCarLot.fng', 'FRONTEND/FRONTB.LZC', 'LOGOS'),
-           ('customize.n2ui', 'UI_ChooseCustomizeCategory.fng', 'FRONTEND/FRONTB.LZC', CUSTOMIZE_ICONS),
+           ('customize.n2ui', 'UI_ChooseCustomizeCategory.fng', 'FRONTEND/FRONTB.LZC', CUSTOMIZE_ICONS + PAINT_PART_ICONS),
            ('perfcat.n2ui', 'UI_ChoosePerformanceCategory.fng', 'FRONTEND/FRONTB.LZC', PERF_ICONS),
            ('dynochart.n2ui', 'UI_PerformanceDyno_Chart.fng', 'GLOBAL/INGAMEPERFORMANCETUNING.BUN', ()),   # the dyno's chart
            ('dynoresults.n2ui', 'UI_PerformanceDyno_Results.fng', 'GLOBAL/INGAMEPERFORMANCETUNING.BUN', ()),   # its results: 0-60, 0-100, top speed, peaks
@@ -1154,7 +1169,7 @@ SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS
             ('GENERIC_STOCK', 'GENERIC_LEVEL1', 'GENERIC_LEVEL2', 'GENERIC_LEVEL3', 'GENERIC_LOCK_ICON') + PERF_ICONS),   # the category's own: its parts one by one
            ('parts.n2ui', 'UI_GenericParts_Browser.fng', 'FRONTEND/FRONTB.LZC', PARTS_ICONS),
            ('paint.n2ui', 'UI_Paint.fng', 'FRONTEND/FRONTB.LZC', ('PAINT_MOD_BASE', 'PAINT_MOD_PART_SPOILER', 'PAINT_MOD_PART_RIMS',
-                                                               'PAINT_MOD_PART_BRAKE_CA', 'VINYL_COLOR', 'GENERIC_LOCK_ICON')),   # the paint shop's grid (a vinyl's colours too)
+                                                               'PAINT_MOD_PART_BRAKE_CA', 'VINYL_COLOR', 'GENERIC_LOCK_ICON') + PAINT_PART_ICONS),   # the paint shop's grid (a vinyl's colours too)
            ('hudpick.n2ui', 'UI_ChooseCustomHUD.fng', 'FRONTEND/FRONTB.LZC', ()),   # Custom Gauges: the tachometer and its colours
            ('vrating.n2ui', 'UI_Menu_Asset_Reputation.fng', 'FRONTEND/FRONTB.LZC', ()),   # the shops' Visual Rating: the stars, its bar
            ('vlayer.n2ui', 'UI_ChooseVinylLayer.fng', 'FRONTEND/FRONTB.LZC',   # the vinyl shop's four layers
@@ -1494,10 +1509,13 @@ def main():
            for d in event_records(f)]
     print('maps.n2tx', track_maps(args.game, ids, table, args.out / 'maps.n2tx', args.jobs), 'track maps')
     print('minimaps.n2mm', minimaps(args.game, ids, args.out / 'minimaps.n2mm'), 'maps, bytes')
+    career_lang = args.out / 'career-lang.json'   # convert_career's (it runs before)
     for code, language in LANGUAGES.items():   # English: the screens' own texts
         if code == 'en':
             continue
-        print(f'lang_{code}.n2lg', language_table(args.game, language, bool(src.buttons), args.out / f'lang_{code}.n2lg', table), 'texts')
+        career = json.loads(career_lang.read_text()).get(code, ()) if career_lang.exists() else ()
+        print(f'lang_{code}.n2lg', language_table(args.game, language, bool(src.buttons), args.out / f'lang_{code}.n2lg', table, career),
+              'texts,', len(career), 'of the career')
         help_texts(args.game, table, args.out / f'help_{code}.txt', strings(args.game, language))
 
 

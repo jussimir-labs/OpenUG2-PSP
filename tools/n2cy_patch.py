@@ -78,8 +78,8 @@ def make_patch(over, base):
     """over's collision blob as a patch on base's, or None when it cannot
     be one exactly (or is not smaller)."""
     oe, be = _layers_end(over), _layers_end(base)
-    if oe != be or over[oe:] != base[be:] or over[8:12] != base[8:12]:
-        return None   # another layout or another terrain section
+    if oe != be or over[oe:] != base[be:] or over[8:16] != base[8:16]:
+        return None   # another layout, another terrain section or other layers' shapes
     ob, ou = struct.unpack_from('<2f', over, 0)
     bb, bu = struct.unpack_from('<2f', base, 0)
     O, B = _fields(over, oe), _fields(base, be)

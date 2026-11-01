@@ -386,7 +386,8 @@ def terrain_layers(ground, terrain, layers, ox, oy, n, step=1.0):
     return out
 
 
-def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None, want_shape=False, want_mid2=False, room=1500):
+def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None, want_shape=False, want_mid2=False, room=1500,
+                   want_layer_shapes=False):
     """1 m grid in game axes. Two ground layers (lowest/highest walkable
     surface, millimetres, NONE = none) and wall bits per layer: bit 0 relative to
     the low layer, bit 1 to the high one. An obstacle is any non-ground
@@ -408,7 +409,13 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
     stack (interchanges over a street over a tunnel): a second middle layer
     above mid (wall bit 3), returned after the shapes. room (mm): ground
     with other ground less than this over it (and 0.25 m or more) is never
-    driven on and is left out (want_mid)."""
+    driven on and is left out (want_mid).
+    The cell's shape holds the walls of all its layers: where a freeway's
+    barrier and the street's wall under it share a cell, their strip spans
+    both, and a car on the freeway hit the street's wall 14 m below, up to
+    0.9 m short of the barrier it saw (beta issue 75). want_layer_shapes
+    (with want_mid2) also returns, last, {(cell, layer bit): shape} for each
+    walled layer whose own walls make another strip than the cell's."""
     lo = [-NONE] * (n * n)
     hi = [NONE] * (n * n)
     def cells_inside(tri):
@@ -495,6 +502,7 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
             lo[k], hi[k], mid[k] = a, b, c
     wall = bytearray(n * n)
     shape_pts = collections.defaultdict(list) if want_shape else None
+    layer_pts = collections.defaultdict(list) if want_layer_shapes else None
     for tri in walls:
         xs, ys = [p[0] for p in tri], [p[1] for p in tri]
         i0, i1 = max(0, int(math.floor((min(xs) - ox) / step))), min(n - 1, int(math.floor((max(xs) - ox) / step)))
@@ -523,12 +531,22 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
                         if shape_pts is not None:
                             band = clip_z(poly, base + .5, base + WALL_TOP)
                             cx, cy = x0 + step / 2, y0 + step / 2
-                            shape_pts[k].extend((p[0] - cx, p[1] - cy) for p in (band or poly))
+                            pts = [(p[0] - cx, p[1] - cy) for p in (band or poly)]
+                            shape_pts[k].extend(pts)
+                            if layer_pts is not None:
+                                layer_pts[(k, bit)].extend(pts)
     lo = [v if v != -NONE else NONE for v in lo]
     if want_shape:
         shape = [SHAPE_FULL] * (n * n)
         for k, pts in shape_pts.items():
             shape[k] = shape_code(pts)
+        if want_mid2 and want_layer_shapes:
+            layer_shapes = {}
+            for (k, bit), pts in layer_pts.items():
+                code = shape_code(pts)
+                if code != shape[k]:
+                    layer_shapes[(k, bit)] = code
+            return n, ox, oy, step, lo, hi, wall, mid, shape, mid2, layer_shapes
         if want_mid2:
             return n, ox, oy, step, lo, hi, wall, mid, shape, mid2
         return n, ox, oy, step, lo, hi, wall, mid, shape

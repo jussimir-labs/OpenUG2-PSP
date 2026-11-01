@@ -91,7 +91,8 @@ def main():
         if parts.get(q, 'DISPRED') is not None and len(set(parts.rgb(q))) == 1 else parts.rgb(q)
     for name, colours, rgb in (('gloss', palette(parts, 'GLOSS'), parts.rgb), ('metal', palette(parts, 'METAL'), parts.rgb),
                                ('pearl', pearl, shown), ('vinyl_cols', palette(parts, 'VINYL'), parts.rgb),
-                               ('rim_cols', palette(parts, 'RIMS'), parts.rgb), ('caliper_cols', palette(parts, 'CALIPERS'), parts.rgb)):
+                               ('rim_cols', palette(parts, 'RIMS'), parts.rgb), ('caliper_cols', palette(parts, 'CALIPERS'), parts.rgb),
+                               ('hose_cols', palette(parts, 'HOSES'), parts.rgb), ('muffler_cols', palette(parts, 'MUFFLERS'), parts.rgb)):
         print(c_table(name, [rgb(q) for q in colours]))
 
 

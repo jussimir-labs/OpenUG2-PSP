@@ -70,6 +70,25 @@ class EquivalenceTests(unittest.TestCase):
         self.assertTrue(t.equivalent("track-L4RC.n2mp", mips(412000, 9), t.describe("track-L4RC.n2mp", mips(411952, 9))))
         self.assertFalse(t.equivalent("track-L4RC.n2mp", mips(412000, 8), t.describe("track-L4RC.n2mp", mips(412000, 9))))
 
+    def test_line_forks_same_forks_any_points(self):
+        def forks(points=(1000, 400), fork=692, types=(4, 4, 4, 4)):
+            blob = b""
+            for k, n in enumerate(points):
+                blob += struct.pack("<2H6B5H", fork + k, fork + 77, *types, 0, 0, n, 10, n - 21, 0, 0) + b"p" * 24 * n
+            return struct.pack("<4s2I", b"N2LF", 1, 1) + struct.pack("<H2BI", 4086, 1, len(points), 20) + blob
+        ref = t.describe("lineforks.n2lf", forks())
+        self.assertTrue(t.equivalent("lineforks.n2lf", forks(points=(998, 400)), ref))   # the QP's way two points shorter
+        self.assertFalse(t.equivalent("lineforks.n2lf", forks(fork=693), ref))
+        self.assertFalse(t.equivalent("lineforks.n2lf", forks(types=(0, 4, 4, 4)), ref))
+        self.assertFalse(t.equivalent("lineforks.n2lf", forks(points=(1000,)), ref))     # a fork fewer
+        self.assertFalse(t.equivalent("lineforks.n2lf", forks(points=(900, 400)), ref))   # far off in size
+        # 0.2.4's manifests recorded the forks' table: the update still reads them with that rule
+        legacy = {"size": len(forks()), "shape": t._legacy_n2lf_shape(forks())}
+        floats = bytearray(forks()); floats[-1] ^= 1
+        self.assertTrue(t.equivalent("lineforks.n2lf", bytes(floats), legacy))
+        self.assertFalse(t.equivalent("lineforks.n2lf", forks(points=(998, 400)), legacy))
+        self.assertFalse(t.equivalent("lineforks.n2lf", forks(points=(1000,)), legacy))
+
     def test_other_kinds_must_be_identical(self):
         self.assertIsNone(t.kind("races.n2rc"))
         self.assertFalse(t.equivalent("races.n2rc", b"x", {"size": 1, "shape": None}))

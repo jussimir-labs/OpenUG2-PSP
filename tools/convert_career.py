@@ -97,6 +97,9 @@ u8 tournament group (0 = none). Entries are in career order. Then:
     its races (the Sponsorship screen's SPONSOR_DETAILS_<NAME> and
     SPONSOR_INFO_<NAME>), its logo's texture name (DECAL_ICON_<NAME>);
     offsets in the text block, "" none;
+  (version 14) the event dialog's texts: u32 n, n x u32 the bodies (offsets
+    in the text block), u32 rows, rows x 16 bytes: u32 its subject, its type
+    line, its sender (offsets), u16 its first body and how many to draw from;
   u32 size, the text block (zero-terminated strings).
 """
 import argparse
@@ -105,6 +108,7 @@ import json
 from pathlib import Path
 import statistics
 import struct
+import sys
 
 from n2formats import archived, chunks
 import n2source
@@ -144,6 +148,7 @@ def career_races(globalb):
                         name=pool[name:pool.index(b'\0', name)].decode('latin-1'),
                         hash=struct.unpack_from('<I', r, 0x08)[0], req=r[0x0C], need=struct.unpack_from('<I', r, 0x10)[0],
                         suv=int(r[0x0D] == 1), hidden=int(r[0x7F] != 0), rivals=rivals, zone=struct.unpack_from('<I', r, 0x28)[0],
+                        sender=struct.unpack_from('<I', r, 0x84)[0],   # the event dialog's From (0: its first rival's name)
                         rival_names=[struct.unpack_from('<H', r, 0x40 + 12 * i)[0] for i in range(rivals)],
                         rival_perf=[(r[0x42 + 12 * i], struct.unpack_from('<b', r, 0x43 + 12 * i)[0]) for i in range(rivals)],
                         rival_cars=[struct.unpack_from('<I', r, 0x44 + 12 * i)[0] for i in range(rivals)]))
@@ -192,6 +197,18 @@ def build(races, ids, track_ids=()):
     return rows
 
 
+# The event dialog (RaceEngageDialog::Setup, CareerEventData::
+# GetEngageDialogBody): the record's race type (+0x0F) to its body texts'
+# kind, how many ENGAGE_<kind>_RANDOM_n each has (the game's bRandom
+# ranges), the subject's label ((world '', sponsor, URL), type) and the type
+# line's
+ENGAGE_KIND = {0: 'CIRCUIT', 1: 'SPRINT', 2: 'STREET', 4: 'DRAG', 5: 'DRIFT'}
+ENGAGE_RANDOM = {'SUV': 9, 'SPON_STREET': 10, 'SPON_CIRCUIT': 11, 'SPON_SPRINT': 10, 'SPON_DRAG': 8, 'SPON_DRIFT': 11, 'URL': 12,
+                 'STREET': 14, 'CIRCUIT': 18, 'SPRINT': 15, 'DRAG': 12, 'DRIFT': 13}
+ENGAGE_SUBJECT = {('', 0): 0x9b39c122, ('', 1): 0x9ec5f82f, ('', 2): 0x57f833ad, ('', 4): 0xe45a7387, ('', 5): 0x3a10a7c2,
+                  ('SPON', 0): 0xf037a7b, ('SPON', 1): 0x7216a68, ('SPON', 2): 0xc5f7902c, ('SPON', 4): 0x3d6a70e6, ('SPON', 5): 0xb5205101,
+                  **{('URL', t): 0x80b8267c for t in range(6)}}
+ENGAGE_TYPE = {0: 0x268d063c, 1: 0xba613729, 2: 0xfda6758, 4: 0x40c91ba7, 5: 0x59ecb2c2}
 SPONSOR_TYPE = {1: 0, 2: 5, 3: 4, 4: 1, 5: 2}      # contract race type -> RMODE_ (circuit, drift, drag, sprint, Street X)
 SHOP_KIND = {'CARLOT01': 0, 'PERFSHOP01': 1, 'PARTSSHOP01': 2, 'PAINTSHOP01': 3, 'AUDIOSHOP01': 4, 'CRIB01': 5}
 
@@ -245,17 +262,24 @@ def sponsor_keys(globalb):
             for o in (struct.unpack_from('<h', sec[0x34a19], 16 * k)[0] for k in range(len(sec[0x34a19]) // 16))]
 
 
-def career_world(game, globalb, rows, races):
-    """Stages, sponsors, covers, SMS and shops (see the module doc)."""
+def career_world(game, globalb, rows, races, language=None, written=None):
+    """Stages, sponsors, covers, SMS and shops (see the module doc). With a
+    language: its texts where the English has one (the same records and
+    choices, career_translations); written: every text written, in order."""
     from convert_hud import strings
     from n2formats import game_hash
     sec = sections(globalb)
     pool = sec[0x34a1d]
     pooled = lambda o: pool[o:pool.index(b'\0', o)].decode('latin-1')
     lang = strings(game)
+    if language:
+        other = strings(game, language)
+        lang = {h: other.get(h) or t if t else t for h, t in lang.items()}
     text, offsets = bytearray(), {}
     def put(t):
         t = (t or '').replace('\u2019', "'")
+        if written is not None:
+            written.append(t)
         if t not in offsets:
             offsets[t] = len(text)
             text.extend(t.encode('latin-1', 'replace') + b'\0')
@@ -581,6 +605,36 @@ def career_world(game, globalb, rows, races):
     for v in sponsors:
         out += struct.pack('<3I', put(lang.get(game_hash('SPONSOR_DETAILS_' + v['key']), '')),
                            put(lang.get(game_hash('SPONSOR_INFO_' + v['key']), '')), put(sponsor_icon(v['key'])))
+    # version 14: the event dialog's texts per row (RaceEngageDialog::Setup,
+    # CareerEventData::GetEngageDialogBody/From): the body's choices (u32
+    # offsets, all the rows' sets one after the other: a stage 0 race's own
+    # ENGAGE_<NAME>, else one drawn from the kind's ENGAGE_..._RANDOM_1..n),
+    # then per row u32 its subject (the kind, "Sponsored Sprint"), the type
+    # line, the sender (+0x84's text, or its first rival's name), u16 its
+    # first choice and how many
+    bodies, sets, engage = [], {}, []
+    for x in rows:
+        r = x['record']
+        if r['stage'] == 0:
+            key, n = 'ENGAGE_' + r['name'], 0
+        else:
+            kind = ENGAGE_KIND.get(r['type'], '')
+            key = ('ENGAGE_SUV' if r['suv'] else f'ENGAGE_SPON_{kind}' if r['reward'] == 1 else 'ENGAGE_URL' if r['reward'] == 2
+                   else f'ENGAGE_{kind}') + '_RANDOM_%d'
+            n = ENGAGE_RANDOM.get(key[7:-10], 0)
+        if key not in sets:
+            said = [lang.get(game_hash(key)) if not n else lang.get(game_hash(key % (i + 1))) for i in range(max(n, 1))]
+            said = [t for t in said if t]
+            sets[key] = (len(bodies), len(said))
+            bodies += [put(t) for t in said]
+        normal = r['suv'] or r['reward'] == 3
+        subject = ENGAGE_SUBJECT.get(('' if normal else 'URL' if r['reward'] == 2 else 'SPON' if r['reward'] == 1 else '', r['type']), 0x9b39c122)
+        kind_line = 0xb46377bc if r['reward'] == 2 and not normal else ENGAGE_TYPE.get(r['type'], 0x268d063c)
+        sender = lang.get(r['sender'], '') if r['sender'] else pooled(r['rival_names'][0]) if r['rival_names'] else ''
+        first, count = sets[key]
+        engage.append(struct.pack('<3I2H', put(lang.get(subject, '')), put(lang.get(kind_line, '')), put(sender), first, count))
+    out += struct.pack('<I', len(bodies)) + b''.join(struct.pack('<I', o) for o in bodies)
+    out += struct.pack('<I', len(engage)) + b''.join(engage)
     text.extend(bytes((-len(text)) % 4))
     out += struct.pack('<I', len(text)) + bytes(text)
     report = dict(stages=stages, rules=rules, sponsors=sponsors, covers=covers, shops=shops, tips=[dict(sms=sms[v['sms']]['name'], pos=v['pos']) for v in tips], cash=cash, shows=shows,
@@ -679,12 +733,14 @@ def main():
     for x in rows:
         if x['reward'] == 1:
             x['flags'] |= 8      # a sponsor race: its purse goes to the signed sponsor's contract
-    out = struct.pack('<4s2I', b'N2CA', 13, len(rows))
+    out = struct.pack('<4s2I', b'N2CA', 14, len(rows))
     for x in rows:
         out += struct.pack('<HBBiBBBB', x['id'], x['stage'], x['type'], x['money'], x['reward'], x['laps'], x['flags'],
                            x['group'])
-    world, world_report = career_world(args.game, globalb, rows, races)
+    written = []
+    world, world_report = career_world(args.game, globalb, rows, races, written=written)
     (args.out / 'career.n2cr').write_bytes(out + world)
+    (args.out / 'career-lang.json').write_text(json.dumps(career_translations(args.game, globalb, rows, races, written)) + '\n')
     from convert_shopzones import write as write_shopzones
     write_shopzones(args.game, [v['name'] for v in world_report['shops']], args.out)
     blob, found = hoods(args.game)
@@ -703,6 +759,27 @@ def main():
     print(len(rows), 'rows;', sum(1 for x in rows if x['flags'] & 1), 'with approximated money;',
           sum(1 for x in rows if x['flags'] & 4), 'on tracks;', max((x['group'] for x in rows), default=0), 'tournaments; first:',
           [(x['id'], x['stage'], x['money']) for x in rows[:6]])
+
+
+def career_translations(game, globalb, rows, races, english):
+    """career-lang.json, for convert_hud's language tables: per language,
+    [English, its text] for the career's texts (english: career_world's,
+    in order) that differ, the SMS and the sponsors' among them, put
+    together the same way in the language (a magazine's title in its
+    "%s cover opportunity"). The port shows career.n2cr's English through
+    lang_en."""
+    from convert_hud import LANGUAGES
+    out = {}
+    for code, language in LANGUAGES.items():
+        if code == 'en':
+            continue
+        written = []
+        career_world(game, globalb, rows, races, language, written)
+        if len(written) != len(english):   # not the same choices: none rather than wrong pairs
+            print(f'career-lang: {language} wrote {len(written)} texts, English {len(english)}; left out', file=sys.stderr)
+            continue
+        out[code] = sorted(dict((e, t) for e, t in zip(english, written) if e and t and e != t).items())
+    return out
 
 
 # The city's neighbourhoods (the world's triggers of type 0x11: chunk

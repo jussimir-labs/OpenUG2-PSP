@@ -773,10 +773,11 @@ def process_tile(task):
                 continue        # an overlay keeps only the cells its barriers reach
             col = b''
             if ground.get(c):
-                n, ox, oy, step, lo, hi, wall, mid, shape, mid2 = cw.collision_grid(ground[c], walls.get(c, []), ci * CELL, cj * CELL, GRID,
-                                                                                    1.0, True, road[c], True, True, room=_room)
+                n, ox, oy, step, lo, hi, wall, mid, shape, mid2, layer_shapes = cw.collision_grid(
+                    ground[c], walls.get(c, []), ci * CELL, cj * CELL, GRID, 1.0, True, road[c], True, True, room=_room,
+                    want_layer_shapes=True)
                 kinds = cw.terrain_layers(ground[c], terrain[c], (lo, hi), ci * CELL, cj * CELL, GRID)
-                col = pack_collision(lo, hi, wall, mid, shape, mid2, kinds)
+                col = pack_collision(lo, hi, wall, mid, shape, mid2, kinds, layer_shapes)
             if c in near:
                 drop_stacked_copies(near[c])
                 mark_overlays(near[c])
@@ -878,11 +879,34 @@ def precull_batches(near, far, groups):
     return out
 
 
+# An event's start and finish lines: the chequered strips painted across
+# the road, ZPM_<event>_FW_StartFinGraphic (the course's way) and _BW_ (the
+# other way), in the event's BARRIERS_<event> group. The original turns the
+# group on with its race and draws each strip only one way: instance flag
+# 0x04 the forward one, 0x08 the backward one, the other way's hidden by
+# the view's mask (SetupSceneryCullInfo: forward hides 0x08, backward 0x04;
+# ScenerySectionHeader::DrawAScenery). The port gates their batches with
+# WAY_GATE, drawn only the race's way (psp-viewer/world.c gate_open).
+START_FINISH = 'STARTFINGRAPHIC'
+WAY_GATE = {0x04: 0xfff4, 0x08: 0xfff8}    # mirrored in psp-viewer/world.c (GATE_FORWARD, GATE_BACKWARD)
+
+
+def start_finish(inst):
+    return inst.name.upper().startswith('ZPM_') and START_FINISH in inst.name.upper()
+
+
+def instance_gate(inst):
+    """gated(), or the way an event's start/finish strip is drawn."""
+    if start_finish(inst) and (inst.flags & 0x0c) in WAY_GATE:
+        return WAY_GATE[inst.flags & 0x0c]
+    return gated(inst.section)
+
+
 def gather_instances(stream, skip):
     found = {}
     for name in stream.sections:
         for inst in nw.section_instances(stream.section(name)):
-            if inst.name.upper().startswith(skip) or not inst.keys[0]:
+            if (inst.name.upper().startswith(skip) and not start_finish(inst)) or not inst.keys[0]:
                 continue
             k = (inst.keys[0], tuple(round(v, 2) for v in inst.pos), tuple(round(v, 3) for v in inst.rot))
             kept = found.setdefault(k, inst)
@@ -994,7 +1018,7 @@ def main():
                         continue
                     if only is not None and (ti, tj) not in only:
                         continue
-                    entry = (inst.keys, inst.pos, inst.rot, barrier, gated(inst.section), None if barrier or args.no_precull else inst.precull)
+                    entry = (inst.keys, inst.pos, inst.rot, barrier, instance_gate(inst), None if barrier or args.no_precull else inst.precull)
                     if route and not kept(inst, (ti, tj), entry):
                         continue
                     tiles[(ti, tj)].append(entry)
@@ -1456,12 +1480,28 @@ def pack_terrain(kinds):
 
 
 
-def pack_collision(lo, hi, wall, mid, shape=None, mid2=None, kinds=None):
+def pack_layer_shapes(layer_shapes):
+    """The layers' own wall shapes (convert_world.collision_grid
+    want_layer_shapes): u32 count, then per walled layer whose strip is not
+    the cell's, by cell and bit, u16 cell (j*64 + i), u8 layer bit, u8 pad,
+    u16 shape. b'' when there is none."""
+    if not layer_shapes:
+        return b''
+    items = sorted(layer_shapes.items())
+    return struct.pack('<I', len(items)) + b''.join(struct.pack('<HBxH', k, bit, code) for (k, bit), code in items)
+
+
+def pack_collision(lo, hi, wall, mid, shape=None, mid2=None, kinds=None, layer_shapes=None):
     """Collision blob v2 from millimetre layers (convert_world.collision_grid),
     with the wall shapes (u16 per cell) after the middle layer and, only in
     cells where four levels stack, the second middle layer after them; the
     terrain section (pack_terrain) after all, its offset in the header's
-    u32 at +8 (0: none, all road)."""
+    u32 at +8 (0: none, all road); then, 4-aligned, the layers' own wall
+    shapes (pack_layer_shapes), their offset in the u32 at +12 (0: none).
+    A blob with them always has a terrain section, all road if need be:
+    its offset is where the PSP's layers end, and a game without the
+    layers' shapes (they came with beta issue 75) found that end by the
+    blob's size, reading the shapes as a fourth level."""
     if mid2 and all(v == cw.NONE for v in mid2):
         mid2 = None
     if mid2 and not shape:
@@ -1479,7 +1519,13 @@ def pack_collision(lo, hi, wall, mid, shape=None, mid2=None, kinds=None):
             + (struct.pack(f'<{GRID*GRID}H', *shape) if shape else b'')
             + (struct.pack(f'<{GRID*GRID}h', *q(mid2)) if mid2 else b''))
     terrain = pack_terrain(kinds) if kinds else b''
-    return struct.pack('<2fI4x', base, unit, 16 + len(body) if terrain else 0) + body + terrain
+    layers = pack_layer_shapes(layer_shapes)
+    if layers and not terrain:
+        terrain = bytes([ROAD] * 16) + bytes(GRID * GRID)
+    at = 16 + len(body) + len(terrain)
+    pad = (-at) % 4 if layers else 0
+    return (struct.pack('<2f2I', base, unit, 16 + len(body) if terrain else 0, at + pad if layers else 0)
+            + body + terrain + bytes(pad) + layers)
 
 
 def unpack_collision(col):

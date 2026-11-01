@@ -16,6 +16,72 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-10-31 — Crashing Foreign Cars, Fluently
+
+EA Trax: *Crashing Foreign Cars*, Helmet ([Spotify](https://open.spotify.com/artist/0qB0cTENhSUc0feov5qbg0)).
+
+The outrun crews finally learn that Bayview's traffic is solid, the freeway stops hiding a wall
+that belongs to the street below, every race gets its chequered lines back, and Rachel texts you
+in your own language.
+
+A new game executable and new converted game data: update your 0.2.0 to 0.2.4 output folder
+with the 0.2.5 generator (same ISO) or generate into a new folder, and install the complete
+result.
+
+### Fixed
+
+- Generator: a game made from the PS2 disc on Windows passes its final check again. The racing
+  line through a few shortcuts is smoothed by a calculation that lands a little differently on
+  each kind of processor, so one shortcut came out two points shorter than on the developers'
+  Mac, and the check stopped the whole folder with "NOT verified" (`pack.n2pk`
+  different) although the game itself was fine. The check now confirms that every shortcut is
+  the same one, with the same signs, and lets its smoothed line differ by a point or two ([#86]).
+- The street racers who challenge you to an outrun in free roam drive like cars again, not like
+  ghosts on rails. Before, a rival rode its way across Bayview ignoring everything in it: it
+  could run into a civilian car, carry it along merged into its own body and take both of them
+  into a wall, slide through walls and the other rival, stop dead whenever you stopped, and
+  sometimes spin round on the spot at a dead end and drive off the wrong way. Now it goes round
+  a slower car when the road has room, or slows down behind it; when something does hit it near
+  you (a traffic car, a wall or your own bumper) it takes the knock like any other car before
+  getting back on its way; it keeps cruising at 60 mph or more beside you, as in the original
+  game, instead of parking next to you; and it steers clear of dead-end streets ([#72], [#74]).
+- Every race now has its chequered start and finish lines painted across the road, as in
+  the original game. Run a course the other way in Quick Race and you get that way's own
+  lines ([#64]).
+- Rachel no longer walks you through every shop again each time you resume your career. Your
+  save now remembers when she last talked about each shop screen, as in the original game: she
+  explains it once, and only brings it up again after an hour or so of play. A save from an
+  earlier version hears each shop's line one last time ([#68]).
+- Paint in the Graphics Shop now lists every part the original game lets you paint: Base Paint,
+  Spoiler, Roof Scoop, Mirrors, Rims, Spinners, Brakes, Engine Accents and Muffler Tip. The roof
+  scoop and the mirrors take the body's Gloss, Metallic and Pearlescent paints; the spinners,
+  engine accents and muffler tips have their own colours, and each one counts toward your Visual
+  Rating. A part you can't paint yet stays on the list and tells you why when you pick it, as in
+  the original: stock parts need an aftermarket part first, carbon fibre and aluminium pieces
+  can't be painted, spinner colours need Spinners on the car, and engine accents need level 3
+  Engine, ECU and Turbo upgrades. Engine accent colours are kept on your car, but the engine bay
+  doesn't show them yet. Your saved cars keep their paint ([#66]).
+- No more invisible wall at the edge of a freeway that runs over a street. Where the freeway's
+  barrier and the wall of the street 14 m below passed through the same square metre of the
+  city's collision map, the two were merged into one block, and a car on the freeway could hit
+  the street's wall up to a metre short of the barrier it saw: it stopped dead in the lane
+  instead of scraping along. Each level now keeps its own walls. The generator converts the
+  city's walls again ([#75]).
+- Playing in Spanish, French, German, Italian or Dutch, the button hints no longer slip back
+  into English: "Back" in the pause menu and in Pause Options is now "Atrás" in Spanish, and
+  the World Map's Full Map, Hide on World Map, Activate GPS and Back follow your language too,
+  all with the original game's own words ([#76]).
+- Rachel's texts now reach your phone in your language. The whole SMS section was in English
+  whatever the PSP's language: the From and Subject lines, every message, the magazine and
+  unique parts news, the mailbox list and its Go to Mailboxes and Return to Gameplay hints. They
+  now use the original game's translations, the magazine's name filled in as the original does
+  ([#78]).
+- The race offer you get when you drive into a race marker now reads as in the original
+  game, in your language: the text comes from one of the racers, the subject names the
+  kind of race (Sponsored Sprint, URL...), and the message is the trash talk the original
+  picks for that kind of race, or the prologue racers' own lines when Rachel's 350Z is
+  still the car you drive ([#80]).
+
 ## [0.2.4] - 2026-10-31 — Give It All to Bayview
 
 EA Trax: *Give it All*, Rise Against ([official channel](https://www.youtube.com/user/RiseAgainst)).
@@ -398,7 +464,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...v0.2.2
@@ -447,6 +514,7 @@ throughout the game were still pending.
 [#50]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/50
 [#55]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/55
 [#61]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/61
+[#66]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/66
 [#58]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/58
 [#53]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/53
 [#57]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/57
@@ -457,3 +525,12 @@ throughout the game were still pending.
 [#62]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/62
 [#63]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/63
 [#67]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/67
+[#68]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/68
+[#64]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/64
+[#72]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/72
+[#74]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/74
+[#75]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/75
+[#76]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/76
+[#78]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/78
+[#80]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/80
+[#86]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/86

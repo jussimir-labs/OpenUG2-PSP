@@ -31,7 +31,7 @@ reached and, a hidden one, found; the value its name's hash, GLOBALB
 record), its URL races won (0x111110, 10) and its sponsor's races won
 (0x111190, 4: the contract's 3); level 4 the unique parts' showcase.
 
-rating.n2vr: 'N2VR', u32 version 6; every entry four u16, the part's
+rating.n2vr: 'N2VR', u32 version 7; every entry four u16, the part's
 points, its price (0 none in the table: the port's own price stays), its
 level (4 a unique part: opened by its showcase, free) and when it opens
 (type << 12 | stage << 8 | count, a shop's: 1 << 12 | its index in
@@ -48,7 +48,11 @@ career.n2cr's shops; 0 from the start);
     perf.h's 9 categories x levels 1-3: their opening alone; the category's
     kind by 0x112ea0);
   then (version 6) u32 presets, each char name[32] and u32 its points
-    (preset_points: Rachel's 350Z, DDAY_PLAYER_CAR).
+    (preset_points: Rachel's 350Z, DDAY_PLAYER_CAR);
+  then (version 7) the other paint shop parts' lists, as the ones above:
+    the roof scoop's and the mirrors' paints (the body's 150), the
+    spinners' (the rims' palette), the engine accents' (HOSES) and the
+    muffler tips' (MUFFLERS), 60 each.
 """
 import argparse
 import json
@@ -68,7 +72,8 @@ CATS = convert_garage.CATS
 # the slot's kind (0x3fb580 as 0x1125c0 fills it, and 0x112a10's own cases)
 KIND = dict(kit=18, rear_bumper=17, skirt=16, hood=11, spoiler=12, rims=13, headlight=15, brakelight=14,
             roof=20, exhaust=21, wide=22, mirror=19, audio=30, spinner=33, neon=25, neon_engine=26, neon_trunk=28,
-            decal=76, tint=32, kit_carbon=85, trunk_carbon=86, paint_spoiler=80, paint_rim=77, paint_brake=79)
+            decal=76, tint=32, kit_carbon=85, trunk_carbon=86, paint_spoiler=80, paint_rim=77, paint_brake=79,
+            paint_engine=40, paint_muffler=78, paint_spinner=81, paint_roof=83, paint_mirror=84)   # the paint slots 0x44-0x4c
 HOOD_GROUP5 = 34                     # a hood of group 5 (0x112bbe)
 PAINT_KIND = {'GLOSS': 37, 'METAL': 38, 'PEARL': 39}   # the base paint by its BRAND_NAME (0x112be2)
 # a vinyl's kind by its group (0x112a43, its table at 0x112ce8)
@@ -244,7 +249,7 @@ def main():
         for c in CATS:
             cars += b''.join(struct.pack('<4H', *x) for x in per[c])
         report[model] = {c: [x[0] for x in per[c]] for c in CATS}
-    out = struct.pack('<4sI', b'N2VR', 6) + struct.pack('<I', len(garage)) + cars
+    out = struct.pack('<4sI', b'N2VR', 7) + struct.pack('<I', len(garage)) + cars
     # the rims' library, in rims.n2rm's order (a spinner: its wheel and its spinning part)
     rm = (a.out / 'rims.n2rm').read_bytes()
     ncars, nrims = struct.unpack_from('<II', rm, 8)
@@ -284,6 +289,12 @@ def main():
     # the preset cars' points (Rachel's 350Z: the career's prologue car)
     presets = [(n, preset_points(a.game, rows, n)) for n in PRESETS]
     out += struct.pack('<I', len(presets)) + b''.join(n.encode()[:31].ljust(32, b'\0') + struct.pack('<I', p or 0) for n, p in presets)
+    # the other parts' paints (version 7), garage.h's VR_PAINT_ROOF on
+    out += pack([rows.pair(KIND['paint_roof'], q['level'] >> 5) for q in body])
+    out += pack([rows.pair(KIND['paint_mirror'], q['level'] >> 5) for q in body])
+    out += pack([rows.pair(KIND['paint_spinner'], q['level'] >> 5) for q in partsdb.palette(parts, 'RIMS')])
+    out += pack([rows.pair(KIND['paint_engine'], q['level'] >> 5) for q in partsdb.palette(parts, 'HOSES')])
+    out += pack([rows.pair(KIND['paint_muffler'], q['level'] >> 5) for q in partsdb.palette(parts, 'MUFFLERS')])
     (a.out / 'rating.n2vr').write_bytes(out)
     (a.out / 'rating.json').write_text(json.dumps(dict(cars=report, rims=[x[0] for x in rims], vinyls=len(vin), consts=consts), indent=1))
     print(f'rating.n2vr: {len(garage)} cars, {len(rims)} rims, {len(vin)} vinyls, {len(neons)} neons, {len(body)} paints, consts {consts}, presets {presets}')
