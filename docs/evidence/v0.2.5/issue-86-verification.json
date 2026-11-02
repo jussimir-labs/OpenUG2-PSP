@@ -1,0 +1,15 @@
+{
+  "version": "0.2.5",
+  "source": "ps2",
+  "files": 162,
+  "bytes": 2182990611,
+  "verification": "equivalent-reference",
+  "reference_verified": true,
+  "approved": true,
+  "eboot_sha256": "ed457f83f03237614f5f467233555846d541bbc5dba923b01afe581304678f89",
+  "same": 100,
+  "equivalent_files": 62,
+  "method": "Incremental PS2 update from v0.2.4 on Linux, without full-generation fallback.",
+  "scope": "Generator output verification, not gameplay or hardware approval.",
+  "windows_tester_confirmation": "https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/86#issuecomment-6555020624"
+}

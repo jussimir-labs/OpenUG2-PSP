@@ -1,0 +1,720 @@
+[
+ {
+  "seed": 0,
+  "old": true,
+  "outrun": {
+   "placed": 4,
+   "removed": 3,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 15,
+   "engage_d": 29.1,
+   "race_s": 55.2,
+   "turns": 2
+  },
+  "contacts": {
+   "rival_frames": 11619,
+   "in_traffic_frames": 18,
+   "in_traffic_run": 18,
+   "in_traffic_deep": 0.52,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 3,
+   "dead_ends": 0,
+   "flip_log": [
+    [
+     79.3,
+     -886,
+     -484,
+     1.04
+    ],
+    [
+     113.0,
+     -999,
+     466,
+     3.11
+    ],
+    [
+     115.8,
+     -992,
+     425,
+     -1.13
+    ]
+   ],
+   "log": [
+    [
+     4404,
+     0,
+     0.33,
+     155,
+     0,
+     22.2
+    ]
+   ]
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 0,
+  "old": false,
+  "outrun": {
+   "placed": 4,
+   "removed": 3,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 1,
+   "engage_d": 29.7,
+   "race_s": 44.0,
+   "turns": 3
+  },
+  "contacts": {
+   "rival_frames": 13086,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 2,
+   "walls": 0,
+   "absorbed": 33,
+   "passes": 12,
+   "follows": 125,
+   "knock_s": 3.0,
+   "flips": 0,
+   "dead_ends": 22,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 1,
+  "old": true,
+  "outrun": {
+   "placed": 3,
+   "removed": 2,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 13,
+   "engage_d": 29.9,
+   "race_s": 11.8,
+   "turns": 0
+  },
+  "contacts": {
+   "rival_frames": 5557,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 106,
+   "in_car_frames": 0,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 2,
+   "dead_ends": 0,
+   "flip_log": [
+    [
+     60.1,
+     -846,
+     -544,
+     1.67
+    ],
+    [
+     73.9,
+     -886,
+     -484,
+     1.1
+    ]
+   ],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 1,
+  "old": false,
+  "outrun": {
+   "placed": 5,
+   "removed": 4,
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 24.0,
+   "race_s": 30.6,
+   "turns": 8
+  },
+  "contacts": {
+   "rival_frames": 10366,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 1,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 9,
+   "follows": 2,
+   "knock_s": 1.0,
+   "flips": 0,
+   "dead_ends": 21,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 2,
+  "old": true,
+  "outrun": {
+   "placed": 5,
+   "removed": 4,
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 26.7,
+   "race_s": 16.8,
+   "turns": 0
+  },
+  "contacts": {
+   "rival_frames": 11354,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 629,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 0,
+   "dead_ends": 0,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 2,
+  "old": false,
+  "outrun": {
+   "placed": 4,
+   "removed": 3,
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 3.9,
+   "race_s": 18.7,
+   "turns": 7
+  },
+  "contacts": {
+   "rival_frames": 11216,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 1,
+   "walls": 0,
+   "absorbed": 1,
+   "passes": 11,
+   "follows": 19,
+   "knock_s": 0.9,
+   "flips": 0,
+   "dead_ends": 17,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 3,
+  "old": true,
+  "outrun": {
+   "placed": 3,
+   "removed": 2,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 27,
+   "engage_d": 27.9,
+   "race_s": 11.8,
+   "turns": 0
+  },
+  "contacts": {
+   "rival_frames": 5298,
+   "in_traffic_frames": 41,
+   "in_traffic_run": 41,
+   "in_traffic_deep": 0.51,
+   "in_wall_frames": 137,
+   "in_car_frames": 189,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 2,
+   "dead_ends": 0,
+   "flip_log": [
+    [
+     73.3,
+     -886,
+     -484,
+     1.1
+    ],
+    [
+     73.6,
+     -886,
+     -484,
+     1.01
+    ]
+   ],
+   "log": [
+    [
+     4068,
+     1,
+     0.46,
+     20,
+     0,
+     23.7
+    ],
+    [
+     4099,
+     1,
+     0.32,
+     23,
+     0,
+     19.5
+    ]
+   ]
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 3,
+  "old": false,
+  "outrun": {
+   "placed": 4,
+   "removed": 3,
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 27.6,
+   "race_s": 26.1,
+   "turns": 8
+  },
+  "contacts": {
+   "rival_frames": 9898,
+   "in_traffic_frames": 1,
+   "in_traffic_run": 1,
+   "in_traffic_deep": 1.55,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 2,
+   "passes": 6,
+   "follows": 1,
+   "knock_s": 0.0,
+   "flips": 0,
+   "dead_ends": 18,
+   "flip_log": [],
+   "log": [
+    [
+     4468,
+     1,
+     1.55,
+     194,
+     0,
+     17.3
+    ]
+   ]
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 4,
+  "old": true,
+  "outrun": {
+   "placed": 5,
+   "removed": 4,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 21,
+   "engage_d": 16.6,
+   "race_s": 74.6,
+   "turns": 16
+  },
+  "contacts": {
+   "rival_frames": 18518,
+   "in_traffic_frames": 8,
+   "in_traffic_run": 8,
+   "in_traffic_deep": 0.65,
+   "in_wall_frames": 0,
+   "in_car_frames": 13,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 0,
+   "dead_ends": 0,
+   "flip_log": [],
+   "log": [
+    [
+     7236,
+     0,
+     0.54,
+     8,
+     0,
+     41.0
+    ]
+   ]
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 4,
+  "old": false,
+  "outrun": {
+   "placed": 4,
+   "removed": 3,
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 30.0,
+   "race_s": 19.2,
+   "turns": 1
+  },
+  "contacts": {
+   "rival_frames": 12958,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 4,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 24,
+   "follows": 162,
+   "knock_s": 12.9,
+   "flips": 0,
+   "dead_ends": 24,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 5,
+  "old": true,
+  "outrun": {
+   "placed": 3,
+   "removed": 2,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 1,
+   "engage_d": 22.5,
+   "race_s": 34.8,
+   "turns": 0
+  },
+  "contacts": {
+   "rival_frames": 8647,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 0,
+   "dead_ends": 0,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 5,
+  "old": false,
+  "outrun": {
+   "placed": 3,
+   "removed": 2,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 25,
+   "engage_d": 20.3,
+   "race_s": 86.4,
+   "turns": 15
+  },
+  "contacts": {
+   "rival_frames": 13580,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 1,
+   "walls": 0,
+   "absorbed": 1,
+   "passes": 10,
+   "follows": 69,
+   "knock_s": 2.5,
+   "flips": 0,
+   "dead_ends": 41,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 6,
+  "old": true,
+  "outrun": {
+   "placed": 3,
+   "removed": 2,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 7,
+   "engage_d": 29.2,
+   "race_s": 30.4,
+   "turns": 0
+  },
+  "contacts": {
+   "rival_frames": 8707,
+   "in_traffic_frames": 202,
+   "in_traffic_run": 84,
+   "in_traffic_deep": 1.02,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 1,
+   "dead_ends": 0,
+   "flip_log": [
+    [
+     79.8,
+     -886,
+     -484,
+     1.11
+    ]
+   ],
+   "log": [
+    [
+     5005,
+     0,
+     0.59,
+     109,
+     0,
+     38.0
+    ],
+    [
+     5829,
+     1,
+     0.33,
+     186,
+     0,
+     43.3
+    ],
+    [
+     5860,
+     1,
+     0.63,
+     183,
+     0,
+     43.3
+    ],
+    [
+     5921,
+     1,
+     0.62,
+     179,
+     0,
+     43.3
+    ],
+    [
+     5952,
+     1,
+     0.74,
+     178,
+     0,
+     43.3
+    ],
+    [
+     5991,
+     1,
+     0.55,
+     178,
+     0,
+     39.7
+    ],
+    [
+     6022,
+     1,
+     0.59,
+     181,
+     0,
+     35.6
+    ],
+    [
+     6053,
+     1,
+     0.52,
+     187,
+     0,
+     31.4
+    ]
+   ]
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 6,
+  "old": false,
+  "outrun": {
+   "placed": 5,
+   "removed": 4,
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 20.2,
+   "race_s": 31.4,
+   "turns": 8
+  },
+  "contacts": {
+   "rival_frames": 12098,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 1,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 10,
+   "follows": 97,
+   "knock_s": 5.5,
+   "flips": 0,
+   "dead_ends": 22,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 7,
+  "old": true,
+  "outrun": {
+   "placed": 4,
+   "removed": 3,
+   "challenges": 1,
+   "won": 1,
+   "lost": 0,
+   "swaps": 9,
+   "engage_d": 29.9,
+   "race_s": 18.6,
+   "turns": 0
+  },
+  "contacts": {
+   "rival_frames": 6346,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 185,
+   "in_car_frames": 0,
+   "knocks": 0,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 0,
+   "follows": 0,
+   "knock_s": 0.0,
+   "flips": 2,
+   "dead_ends": 0,
+   "flip_log": [
+    [
+     60.1,
+     -846,
+     -543,
+     1.72
+    ],
+    [
+     74.2,
+     -886,
+     -484,
+     1.1
+    ]
+   ],
+   "log": []
+  },
+  "returncode": 0
+ },
+ {
+  "seed": 7,
+  "old": false,
+  "outrun": {
+   "placed": 4,
+   "removed": 3,
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 27.7,
+   "race_s": 26.0,
+   "turns": 8
+  },
+  "contacts": {
+   "rival_frames": 10212,
+   "in_traffic_frames": 0,
+   "in_traffic_run": 0,
+   "in_traffic_deep": 0.0,
+   "in_wall_frames": 0,
+   "in_car_frames": 0,
+   "knocks": 1,
+   "walls": 0,
+   "absorbed": 0,
+   "passes": 6,
+   "follows": 13,
+   "knock_s": 1.7,
+   "flips": 0,
+   "dead_ends": 18,
+   "flip_log": [],
+   "log": []
+  },
+  "returncode": 0
+ }
+]

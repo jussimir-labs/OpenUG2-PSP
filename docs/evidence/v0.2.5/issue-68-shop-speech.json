@@ -1,0 +1,24 @@
+{
+  "emulator": "PPSSPPHeadless",
+  "hardware_tested": false,
+  "timing_note": "PPSSPP virtual clock, not real PSP performance",
+  "cases": {
+    "shop-lines": {
+      "first": [
+        "0x1",
+        "0x2",
+        "0x5",
+        "0x8",
+        "0xe",
+        "0x11",
+        "0x12"
+      ],
+      "resumed": [
+        "0x7",
+        "0x1b"
+      ]
+    }
+  },
+  "calibrated": {},
+  "retained_case_artifacts": {}
+}

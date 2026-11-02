@@ -1,0 +1,128 @@
+{
+ "free-roam": {
+  "outrun": {
+   "placed": 0,
+   "spawn_d": [],
+   "challenges": 0,
+   "won": 0,
+   "lost": 0,
+   "swaps": 0,
+   "engage_d": 0.0,
+   "race_s": 0.0,
+   "contacts": {
+    "rival_frames": 0,
+    "in_traffic_frames": 0,
+    "in_traffic_run": 0,
+    "in_traffic_deep": 0.0,
+    "in_wall_frames": 0,
+    "knocks": 0,
+    "walls": 0,
+    "absorbed": 0,
+    "passes": 0,
+    "follows": 0,
+    "knock_s": 0.0,
+    "flips": 0,
+    "dead_ends": 0,
+    "flip_log": [],
+    "log": []
+   }
+  }
+ },
+ "outrun": {
+  "outrun": {
+   "placed": 4,
+   "spawn_d": [
+    345,
+    353,
+    262,
+    276
+   ],
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 13.2,
+   "race_s": 29.4,
+   "contacts": {
+    "rival_frames": 10362,
+    "in_traffic_frames": 0,
+    "in_traffic_run": 0,
+    "in_traffic_deep": 0.0,
+    "in_wall_frames": 0,
+    "knocks": 0,
+    "walls": 0,
+    "absorbed": 0,
+    "passes": 9,
+    "follows": 0,
+    "knock_s": 0.0,
+    "flips": 0,
+    "dead_ends": 20,
+    "flip_log": [],
+    "log": []
+   }
+  }
+ },
+ "outrun-new": {
+  "outrun": {
+   "placed": 4,
+   "spawn_d": [
+    345,
+    353,
+    262,
+    276
+   ],
+   "challenges": 1,
+   "won": 0,
+   "lost": 1,
+   "swaps": 0,
+   "engage_d": 13.2,
+   "race_s": 29.4,
+   "contacts": {
+    "rival_frames": 10362,
+    "in_traffic_frames": 0,
+    "in_traffic_run": 0,
+    "in_traffic_deep": 0.0,
+    "in_wall_frames": 0,
+    "knocks": 0,
+    "walls": 0,
+    "absorbed": 0,
+    "passes": 9,
+    "follows": 0,
+    "knock_s": 0.0,
+    "flips": 0,
+    "dead_ends": 20,
+    "flip_log": [],
+    "log": []
+   }
+  }
+ },
+ "outrun-own0": {
+  "outrun": {
+   "placed": 0,
+   "spawn_d": [],
+   "challenges": 0,
+   "won": 0,
+   "lost": 0,
+   "swaps": 0,
+   "engage_d": 0.0,
+   "race_s": 0.0,
+   "contacts": {
+    "rival_frames": 0,
+    "in_traffic_frames": 0,
+    "in_traffic_run": 0,
+    "in_traffic_deep": 0.0,
+    "in_wall_frames": 0,
+    "knocks": 0,
+    "walls": 0,
+    "absorbed": 0,
+    "passes": 0,
+    "follows": 0,
+    "knock_s": 0.0,
+    "flips": 0,
+    "dead_ends": 0,
+    "flip_log": [],
+    "log": []
+   }
+  }
+ }
+}
