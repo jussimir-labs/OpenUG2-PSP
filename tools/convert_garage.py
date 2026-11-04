@@ -48,7 +48,9 @@ three, 5 without the mirrors and audio, 6 without the audio)), u8
 decal zones (bits), 2 bytes
 0, then the names (char[24]) of each category in turn), then u32
 decals, decals x (char art[24], char icon[24] (its brand's
-DECAL_ICON_<BRAND>, cut at 23), char title[24]).
+DECAL_ICON_<BRAND>, cut at 23), char title[24]); then (version 8) per car,
+per category, its count of u8: the shop's order, the names' indices as
+the body shop lists them (shop_order). Version 7 lists them as named.
 """
 import argparse
 import concurrent.futures
@@ -163,6 +165,32 @@ def car_options(game, car):
     return dict(kit=kit('FRONT_BUMPER'), rear_bumper=kit('REAR_BUMPER'), skirt=kit('SKIRT'), hood=hoods, spoiler=spoilers,
                 rims=rims, vinyl=vinyls, headlight=lights('HEADLIGHT'), brakelight=lights('BRAKELIGHT'), roof=roof, exhaust=exhaust,
                 wide=wide, mirror=mirror, audio=audio)
+
+
+# A body shop option's part in the parts table (tools/partsdb.py), by name
+PART_NAME = dict(kit='{car}_{o}_FRONT_BUMPER', rear_bumper='{car}_{o}_REAR_BUMPER', skirt='{car}_{o}_SKIRT', hood='{car}_{o}_HOOD',
+                 headlight='{car}_{o}_HEADLIGHT', brakelight='{car}_{o}_BRAKELIGHT', wide='{car}_{o}_BODY',
+                 audio='{car}_{o}_TRUNK_AUDIO', spoiler='{o}', roof='{o}', exhaust='{o}')
+
+
+def shop_order(parts, car, opts):
+    """{category: [indices]}: the options as the body shop lists them, the
+    parts table's order (GameCube GetPartsList walks CarPartDB as it is:
+    per kind the first levels first, 350Z WOLFPACK of level 3 after ROHAN
+    of level 1), not their numbers' (KIT03 before KIT15; beta #77). The
+    options the table names not (the side mirrors) after, as they are."""
+    at = {}
+    for i, q in enumerate(parts.parts):
+        at.setdefault(q['key'], i)
+    out = {}
+    for cat in CATS:
+        names = opts.get(cat, [])[:MAX]
+        if cat not in PART_NAME:
+            out[cat] = list(range(len(names)))
+            continue
+        where = [at.get(fe.bin_hash(PART_NAME[cat].format(car=car, o=n)), len(parts.parts)) for n in names]
+        out[cat] = sorted(range(len(names)), key=lambda k: (where[k], k))
+    return out
 
 
 def wide_track(game, car, kit):
@@ -452,10 +480,17 @@ def main():
     n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--cars', help='comma-separated models (default: the fleet)')
+    ap.add_argument('--animations', action='store_true', help='only original trunk hinge/quaternion keys; no car/option conversion')
     ap.add_argument('--jobs', type=int, default=8)
     ap.add_argument('--decals', action='store_true', help='the decals alone: their art and the table, the cars as garage.json has them')
     ap.add_argument('--neon', action='store_true', help='neon.n2nn and neon-halo.n2nh alone (the neon tubes, their light on the ground), the cars as garage.json has them')
     args = ap.parse_args()
+    if args.animations:
+        import carparts_anim
+        cars = args.cars.split(',') if args.cars else convert_physics.playable(convert_physics.records(archived(args.game, 'GLOBAL/GLOBALB.BUN')))
+        args.out.mkdir(parents=True, exist_ok=True)
+        print('trunk animations', carparts_anim.write(args.game, args.out, cars))
+        return
     if args.neon:
         cars = list(json.loads((args.out / 'garage.json').read_text()))
         neon_tubes(args.game, args.out, cars)
@@ -477,13 +512,19 @@ def main():
     carbon_pack(args.game, args.out)
     neon_tubes(args.game, args.out, list(known))
     neon_halo(args.game, args.out, list(known))
-    blob = bytearray(struct.pack('<4s2I', b'N2GR', 7, len(known)))
+    import carparts_anim
+    carparts_anim.write(args.game, args.out, list(known))
+    blob = bytearray(struct.pack('<4s2I', b'N2GR', 8, len(known)))
     for car, opts in known.items():
         counts = [min(MAX, len(opts.get(c, []))) for c in CATS]
         blob += struct.pack(f'<16s{len(CATS) + 1}B2x', car.encode(), *counts, opts.get('decal_zones', 0))
         for c, n in zip(CATS, counts):
             blob += b''.join(struct.pack('<24s', name.encode()) for name in opts.get(c, [])[:n])
     blob += struct.pack('<I', len(decals)) + b''.join(struct.pack('<24s24s24s', *(f.encode()[:23] for f in d)) for d in decals)
+    parts = partsdb.Parts(args.game)
+    for car, opts in known.items():
+        order = shop_order(parts, car, opts)
+        blob += b''.join(bytes(order[c]) for c in CATS)
     (args.out / 'garage.n2gr').write_bytes(blob)
     table.write_text(json.dumps(known, indent=1) + '\n')
     for car, opts in result.items():

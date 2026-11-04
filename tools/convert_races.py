@@ -1744,7 +1744,7 @@ def other_lanes(p, h, u, r, others, near_route):
     return got
 
 
-def drag_lanes(pts, samples, info, shapes, city, others=()):
+def drag_lanes(pts, samples, info, shapes, city, others=(), identity=None, permission_info=None):
     """Per course point, the drag's four lanes (left to right): their
     offsets (m, right of the way) or None where the lane is not there,
     from the route point nearest along the line (the routes' traffic lanes
@@ -1762,12 +1762,15 @@ def drag_lanes(pts, samples, info, shapes, city, others=()):
     the two, down to 22-30 m/s). Also the lanes' positions (game X, Y,
     height) at each point, for drag_plan."""
     out, where, gaps, raw, j = [], [], [], [], 0
+    ids = []
     for i, q in enumerate(pts):
         p = (q[2], q[0])
         while j + 1 < len(samples) and math.dist(samples[j + 1][:2], p) <= math.dist(samples[j][:2], p):
             j += 1
         r, k, fwd = samples[j][2]
         rp = info[r][k]
+        permission_point = (permission_info or info)[r][k]
+        ids.append([(r, k, 2 + slot, not fwd, permission_point["distance"]) for slot in range(4)])
         base = 0 if fwd else 4
         a, b = pts[max(0, i - 1)], pts[min(len(pts) - 1, i + 1)]
         dx, dy = b[2] - a[2], b[0] - a[0]
@@ -1814,11 +1817,12 @@ def drag_lanes(pts, samples, info, shapes, city, others=()):
                 o_row[s] = None if lane_shut(shapes, (p[0] + rx * o, p[1] + ry * o)) else o
                 g_row[s] = None
                 at[s] = (p[0] + rx * o, p[1] + ry * o, lv)
+                ids[-1][s] = None  # other-road identity not supplied by other_lanes; refuse changes
         out.append(o_row)
         gaps.append(g_row)
         where.append(at)
         raw.append(r_row)
-    lane_slots(raw, out, gaps, where)
+    lane_slots(raw, out, gaps, where, ids)
     # Through a gap (the station's gates), its middle: the port's 1 m grid
     # walls a gate's thin bars 2-3 m wide, and the game's lanes pass 0.5-1
     # m off the middle of what is left. The shift holds from GAP_BEFORE m
@@ -1856,6 +1860,8 @@ def drag_lanes(pts, samples, info, shapes, city, others=()):
                 i = j + 1
             else:
                 i += 1
+    if identity is not None:
+        identity.extend(ids)
     return out, where, dist
 
 
@@ -2492,13 +2498,41 @@ def lay_event_record(ev):
         shapes = barrier_shapes(n2routes.read_event_barriers(args.game, args.track, ev['id']))
         others = [(num, rt, route_levels(rt, event_city)) for num, rt in info.items()
                   if DRAG_OTHER_ROUTES and n2routes.route_for(route_events, num, ev['id']) and len(rt) > 1]
-        lanes, where, dist = drag_lanes(pts, fields['axis'], info, shapes, event_city, others)
+        identity = []
+        # DistanceAroundTrack in InvalidLaneChange is populated by the
+        # event route file, not the free-roam file (whose distances are0).
+        permission_info = n2routes.read_routes(args.game, args.track, f'ROUTES{ev["id"]}F.BIN')
+        lanes, where, dist = drag_lanes(pts, fields['axis'], info, shapes, event_city, others, identity, permission_info)
         plan = drag_plan(lanes, where, dist, event_city, pts, shapes)
         lanes_out = bytearray(struct.pack('<2H', ev['id'], len(pts)))
-        for row, go, at, q in zip(lanes, plan, where, pts):
+        for row, go, at, q, ids in zip(lanes, plan, where, pts, identity):
             lanes_out += struct.pack('<4bB4b', *(NO_LANE if v is None else max(-127, min(127, round(v * LANE_UNITS))) for v in row),
                                      sum(g << (2 * k) for k, g in enumerate(go)),
                                      *(max(-127, min(127, round((a[2] - q[1]) * 8))) for a in at))
+            # v3: native identity survives slot permutations. Permission is
+            # from original lane presence, exclusions and event barriers,
+            # independently of whether the candidate predicts a collision.
+            from drag_permissions import permitted
+            mask = 0
+            for a in range(4):
+                for b in range(4):
+                    ia, ib = ids[a], ids[b]
+                    if a == b or not ia or not ib or ia[:2] != ib[:2] or ia[3] != ib[3]:
+                        continue
+                    step = 1 if ib[2] > ia[2] else -1
+                    native = range(ia[2], ib[2] + step, step)
+                    base = 4 if ia[3] else 0
+                    if not all(permission_info[ia[0]][ia[1]]['lanes'][base + line - 2] for line in native):
+                        continue
+                    if not all(permitted(ev['id'], line, line + step, ia[4], False)
+                               for line in range(ia[2], ib[2], step)):
+                        continue
+                    if row[b] is None or any(segments_cross(at[a], at[b], x, y) for x, y in shapes[0]):
+                        continue
+                    mask |= 1 << (a * 4 + b)
+            origin = next((v for v in ids if v), (65535, 65535, 255, False, 0))
+            lanes_out += struct.pack('<HH4BH', origin[0], origin[1],
+                                     *(v[2] if v else 255 for v in ids), mask)
         lanes_out += bytes((-len(lanes_out)) % 4)
     entry = dict(id=ev['id'], circuit=ev['circuit'], points=len(pts), gates=len(gates), kinks_cut=cut, pulled=pulled, nudged=moved,
                  relayered=relayered, walked=walked, followed=followed, barrier_crossings=crossings, from_line=fields.get('from_line'),
@@ -2546,11 +2580,16 @@ def main():
         # version 1, which held lanes to 15.9 m), NO_LANE where it is not there,
         # and a u8: the lane to head for from each lane (2 bits each,
         # drag_plan), then (version 2) each lane's height over the course's,
-        # s8 in 1/8 m (another road's lane: under or over it); padded to 4 bytes
+        # s8 in 1/8 m (another road's lane: under or over it); v3 adds
+        # u16 native route/point, four u8 native logical lines, and a u16
+        # permitted-transition matrix (bit from*4+to). 19 bytes per point.
+        # Exclusions use the forward event direction; reverse metadata is
+        # not authored and the runtime refuses changes with those inputs.
+        # Each event is padded to 4 bytes
         lanes_path = args.out / f'drag-lanes-{args.track}.n2dl'
         lanes_path.unlink(missing_ok=True)   # (a link into another dist: never written through)
         if lanes_kept:
-            lanes_path.write_bytes(struct.pack('<4s2I', b'N2DL', 2, lanes_kept) + lanes_out)
+            lanes_path.write_bytes(struct.pack('<4s2I', b'N2DL', 3, lanes_kept) + lanes_out)
     (args.out / f'{name}.json').write_text(json.dumps(report, indent=1) + '\n')
     mark = 'marks' if city_track else f'marks-{args.track}'
     (args.out / f'{mark}.n2mk').write_bytes(struct.pack('<4s2I', b'N2MK', 1, kept) + marks_out)

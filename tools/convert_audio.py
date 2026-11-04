@@ -141,11 +141,32 @@ SFX = {
     # the exhaust's pops lifting off (SOUND\ENGINE\Sparkchatter_00: ten
     # bursts of 0.17-0.42 s, ~100 Hz): five of them, at 24 kHz
     **{f'pop_{k}': (r'SOUND\ENGINE\Sparkchatter_00.abk', s, False, 2) for k, s in enumerate((1, 3, 5, 7, 9))},
-    # the menus (FE_COMMON_MB: 18 short one-shots, unnamed in the data;
-    # the first ones, by their order and length, as move / accept / back)
-    'fe_move':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 1, False),     # 0.17 s
-    'fe_accept': (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 3, False),     # 0.27 s
-    'fe_back':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 2, False),     # 0.19 s
+    # the menus (FE_COMMON_MB, by the original's own map: MenuScreen::
+    # BaseNotifySound takes the pad's message to a FrontendSoundEvent, Up 6,
+    # Down 7, Left 4, Right 5, Accept 8, Back 10, Start 9; InitFrontendSounds
+    # those (the default trigger) to sounds 0 to 6, and the bank's table
+    # (below) each to its slot, one up). fe_move is Up's (older games'
+    # files: every direction's)
+    'fe_move':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 1, False),     # 0.17 s, Up
+    'fe_down':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 2, False),     # 0.19 s
+    'fe_left':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 3, False),     # 0.27 s
+    'fe_right':  (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 4, False),     # 0.26 s
+    'fe_accept': (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 5, False),     # 0.30 s
+    'fe_back':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 6, False),     # 0.37 s
+    'fe_start':  (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 7, False),     # 0.51 s
+    # the street's chimes (EAXCommon::Play: FE_COMMON_MB's PlayCommonSample
+    # table, at 0x3bc of the bank, takes the sound's index to its slot: 0-11
+    # one up, 12 none, 13-18 the same; GameCube InitFrontendSounds and
+    # EngageEvent::playSound for the indices): 13 an SMS that opens itself
+    # (SMSMessageQueue::DoAutopopup), 14 the HUD's engage icon coming in (a
+    # race's, a shop's, a showcase's, an outrun's), 15 the icon settling a
+    # second later, 16 new mail's envelope, 17 bank cash picked up
+    # (FEngHud::ShowPickedUpBank); kept at 24 kHz (beta issue 120)
+    'chime_popup':  (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 13, False, 2),
+    'chime_engage': (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 14, False, 2),
+    'chime_settle': (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 15, False, 2),
+    'chime_sms':    (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 16, False, 2),
+    'chime_bank':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 17, False, 2),
 }
 
 

@@ -937,14 +937,20 @@ def main():
     if args.start is None:
         args.start = (1715.0, -830.0) if args.track == 'L4RA' else first_event_start(args.game, args.track)
     instances = gather_instances(stream, cw.SKIP)
-    if args.track == 'L4RA':
-        # The knock-over props (the original's smokeables) stand for their
-        # scenery instances: smokeables.n2sm draws them, the cells leave
-        # them out (tools/convert_smokeables.py).
-        props = {s['place'] for s in nw.smokeable_spawners(stream) if s['place']}
-        before = len(instances)
-        instances = [i for i in instances if (i.keys[0], tuple(round(v, 2) for v in i.pos), tuple(round(v, 3) for v in i.rot)) not in props]
-        print(before - len(instances), 'knock-over props left to smokeables.n2sm', flush=True)
+    # The knock-over props (the original's smokeables) stand for their
+    # scenery instances: smokeables.n2sm draws them, the cells leave them
+    # out (tools/convert_smokeables.py). A closed track's too
+    # (smokeables-<track>.n2sm: the rail yard's fences and crates, beta
+    # issue 110), but for those only some events put up (BARRIERS_<id>),
+    # which stay in those events' overlays.
+    spawners = nw.smokeable_spawners(stream)
+    if args.track != 'L4RA':
+        grouped = set().union(*(v for k, v in nw.scenery_groups(stream.track).items() if 'BARRIERS_' in k))
+        spawners = [s for s in spawners if s['instance'] not in grouped]
+    props = {s['place'] for s in spawners if s['place']}
+    before = len(instances)
+    instances = [i for i in instances if (i.keys[0], tuple(round(v, 2) for v in i.pos), tuple(round(v, 3) for v in i.rot)) not in props]
+    print(before - len(instances), 'knock-over props left to', 'smokeables.n2sm' if args.track == 'L4RA' else f'smokeables-{args.track}.n2sm', flush=True)
     print(len(instances), 'instances', f'{time.time()-t0:.0f}s', flush=True)
     # A closed track puts up each event's own barriers (scenery groups
     # BARRIERS_<id> and PLAYER_BARRIERS_<id>; FREE_ROAM's are for the

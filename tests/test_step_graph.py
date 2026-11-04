@@ -7,6 +7,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -36,6 +37,35 @@ def graph():
 
 
 class GraphTests(unittest.TestCase):
+    def test_native_trunk_code_invalidates_and_output_restores(self):
+        data=sg.load(ROOT/'manifests/steps.json')
+        garage=next(n for n in data['steps'] if n['name']=='garage')
+        g=sg.Graph({'garage':garage},['garage'])
+        before=g.stamps(lambda _: 'old',[garage['commands'][0]],'runtime','disc')
+        for changed in ('tools/carparts_anim.py','tools/convert_nis.py'):
+            after=g.stamps(lambda p:'new' if p==changed else 'old',[garage['commands'][0]],'runtime','disc')
+            self.assertNotEqual(before,after,changed)
+        name='trunk-anim.n2ta';path=D+name
+        self.assertEqual(g.final[path],0)
+        self.assertEqual(g.final[D+'trunk-anim.json'],0)
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);source=root/name;source.write_bytes(b'N2TA fixture bytes')
+            work=root/'work'
+            bg.restore(0,g,{'rerun':{},'cached':{},'files':{name:(source,0,None)}},work)
+            self.assertEqual((work/path).read_bytes(),source.read_bytes())
+
+    def test_native_trunk_passes_existing_package_filters(self):
+        import ms_package as mp
+        import ppsspp_run
+        name='trunk-anim.n2ta'
+        self.assertFalse(mp.release_skip(name))
+        self.assertFalse(mp.legacy(name))
+        self.assertFalse(ppsspp_run.game_output(name))
+        self.assertTrue(mp.packable(name,260))
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);p=root/name;p.write_bytes(b'N2TA fixture bytes')
+            self.assertEqual(bg.package_files(root)[name],(p,0,None))
+
     def test_order(self):
         g = graph()
         self.assertEqual(g.preds[1], {0})            # races reads city's
@@ -132,6 +162,32 @@ class GraphTests(unittest.TestCase):
 
 
 class PlanTests(unittest.TestCase):
+    def test_actual_update_plan_reuses_unchanged_steps(self):
+        """Real planner/reference hashes and restore, with tiny synthetic files."""
+        import argparse
+        with tempfile.TemporaryDirectory() as tmp:
+            base=Path(tmp); out=base/'output'; game=out/'PSP/GAME/NFSU2VIEW'
+            game.mkdir(parents=True)
+            for name in ['EBOOT.PBP','city.n2cy','races.n2rc','music.mp3','lines.n2rl','hud.n2ui']:
+                (game/name).write_bytes(('old '+name).encode())
+            refs=base/'reference'; (refs/'manifests').mkdir(parents=True)
+            manifest=refs/'manifests/fixture-ps2.json'
+            manifest.write_text(json.dumps({'files':{p.name:sg.sha256(p) for p in game.iterdir()}}))
+            old=dict(source='ps2',iso_sha256='aa',movies=True,candidate='fixture',tools_sha256='old-tools')
+            g=graph(); before=['stamp-'+name for name in g.names]; after=before.copy(); after[2]='changed-audio'
+            state=out/bg.STATE; state.parent.mkdir(parents=True,exist_ok=True)
+            state.write_text(json.dumps(dict(tools_sha256='old-tools',disc='ps2:aa',stamps=dict(zip(g.names,before)))))
+            with patch.object(bg,'HERE',refs):
+                plan, why=bg.update_plan(out,old,g,after,argparse.Namespace(name='ps2'),
+                                         argparse.Namespace(skip_movies=False),'ps2:aa')
+            self.assertIsNone(why); self.assertEqual(set(plan['rerun']),{2})
+            work=base/'work'
+            for i in range(len(g.names)):
+                if i not in plan['rerun']: bg.restore(i,g,plan,work)
+            self.assertEqual((work/D/'races.n2rc').read_bytes(),b'old races.n2rc')
+            self.assertFalse((work/D/'music.mp3').exists(),'changed audio is not reused')
+            self.assertEqual((game/'music.mp3').read_bytes(),b'old music.mp3','previous game unchanged')
+
     def plan(self, changed, files):
         g = graph()
         rerun = {i: 'changed' for i in changed}

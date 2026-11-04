@@ -260,7 +260,8 @@ STREET_ENGAGE_TEXTURES = (
     'MODE_ICON_CIRCUIT', 'MODE_ICON_SPRINT', 'MODE_ICON_SHORT_TRACK',
     'MODE_ICON_U_RACING_LEAGUE', 'MODE_ICON_DRAG', 'MODE_ICON_DRIFT', 'MODE_ICON_SUV',
     'SHOP_ICON_CAR_LOT', 'SHOP_ICON_PERFORMANCE', 'SHOP_ICON_BODY',
-    'SHOP_ICON_GRAPHIC', 'SHOP_ICON_INTERIORS', 'SHOP_ICON_CRIB')
+    'SHOP_ICON_GRAPHIC', 'SHOP_ICON_INTERIORS', 'SHOP_ICON_CRIB',
+    'MODE_ICON_WORLD_CHALLENGE')   # a timed showcase's start (EventIndicator 0x12)
 SMS_INDICATOR_TEXTURES = ('ENGAGE_CINGULAR_ICON',)
 
 FREE_GROUPS = {
@@ -282,6 +283,9 @@ FREE_GROUPS = {
     # Append only: existing converter/runtime group ids stay unchanged.
     'gps_search': 0x06254d8a,
 }
+# Groups numbered after FREE_GROUPS (main.c: FEHUD_HURRY 26), in the mode
+# HUDs that have them: "Hurry!" and the drift's time left (HUD_Drift)
+LATE_GROUPS = ('hurry',)
 # HUD_Drift.fng (GLOBAL/INGAMEDRIFT.BUN): the race HUD's groups under the
 # same hashes, the laps and the time's backings at the root, and its own:
 # the points (Total, Best, the multiplier and what gains the next), the
@@ -301,6 +305,7 @@ DRIFT_GROUPS = {
     'over': RACE_EXTRA['over'],
     'split': RACE_EXTRA['split'],
     'racers': tuple(fe.bin_hash(f'AIRACERINDICATOR_{k}') for k in range(8)) + (fe.bin_hash('PLAYERCARINDICATOR_1'),),   # the minimap's icons (no start line in a drift)
+    'hurry': (fe.bin_hash('Hurry_Text'), fe.bin_hash('Hurry_Counter')),   # "Hurry!" and the time left once the first rival finished (RacePosition)
 }
 # the drag's scales the game swaps in by the car's limiter (0 to 7 000 ...
 # 10 000 rpm over the same arc) and the red stretch from the limiter up
@@ -812,6 +817,8 @@ def write(pkg, src, fnts, path, citymap=None, screen=False, extra=(), drop=False
         group_ids[name] = len(GROUPS) + 1 + k
     for k, name in enumerate(FREE_GROUPS):   # the free roam's outrun after those
         group_ids[name] = len(GROUPS) + len(MODE_GROUPS) + 1 + k
+    for k, name in enumerate(LATE_GROUPS):   # and the later ones after all of them
+        group_ids[name] = len(GROUPS) + len(MODE_GROUPS) + len(FREE_GROUPS) + 1 + k
     group_ids[''] = 1
     textures, tex_index, blobs = [], {}, []
     def texture(key, make, h=0):
@@ -1114,7 +1121,7 @@ VINYL_GROUP_ICONS = tuple(('VINYL_GROUP_' + g)[:23] for g in (
 # The garage's icons: the customise categories, then the parts browser's
 # option icons (rim brands, vinyl groups, paint and neon swatches tinted at
 # run time).
-CUSTOMIZE_ICONS = ('VISUAL_PART_PAINT', 'VISUAL_PART_VINYL', 'VINYL_COLOR', 'VISUAL_PART_BODY', 'VISUAL_PART_HOOD',
+CUSTOMIZE_ICONS = ('VISUAL_PART_HYDRAULICS', 'VISUAL_PART_PAINT', 'VISUAL_PART_VINYL', 'VINYL_COLOR', 'VISUAL_PART_BODY', 'VISUAL_PART_HOOD',
                    'VISUAL_PART_SPOILER', 'VISUAL_PART_RIMS', 'VISUAL_PART_HEAD_LIGHTS', 'VISUAL_PART_TAIL_LIGHTS',
                    'VISUAL_PART_NEON', 'VISUAL_PART_WINDOW_TINT', 'DECAL_ZONE_HOOD', 'DECAL_ZONE_WINDSHIELD',
                    'DECAL_ZONE_REARWINDOW', 'DECAL_ZONE_LEFTDOOR', 'DECAL_ZONE_RIGHTDOOR', 'DECAL_ZONE_LEFTPANEL',

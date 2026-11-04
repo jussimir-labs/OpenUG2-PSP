@@ -1,13 +1,13 @@
 {
-  "candidate": "beta-v0.2.5",
-  "candidate_id": "beta-v0.2.5-68100bf1",
-  "release_tag": "v0.2.5",
-  "version": "0.2.5",
-  "game_version": "0.2.5",
-  "eboot_sha256": "ed457f83f03237614f5f467233555846d541bbc5dba923b01afe581304678f89",
-  "eboot_bytes": 4426058,
-  "build_id": "5dd3cecb06",
-  "source_commit": "5dd3cecb061a2fbcd30ee51ef4c8835b8e72f6ce",
+  "candidate": "beta-v0.2.6",
+  "candidate_id": "beta-v0.2.6-b70e7ad8",
+  "release_tag": "v0.2.6",
+  "version": "0.2.6",
+  "game_version": "0.2.6",
+  "eboot_sha256": "8b19d3bca3902e09b8e1c9ba37219c11adaef7c0c50b96222a23c86354c6877a",
+  "eboot_bytes": 3465530,
+  "build_id": "570bd23fb9",
+  "source_commit": "570bd23fb98fe63bbf1e22232dba2dd2f9693dea",
   "build_flags": [
     "PGO=use (RC21 profile)",
     "LTO=1",
@@ -19,11 +19,12 @@
     "ps2"
   ],
   "publication_status": "CLOSED_BETA_CANDIDATE",
-  "quality_approval": "Version 0.2.5 for the closed beta, prepared on Jussimir's request of 31 October 2026 to ship every fix already integrated, with the same rules as 0.2.4, once it passes PPSSPP. Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
+  "quality_approval": "Version 0.2.6 for the closed beta, prepared on Jussimir's request of 3 November 2026 to ship the 20 priority gameplay and career fixes already integrated, with the same rules as 0.2.5, once it passes PPSSPP. Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
   "known_issues": [
     "No physical PSP-1000 has run this build: the compact profile was measured on a PSP-3000 limited to the PSP-1000 memory and in PPSSPP set to the PSP-1000.",
     "On PSP-1000, a Drift right after a city race may use the previous drift handling when memory is tight (a notice says so).",
     "Stable 30 fps throughout the game is not yet established (University Hill and the densest city areas drop frames in both profiles).",
+    "On PSP-2000/3000, the densest stretch of the city on the Outer Ring drops a little more often below 30 fps than in 0.2.5 (95.8% of frames at 30 fps against 97.8% in the same test); the PSP-1000 memory profile measured 98.7%.",
     "Full-career completion and all save/reload paths are not qualified.",
     "Drag 4401 rivals may become stuck in repeated recovery.",
     "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
@@ -38,20 +39,20 @@
     "ps2": 162
   },
   "source_data_ids": {
-    "xbox": "e6f9",
-    "ps2": "0876"
+    "xbox": "e59c",
+    "ps2": "3207"
   },
-  "data_compatibility": "Install the complete output of this generator (update a 0.2.0 to 0.2.4 folder with the same ISO, or generate into a new folder). 0.2.5 changes EBOOT.PBP and converted data (the city's start and finish lines and walls, career texts and the HUD); copying only the EBOOT leaves old data that this executable does not expect. Do not mix Xbox and PS2 output.",
-  "elf_sha256": "bdfc897f2521b16594acf04a3e4c3e89da199baf848629541407727b984f577b",
-  "prx_sha256": "1cc1ba0642f05c78da5f04a2e61c40b02e5ac60c24df946c77036c3c34ff2d35",
+  "data_compatibility": "Install the complete output of this generator (update a 0.2.0 to 0.2.5 folder with the same ISO, or generate into a new folder). 0.2.6 changes EBOOT.PBP and converted data (the rail yard's drag lanes, races and special events, the HUD and World Map icons, the garage, the city's routes and sounds); copying only the EBOOT leaves old data that this executable does not expect. Do not mix Xbox and PS2 output.",
+  "elf_sha256": "731299f5c3c1bf76f03e37afb0a4d45a0eeac65c84b1f66ca005c42ee0f1210e",
+  "prx_sha256": "8b88fada894830c48958e29507fa1f4ff2a8b2a3d75c9b729746a904aef40cbb",
   "debug_overlays": true,
   "tester_invitations_sent_by_this_release": false,
   "qualification_receipts": [],
   "source_candidate": {
-    "id": "05fc23b88bc6459f86b51847bc681501",
-    "version": "0.2.5-rc.1",
-    "path": "reports/releases/05fc23b88bc6459f86b51847bc681501",
-    "final_build": "GAME_VERSION=0.2.5 from the frozen source of 0.2.5-rc.1 (reports/release-v0.2.5/eboot)",
-    "rc1_eboot_sha256": "160c2c325f5711946472d51bff45dc9bd2018446ab10ea2031763da719c8505c"
+    "id": "6a19f15a2e5b4119b5eab34dd914c98e",
+    "version": "0.2.6-rc.4",
+    "path": "reports/releases/6a19f15a2e5b4119b5eab34dd914c98e",
+    "final_build": "GAME_VERSION=0.2.6 from the frozen source of 0.2.6-rc.4 (reports/release-v0.2.6/eboot-rc4)",
+    "rc4_eboot_sha256": "8b21847e8ebeda016f6e39db7b1e4be5af9aa3100af88ab79048098ad01343c6"
   }
 }

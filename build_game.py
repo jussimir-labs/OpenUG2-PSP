@@ -88,6 +88,8 @@ def steps(game_dir, movies=True, jobs=4):
         add(f'track {track}', 150, 'tools/convert_city.py', '--track', track, '--no-precull')
         add(f'track roads {track}', 10, 'tools/convert_routes.py', '--track', track)
         add(f'track races {track}', 60, 'tools/convert_races.py', '--track', track)
+    # the rail yard's fences and crates (beta issue 110): the props convert_city.py leaves out of L4RB
+    add('breakable objects L4RB', 10, 'tools/convert_smokeables.py', '--track', 'L4RB')
     add('replay cameras', 60, 'tools/convert_tvcams.py')
     add('geometry bounds', 60, ('glob', 'tools/n2cy_bounds.py', '--if-missing'))
     add('city texture order', 30, 'tools/n2cy_texorder.py', '--if-unordered', 'dist/PSP/GAME/NFSU2VIEW/city.n2cy')

@@ -119,14 +119,25 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
+    ap.add_argument('--track', default='L4RA', help='L4RA the city (smokeables.n2sm); a closed track (L4RB...): '
+                                                   'smokeables-<track>.n2sm')
     args = ap.parse_args()
-    stream = nw.Stream(args.game)
+    stream = nw.Stream(args.game, args.track)
     types = nw.smokeable_types(stream.track)
     spawners = nw.smokeable_spawners(stream)
+    event_only = 0
+    if args.track != 'L4RA':
+        # A closed track's props that only some events put up (in their
+        # BARRIERS_<id> scenery groups: the road signs of the airport's
+        # drags) stay in those events' barrier overlays (convert_city.py);
+        # the props every event has are the moving ones.
+        grouped = set().union(*(v for k, v in nw.scenery_groups(stream.track).items() if 'BARRIERS_' in k))
+        event_only = sum(1 for sp in spawners if sp['instance'] in grouped)
+        spawners = [sp for sp in spawners if sp['instance'] not in grouped]
     polys = polytopes(stream.track)
     index = cw.object_index(stream)
     sources = cw.texture_index(stream, args.game)
-    cc._init(args.game)   # convert_city's model cache and strips
+    cc._init(args.game, args.track)   # convert_city's model cache and strips
 
     used = sorted({s['type'] for s in spawners}, key=lambda k: types[k]['name'])
     type_no = {k: i for i, k in enumerate(used)}
@@ -214,12 +225,13 @@ def main():
     assert len(out) == data_off
     out += data
     args.out.mkdir(parents=True, exist_ok=True)
-    (args.out / 'smokeables.n2sm').write_bytes(out)
-    report = dict(spawners=len(out_spawners), types=report_types, models={name: len(blob) for blob, _, name in models},
+    name = 'smokeables' if args.track == 'L4RA' else f'smokeables-{args.track}'
+    (args.out / f'{name}.n2sm').write_bytes(out)
+    report = dict(track=args.track, spawners=len(out_spawners), event_only_left_out=event_only, types=report_types, models={name: len(blob) for blob, _, name in models},
                   textures=len(tex_blobs), bytes=len(out),
                   bytes_by_kind=dict(geometry=sum(len(b) for b, _, _ in models), textures=sum(len(b) for b in tex_blobs),
                                      tables=data_off))
-    (args.out / 'smokeables.json').write_text(json.dumps(report, indent=1) + '\n')
+    (args.out / f'{name}.json').write_text(json.dumps(report, indent=1) + '\n')
     print(json.dumps(report, indent=1))
 
 

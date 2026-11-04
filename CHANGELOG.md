@@ -16,6 +16,175 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-11-04 — Rush Hour at the Rail Yard
+
+EA Trax: *Rush Hour*, Christopher Lawrence ([official channel](https://www.youtube.com/djcltv)).
+
+The rail yard's drags are yours to steer again, finished racers finally hit the brakes, Rachel's
+magazine shoots wait for you to stop and say yes, and her 350Z rolls out with the aero kit it
+always had.
+
+A new game executable and new converted game data: update your 0.2.0 to 0.2.5 output folder
+with the 0.2.6 generator (same ISO) or generate into a new folder, and install the complete
+result. Updating from 0.2.5 converts 71 of the 81 steps again, so it takes nearly as long as a
+complete generation.
+
+### Fixed
+
+- The body shop's parts now come in the original game's order, from the ones you can buy
+  early in your career up to the ones that unlock last. Before, bumpers, side skirts, hoods,
+  spoilers, lights, roof scoops and exhaust tips were listed by their model number, so a
+  level 3 kit such as Wolfpack sat right after Snyper and Ace, ahead of Rohan and Orion. The
+  parts already on your cars stay as they are ([#77]).
+- Speedometer Units now switches every distance in the game, as in the original, not only the
+  speedometer. With KM/H chosen, the gap to your rival in an outrun reads in meters, and you
+  win it 300 m ahead; race lengths on the Quick Race track list, the career's event dialog and
+  the World Map read in km; and the dyno and the performance parts show torque in Nm and power
+  in kW. Each unit uses your language's own word ("Metros", "Mètres"...). With MPH nothing
+  changes: feet, miles, ft-lbs and bhp. On a new memory stick, the game starts in KM/H when it
+  plays in French, German, Italian, Spanish or Dutch, as the original does ([#79]).
+- Menu sounds stay clear of the street's reverb, preventing delayed echoes
+  while navigating the pause menu ([#109]).
+
+- Accelerator and brake controls no longer remain blocked after saving a profile
+  and entering Career while a button is held ([#100]).
+
+- Rear light lenses keep their original transparent artwork and are no longer
+  treated as headlights in garage previews ([#108]).
+
+- The Civic's trunk lid uses its original hinge and rotation keys, correcting
+  its position when previewing trunk accessories ([#108]).
+
+- Garage preview doors, hood and trunk close when returning to driving, including
+  after leaving the parts menu quickly. The Hydraulics category displays its own
+  icon in the customization carousel ([#108]).
+- The speedometer's unit label now follows changes to Speedometer Units while
+  driving, so selecting KM/H no longer leaves MPH beside the converted speed
+  ([#104]).
+- GPS guidance keeps following your road when streets overlap at different heights,
+  instead of switching to the road above or below ([#106]).
+
+- The Save, Start New Career and Jump to Garage menu labels, and the career
+  summary below the car, use the selected language's original disc text ([#99]).
+
+- Special-event stars and active photo-shoot destinations appear on the World Map.
+  The minimap keeps the selected star visible while GPS guidance is active ([#97]).
+
+- Adjusted the quiet-sound filter for player contacts with breakable objects, including
+  the green house's glass doors. Glass volume now follows the original PS2 collision mix;
+  confirmation of the reported Corolla/Career case is pending ([#98]).
+- Drag: after the finish, your car rechecks its path against stopped rivals and
+  nearby traffic, using the original lane-change restrictions before choosing
+  another lane instead of turning toward the side of the road ([#94]).
+- Race participants brake to a stop after finishing instead of continuing around the course.
+  Finished rivals stay stopped while you complete your race. After a city race, choosing
+  Explore returns your car to the race line instead of leaving it wherever it rolled to
+  during the results ([#92]).
+- The driver silhouette uses the cabin's shading instead of standing out as a dark cutout
+  through the windows, and is hidden when viewing the car in menus ([#93]).
+- Sprint starts with two rows of cars keep the positions shown in the intro,
+  instead of moving the rear cars into the spectators during the countdown ([#91]).
+- Drift races use the original HUD. The standings show your own total beside the
+  rivals' totals and alternate with the drivers' names. A 30-second Hurry countdown
+  starts when the first rival finishes and ends the race when it expires ([#90]).
+- Pressing the accelerator during the garage exit animation no longer launches the car
+  into the street at extreme speed; it accelerates normally after the skip ([#95]).
+- Special events, such as Rachel's Magazine Cover Opportunity, no longer start on their own as
+  you drive by. Stop at the event's marker, now the yellow special-event icon as in the original
+  game, and press Up to read her message and accept or decline it ([#124]).
+- Reaching the photographer stops the special event's clock, as in the original game, and the
+  event now stays on if you drive past him: turn back, stop at his marker and press Up for the
+  photo shoot. The clock now sits where your Bank cash is shown, clear of the GPS arrow ([#125]).
+- While a special event is on, its destination is the only place on the street, the minimap
+  and the World Map, as in the original game: races, outruns, shops, tips and cash pickups wait until
+  the photo is taken or the event runs out of time ([#126]).
+- Sprints now register the finish line after you leave the course and join it further
+  along, for example through a side street in the Beacon Hill sprint. Before, the race lost
+  track of you until you drove back to the spot where you left it: the progress counter
+  stopped, the wrong-way sign kept flashing on the right road, and crossing the line did
+  nothing. Now the race finds you again when you rejoin the course, using the original
+  game's rule: a short detour counts, but a cut that skips much more road than you drive is
+  still not followed ([#85]).
+
+- On a new career, once Rachel calls, the minimap shows the prologue's Circuit and Sprint
+  while you drive her 350Z, as in the original game, instead of the Car Lot alone. The secret
+  circuit in El Norte now stays off the minimap and the World Map until you find it, and until
+  you pick your own car the World Map lists only Circuit, Sprint and Car Lot ([#111]).
+
+- The Body Shop's Carbon Fiber menu now sells only the carbon trunk and the carbon body kit,
+  as in the original game, and they open in stage 5 (after 8 and 14 race wins) instead of
+  being on sale from the start. The carbon doors and the carbon hood of that menu, which the
+  original never sold there, are gone; if you already fitted one, it stays listed until you
+  take it off ([#112]).
+
+- You can now engage races, shops and your garage while driving through their markers,
+  at any speed, as on the PS2: press Up while the event icon shows. Before, the car had to
+  be nearly stopped, so the icon vanished as soon as it rolled ([#121]).
+
+- Bayview's street chimes are back, from the original sound bank: the event icon's chime
+  when you drive into a race, shop or garage marker, the new-message chime when an "i" tip
+  sends you an SMS, the bank cash pickup sound, and the chime of the messages that open on
+  their own. As in the original, only the career's first tip opens its SMS by itself; the
+  other "i" tips go to your mailbox, with the envelope on the HUD. The menus now use the
+  original's sound for each button too: up, down, left, right, accept, back and Start each
+  have their own click, where before most of them shared the wrong one ([#120]).
+
+- Drag races in the rail yard (Coastal Express, Switching Yard and Central Station) play like
+  the original. Your car stays in its lane until you change it, so dodging the trains is up to you
+  again, with no more lane changes you did not ask for. A tap of left or right moves exactly one
+  lane. Holding the button only goes as far as the open lanes allow, and the car never cuts across
+  a wall or heads for a lane a train has closed. The yard's fences, crates, barrels and signs fly
+  aside when you hit them instead of letting you drive through. Traffic only shows up where the
+  original puts it, in the second half of the yard, never over the first half of the strip ([#110]).
+
+- Browsing parts and paints in Customize Car no longer drags the frame rate down to 9 fps.
+  Each step through a list rebuilt the whole car from the Memory Stick. Now the car on show
+  keeps what it already has loaded and reads only the new part, and while you hold the D-pad
+  to scroll, the car updates as soon as you stop on a part ([#114]).
+
+
+- After a closed-course career race, Return to Explore Mode restores your position
+  and direction on the city street. Race transitions now stop safely if unloading
+  or loading cannot complete, instead of continuing into an invalid world ([#92]).
+
+- Rachel's 350Z now carries the aero kit of its preset, as in the original game: more downforce,
+  so it turns harder in fast corners, closer to the PS2 at 110 to 140 km/h (70 to 90 mph) ([#45]).
+- Pressing the accelerator while reversing now applies the brakes before driving
+  forward. Holding the handbrake and accelerator together no longer cuts drive
+  power ([#87]).
+- Performance parts now give the power they give in the original game. Engine, ECU and turbo
+  packages used to add only a sliver of torque (the turbo's boost never reached the wheels), and
+  the ECU's higher revs and the transmission's own gearbox never made it into the car. Now each
+  package builds the engine and gearbox the way the console versions do, for your car and for
+  the rivals matched to it. Rachel's 350Z, flat out down Airport Road, now gets from 70 to
+  166 km/h (45 to 103 mph) in 6.6 s, against 150 km/h (93 mph) before and 176 km/h (109 mph) on
+  the PS2, and shifts later and quicker. In her car the rev counter now follows her preset
+  engine, not a stock 350Z's ([#88]).
+- Glancing off a wall feels like the original again. Brush a barrier at a shallow angle, on a
+  straight or round a bend like the freeway tunnels', and the car now slides along it, losing a
+  little speed, instead of being shoved square off the wall or stopped dead. Three things added
+  up: where the road ends at a barrier's foot (raised tunnels, viaducts), the collision map
+  stepped out in front of the barrier in one-metre blocks, and the corner of a block met head on
+  counted as a crash; a car leaning on a wall lost 1.5% of its speed every frame it touched it,
+  a quarter of its speed in a quarter of a second; and a touch that wasn't a crash still took
+  the steering away for a second. On the PS2's own walls the slide now matches the original
+  within a few mph ([#83]).
+- Car Specialties and the other shops: your car keeps its paint while you try parts on it. On a
+  PSP-1000, trying some headlights (EYELIDS on the Civic) could turn its metallic blue a lighter
+  blue and show the stock lights, then back with the next part: when the console had no room
+  for the car with that part, the game fell back to the stock car and drew it without your
+  paint's finish. Now that car keeps your paint, vinyls and window tint, and the shop tells you
+  there is not enough memory to show the parts on it ([#82]).
+- The startup movies keep their original 4:3 picture: the EA GAMES "Challenge Everything" logo
+  now shows whole, with the "EA GAMES is an ELECTRONIC ARTS brand" line under it, instead of
+  zoomed in with its top and bottom cut off. The 4:3 movies (the logos, the opening warning and
+  the story scenes with Rachel) play at their own size with black sides, as the PC version
+  shows them; the widescreen attract movie still fills the width, as only its own black bars
+  are left out. Skipping a movie with START works as before ([#89]).
+- The title screen's dark band now comes in with "Press START button", as on the PS2. Before,
+  the band sat empty under the logo from the first moment, during the boot's loading too; now
+  the space stays clear until the prompt fades in, and the band fades in with it ([#89]).
+
 ## [0.2.5] - 2026-10-31 — Crashing Foreign Cars, Fluently
 
 EA Trax: *Crashing Foreign Cars*, Helmet ([Spotify](https://open.spotify.com/artist/0qB0cTENhSUc0feov5qbg0)).
@@ -464,8 +633,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.5...HEAD
-[0.2.5]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.4...v0.2.5
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.5...v0.2.6
 [0.2.4]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...v0.2.2
@@ -531,6 +700,44 @@ throughout the game were still pending.
 [#74]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/74
 [#75]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/75
 [#76]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/76
+[#77]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/77
 [#78]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/78
+[#79]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/79
 [#80]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/80
+[#82]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/82
+[#83]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/83
+[#85]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/85
+[#87]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/87
+[#88]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/88
+[#89]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/89
+[0.2.5]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.4...v0.2.5
 [#86]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/86
+[#95]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/95
+[#90]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/90
+[#91]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/91
+[#93]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/93
+[#106]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/106
+[#114]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/114
+
+[#92]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/92
+[#94]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/94
+[#97]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/97
+[#98]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/98
+[#99]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/99
+[#108]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/108
+[#104]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/104
+[#100]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/100
+[#106]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/106
+[#109]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/109
+
+[#94]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/94
+
+[#124]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/124
+[#125]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/125
+[#126]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/126
+[#111]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/111
+[#112]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/112
+[#120]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/120
+
+[#121]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/121
+[#110]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/110

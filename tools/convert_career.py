@@ -342,7 +342,7 @@ def career_world(game, globalb, rows, races, language=None, written=None):
         caps = [r[0x30], r[0x34], r[0x32], 0, r[0x31], r[0x33]]   # by the record's race type (+0x0F): circuit, sprint, Street X, -, drag, drift
         rules.append(dict(caps=caps, suv=r[0x37], hidden=struct.unpack_from('<b', r, 0x41)[0], final=final,
                           star=struct.unpack_from('<h', r, 4)[0], sponsor_races=counts >> 16 & 0xff))
-    sms, tip_sms, mag_sms = [], {}, []
+    sms, tip_sms, mag_sms, tip_popup = [], {}, [], {}
     # a photo shoot's news as it opens (Xbox default.xbe 0x140390): its SMS
     # (SMS_MAG_S2_SHOW_1, type 13, the showcase's +8) has no text of its
     # own: the game writes SMS_MAG_GENERIC_SUBJ/BODY_1 or _2 by turns, the
@@ -387,7 +387,7 @@ def career_world(game, globalb, rows, races, language=None, written=None):
                     for k in range(len(sec[0x34a12]) // 0xa0)}
     late = []
     for k in range(len(sec[0x34a17]) // 20):
-        off, typ, box, _, data, money, sender = struct.unpack_from('<hBBB3xIiI', sec[0x34a17], 20 * k)
+        off, typ, box, popup, data, money, sender = struct.unpack_from('<hBBB3xIiI', sec[0x34a17], 20 * k)
         name = pooled(off)
         subject, body = lang.get(game_hash(name + '_SUBJECT')), lang.get(game_hash(name + '_BODY')) or lang.get(game_hash(name))
         show = 'STAGE_' + name[9:] if name.startswith('SMS_MAG_S') and not name.startswith('SMS_MAG_STAGE') else name[8:]
@@ -425,6 +425,7 @@ def career_world(game, globalb, rows, races, language=None, written=None):
             cond = 0
         if typ == 0xF:
             tip_sms[data] = len(sms)    # an engage tip's: the marker's hash
+            tip_popup[data] = popup     # +4: the SMS opens itself (SMSMessageQueue::AnyUnseenAutoPopups); the rest only reach the mailbox
         (late if new else mag_sms if typ == 13 and name.startswith('SMS_MAG_') else sms).append(
             dict(name=name, type=typ, stage=stage, cond=cond, money=money, sender=lang.get(sender, 'Rachel'), subject=subject, body=body))
     sms += mag_sms + late   # (after the others: a save's sent and read bits are by the message's place; the ones new in version 9 last)
@@ -463,10 +464,14 @@ def career_world(game, globalb, rows, races, language=None, written=None):
     out += struct.pack('<I', len(shops))
     for v in shops:
         out += struct.pack('<24sBBBx3f', v['name'].encode()[:23], v['kind'], v['stage'], v['hidden'], *v['pos'])
-    tips = [dict(sms=tip_sms[h], pos=(gy, gx), radius=r) for h, gx, gy, r in markers(game, 0x12) if h in tip_sms]
+    # a tip: f32 GU x z, u16 its SMS, u8 radius, u8 flags (1: its SMS only
+    # reaches the mailbox, the HUD's envelope and its chime; 0: it opens
+    # itself, as ENGAGE_TIP_CAREER_PROG, the only tip that does; beta
+    # issue 120. Older files: 0, every tip opening)
+    tips = [dict(sms=tip_sms[h], pos=(gy, gx), radius=r, queue=0 if tip_popup.get(h) else 1) for h, gx, gy, r in markers(game, 0x12) if h in tip_sms]
     out += struct.pack('<I', len(tips))
     for v in tips:
-        out += struct.pack('<2fHBx', *v['pos'], v['sms'], v['radius'])
+        out += struct.pack('<2fHBB', *v['pos'], v['sms'], v['radius'], v['queue'])
     # the city's cash (markers of type 0x13, MoneyMarkerConfiguration 0x34A1E:
     # i16 amount, u8 condition (1: from the career stage in the value), u8
     # id for the save, u32 value, u32 the marker's hash)

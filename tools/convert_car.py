@@ -42,6 +42,14 @@ GLASS = {0x471a1dca: (28, 40, 50, 165),   # WINDSHIELD
 HEADLIGHT, BRAKELIGHT, LENS = 0x9c645529, 0x05bc3a3c, 0xf7fc7674
 RUBBER, CALIPER = 0x78743ca1, 0xd6640dff
 CARBONFIBRE_TEX = 0x721aff7c
+# The driver: two crossed quads in every car's BASE with GLOBALB's DRIVER
+# art. The original's CarRenderInfo swaps the key in its replacement table:
+# DRIVER_MALE in a race, DEFAULTALPHA (no driver) in the front end. Both
+# silhouettes are black, as black as the cabin around them, whose key
+# (a2bf8e18) no TPK holds and the game draws with its default texture
+# (DEFAULTALPHA, black). Here the cabin is the missing-texture grey below.
+DRIVER, DRIVER_MALE = 0x5799e60b, 0xa244d489
+CABIN_GREY = (40, 40, 42, 255)   # a part whose texture no TPK holds: the cabin, the trims
 
 # Pack v3 mesh flags, mirrored in psp-viewer/main.c.
 F_GLASS, F_PAINT, F_CHROME, F_CARBON, F_EMISSIVE, F_MATTE, F_METAL = 1, 2, 4, 8, 16, 32, 64
@@ -63,6 +71,7 @@ MIRROR_SOCKETS = ('MIRROR_BODY_LEFT', 'MIRROR_BODY_RIGHT')
 # pack alone, preset 'interior'): drawn only then (psp-viewer/main.c)
 F_INSIDE_HOOD, F_INSIDE_TRUNK, F_AUDIO = 1 << 24, 1 << 25, 1 << 26   # the engine bay; the trunk; its audio (a layout's)
 F_RIGHT = 1 << 27   # the right side mirror's (they break apart: psp-viewer/main.c)
+F_DRIVER = 1 << 21   # non-decal meshes only: decals use bits 21-23 for widebody places (garage.h)
 # On the trunk lid, turned with it when the garage opens it (psp-viewer/main.c
 # piece_push), as the original's CarSlotAnimHookupTable (GLOBALB 0x34608)
 # ties them to the trunk's animation: the lid's underside (TRUNK_UNDER), the
@@ -326,11 +335,24 @@ class Textures:
         self.car_names = {self.car_tpk.name(k): k for k in self.car_tpk.slots}
 
     def get(self, key):
+        if key in (DRIVER_MALE, DRIVER):
+            return self.driver_mask(key)
         for s in self.sources:
             t = s.get(key)
             if t is not None:
                 return t
         return None
+
+    def driver_mask(self, key=DRIVER_MALE):
+        """The driver's silhouette in white, its alpha kept: the mesh's
+        colour (CABIN_GREY) gives the driver the cabin's own shade."""
+        t = next((t for t in (s.get(key) for s in self.sources) if t is not None), None)
+        if t is None:
+            return None
+        rgba = bytearray(t.rgba())
+        for i in range(0, len(rgba), 4):
+            rgba[i:i+3] = b'\xff\xff\xff'
+        return Texture(t.name, t.key, t.w, t.h, 0x20, bytes(rgba))
 
     def car(self, name):
         # TPK names hold 23 characters (IMPREZAWRX_DOORLINE_MAS).
@@ -454,6 +476,7 @@ class Builder:
     def material(self, mat, tex, library=False, carbon_hood=False):
         """-> (texref or None, RGBA colour, flags, uv scale)."""
         white = (255, 255, 255, 255)
+        lamp_art = tex in self.lamps
         tex = self.lamps.get(tex, tex)
         if mat in (CARSKIN, SKIRTSKIN):
             if carbon_hood and mat == CARSKIN:
@@ -479,6 +502,10 @@ class Builder:
             flags = F_METAL if mat in METALS else F_MATTE if mat in MATTE else 0
             return 'SKIN', white, flags, 1.0
         if mat in GLASS:
+            # Original *_GLASS_OFF carries the lens' coverage alpha.
+            # A flat CLEARPLASTIC fallback loses it (Civic rear lenses).
+            if lamp_art:
+                return tex, white, F_GLASS, 1.0
             # a window with its own art (the 206's REAR_DEFROSTER: dark, its
             # heater lines in the alpha) is drawn with it, as the PS2's
             if mat == 0x471a1dca and self.window:   # tinted: every window, the rear's too
@@ -488,6 +515,17 @@ class Builder:
             return None, GLASS[mat], F_GLASS, 1.0
         if mat in (CARBON, CARBONFIBRE_TEX):   # the latter the shop's carbon mirrors' (MIRROR_*_CF)
             return CARBONFIBRE_TEX, white, F_CARBON, 1.0
+        # Only Textures supplies normalized driver masks. TrafficTextures
+        # keeps its original raw texture/material path, including missing art.
+        if tex == DRIVER and isinstance(self.textures, Textures):
+            # the race's silhouette in the cabin's shade and light: in
+            # DRIVER's own near-black, darker than the grey cabin, the
+            # driver stood out through the windows (beta #93)
+            for ref in (DRIVER_MALE, DRIVER):
+                if self.textures.get(ref) is not None:
+                    return ref, CABIN_GREY, F_MATTE | F_DRIVER, 1.0
+                self.missing.add(ref)
+            return None, CABIN_GREY, F_MATTE | F_DRIVER, 1.0
         flags = F_CHROME if mat in (CHROME, MAGCHROME, EXHAUST_TIP) else F_METAL if mat in METALS else F_MATTE if mat in MATTE else 0
         if mat == HEADLIGHT:
             flags = F_METAL
@@ -504,7 +542,7 @@ class Builder:
                 return None, (170, 170, 175, 255), flags, 1.0
             if mat == CALIPER:
                 return None, (180, 20, 20, 255), 0, 1.0
-            return None, (40, 40, 42, 255), F_MATTE, 1.0
+            return None, CABIN_GREY, F_MATTE, 1.0
         if mat == CALIPER:
             return resolved, (230, 40, 40, 255), 0, 1.0
         if mat in (BRAKELIGHT, LENS):   # the lamp's own art (lamp_textures), lit by its own light
@@ -518,6 +556,8 @@ class Builder:
             if not ids:
                 continue
             texref, colour, flags, uvscale = self.material(mk, tk, library, carbon_hood)
+            if flags & F_DRIVER and texref is None:
+                continue   # neither silhouette exists: do not draw its unmasked crossed quads
             if wheel is not None:
                 flags |= F_WHEEL | (wheel << 8) | (F_WHEEL_FIXED if mk == CALIPER else 0)
             flags |= self.slot << SLOT_SHIFT
@@ -1166,7 +1206,7 @@ def main():
     preset = json.loads(args.preset.read_text())
     args.out.mkdir(parents=True, exist_ok=True)
     car = preset['car']
-    report = {'preset': preset, 'source': 'Xbox USA', 'material_note': 'GU approximation, not the original Xbox shaders', 'packs': {}}
+    report = {'preset': preset, 'source': {'xbox': 'Xbox USA', 'ps2': 'PS2 USA'}[args.source], 'material_note': 'GU approximation, not the original Xbox shaders', 'packs': {}}
     textures = None
     lods = ([(0, args.tag + '-detail')] if args.detail else []) + [(1, args.tag)] if args.tag else enumerate(('detail', 'light'))
     for lod, label in lods:

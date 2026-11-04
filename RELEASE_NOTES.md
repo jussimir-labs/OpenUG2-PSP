@@ -1,5 +1,27 @@
 # NFSU2 PSP closed beta — release notes
 
+## 0.2.6 — Rush Hour at the Rail Yard (4 November 2026)
+
+EA Trax: *Rush Hour*, Christopher Lawrence ([official channel](https://www.youtube.com/djcltv)).
+
+A new game executable and new game data: update your 0.2.0 to 0.2.5 output folder with this generator
+(same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
+
+- **Fixed, racing:** the rail yard's drags (#110), the car after a drag's finish (#94), racers that kept
+  driving after the finish and the way back to Explore (#92), the sprint grid and its spectators (#91),
+  the finish of a sprint after a shortcut (#85), the drift HUD and its Hurry countdown (#90), wall
+  scrapes (#83), brakes, reverse and handbrake (#87), Rachel's 350Z and the performance parts (#45, #88).
+- **Fixed, career and city:** special events as the original's challenges (#124, #125, #126), the
+  stage 0 map (#111), the carbon parts' unlocks (#112), the World Map's stars and photo shoots (#97),
+  entering races and shops at speed (#121), the street's sounds and menu sounds (#120, #109), the GPS
+  on stacked roads (#106), the pedals after saving (#100), the garage exit (#95), the garage's parts
+  browsing speed (#114), the Body Shop's part order (#77), the speedometer's units (#104) and metric units everywhere with KM/H (#79).
+- **Fixed, looks:** the driver's silhouette (#93), tail light lenses, the trunk and the garage pose
+  (#108), paint kept while trying parts (#82), the startup movies' picture (#89), glass doors' sound
+  (#98), and menu labels in other languages (#99).
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
+
 ## 0.2.5 — Crashing Foreign Cars, Fluently (31 October 2026)
 
 EA Trax: *Crashing Foreign Cars*, Helmet ([Spotify](https://open.spotify.com/artist/0qB0cTENhSUc0feov5qbg0)).

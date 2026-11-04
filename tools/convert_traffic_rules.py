@@ -90,8 +90,26 @@ def spacing(globalb):
     return [struct.unpack_from('<2f', block, 0xA8C + 8 * i) for i in range(9)]
 
 
-def zones(game):
-    leaf, at, out = convert_career.trigger_pack(game), 0, []
+TRACKS = ('L4RB', 'L4RC', 'L4RD', 'L4RF', 'L4RG')
+
+
+def track_leaf(game, track):
+    """A closed track's zones: its paths' (TrackPathManager, PATHS<id>.BIN
+    leaf 0x3414A, as the city's trigger pack; every event of a track lists
+    the same), from its first event's file; None without one."""
+    from n2formats import game_hash
+    z = (game / 'ZDIR.BIN').read_bytes()
+    have = {e[0] for e in struct.iter_unpack('<6I', z)}
+    first = next((e for e in range(4000, 4800) if game_hash(f'TRACKS/ROUTES{track}/PATHS{e}.BIN') in have), None)
+    if first is None:
+        return None
+    d = archived(game, f'TRACKS/ROUTES{track}/PATHS{first}.BIN')
+    return next((d[p:p + n] for t, p, n in chunks(d) if t == 0x3414A), b'')
+
+
+def zones(game, leaf=None):
+    leaf = convert_career.trigger_pack(game) if leaf is None else leaf
+    at, out = 0, []
     while at + 0x44 <= len(leaf):
         typ, = struct.unpack_from('<I', leaf, at)
         n, step = struct.unpack_from('<HH', leaf, at + 0x40)
@@ -135,21 +153,38 @@ def main():
         out += struct.pack('<HBB', eid, stage, level)
     for lo, hi in sp:
         out += struct.pack('<2f', lo, hi)
-    out += struct.pack('<I', len(zs))
-    for z in zs:
-        xs, ys = [p[0] for p in z['corners']], [p[1] for p in z['corners']]
-        out += struct.pack('<4BHH4f', *z['pairs'], z['type'], len(z['corners']), 0, min(xs), min(ys), max(xs), max(ys))
-        out += b''.join(struct.pack('<2f', *p) for p in z['corners'])
-    for mx, keep in md:
-        out += bytes(mx) + bytes(keep)
+    head = bytes(out)
+
+    def with_zones(zs):
+        out = bytearray(head) + struct.pack('<I', len(zs))
+        for z in zs:
+            xs, ys = [p[0] for p in z['corners']], [p[1] for p in z['corners']]
+            out += struct.pack('<4BHH4f', *z['pairs'], z['type'], len(z['corners']), 0, min(xs), min(ys), max(xs), max(ys))
+            out += b''.join(struct.pack('<2f', *p) for p in z['corners'])
+        for mx, keep in md:
+            out += bytes(mx) + bytes(keep)
+        return out
+    out = with_zones(zs)
     (args.out / 'traffic.n2tf').write_bytes(out)
+    # A closed track's traffic goes by its own zones (TrafficTeleporter::
+    # GetMinDistanceBetweenCars asks the loaded track's TrackPathManager):
+    # traffic-<track>.n2tf, the same rules with them. The rail yard's
+    # drags (L4RB) have one over the second half of their strip only; the
+    # city's zones there put traffic all along it (beta issue 110).
+    track_zones = {}
+    for track in TRACKS:
+        leaf = track_leaf(args.game, track)
+        if leaf is None:
+            continue
+        track_zones[track] = zones(args.game, leaf)
+        (args.out / f'traffic-{track}.n2tf').write_bytes(with_zones(track_zones[track]))
     report = dict(
         tracks={eid: dict(counts=list(c), clean_ok=list(o), clean_m=list(m)) for eid, (c, o, m) in sorted(tr.items())},
         career_levels={f'{eid}/{stage}': level for (eid, stage), level in sorted(lv.items())},
-        spacing=sp, zones=zs, models={m: dict(max=x, keep=k) for m, (x, k) in zip(MODELS, md)})
+        spacing=sp, zones=zs, track_zones=track_zones, models={m: dict(max=x, keep=k) for m, (x, k) in zip(MODELS, md)})
     (args.out / 'traffic-rules.json').write_text(json.dumps(report, indent=1) + '\n')
     never = [m for m, (x, _) in zip(MODELS, md) if not any(x)]
-    print(f'traffic.n2tf: {len(out)} bytes, {len(tr)} tracks, {len(lv)} career entries, {len(zs)} zones, never out: {never}')
+    print(f'traffic.n2tf: {len(out)} bytes, {len(tr)} tracks, {len(lv)} career entries, {len(zs)} zones ({', '.join(f'{t} {len(z)}' for t, z in track_zones.items())} on the closed tracks), never out: {never}')
 
 
 if __name__ == '__main__':

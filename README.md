@@ -1,11 +1,11 @@
-# NFSU2 PSP — Closed Beta, version 0.2.5
+# NFSU2 PSP — Closed Beta, version 0.2.6
 
 Welcome to the first closed beta of the native PSP port of *Need for Speed Underground 2*.
 Thank you for helping test it on real devices.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[v0.2.5 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.5).
+[v0.2.6 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.6).
 Windows x64, Linux x86-64, Apple Silicon and Intel Mac use separate downloads. The original
 [RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.0)
 remains available with its older setup requirements.
@@ -109,7 +109,7 @@ desktop's file dialog (KDE or GNOME); without one, paste full paths into the fie
 2. Choose your ISO and a **new, empty output folder**. Keep source detection on **Automatic**.
    The folder picker creates `NFSU2-PSP` inside the selected folder; a typed path is used as entered.
 3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
-   assets including all 28 movies, and compares the result against the 0.2.5 reference.
+   assets including all 28 movies, and compares the result against the 0.2.6 reference.
 4. Wait for successful identity verification. The game is in `<output>/PSP/GAME/NFSU2VIEW`.
    On Windows, Linux and Intel Macs some movies, audio, geometry and racing-line files are reported as
    **equivalent**: the same structure, with bytes rounded differently by an x86 processor. That
@@ -133,11 +133,10 @@ previous generation** (the folder that contains `PSP`). The generator then updat
   that made your folder, and extracts your ISO again only if one of those steps reads it;
   every other file is reused from your folder. A release that only changes the game's
   `EBOOT.PBP` updates in seconds; one that changes converters takes as long as those steps.
-  An update from 0.2.4 to 0.2.5 converts only the steps that changed: the city and its race
-  tracks, the career and the HUD. One from 0.2.3 converts some more. One from
-  0.2.0, 0.2.1 or 0.2.2 converts every step again (the generator's included tools changed in
-  0.2.3), so it takes about as long as a complete generation; it still checks your folder and
-  keeps it until the new one is verified. Folders made with the Windows
+  An update from 0.2.5 to 0.2.6 reuses 10 of the 81 steps and converts the rest again (the
+  city, its race tracks, the cars, the movies, the menus and the audio all changed), so it
+  takes about as long as a complete generation; one from 0.2.0 to 0.2.4 converts at least as
+  many. It still checks your folder and keeps it until the new one is verified. Folders made with the Windows
   or macOS 0.1.x packages also convert everything again, and a 0.1.0 source-kit folder is
   generated again;
 - it installs the new `EBOOT.PBP` and verifies the complete result against the new reference,
@@ -170,7 +169,7 @@ Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface w
    **Game → Memory Stick** in the XMB.
 
 **Updating an older beta:** update your previous output folder (above) or generate in a new one, and install the complete result.
-0.2.5 changes `EBOOT.PBP` and converted data (the city's race lines and walls, the career's texts and the HUD). Copying only the executable leaves older data that it does not expect.
+0.2.6 changes `EBOOT.PBP` and converted data (the rail yard's drag lanes, races and special events, the HUD and World Map icons, the garage, the city's routes and sounds). Copying only the executable leaves older data that it does not expect.
 Never mix Xbox and PS2 output, and do not delete `PSP/SAVEDATA` when updating.
 
 ## 4. Test and report
@@ -181,20 +180,20 @@ the memory in use against the profile's budget.
 This is an unfinished beta, with known gameplay, visual, audio and performance limitations.
 
 Report one problem per [GitHub issue](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
-Include the version (**0.2.5**, on the title screen and above the debug lines), device/firmware, game source, car/mode/track, steps, expected
+Include the version (**0.2.6**, on the title screen and above the debug lines), device/firmware, game source, car/mode/track, steps, expected
 and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
 technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.
 See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
 ## Build identity
 
-| Item | 0.2.5 value |
+| Item | 0.2.6 value |
 | --- | --- |
-| Version | `0.2.5` (executable `0.2.5`) |
-| Embedded build | `5dd3cecb06` |
-| EBOOT SHA-256 | `ed457f83f03237614f5f467233555846d541bbc5dba923b01afe581304678f89` |
-| Xbox data ID | `e6f9` |
-| PS2 data ID | `0876` |
+| Version | `0.2.6` (executable `0.2.6`) |
+| Embedded build | `570bd23fb9` |
+| EBOOT SHA-256 | `8b19d3bca3902e09b8e1c9ba37219c11adaef7c0c50b96222a23c86354c6877a` |
+| Xbox data ID | `e59c` |
+| PS2 data ID | `3207` |
 | Memory profile | Chosen at boot: extended (32 MB or more) or compact (PSP-1000) |
 
 These values identify the kit; you do not need to calculate hashes to report a bug.

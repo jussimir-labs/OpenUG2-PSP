@@ -69,7 +69,7 @@ def read_routes(game, track='L4RA', name='ROUTESFREEROAM.BIN'):
             wl, wr, dx, dy = struct.unpack_from('<2H2h', leaf, p + 0x14)
             off, = struct.unpack_from('<b', leaf, p + 0x22)
             lines = struct.unpack_from('<10b', leaf, p + 0x22)
-            pts.append(dict(x=x, y=y, flags=flags, wl=wl / 256, wr=wr / 256, dx=dx / 32767, dy=dy / 32767,
+            pts.append(dict(x=x, y=y, distance=struct.unpack_from('<f', leaf, p + 8)[0], flags=flags, wl=wl / 256, wr=wr / 256, dx=dx / 32767, dy=dy / 32767,
                             offset=off * max(wl, wr) / 256 / 128, lanes=mask,
                             lines=tuple(v * max(wl, wr) / 256 / 128 for v in lines)))
         routes[num] = pts
