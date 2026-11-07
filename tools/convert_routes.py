@@ -96,14 +96,52 @@ def intersection_side(route, dirs, k, other, odirs, ok, node):
     return struct.pack('<6f2H', y, x, fy, fx, max(0.0, -min(proj)), max(0.0, max(proj)), node, 0)
 
 
+# A car finds the ground from where it stands, as the original's
+# TopologyCoordinate::NewGetElevation does: the highest surface at most
+# SURFACE_ABOVE over its height and less than SURFACE_ABOVE + SURFACE_BELOW
+# under that.
+SURFACE_ABOVE, SURFACE_BELOW = 1.0, 3.0
+SURFACE_GAP = 5   # m of a layer missing in a row the walk steps over
+BROKEN = 1000.0   # cost of a stretch the surface does not carry a car along
+
+
+def surface_walk(city, ax, ay, az, bx, by):
+    """The height a car starting at (ax, ay) on the ground at az reaches at
+    (bx, by) going straight, a metre at a time over the surface it stands
+    on; None when for more than SURFACE_GAP metres in a row there is ground
+    and none of it in its reach (a step up or a drop a car does not drive;
+    shorter, a hole in the grid's layer: a street under an elevated road
+    lost 3 m of its own under it). Cells without ground keep the height."""
+    n = max(1, int(math.hypot(bx - ax, by - ay)))
+    h, gap = az, 0
+    for k in range(1, n + 1):
+        t = k / n
+        ls = city.layers(ax + (bx - ax) * t, ay + (by - ay) * t)
+        if not ls:
+            continue
+        reach = [v for v in ls if h - SURFACE_BELOW < v <= h + SURFACE_ABOVE]
+        if not reach:
+            gap += 1
+            if gap > SURFACE_GAP:
+                return None
+            continue
+        h, gap = max(reach), 0
+    return h
+
+
 def heights(route, city):
     """Per point one of the ground layers under it, the whole route at once:
     the chain with the least sum of dz^2 / run between points, so a ramp
     climbs at its slope instead of staying on the street under the bridge
     and stepping up at the end (the layer nearest the previous point alone
     took the street at a ramp's foot: route 509 then crossed the street
-    under it at grade, beta issue 27). A point with no layer keeps the
-    height before it."""
+    under it at grade, beta issue 27). A step between two layers the
+    surface does not join (surface_walk: the ground a car driving from the
+    one would stand on at the other) costs BROKEN: a route that ends on a
+    ramp's top, over a bank under the bridge the ramp joins, ended on the
+    bank, 5 m under the deck, by the points alone (its traffic dived under
+    the bridge, beta issue 138). A point with no layer keeps the height
+    before it."""
     states = None   # per candidate height: (cost, chain)
     px = py = None
     for x, y, _, _ in route:
@@ -114,8 +152,10 @@ def heights(route, city):
             states = [(c, zs + [zs[-1]]) for c, zs in states]
         else:
             run = max(1.0, math.hypot(x - px, y - py))
-            states = [min(((c + (z - zs[-1]) ** 2 / run, zs) for c, zs in states), key=lambda s: s[0]) for z in ls]
-            states = [(c, zs + [z]) for (c, zs), z in zip(states, ls)]
+            reach = [surface_walk(city, px, py, zs[-1], x, y) for _, zs in states]
+            step = lambda z, k: (z - states[k][1][-1]) ** 2 / run + (0.0 if reach[k] is not None and abs(reach[k] - z) < 1.0 else BROKEN)
+            best = [min(range(len(states)), key=lambda k: states[k][0] + step(z, k)) for z in ls]
+            states = [(states[k][0] + step(z, k), states[k][1] + [z]) for z, k in zip(ls, best)]
         px, py = x, y
     return min(states, key=lambda s: s[0])[1]
 

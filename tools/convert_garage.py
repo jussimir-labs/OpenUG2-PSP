@@ -12,7 +12,9 @@ for it:
   bought on its own as the PS2's), hood (STYLEnn), spoiler (the 40 of the
   SPOILER library at the car's socket), head and tail lights (STYLEnn),
   roof scoop (the ROOF library's 51 at the ROOF_SCOOP socket), exhaust tips
-  (the EXHAUST library's 10 at the car's own tips' places) (the rims:
+  (the EXHAUST library's 10 at the car's own tips' places; where the tips
+  go under each rear bumper and wide body kit, their entry 'pipes', N2EX:
+  u32 count, count x 12 floats, pipe_places) (the rims:
   the shop's library, tools/convert_rims.py; the table keeps a selection's
   names, the rims of the looks saved before it); a pack's
   body-skin texture is a stub (key 0 maps to the stock pack's skin);
@@ -77,11 +79,17 @@ CATS = ('kit', 'hood', 'spoiler', 'rims', 'vinyl', 'headlight', 'brakelight', 'r
 # The packs of no shop's table: the front brakes, the performance shop's
 # (BRAKE_STYLE01 to 03, CARS/BRAKES), by their category in parts-*.n2op
 # alone (psp-viewer/garage.c OPT_BRAKES)
-EXTRA = {'brakes': 64}
+EXTRA = {'brakes': 64, 'engine': 65, 'pipes': 66}   # (psp-viewer/garage.c OPT_BRAKES, OPT_ENGINE, OPT_PIPES)
+# the upgraded engines (RideInfo::SyncVisualPartsWithPhysics: the ENGINE
+# part of level 2 with the Engine, ECU and Turbo packages at level 2, of
+# level 3 with them at 3: the parts table's STYLE02 and STYLE03, whose
+# models are <CAR>_STYLE01_ENGINE and _STYLE02_ENGINE), the garage's pack
+# alone (psp-viewer/garage.c OPT_ENGINE)
+ENGINES = ('STYLE01', 'STYLE02')
 BRAKES = ('BRAKE_STYLE01', 'BRAKE_STYLE02', 'BRAKE_STYLE03')
 PARTS = ('kit', 'rear_bumper', 'skirt', 'hood', 'spoiler', 'headlight', 'brakelight', 'roof', 'exhaust', 'wide', 'mirror', 'audio')   # those with packs
 PRESET_KEY = {'kit': 'kit', 'rear_bumper': 'rear_bumper', 'skirt': 'skirt', 'hood': 'hood', 'spoiler': 'spoiler',
-              'headlight': 'headlight', 'brakelight': 'brakelight', 'roof': 'roof', 'exhaust': 'exhaust', 'wide': 'widebody', 'mirror': 'mirror', 'audio': 'trunk_audio', 'brakes': 'brakes'}
+              'headlight': 'headlight', 'brakelight': 'brakelight', 'roof': 'roof', 'exhaust': 'exhaust', 'wide': 'widebody', 'mirror': 'mirror', 'audio': 'trunk_audio', 'brakes': 'brakes', 'engine': 'engine'}
 SLOT = {'kit': cc.SLOT_KIT, 'rear_bumper': cc.SLOT_REAR_BUMPER, 'skirt': cc.SLOT_SKIRT, 'hood': cc.SLOT_HOOD,
         'spoiler': cc.SLOT_SPOILER, 'rims': cc.SLOT_RIMS, 'headlight': cc.SLOT_HEADLIGHT, 'brakelight': cc.SLOT_BRAKELIGHT,
         'roof': cc.SLOT_ROOF, 'exhaust': cc.SLOT_EXHAUST, 'wide': cc.SLOT_BODY, 'mirror': cc.SLOT_MIRROR, 'brakes': 0}
@@ -161,7 +169,8 @@ def car_options(game, car):
     kinds = (('HUMMER',) if car == 'HUMMER' else ('SUV',)) if car in SUVS else ('BODY', 'POST')
     mirror = [f'{kind}_STYLE{k:02d}{cf}' for cf in ('', '_CF') for kind in kinds if not (cf and kind == 'HUMMER')
               for k in range(1, 16)] if own else []
-    audio = [f'KIT{k:02d}' for k in range(1, 10) if any(n.startswith(f'{car}_KIT{k:02d}_TRUNK_AUDIO') for n in names)]   # the trunk's layouts
+    # the trunk's layouts (names cut at 27 characters: IMPREZAWRX_KIT01_TRUNK_AUDI, beta #69)
+    audio = [f'KIT{k:02d}' for k in range(1, 10) if any(n.startswith(f'{car}_KIT{k:02d}_TRUNK_AUDIO'[:27]) for n in names)]
     return dict(kit=kit('FRONT_BUMPER'), rear_bumper=kit('REAR_BUMPER'), skirt=kit('SKIRT'), hood=hoods, spoiler=spoilers,
                 rims=rims, vinyl=vinyls, headlight=lights('HEADLIGHT'), brakelight=lights('BRAKELIGHT'), roof=roof, exhaust=exhaust,
                 wide=wide, mirror=mirror, audio=audio)
@@ -203,27 +212,51 @@ def wide_track(game, car, kit):
     return min(255, max(out[:2])), min(255, max(out[2:]))
 
 
+def pipe_packs(game, car, opts, done):
+    """Where the exhaust tips go under each rear bumper and wide body kit
+    the car is offered: {('pipes', name, 0): N2EX blob}. The original
+    draws its tips at the markers of the parts on the car
+    (cc.exhaust_marks), each rear bumper's and wide body kit's its own: the
+    stock pack's and the shop tips' packs, made on the stock bumper, had
+    them there under every kit (beta #51). One entry for both levels."""
+    if not opts['exhaust']:   # no tips of its own (the Hummer's)
+        return {}
+    every = list(parts(archived(game, f'CARS/{car}/GEOMETRY.BIN'), lambda n: n.startswith(car + '_')))
+    on = lambda preset: cc.exhaust_marks([p for c in cc.choose_car_parts(every, car, dict(preset, car=car)).values() for p in c])
+    stock = on({})
+    if not stock:
+        return {}
+    out = {}
+    for cat, key in (('rear_bumper', 'rear_bumper'), ('wide', 'widebody')):
+        for name in done[cat]:
+            places = cc.pipe_places(stock, on({key: name}))
+            out[('pipes', name, 0)] = struct.pack('<4sI', b'N2EX', len(places)) + b''.join(struct.pack('<12f', *d) for d in places)
+    return out
+
+
 def option_blobs(game, car, cat, name, lod):
     """The meshes of one option's slot as N2PV packs: {category: blob} (a
     kit gives its front bumper, rear bumper and skirts at once); {} when the
     car has no such part (or socket)."""
     preset = {'car': car}
     preset[PRESET_KEY[cat]] = name
-    if cat == 'audio':   # a trunk layout: the inside, in the garage's pack alone
+    if cat in ('audio', 'engine'):   # a trunk layout, an engine: the inside, in the garage's pack alone
         if lod:
             return {}
         preset['interior'] = True
     if cat == 'wide':   # on the street its body a level coarser (368 triangles to the 206's 950), as Rachel's: the stock's 60 Hz kept
         preset['light_lod'] = {f'{car}_{name}_BODY': 2}
+        preset['interior'] = not lod   # its doors' insides (DOOR_PANEL, DOOR_SILL) in the garage's, for the stock ones'
     try:
         b, textures, _ = cc.assemble(game, preset, lod)
     except ValueError:
         return {}
     out = {}
     for c in (('kit', 'rear_bumper', 'skirt') if cat == 'kit' else (cat,)):
-        meshes = [m for m in b.batched() if (m[4] & cc.F_AUDIO if c == 'audio' else
+        meshes = [m for m in b.batched() if (m[4] & cc.F_AUDIO if c == 'audio' else m[4] & cc.F_ENGINE if c == 'engine' else
                   m[4] & cc.F_WHEEL and not (m[4] >> cc.SLOT_SHIFT) & 15 and (m[4] >> 8) & 3 < 2 if c == 'brakes' else   # the front brakes
-                  (m[4] >> cc.SLOT_SHIFT) & 15 in ((SLOT[c], cc.SLOT_DOOR, cc.SLOT_DOOR_RIGHT) if c == 'wide' else (SLOT[c],)))]
+                  (m[4] >> cc.SLOT_SHIFT) & 15 in ((SLOT[c], cc.SLOT_DOOR, cc.SLOT_DOOR_RIGHT) if c == 'wide' else (SLOT[c],)) or
+                  (c == 'wide' and m[4] & (cc.F_INSIDE_DOOR | F_DECAL) == cc.F_INSIDE_DOOR))]
         if not meshes:
             continue
         texdata = {}
@@ -352,6 +385,8 @@ def convert_car(game, out, car):
     for name in BRAKES:
         for lod in (0, 1):
             packs.update({(c, name, lod): blob for c, blob in option_blobs(game, car, 'brakes', name, lod).items()})
+    for name in ENGINES:   # (the cars without them: none)
+        packs.update({(c, name, 0): blob for c, blob in option_blobs(game, car, 'engine', name, 0).items()})
     for cat in PARTS:   # an option is offered with both its levels of detail (a trunk layout: the garage's alone)
         done[cat] = [n for n in opts[cat] if (cat, n, 0) in packs and ((cat, n, 1) in packs or cat == 'audio')]
     done['rims'] = opts['rims']   # the names alone: the rims are the library's (tools/convert_rims.py), these the looks saved before it
@@ -360,6 +395,7 @@ def convert_car(game, out, car):
     for name in done['wide']:   # a wide body kit's entries: how far it takes the wheels out
         front, rear = wide_track(game, car, name)
         pads.update({('wide', name, lod): front | rear << 8 for lod in (0, 1)})
+    packs.update(pipe_packs(game, car, opts, done))
     write_options(out / f'parts-{car}.n2op', packs, pads)
     skin_layers(game, car, out)
     done['decal_zones'] = decal_pack(game, car, out)
@@ -375,13 +411,20 @@ NEON_MARKERS = (('ENGINE_NEON_START_%d', 'ENGINE_NEON_END_%d'), ('MARKER_TRUNK_N
 UNDER_MARKERS = (('FRONT_BUMPER', 'FRONT_NEON_%d_'), ('SKIRT', 'SIDE_NEON_%d_'), ('REAR_BUMPER', 'REAR_NEON_%d_'))
 
 
+PURGE_MARKERS = ('NOS_PURGE_LEFT', 'NOS_PURGE_RIGHT')   # the base's: the hood's purge nozzles
+
+
 def neon_tubes(game, out, cars):
     """neon.n2nn: the engine's, trunk's, cabin's and underglow's neon tubes,
     from the cars' markers (an upgraded engine's, a trunk layout's, the
     base's; the underglow's the stock front bumper's, skirts' and rear
-    bumper's): 'N2NN', u32 version 2, u32 cars; cars x (char model[16], u8
-    tubes engine, trunk, cabin, underglow; tubes x f32 start x, y, z, end x,
-    y, z (GU, as the packs)). Version 1 had no underglow (its 4th count 0)."""
+    bumper's), and the hood's Nitrous Purge nozzles (the base's NOS_PURGE_LEFT
+    and RIGHT, where CarRenderInfo puts the hood's purge): 'N2NN', u32
+    version 3, u32 cars; cars x (char model[16], u8 tubes engine, trunk,
+    cabin, underglow; tubes x f32 start x, y, z, end x, y, z (GU, as the
+    packs); f32 the left nozzle's x, y, z, the right's (GU; 0 0 0 missing)).
+    Version 1 had no underglow (its 4th count 0), versions 1 and 2 no
+    nozzles."""
     blob = bytearray()
     for car in cars:
         marks, under = {}, {}
@@ -410,7 +453,10 @@ def neon_tubes(game, out, cars):
         tubes.append(row)
         blob += struct.pack('<16s4B', car.encode(), *(len(r) for r in tubes))
         blob += b''.join(struct.pack('<6f', *t) for r in tubes for t in r)
-    (out / 'neon.n2nn').write_bytes(struct.pack('<4s2I', b'N2NN', 2, len(cars)) + blob)
+        for k in PURGE_MARKERS:
+            m = marks.get(fe.bin_hash(k))
+            blob += struct.pack('<3f', m[1], m[2], m[0]) if m is not None else bytes(12)   # Xbox x forward, y lateral, z up -> GU
+    (out / 'neon.n2nn').write_bytes(struct.pack('<4s2I', b'N2NN', 3, len(cars)) + blob)
 
 
 HALO_W, HALO_H = 128, 64
@@ -484,12 +530,17 @@ def main():
     ap.add_argument('--jobs', type=int, default=8)
     ap.add_argument('--decals', action='store_true', help='the decals alone: their art and the table, the cars as garage.json has them')
     ap.add_argument('--neon', action='store_true', help='neon.n2nn and neon-halo.n2nh alone (the neon tubes, their light on the ground), the cars as garage.json has them')
+    ap.add_argument('--trunk', action='store_true', help='trunk.n2tc alone (the trunk audio components and the layouts\' slots), the cars as garage.json has them')
     args = ap.parse_args()
     if args.animations:
         import carparts_anim
         cars = args.cars.split(',') if args.cars else convert_physics.playable(convert_physics.records(archived(args.game, 'GLOBAL/GLOBALB.BUN')))
         args.out.mkdir(parents=True, exist_ok=True)
         print('trunk animations', carparts_anim.write(args.game, args.out, cars))
+        return
+    if args.trunk:
+        import trunk_audio
+        print('trunk audio', trunk_audio.write(args.game, args.out, list(json.loads((args.out / 'garage.json').read_text()))))
         return
     if args.neon:
         cars = list(json.loads((args.out / 'garage.json').read_text()))
@@ -514,6 +565,8 @@ def main():
     neon_halo(args.game, args.out, list(known))
     import carparts_anim
     carparts_anim.write(args.game, args.out, list(known))
+    import trunk_audio
+    trunk_audio.write(args.game, args.out, list(known))
     blob = bytearray(struct.pack('<4s2I', b'N2GR', 8, len(known)))
     for car, opts in known.items():
         counts = [min(MAX, len(opts.get(c, []))) for c in CATS]

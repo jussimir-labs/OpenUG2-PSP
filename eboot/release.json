@@ -1,13 +1,13 @@
 {
-  "candidate": "beta-v0.2.6",
-  "candidate_id": "beta-v0.2.6-b70e7ad8",
-  "release_tag": "v0.2.6",
-  "version": "0.2.6",
-  "game_version": "0.2.6",
-  "eboot_sha256": "8b19d3bca3902e09b8e1c9ba37219c11adaef7c0c50b96222a23c86354c6877a",
-  "eboot_bytes": 3465530,
-  "build_id": "570bd23fb9",
-  "source_commit": "570bd23fb98fe63bbf1e22232dba2dd2f9693dea",
+  "candidate": "beta-v0.3.0",
+  "candidate_id": "beta-v0.3.0-ac7a4b67",
+  "release_tag": "v0.3.0",
+  "version": "0.3.0",
+  "game_version": "0.3.0",
+  "eboot_sha256": "5d4596799fb7ccb59b0a592407f6bf9b2408fd81bad7b4292850bedf17d652ee",
+  "eboot_bytes": 4047322,
+  "build_id": "2736440a7e",
+  "source_commit": "2736440a7e70c8dcab3cc7bea3564086ca9dd27f",
   "build_flags": [
     "PGO=use (RC21 profile)",
     "LTO=1",
@@ -19,40 +19,39 @@
     "ps2"
   ],
   "publication_status": "CLOSED_BETA_CANDIDATE",
-  "quality_approval": "Version 0.2.6 for the closed beta, prepared on Jussimir's request of 3 November 2026 to ship the 20 priority gameplay and career fixes already integrated, with the same rules as 0.2.5, once it passes PPSSPP. Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
+  "quality_approval": "Version 0.3.0 for the closed beta, prepared on Jussimir's direction to ship the gameplay, career and shop fixes integrated since 0.2.6, with the same rules as 0.2.6, once it passes PPSSPP. The Profile Manager (#136) is held back for 0.3.1. Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
   "known_issues": [
     "No physical PSP-1000 has run this build: the compact profile was measured on a PSP-3000 limited to the PSP-1000 memory and in PPSSPP set to the PSP-1000.",
     "On PSP-1000, a Drift right after a city race may use the previous drift handling when memory is tight (a notice says so).",
     "Stable 30 fps throughout the game is not yet established (University Hill and the densest city areas drop frames in both profiles).",
-    "On PSP-2000/3000, the densest stretch of the city on the Outer Ring drops a little more often below 30 fps than in 0.2.5 (95.8% of frames at 30 fps against 97.8% in the same test); the PSP-1000 memory profile measured 98.7%.",
     "Full-career completion and all save/reload paths are not qualified.",
     "Drag 4401 rivals may become stuck in repeated recovery.",
     "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
     "Custom dyno and special presets use the earlier handling path; collisions retain port adaptations.",
     "Materials, visibility, doors, movies and all audio/camera combinations need broader testing.",
     "The original US PS2 disc image has not been independently verified; PAL and other revisions are refused.",
-    "Menu camera height on the stick, shop rooms' own lighting, the Body Shop part browser and per-car menu ride height (#29) are still open."
+    "Menu camera height on the stick, shop rooms' own lighting and the Body Shop part browser are still open."
   ],
   "reference_scope": "Full ISO conversions by this kit's native generator on macOS arm64 (Xbox and PS2); output identity does not establish gameplay quality.",
   "files_by_source": {
-    "xbox": 163,
-    "ps2": 162
+    "xbox": 166,
+    "ps2": 164
   },
   "source_data_ids": {
-    "xbox": "e59c",
-    "ps2": "3207"
+    "xbox": "b66e",
+    "ps2": "36b3"
   },
-  "data_compatibility": "Install the complete output of this generator (update a 0.2.0 to 0.2.5 folder with the same ISO, or generate into a new folder). 0.2.6 changes EBOOT.PBP and converted data (the rail yard's drag lanes, races and special events, the HUD and World Map icons, the garage, the city's routes and sounds); copying only the EBOOT leaves old data that this executable does not expect. Do not mix Xbox and PS2 output.",
-  "elf_sha256": "731299f5c3c1bf76f03e37afb0a4d45a0eeac65c84b1f66ca005c42ee0f1210e",
-  "prx_sha256": "8b88fada894830c48958e29507fa1f4ff2a8b2a3d75c9b729746a904aef40cbb",
+  "data_compatibility": "Install the complete output of this generator (update a 0.2.x folder with the same ISO, or generate into a new folder). 0.3.0 changes EBOOT.PBP and converted data (the data formats, the shops' catalogue, the city's barriers, the menus' widescreen layout); copying only the EBOOT leaves old data that this executable does not expect. Do not mix Xbox and PS2 output.",
+  "elf_sha256": "54cab1862c2e251e7c0db7eeebee32ec65abb144523c631f284da4c9a3181075",
+  "prx_sha256": "c0d82dd9f1eb8c6ec243bb5bbe14ddf355d8e0de3acbedd5308964d5a8a6d7ab",
   "debug_overlays": true,
   "tester_invitations_sent_by_this_release": false,
   "qualification_receipts": [],
   "source_candidate": {
-    "id": "6a19f15a2e5b4119b5eab34dd914c98e",
-    "version": "0.2.6-rc.4",
-    "path": "reports/releases/6a19f15a2e5b4119b5eab34dd914c98e",
-    "final_build": "GAME_VERSION=0.2.6 from the frozen source of 0.2.6-rc.4 (reports/release-v0.2.6/eboot-rc4)",
-    "rc4_eboot_sha256": "8b21847e8ebeda016f6e39db7b1e4be5af9aa3100af88ab79048098ad01343c6"
+    "id": "2aa0ca34d4b34456961b1d5f15887a14",
+    "version": "0.3.0-rc.4",
+    "path": "reports/releases/2aa0ca34d4b34456961b1d5f15887a14",
+    "final_build": "GAME_VERSION=0.3.0 from the frozen source of 0.3.0-rc.4 (reports/release-v0.3.0/eboot-rc4)",
+    "rc4_eboot_sha256": "851f5d1682700b602f1f5143ad7a41655f0e5f5587e31c74fb29707438c239f3"
   }
 }

@@ -651,9 +651,10 @@ def ps2_batch(ops):
 def ps2_mesh(leaves):
     """A PS2 object (0x134a00-a02) as the Xbox reader gives it: vertices
     (x, y, z, u, v, nx, ny, nz), colours (RGBA) and submeshes
-    (indices, texture index, material index). 0x134a01 holds 16 bytes a
-    batch: u8 vertices @+2, u8 triangles @+3, u8 submesh @+13, texture
-    @+14, material @+15. Each batch is a triangle strip; a vertex flagged
+    (indices, texture index, material index, flags). 0x134a01 holds 16
+    bytes a batch: u8 flags @+0 (0x40: the wet street reflects on it, as
+    the Xbox submesh's word @+0x20), u8 vertices @+2, u8 triangles @+3,
+    u8 submesh @+13, texture @+14, material @+15. Each batch is a triangle strip; a vertex flagged
     by ps2_adc() starts it again, and the winding alternates from there.
     The prelit colours keep the Xbox's scale (its 0..255 equals the PS2's
     value up to 0x80; the PS2 clips the brighter ~20% of the city's
@@ -680,7 +681,9 @@ def ps2_mesh(leaves):
             nx, ny, nz = normals[i] if normals else (0.0, 0.0, 1.0)
             verts.append((*pos[i], *uv[i], nx, ny, nz))
             colours.append((*rgba[i][:3], min(255, rgba[i][3] * 2)) if rgba else (255, 255, 255, 255))
-        ids = subs.setdefault(rec[13], [[], rec[14], rec[15]])[0]
+        sub = subs.setdefault(rec[13], [[], rec[14], rec[15], rec[0]])
+        sub[3] &= rec[0]   # a submesh's batches agree (the city's 5,328 compared with the Xbox's)
+        ids = sub[0]
         start = 0
         for v in range(n):
             if v in adc and (v == 0 or v - 1 not in adc):
@@ -750,10 +753,10 @@ def ps2_skinned(leaves):
 
 def ps2_world(leaves):
     """A PS2 world object as the Xbox's prelit layout: vertices (x, y, z,
-    0xAARRGGBB, u, v) and submeshes (indices, texture index)."""
+    0xAARRGGBB, u, v) and submeshes (indices, texture index, flags)."""
     verts, colours, subs = ps2_mesh(leaves)
     out = [(x, y, z, a << 24 | r << 16 | g << 8 | b, u, v) for (x, y, z, u, v, *_), (r, g, b, a) in zip(verts, colours)]
-    return out, [(ids, ti) for ids, ti, mi in subs]
+    return out, [(ids, ti, flags) for ids, ti, mi, flags in subs]
 
 
 class Part:
@@ -788,7 +791,7 @@ def parts(data, accept=lambda name: True):
             if not verts:
                 skipped.append((name, 'empty'))
                 continue
-            subs = [(tuple(ids), tex[ti], mats[mi] if mi < len(mats) else 0) for ids, ti, mi in psubs if ids]
+            subs = [(tuple(ids), tex[ti], mats[mi] if mi < len(mats) else 0) for ids, ti, mi, _ in psubs if ids]
             yield Part(name, verts, subs, sockets_of(leaves, name))
             continue
         if 0x134b01 not in leaves:

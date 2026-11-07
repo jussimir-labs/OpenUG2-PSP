@@ -44,7 +44,8 @@ career.n2cr's shops; 0 from the start);
     body's paints (paints.n2pt's 150), the spoiler's paints (the same 150),
     the rims' and the calipers' palettes (60 each), and the constants: a
     decal zone's layout, a decal, the window tints 1-3, the carbon hood,
-    trunk, doors and kit; then the performance shop's packages (psp-viewer
+    trunk, doors and kit, the headlight bulbs' levels 1-3 (slot 0x9f), the
+    Nitrous Purge's (slot 0xa2) and the trunk's audio components' (kind 31); then the performance shop's packages (psp-viewer
     perf.h's 9 categories x levels 1-3: their opening alone; the category's
     kind by 0x112ea0);
   then (version 6) u32 presets, each char name[32] and u32 its points
@@ -71,7 +72,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATS = convert_garage.CATS
 # the slot's kind (0x3fb580 as 0x1125c0 fills it, and 0x112a10's own cases)
 KIND = dict(kit=18, rear_bumper=17, skirt=16, hood=11, spoiler=12, rims=13, headlight=15, brakelight=14,
-            roof=20, exhaust=21, wide=22, mirror=19, audio=30, spinner=33, neon=25, neon_engine=26, neon_trunk=28,
+            roof=20, exhaust=21, wide=22, mirror=19, audio=30, spinner=33, neon=25, neon_engine=26, neon_trunk=28, lights=24, purge=29, trunk_comp=31,
             decal=76, tint=32, kit_carbon=85, trunk_carbon=86, paint_spoiler=80, paint_rim=77, paint_brake=79,
             paint_engine=40, paint_muffler=78, paint_spinner=81, paint_roof=83, paint_mirror=84)   # the paint slots 0x44-0x4c
 HOOD_GROUP5 = 34                     # a hood of group 5 (0x112bbe)
@@ -282,6 +283,7 @@ def main():
     consts = [rows.pair(KIND['decal'], 1), rows.pair(KIND['decal'], 1),
               rows.pair(KIND['tint'], 1), rows.pair(KIND['tint'], 2), rows.pair(KIND['tint'], 3),
               (0, 0, 0, 0), rows.pair(KIND['trunk_carbon'], carbon), (0, 0, 0, 0), rows.pair(KIND['kit_carbon'], carbon)]
+    consts += [rows.pair(KIND[k], lv) for k in ('lights', 'purge', 'trunk_comp') for lv in (1, 2, 3)]   # (the trunk's audio components: tools/trunk_audio.py)   # the bulbs' and the purge kits' levels (their parts by level: psp-viewer/garage.c)
     out += pack(consts)
     # the performance packages: perf.h's categories (convert_perf's
     # SHOP_CATEGORY: 0x34A15's) and the kind of each (0x112ea0)

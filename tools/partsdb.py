@@ -12,11 +12,15 @@ adds the attributes it lacks. Types: 48 paints (GLOSS_, METAL_ and
 PEARL<n>_PAINT for the body, then the other paintable parts), 49 the
 vinyls' colours (VINYL_L<n>_COLOR<nn>), 50 the vinyls.
 
-Run alone it prints the paints' C tables for psp-viewer/garage.c.
+Run alone it prints the paints' C tables for psp-viewer/garage.c; with
+--specialties, the Car Specialties Shop's (the headlight bulbs, the Nitrous
+Purge's kits).
 """
 import bisect
+import colorsys
 from pathlib import Path
 import struct
+import sys
 
 import convert_hud
 import n2feng as fe
@@ -80,8 +84,45 @@ def c_table(name, colours):
     return f'static const uint32_t {name}[{len(colours)}]={{\n    ' + ',\n    '.join(rows) + ',\n};'
 
 
+PURGE_KEY = (140, 140, 150)   # the purge's smoke at its densest (XES_NOSBO_*'s second colour key, alpha 150)
+PURGE_NOZZLES = ('HOODLEFT', 'HOODRIGHT', 0x6ab42adf, 0xc1a84e52)   # the left and right hood's, the left and right wheel's
+PURGE_EMITTER = {0xbcade4c3: {3390731228: 1, 3429866621: 2, 3469002014: 3}}   # HOODEMITTER: CARFX_NOSBO_A/B/C_HOOD
+
+
+def shifted(rgb, hue, sat, lum):
+    """afxShiftEmitterColours: the colour's hue turned by hue (wrapping),
+    its saturation and lightness moved by sat and lum (clamped to 0-1)."""
+    h, l, s = colorsys.rgb_to_hls(*(c / 255 for c in rgb))
+    h, s, l = (h + hue) % 1, min(1, max(0, s + sat)), min(1, max(0, l + lum))
+    return tuple(round(c * 255) for c in colorsys.hls_to_rgb(h, l, s))
+
+
+def specialties(parts):
+    """The Car Specialties Shop's lists for psp-viewer/garage.c: the headlight
+    bulbs (type 56: name, level, RED, GREEN, BLUE) and the Nitrous Purge's
+    kits (type 59: name, level, the nozzles' bits, the type's effect 1-3 and
+    the hood's and the wheels' smoke shifted by the kit's HOOD/TIRE HUE, SAT
+    and LUM)."""
+    print('static const struct { const char *name;uint8_t level,rgb[3]; } bulbs[GARAGE_BULBS]={')
+    print(',\n'.join('    {"%s",%d,{%d,%d,%d}}' % (q['name'], q['level'], *parts.rgb(q)) for q in parts.of_kind(56)) + '};')
+    f = lambda q, k: struct.unpack('<f', struct.pack('<I', parts.get(q, k) or 0))[0]
+    rows = []
+    for q in parts.of_kind(59):
+        a = parts.attributes(q)
+        bits = sum(1 << i for i, k in enumerate(PURGE_NOZZLES) if a.get(k if isinstance(k, int) else fe.bin_hash(k)))
+        hood = shifted(PURGE_KEY, *(f(q, 'HOOD' + k) for k in ('HUE', 'SAT', 'LUM')))
+        tire = shifted(PURGE_KEY, *(f(q, 'TIRE' + k) for k in ('HUE', 'SAT', 'LUM')))
+        rows.append('    {"%s",%d,%d,%d,0x%02x%02x%02x,0x%02x%02x%02x}' % (q['name'], q['level'], bits, PURGE_EMITTER[0xbcade4c3][a[0xbcade4c3]],
+                                                                       *hood[::-1], *tire[::-1]))
+    print('static const struct { const char *name;uint8_t level,nozzles,type;uint32_t hood,wheel; } purges[GARAGE_PURGES]={')
+    print(',\n'.join(rows) + '};')
+
+
 def main():
     parts = Parts(ROOT / 'game/xbox/NFSUNDER')
+    if sys.argv[1:] == ['--specialties']:
+        specialties(parts)
+        return
     by_key = {q['key']: q for q in parts.of_kind(48)}   # PEARL11_PAINT on: no name in the table, the hash alone
     pearl = [by_key[fe.bin_hash(f'PEARL{k}_PAINT')] for k in range(1, 31)]
     # a pearl with DISPRED/GREEN/BLUE over a neutral base (grey, black: the

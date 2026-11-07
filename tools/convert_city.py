@@ -74,6 +74,7 @@ import mac_slots
 from city_owners import (OwnedTriangle, door_context, instance_key,
                          owned_triangles, inherit_fan, remove_owned)
 import convert_world as cw
+import convert_vista as cv
 import n2world as nw
 import n2cy_patch   # the barriers' collision as patches on the track's
 from n2cy_bounds import with_bounds   # the loader's per-batch boxes and triangles, at each blob's end
@@ -631,6 +632,16 @@ def gated(section):
     return section if section % 100 >= 20 and not 2600 <= section < 2700 else 0
 
 
+# Bit 31 of a batch's gate: an instance of the sections the original's
+# streamer lets go first (convert_vista.jettison_class: n40-n99, the
+# panoramas' class) standing on a panorama sheet (convert_vista.
+# panorama_support): the island's palms over the bay. The PSP-1000's profile
+# draws it only while its panoramas are in (psp-viewer/world.c gate_open,
+# beta issue #105); the section stays in the low half, the preculler's row
+# in bits 16-30. An archive without it hides nothing.
+ON_VISTA_GATE = 1 << 31
+
+
 def with_rows(blob, rows):
     """A geometry blob with its cell's preculler rows (precull_batches) at
     its end, after the bounds table: rows x 128 B, then 16 bytes "PCRW",
@@ -674,7 +685,8 @@ def write_precull(booboo, path):
 
 def process_tile(task):
     """Bake one tile of TILE x TILE cells. Returns per-cell blobs."""
-    (ti, tj), instances, tex_flags, ground_split, split, overlay, (own_ground, own_walls, extra_walls), reach = task
+    (ti, tj), instances, tex_flags, ground_split, split, overlay, (own_ground, own_walls, extra_walls), reach, *rest = task
+    wet_keys = rest[0] if rest else frozenset()   # wet_textures(): their non-reflecting submeshes' batches get F_DRY
     coarse = collections.defaultdict(set)   # (cell, key): the pieces cut coarser than split (stitch)
     near = collections.defaultdict(lambda: collections.defaultdict(list))
     far = collections.defaultdict(lambda: collections.defaultdict(list))
@@ -705,6 +717,7 @@ def process_tile(task):
             barred.add(c)
     groups = {}   # (cell, model): its instances' preculler rows ANDed (precull_batches)
     for keys, pos, rot, barrier, gate, *row in instances:
+        # (gate may carry ON_VISTA_GATE: kept in the batch key, the preculler's row ORed beside it)
         # Keep the PVS section gate and the preculler row. Ownership is
         # parallel metadata; it never becomes a geometry/material key.
         row = row[0] if row and not overlay else None
@@ -720,9 +733,13 @@ def process_tile(task):
             pts = [f(*v[:3]) for v in obj.verts]
             limit = 24.0     # far geometry; near geometry is cut on the global grid
             target = near if lod == 0 else far
-            for ids, tex in obj.subs:
+            reflect = getattr(obj, 'reflect', None) or ()
+            for si, (ids, tex) in enumerate(obj.subs):
                 if tex not in tex_flags:
                     continue      # light beams/glows without art
+                flags = tex_flags[tex]
+                if tex in wet_keys and not (si < len(reflect) and reflect[si]):
+                    flags |= cw.F_DRY   # the street's asphalt under a bridge, on a wall: the original keeps it dry
                 for j in range(0, len(ids), 3):
                     tri = []
                     for i in ids[j:j+3]:
@@ -738,9 +755,9 @@ def process_tile(task):
                             inside = min(xs) >= bx and max(xs) <= bx + CELL and min(ys) >= by and max(ys) <= by + CELL
                             pieces = [tuple(tri)] if inside else nw.clip_square(tuple(tri), bx, by, bx + CELL, by + CELL)
                             for piece in pieces:
-                                key = (tex, tex_flags[tex], gate) if gate else (tex, tex_flags[tex])
+                                key = (tex, flags, gate) if gate else (tex, flags)
                                 if row is not None:   # by model until its rows are ANDed (precull_batches)
-                                    key = (tex, tex_flags[tex], gate, keys[0])
+                                    key = (tex, flags, gate, keys[0])
                                     g = groups.get(((ci, cj), keys[0]))
                                     groups[((ci, cj), keys[0])] = row if g is None else bytes(a & b for a, b in zip(g, row))
                                 lst = target[(ci, cj)][key]
@@ -902,13 +919,23 @@ def instance_gate(inst):
     return gated(inst.section)
 
 
-def gather_instances(stream, skip):
+def gather_instances(stream, skip, owners=None):
+    """The level's instances, once each: a copy of the same model in the
+    same place (another section's) is one. owners: {(section, index): the
+    scenery groups it is in}; copies in different groups stay apart. The
+    closed tracks' events each put up their own copy of a shared barrier
+    (L4RF: 4605 to 4608 share a start, the same barriers in the same places,
+    each a member of its own BARRIERS_<event>); taken for one copy, every
+    event but the first kept lost them (4608: 392 of its 831, beta issue
+    127), the original enabling only the race's own group."""
     found = {}
+    owners = owners or {}
     for name in stream.sections:
         for inst in nw.section_instances(stream.section(name)):
             if (inst.name.upper().startswith(skip) and not start_finish(inst)) or not inst.keys[0]:
                 continue
-            k = (inst.keys[0], tuple(round(v, 2) for v in inst.pos), tuple(round(v, 3) for v in inst.rot))
+            k = (inst.keys[0], tuple(round(v, 2) for v in inst.pos), tuple(round(v, 3) for v in inst.rot),
+                 owners.get((inst.section, inst.index), frozenset()))
             kept = found.setdefault(k, inst)
             if kept is not inst:   # the same instance in another section: the game draws each copy by its own preculler row
                 kept.precull = None if kept.precull is None or inst.precull is None else bytes(a & b for a, b in zip(kept.precull, inst.precull))
@@ -936,7 +963,20 @@ def main():
     stream = nw.Stream(args.game, args.track)
     if args.start is None:
         args.start = (1715.0, -830.0) if args.track == 'L4RA' else first_event_start(args.game, args.track)
-    instances = gather_instances(stream, cw.SKIP)
+    # A closed track puts up each event's own barriers (scenery groups
+    # BARRIERS_<id> and PLAYER_BARRIERS_<id>; FREE_ROAM's are for the
+    # city): the track is baked without any, and each event's come in an
+    # overlay archive, bar-<id>.n2cy, loaded with the event.
+    # The city too: its events' barriers (some 6000 instances, flagged 0x200,
+    # off until their event) and the free roam's (FREE_ROAM, and per career
+    # stage BARRIERS_CAREER<n>) come in overlays, bar-free<stage>.n2cy for
+    # the free roam.
+    groups = {k: v for k, v in nw.scenery_groups(stream.track).items() if 'BARRIERS_' in k or k.startswith('FREE_ROAM')}
+    owners = collections.defaultdict(set)
+    for gname, members in groups.items():
+        for m in members:
+            owners[m].add(gname)
+    instances = gather_instances(stream, cw.SKIP, {m: frozenset(v) for m, v in owners.items()})
     # The knock-over props (the original's smokeables) stand for their
     # scenery instances: smokeables.n2sm draws them, the cells leave them
     # out (tools/convert_smokeables.py). A closed track's too
@@ -952,15 +992,6 @@ def main():
     instances = [i for i in instances if (i.keys[0], tuple(round(v, 2) for v in i.pos), tuple(round(v, 3) for v in i.rot)) not in props]
     print(before - len(instances), 'knock-over props left to', 'smokeables.n2sm' if args.track == 'L4RA' else f'smokeables-{args.track}.n2sm', flush=True)
     print(len(instances), 'instances', f'{time.time()-t0:.0f}s', flush=True)
-    # A closed track puts up each event's own barriers (scenery groups
-    # BARRIERS_<id> and PLAYER_BARRIERS_<id>; FREE_ROAM's are for the
-    # city): the track is baked without any, and each event's come in an
-    # overlay archive, bar-<id>.n2cy, loaded with the event.
-    # The city too: its events' barriers (some 6000 instances, flagged 0x200,
-    # off until their event) and the free roam's (FREE_ROAM, and per career
-    # stage BARRIERS_CAREER<n>) come in overlays, bar-free<stage>.n2cy for
-    # the free roam.
-    groups = {k: v for k, v in nw.scenery_groups(stream.track).items() if 'BARRIERS_' in k or k.startswith('FREE_ROAM')}
     grouped = set().union(*groups.values()) if groups else set()
     base = [i for i in instances if (i.section, i.index) not in grouped]
     # The animated world's twins (flag 0x10, in no group): the trains, the
@@ -1008,6 +1039,8 @@ def main():
             if inst.section in s:
                 moved[eid][t].append(entry)
         return False
+    # the city's panorama sheets, for ON_VISTA_GATE (a closed track bakes its own)
+    support = cv.panorama_support(stream, cw.object_index(stream)) if args.track == 'L4RA' else None
     def tiles_of(insts, barrier, tiles, only=None, route=False):
         for inst in insts:
             x0, y0, x1, y1 = inst.bmin[0], inst.bmin[1], inst.bmax[0], inst.bmax[1]
@@ -1024,7 +1057,10 @@ def main():
                         continue
                     if only is not None and (ti, tj) not in only:
                         continue
-                    entry = (inst.keys, inst.pos, inst.rot, barrier, instance_gate(inst), None if barrier or args.no_precull else inst.precull)
+                    gate = instance_gate(inst)
+                    if gate and support and cv.jettison_class(inst.section) and not inst.name.upper().startswith('PAN_') and support(*inst.pos):
+                        gate |= ON_VISTA_GATE
+                    entry = (inst.keys, inst.pos, inst.rot, barrier, gate, None if barrier or args.no_precull else inst.precull)
                     if route and not kept(inst, (ti, tj), entry):
                         continue
                     tiles[(ti, tj)].append(entry)
@@ -1037,6 +1073,7 @@ def main():
     for key in KEYED_BLACK:
         if key in tex_flags:
             tex_flags[key] = cw.F_ALPHA
+    wet_keys = wet_textures(sources, tex_flags)
     # The game's collision polygons by tile: ground, the walls that always
     # stand, and each barrier group's walls
     def by_tile(items, shape=lambda item: item):
@@ -1064,7 +1101,7 @@ def main():
         def bake(tiles, overlay, extra=None):
             extra = extra or {}
             tasks = [(t, inst, tex_flags, args.ground_split, args.split, overlay, (own_ground.get(t, []), own_walls.get(t, []), extra.get(t, [])),
-                      reach_slice(reach, *t) if reach else None)
+                      reach_slice(reach, *t) if reach else None, wet_keys)
                      for t, inst in sorted(tiles.items())]
             print(len(tasks), 'tiles', flush=True)
             cells = {}
@@ -1166,6 +1203,19 @@ WET_GROUND = ('RDP_', 'RDT_', 'ARC_SIDEWALK', 'ARC_BOARDWALK', 'ARC_CONCRETE', '
 
 def wet(sources, key, name, flags):
     return not flags and name.startswith(WET_GROUND) and cw.draw_mode(sources[key], key)[0] == 2
+
+
+def texture_name(tpk, key):
+    """A texture's name without decoding its pixels."""
+    return tpk.records[key][0] if isinstance(tpk, cw.FlatTPK) else tpk.name(key)
+
+
+def wet_textures(sources, tex_flags):
+    """The keys write_archive marks F_WET (wet()): the batches bake them
+    dry (F_DRY) where the original's submesh does not reflect."""
+    return frozenset(k for k, tpk in sources.items()
+                     if not tex_flags.get(k, 1) and cw.draw_mode(tpk, k)[0] == 2
+                     and texture_name(tpk, k).startswith(WET_GROUND))
 
 
 def write_archive(cells, sources, tex_flags, path, start):
@@ -1504,10 +1554,14 @@ def pack_collision(lo, hi, wall, mid, shape=None, mid2=None, kinds=None, layer_s
     terrain section (pack_terrain) after all, its offset in the header's
     u32 at +8 (0: none, all road); then, 4-aligned, the layers' own wall
     shapes (pack_layer_shapes), their offset in the u32 at +12 (0: none).
-    A blob with them always has a terrain section, all road if need be:
-    its offset is where the PSP's layers end, and a game without the
-    layers' shapes (they came with beta issue 75) found that end by the
-    blob's size, reading the shapes as a fourth level."""
+    A game without the layers' shapes (they came with beta issue 75)
+    finds where the layers end by the terrain's offset or, without one,
+    by the blob's size: past 16 + 11 x 64 x 64 bytes it reads a fourth
+    level. Only where the shapes would take a blob without that level so
+    far does it get a terrain section, all road. Always one (4 KB), the
+    city's collision grew by 126 blocks' worth, and on the PSP-1000's
+    small cache the streaming of a scene changed (the billboards' smoke,
+    v0.3.0)."""
     if mid2 and all(v == cw.NONE for v in mid2):
         mid2 = None
     if mid2 and not shape:
@@ -1526,7 +1580,7 @@ def pack_collision(lo, hi, wall, mid, shape=None, mid2=None, kinds=None, layer_s
             + (struct.pack(f'<{GRID*GRID}h', *q(mid2)) if mid2 else b''))
     terrain = pack_terrain(kinds) if kinds else b''
     layers = pack_layer_shapes(layer_shapes)
-    if layers and not terrain:
+    if layers and not terrain and not mid2 and 16 + len(body) + 4 + len(layers) >= 16 + GRID * GRID * 11:
         terrain = bytes([ROAD] * 16) + bytes(GRID * GRID)
     at = 16 + len(body) + len(terrain)
     pad = (-at) % 4 if layers else 0

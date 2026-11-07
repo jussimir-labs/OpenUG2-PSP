@@ -29,6 +29,14 @@ FREE_ROAM_STAGE0 in the prologue with the player's own car, _STAGE0A
 before it (in Rachel's: only the car lot's). The level's emitters in no
 group (the industrial smoke) are left out.
 
+The menus' street has one of its own: FRONTEND/PLATFORMS/SHOWROOM.BIN
+carries the same two chunks, XEM_SHOWROOM_SMOKE_01's steam rising from the
+manhole left of the turntable (beta issue 128). LoaderAcidFX adds it as an
+auto emitter in no scenery group (always on), and GarageMainScreen::
+HandleTick steps the effects with the real time while the menus are up.
+Its site is in showroom.n2sc's space (convert_frontend: the street moved
+by DISC_AT), group 8.
+
 An emitter's data (offsets in the record; AcidEffectSystem::TriggerEmitter,
 DoTimeStep, RenderEffects): +0x10 its group's hash; bytes +0x18 the
 direction (0: the emitter's up turned at random within the cone, else
@@ -55,7 +63,8 @@ drag, distance, colour[16], shape[16]; u8 flat, frames across (log2),
 down (log2), fps, random frame, random sense, aspect, orientation,
 texture, blend (0 additive, 1 alpha), 2 x u8 0); sites x (f32 position[3]
 (GU), f32 rotation[9] (GU, columns: the emitter's own axes in the world),
-u8 emitter, u8 groups (1 FREE_ROAM, 2 FREE_ROAM_STAGE0, 4 _STAGE0A), u16 0);
+u8 emitter, u8 groups (1 FREE_ROAM, 2 FREE_ROAM_STAGE0, 4 _STAGE0A, 8 the
+showroom's), u16 0);
 textures x (u16 w, h,
 u8 format (0: 4-bit alpha, white; 1: 4444), 3 x u8 0), then their pixels
 in order (4-bit: the PSP's T4, low nibble first; 4444: the PSP's ABGR).
@@ -68,6 +77,7 @@ from convert_hud import load
 from n2formats import FlatTPK, archived, chunks, game_hash
 import n2source
 import n2world as nw
+from convert_frontend import DISC_AT
 
 ROOT = Path(__file__).resolve().parents[1]
 GROUPS = ('XEE_EVENT_CIRCUIT', 'XEE_EVENT_DRAG', 'XEE_EVENT_STREET', 'XEE_EVENT_DRIFT', 'XEE_EVENT_SPRINT', 'XEE_EVENT_URL',
@@ -75,6 +85,7 @@ GROUPS = ('XEE_EVENT_CIRCUIT', 'XEE_EVENT_DRAG', 'XEE_EVENT_STREET', 'XEE_EVENT_
 TEXTURE_SOURCES = ('GLOBAL/GLOBALB.LZC', 'GLOBAL/INGAMECOMMON.LZC')
 SHEET = 64   # the 4444 textures' size (the smoke's 128 x 128 sheet halved)
 SITE_GROUPS = {'FREE_ROAM': 1, 'FREE_ROAM_STAGE0': 2, 'FREE_ROAM_STAGE0A': 4}
+SITE_ROOM = 8   # the showroom's: the menus' street (convert_frontend's space)
 
 
 def records(d, tag, size):
@@ -209,6 +220,19 @@ def main():
             sites[place] = (site_group[grp], rot)
     if not sites:
         raise SystemExit('L4RA: no shop emitters')
+    # the menus' street: the showroom's own emitters (the manhole's steam),
+    # in showroom.n2sc's space
+    room = archived(a.game, 'FRONTEND/PLATFORMS/SHOWROOM.BIN')
+    room_data = {struct.unpack_from('<I', r, 8)[0]: r for r in records(room, 0x35021, 0x220)}
+    for e in records(room, 0x35020, 0xd0):
+        key = struct.unpack_from('<I', e, 0x0c)[0]
+        if key not in room_data:
+            raise SystemExit(f'showroom emitter {key:#x}: no data')
+        m = struct.unpack_from('<16f', e, 0x40)
+        rows = [m[0:3], m[4:7], m[8:11]]
+        x, y, z = m[12:15]
+        place = (pack(room_data[key]), tuple(round(v, 3) for v in (x, y - DISC_AT, z)))
+        sites[place] = (SITE_ROOM, (*gu(rows[1]), *gu(rows[2]), *gu(rows[0])))
     site_bytes = b''.join(struct.pack('<12f2BH', *gu(pos), *rot, ei, mask, 0) for (ei, pos), (mask, rot) in sites.items())
     head = struct.pack('<4s5I', b'N2TE', 2, len(GROUPS), count, len(textures), len(sites))
     head += b''.join(struct.pack('<BBH', first, n, 0) for first, n in groups)
@@ -218,7 +242,7 @@ def main():
     head += b''.join(px for _, _, _, px in textures)
     a.out.mkdir(parents=True, exist_ok=True)
     (a.out / 'trigfx.n2te').write_bytes(head)
-    print(f'trigfx.n2te: {len(GROUPS)} groups, {count} emitters, {len(sites)} shop sites, {len(textures)} textures, {len(head)} bytes')
+    print(f'trigfx.n2te: {len(GROUPS)} groups, {count} emitters, {len(sites)} sites (shops and showroom), {len(textures)} textures, {len(head)} bytes')
 
 
 if __name__ == '__main__':

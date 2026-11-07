@@ -70,14 +70,32 @@ MIRROR_SOCKETS = ('MIRROR_BODY_LEFT', 'MIRROR_BODY_RIGHT')
 # what the garage shows with the hood or the trunk lid open (the detailed
 # pack alone, preset 'interior'): drawn only then (psp-viewer/main.c)
 F_INSIDE_HOOD, F_INSIDE_TRUNK, F_AUDIO = 1 << 24, 1 << 25, 1 << 26   # the engine bay; the trunk; its audio (a layout's)
-F_RIGHT = 1 << 27   # the right side mirror's (they break apart: psp-viewer/main.c)
+# the engine block (the stock one, the garage's upgraded STYLE01/02: tools/convert_garage.py) and, on
+# an engine, its HOSES material (the Engine Accents' paint): bits 17 and 16, the decals' slot bits on
+# other meshes (psp-viewer/main.c F_ENGINE, F_HOSES)
+F_ENGINE, F_HOSES = 1 << 17, 1 << 16
+HOSES = 0x0016bdce
+F_RIGHT = 1 << 27   # the right side mirror's (they break apart), a split hood's right half (it opens on its own): psp-viewer/main.c
 F_DRIVER = 1 << 21   # non-decal meshes only: decals use bits 21-23 for widebody places (garage.h)
+# An exhaust tip at a further flame marker than the first (slot SLOT_EXHAUST;
+# bits 16-19 are the decals' only on F_DECAL meshes): the garage drops these
+# and places the first marker's tip anew at another rear bumper's or wide
+# body kit's markers (tools/convert_garage.py pipe_places, psp-viewer/garage.c)
+F_PIPE_COPY = 1 << 16
 # On the trunk lid, turned with it when the garage opens it (psp-viewer/main.c
 # piece_push), as the original's CarSlotAnimHookupTable (GLOBALB 0x34608)
 # ties them to the trunk's animation: the lid's underside (TRUNK_UNDER), the
 # tail light's second model (BRAKELIGHT_TRUNK) and, on the cars below, the
 # rear plate. The spoiler, there too, the game turns by its slot.
 F_LID = 1 << 30
+# A door's inside, the garage's pack alone (non-decal meshes; bits 18 and 19
+# are the decals' slot bits on theirs): the DOOR_PANEL (the door's inner
+# face, F_ON_DOOR: turned with the door, as the CarSlotAnimHookupTable ties
+# DOOR_PANEL_LEFT and RIGHT to the doors' animations) and the DOOR_SILL (the
+# body's door frame, which stays). CarRenderInfo::Render draws both in the
+# front end only while their door is open; F_RIGHT on the right door's
+# (psp-viewer/main.c inside_shut, piece_push).
+F_INSIDE_DOOR, F_ON_DOOR = 1 << 18, 1 << 19
 # The original's LinkLicensePlateToTrunk: the cars whose plate is on the lid.
 PLATE_ON_LID = ('PEUGOT', 'FOCUS', 'CIVIC', 'HUMMER', 'NAVIGATOR', 'SENTRA', 'CELICA', 'IS300', 'A3', 'GTO')
 # Its ShowTrunkUnderInFE: the hatches (their rear window in the lid), whose
@@ -86,15 +104,28 @@ HATCHES = ('PEUGOT', 'FOCUS', 'COROLLA', '240SX', 'PEUGOT106', 'CORSA', 'HUMMER'
            'SUPRA', 'GOLF', 'A3', 'RSX', 'ECLIPSE', 'TT', '350Z', '3000GT', 'RX7')
 
 
-def inside_flags(rest, audio_owner, owner):
+def door_inside(rest):
+    """'PANEL' or 'SILL' for a door's inside piece (DOOR_PANEL_LEFT, the
+    LANCEREVO8_KITW01_DOOR_PANE cut at 27 characters), else None."""
+    for full in ('DOOR_PANEL', 'DOOR_SILL'):
+        if rest.startswith(full) or (len(rest) >= 6 and full.startswith(rest)):
+            return full[5:]
+    return None
+
+
+def inside_flags(rest, audio_owner, owner, engine_owner='KIT00', door_owner='KIT00'):
     """An inside piece's flags (rest: the name past CAR_ and its owner), 0 when it is not one."""
-    rest = re.sub(r'_[ABCD]$', '', rest)
-    if owner == 'KIT00' and (rest.startswith('ENGINE') or rest == 'HOOD_UNDER'):
+    rest = re.sub(r'_[ABCD]$', '', re.sub(r'#\d+$', '', rest))   # (#2: a cut name's second piece, choose_car_parts)
+    if owner == door_owner and door_inside(rest):   # the doors' own (a wide body kit's with its doors)
+        return F_INSIDE_DOOR | (F_ON_DOOR if door_inside(rest) == 'PANEL' else 0)
+    if owner == engine_owner and rest.startswith('ENGINE'):   # the engine the look's (RideInfo slot 0xd: the stock KIT00's, STYLE01/02)
+        return F_INSIDE_HOOD | F_ENGINE
+    if owner == 'KIT00' and rest == 'HOOD_UNDER':
         return F_INSIDE_HOOD
     if owner == 'KIT00' and rest == 'TRUNK_UNDER':
         return F_INSIDE_TRUNK | F_LID
-    if owner == audio_owner and rest.startswith('TRUNK_AUDIO'):
-        return F_INSIDE_TRUNK | F_AUDIO
+    if owner == audio_owner and (rest.startswith('TRUNK_AUDIO') or (len(rest) >= 10 and 'TRUNK_AUDIO'.startswith(rest))):
+        return F_INSIDE_TRUNK | F_AUDIO   # (IMPREZAWRX_KIT01_TRUNK_AUDI: the name cut at 27 characters, beta #69)
     return 0   # every car's (by name: bin_hash), whatever the mirrors' kind
 
 # Hidden or interior-only families of a closed car in a showroom.
@@ -161,8 +192,12 @@ def choose_car_parts(all_parts, car, preset):
         if not m:
             continue
         owner, rest = m.groups()
-        if preset.get('interior') and inside_flags(rest, preset.get('trunk_audio', 'KIT00'), owner):
-            families[lod_family(part.name)].append(part)   # the engine bay and the trunk, the garage's
+        if preset.get('interior') and inside_flags(rest, preset.get('trunk_audio', 'KIT00'), owner, preset.get('engine', 'KIT00'),
+                                                   preset.get('widebody', 'KIT00')):
+            family = lod_family(part.name)
+            if len(part.name) >= 27 and any(p.name == part.name for p in families[family]):
+                family += '#2'   # a layout's two pieces (lit, UNLIT) under one cut name: both drawn, as the longer names' two families
+            families[family].append(part)   # the engine bay and the trunk, the garage's
             continue
         if any(s in part.name for s in HIDDEN):
             continue
@@ -527,6 +562,8 @@ class Builder:
                 self.missing.add(ref)
             return None, CABIN_GREY, F_MATTE | F_DRIVER, 1.0
         flags = F_CHROME if mat in (CHROME, MAGCHROME, EXHAUST_TIP) else F_METAL if mat in METALS else F_MATTE if mat in MATTE else 0
+        if mat == HOSES:   # an upgraded engine's hoses: the Engine Accents' paint (CarRenderInfo's PAINT_ENGINE on HOSES)
+            flags |= F_HOSES
         if mat == HEADLIGHT:
             flags = F_METAL
         if mat == WINDOW_RIM:   # the rear window's black edge: drawn with the defroster's art it came out pale grey
@@ -605,13 +642,57 @@ def matrix_xform(m):
     return f
 
 
-def exhaust_xform(m):
-    """An exhaust tip at its flame marker m: the marker's matrix after a
-    quarter turn about y (x -> -z, z -> x), as the game's; and whether
-    the marker mirrors it (its triangles' winding turned)."""
+def exhaust_matrix(m):
+    """An exhaust tip's matrix at its flame marker m (column-major 4x4):
+    the marker's after a quarter turn about y (x -> -z, z -> x), as the
+    game's (CarRenderInfo::Render); and whether the marker mirrors it
+    (its triangles' winding turned)."""
     a, b, c = m[0:3], m[4:7], m[8:11]
     det = a[0]*(b[1]*c[2] - b[2]*c[1]) - a[1]*(b[0]*c[2] - b[2]*c[0]) + a[2]*(b[0]*c[1] - b[1]*c[0])
-    return matrix_xform((-c[0], -c[1], -c[2], 0, *b, 0, *a, 0, *m[12:15], 1)), det < 0
+    return (-c[0], -c[1], -c[2], 0, *b, 0, *a, 0, *m[12:15], 1), det < 0
+
+
+def exhaust_xform(m):
+    """exhaust_matrix's as a vertex transform, and the mirror."""
+    t, mirror = exhaust_matrix(m)
+    return matrix_xform(t), mirror
+
+
+def exhaust_marks(on):
+    """The exhaust flame markers of the parts on the car (on: the chosen
+    families' parts, every level), in EXHAUST_MARKERS' order. The original
+    gathers the position markers of the enabled parts' models alone
+    (CarRenderInfo::CarRenderInfo, RideInfo::IsPartEnabled) and its Render
+    draws the tips at each: the chosen rear bumper's, or the wide body
+    kit's, whose markers and count are its own (beta #51). Another kit's
+    markers are no place of this car's tips."""
+    marks = {}
+    for p in on:
+        for k in EXHAUST_MARKERS:
+            if k in p.sockets:
+                marks.setdefault(k, p.sockets[k])
+    return [marks[k] for k in EXHAUST_MARKERS if k in marks]
+
+
+def pipe_places(stock, marks):
+    """The garage's moves of the stock tip (the one at the first of the
+    stock markers, the packs' F_PIPE_COPY-less) to each of another rear
+    bumper's or wide body kit's markers: per marker, D = P' P^-1 (P the
+    tip's matrix at a marker, exhaust_matrix), 12 floats, the linear
+    part's columns then the translation (psp-viewer/garage.c)."""
+    p, _ = exhaust_matrix(stock[0])
+    (a, b, c), (d, e, f), (g, h, i) = [[p[j*4 + r] for j in range(3)] for r in range(3)]   # the linear part's rows
+    det = a*(e*i - f*h) - b*(d*i - f*g) + c*(d*h - e*g)
+    inv = [[(e*i - f*h) / det, (c*h - b*i) / det, (b*f - c*e) / det],
+           [(f*g - d*i) / det, (a*i - c*g) / det, (c*d - a*f) / det],
+           [(d*h - e*g) / det, (b*g - a*h) / det, (a*e - b*d) / det]]
+    out = []
+    for mk in marks:
+        q, _ = exhaust_matrix(mk)
+        lin = [[sum(q[k*4 + r]*inv[k][col] for k in range(3)) for col in range(3)] for r in range(3)]   # Q P^-1
+        t = [q[12 + r] - sum(lin[r][k]*p[12 + k] for k in range(3)) for r in range(3)]
+        out.append([lin[r][col] for col in range(3) for r in range(3)] + t)
+    return out
 
 
 WHEEL_STANDARD_WIDTH = 0.184   # the original's WheelStandardWidth: a rim model's own, face (y 0) to back
@@ -680,6 +761,7 @@ def assemble(game, preset, lod, strict=False):
     all_parts = list(car_parts(game, car))
     wheels = wheel_track(wheel_faces(globalb, car), car_record(globalb, car), preset.get('widebody'))
     families = choose_car_parts(all_parts, car, preset)
+    pipes = exhaust_marks([p for c in families.values() for p in c])   # (every level's: the far bumpers have none)
     rim_lib = rim_parts(game, preset['rims']) if preset.get('rims') else None
     if rim_lib:   # the brakes behind the rims: the rim's marker, at the record's width (assemble's rims)
         rim = pick_lod(rim_lib, 0)
@@ -723,7 +805,7 @@ def assemble(game, preset, lod, strict=False):
                 part = (far_pick if strict else pick_lod)(lib, lod)
                 report[-1] = {'name': part.name, 'triangles': part.triangles}
             # the tips at the rear bumper's exhaust flame markers (the
-            # chosen bumper's or wide body's, else any), flush with its face
+            # chosen bumper's or wide body's: exhaust_marks), flush with its face
             # as the PS2's: at the model's origin they sat inside the car,
             # unseen. The game's own matrix (CarRenderInfo::Render): a
             # quarter turn about y, then the marker's, whose own turn angles
@@ -731,15 +813,14 @@ def assemble(game, preset, lod, strict=False):
             # alone mirrors one: the marker's hash is no side (the MIATA's
             # and the CIVIC's one tip at the right marker unmirrored; the
             # MIATA's pipe, mirrored, stuck out of the car's side, issue 20).
-            marks = {}
-            for p in chosen + all_parts:
-                for k in EXHAUST_MARKERS:
-                    if k in p.sockets:
-                        marks.setdefault(k, p.sockets[k])
-            for k in EXHAUST_MARKERS:
-                if k in marks:
-                    f, mirror = exhaust_xform(marks[k])
-                    b.add(part, f, mirror)
+            # The tips past the first marker's are F_PIPE_COPY, apart from
+            # it (batched) for the garage to place anew (pipe_places).
+            for i, m in enumerate(pipes):
+                first = len(b.meshes)
+                f, mirror = exhaust_xform(m)
+                b.add(part, f, mirror)
+                if i:
+                    b.meshes[first:] = [x[:4] + (x[4] | F_PIPE_COPY,) + x[5:] for x in b.meshes[first:]]
         else:
             first = len(b.meshes)
             # the stock spoiler at the body's spoiler socket, as the game
@@ -750,9 +831,12 @@ def assemble(game, preset, lod, strict=False):
                 raise ValueError('stock spoiler has no socket: ' + family)
             b.add(part, matrix_xform(sockets[SPOILER_SOCKET]) if own_spoiler else identity, carbon_hood=carbon)
             m = re.match(re.escape(car) + r'_(BASE|KITW?\d+|STYLE\d+)_?(.*)', family)
-            inside = inside_flags(m.group(2), preset.get('trunk_audio', 'KIT00'), m.group(1)) if m and preset.get('interior') else 0
-            if m and is_mirror(m.group(2)) and m.group(2).startswith('RIGHT'):
+            inside = inside_flags(m.group(2), preset.get('trunk_audio', 'KIT00'), m.group(1), preset.get('engine', 'KIT00'),
+                                  preset.get('widebody', 'KIT00')) if m and preset.get('interior') else 0
+            if inside & F_INSIDE_DOOR and sum(v[1] for v in part.verts) < 0:   # the right door's (by its side: a cut name loses it)
                 inside |= F_RIGHT
+            if m and ((is_mirror(m.group(2)) and m.group(2).startswith('RIGHT')) or m.group(2).startswith('HOOD_RIGHT')):
+                inside |= F_RIGHT   # (a split hood's halves, STYLE21-25's HOOD_LEFT and HOOD_RIGHT, kept apart)
             if m and m.group(2).startswith('BRAKELIGHT_TR'):   # BRAKELIGHT_TRUNK, cut at 27 characters
                 inside |= F_LID
             if inside:
@@ -1028,6 +1112,8 @@ def family_slot(car, family):
         return SLOT_MIRROR
     if is_spoiler(rest):
         return SLOT_SPOILER
+    if door_inside(rest):   # a door's inside: by its flags, not the door's slot (the carbon, a kit's doors, the hinge's bounds)
+        return 0
     slot = slot_of(rest)
     return (SLOT_KIT if slot == 'FRONT_BUMPER' else SLOT_REAR_BUMPER if slot == 'REAR_BUMPER' else SLOT_SKIRT if slot == 'SKIRT' else
             SLOT_HOOD if slot == 'HOOD' else SLOT_BODY if slot == 'BODY' else
@@ -1159,9 +1245,10 @@ def save_lods(path, levels, used, pack_bytes, base):
 
 
 def sphere_face(t, face, size):
-    """A cube face (D3D's axes, Y up) sampled from a sphere map seen down
-    -Z, its top the cube's +Y: the PS2 keeps the showroom's reflection as
-    one sphere map where the Xbox has the six faces."""
+    """A cube face sampled from a sphere map seen down -Z: the PS2 keeps the
+    showroom's reflection as one sphere map where the Xbox has the six faces.
+    The map's top is the cube's -Y: the Xbox's bright face is its YNEG (read
+    upside down, every car's reflection in the menus came out dark)."""
     src, out = t.rgba(), bytearray(size * size * 4)
     for j in range(size):
         for i in range(size):
@@ -1171,7 +1258,7 @@ def sphere_face(t, face, size):
             n = math.sqrt(sum(c * c for c in d))
             x, y, z = (c / n for c in d)
             m = 2 * math.sqrt(x * x + y * y + (z + 1) ** 2) or 1e-6
-            u, v = min(t.w - 1, max(0, int((x / m + .5) * t.w))), min(t.h - 1, max(0, int((-y / m + .5) * t.h)))
+            u, v = min(t.w - 1, max(0, int((x / m + .5) * t.w))), min(t.h - 1, max(0, int((y / m + .5) * t.h)))
             out[(j * size + i) * 4:(j * size + i) * 4 + 4] = src[(v * t.w + u) * 4:(v * t.w + u) * 4 + 4]
     return out
 

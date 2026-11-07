@@ -25,6 +25,7 @@ SKIP = ('ZPM_', 'PAN_', 'ANM_JUMBO', 'SFX_', 'SKYDOME', 'SKY_', 'XO_VISTA_SPOTLI
 F_ALPHA, F_BLEND, F_ADD = 1, 2, 4      # mirrored in psp-viewer/world.c
 F_DECAL = 8   # opaque paint lying on another surface: drawn after it with a depth bias
 F_CULL = 0x100   # batch flag: a sheet drawn with its back faces culled (convert_city.mark_sheets)
+F_DRY = 0x200    # batch flag: an F_WET texture on a submesh the original never reflects on (n2world.REFLECTS)
 F_WET = 16    # texture flag: asphalt whose alpha is the original's wet mask (convert_city.wet)
 # The texture's own UV scroll, mirrored in psp-viewer/world.c: bits 5-6 the
 # type (1 smooth, 2 snap), bit 7 the axis (T, else S), bits 8-15 the snap
@@ -386,6 +387,67 @@ def terrain_layers(ground, terrain, layers, ox, oy, n, step=1.0):
     return out
 
 
+DROP_BIT = 0x80      # the layers' shapes' key for a cell's walls at the level it drops from
+DROP_REACH = 1.2     # m: a car meets no ground this far below it as a drop (psp-viewer/vehicle.c's window)
+
+
+def drop_levels(lo, hi, mid, mid2, n):
+    """{cell: (m, (dx, dy))} for cells that are a drop to a car on a
+    neighbour's ground (a deck's edge: the road stops short of the cell's
+    centre, the cell holds only the ground below): the lowest such level
+    among its eight neighbours, with none of the cell's own ground from
+    DROP_REACH below it to 0.6 m above, and some of it further below; and
+    the way to the deck (the mean of the neighbours holding it, a unit
+    vector in game X, Y). The cell's own strip is its own ground's walls,
+    the street's under the deck; at the deck's level the original meets
+    the barrier (beta issue 75)."""
+    def levels(k):
+        return [v / 1000 for v in (lo[k], hi[k], mid[k], mid2[k]) if v not in (-NONE, NONE)]
+    out = {}
+    for j in range(n):
+        for i in range(n):
+            own = levels(j * n + i)
+            if not own:
+                continue
+            found = []
+            for dj in (-1, 0, 1):
+                for di in (-1, 0, 1):
+                    if (di or dj) and 0 <= i + di < n and 0 <= j + dj < n:
+                        for v in levels((j + dj) * n + i + di):
+                            if not any(v - DROP_REACH <= o <= v + .6 for o in own) and any(o < v - DROP_REACH for o in own):
+                                found.append((v, di, dj))
+            if found:
+                best = min(v for v, _, _ in found)
+                dx = sum(di for v, di, _ in found if v < best + .5)
+                dy = sum(dj for v, _, dj in found if v < best + .5)
+                d = math.hypot(dx, dy)
+                out[j * n + i] = (best, (dx / d, dy / d) if d > 1e-6 else (0., 0.))
+    return out
+
+
+def drop_opens(own, drop, way):
+    """Whether a deck's edge cell takes its strip at the deck's level
+    (drop) for its own (own, its lower levels' walls): only where that
+    opens the cell to the deck's car, the own face standing in front of the
+    deck's on the way to the deck (way), or not facing the deck at all (a
+    street's wall across the cell) while the deck's does. Where the deck's
+    walls stand in front, the own face stays: the barrier there is the next
+    cells' as well, and a face moved towards the car turned a scrape along
+    the barrier into a blow on a cell's corner (the reported spot)."""
+    def face(code):
+        s = shape_strip(code)
+        if s is None:
+            return None
+        nx, ny, lo, hi = s
+        c = nx * way[0] + ny * way[1]
+        return None if abs(c) < .3 else (hi if c > 0 else lo) / c   # how far towards the deck it stands
+    d = face(drop)
+    if d is None:
+        return False
+    o = face(own)
+    return o is None or d < o - .02
+
+
 def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None, want_shape=False, want_mid2=False, room=1500,
                    want_layer_shapes=False):
     """1 m grid in game axes. Two ground layers (lowest/highest walkable
@@ -415,7 +477,9 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
     both, and a car on the freeway hit the street's wall 14 m below, up to
     0.9 m short of the barrier it saw (beta issue 75). want_layer_shapes
     (with want_mid2) also returns, last, {(cell, layer bit): shape} for each
-    walled layer whose own walls make another strip than the cell's."""
+    walled layer whose own walls make another strip than the cell's, and
+    (cell, DROP_BIT) for a deck's edge (drop_levels): the strip of the walls
+    at the deck's level, SHAPE_FULL for none there."""
     lo = [-NONE] * (n * n)
     hi = [NONE] * (n * n)
     def cells_inside(tri):
@@ -503,6 +567,7 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
     wall = bytearray(n * n)
     shape_pts = collections.defaultdict(list) if want_shape else None
     layer_pts = collections.defaultdict(list) if want_layer_shapes else None
+    drop_level = drop_levels(lo, hi, mid, mid2, n) if want_layer_shapes else {}
     for tri in walls:
         xs, ys = [p[0] for p in tri], [p[1] for p in tri]
         i0, i1 = max(0, int(math.floor((min(xs) - ox) / step))), min(n - 1, int(math.floor((max(xs) - ox) / step)))
@@ -535,6 +600,12 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
                             shape_pts[k].extend(pts)
                             if layer_pts is not None:
                                 layer_pts[(k, bit)].extend(pts)
+                if k in drop_level:   # the walls at the level the cell drops from
+                    base = drop_level[k][0]
+                    if zmax > base + .5 and zmin < base + WALL_TOP:
+                        band = clip_z(poly, base + .5, base + WALL_TOP)
+                        cx, cy = x0 + step / 2, y0 + step / 2
+                        layer_pts[(k, DROP_BIT)].extend((p[0] - cx, p[1] - cy) for p in (band or poly))
     lo = [v if v != -NONE else NONE for v in lo]
     if want_shape:
         shape = [SHAPE_FULL] * (n * n)
@@ -543,9 +614,20 @@ def collision_grid(ground, walls, ox, oy, n, step=1.0, want_mid=False, road=None
         if want_mid2 and want_layer_shapes:
             layer_shapes = {}
             for (k, bit), pts in layer_pts.items():
+                # A deck's edge only where the cell has walls of its own: one
+                # without keeps the barrier's face next to it (vehicle.c), as
+                # its strip at the deck's level, the barrier's inner and outer
+                # faces and their ends in one hull, could lie across the road
+                if bit == DROP_BIT and not wall[k] & 15:
+                    continue
                 code = shape_code(pts)
+                if bit == DROP_BIT and not drop_opens(shape[k], code, drop_level[k][1]):
+                    continue
                 if code != shape[k]:
                     layer_shapes[(k, bit)] = code
+            for k in drop_level:   # no wall at that level in the cell: none, not the cell's
+                if (k, DROP_BIT) not in layer_pts and wall[k] & 15 and shape[k] != SHAPE_FULL:
+                    layer_shapes[(k, DROP_BIT)] = SHAPE_FULL
             return n, ox, oy, step, lo, hi, wall, mid, shape, mid2, layer_shapes
         if want_mid2:
             return n, ox, oy, step, lo, hi, wall, mid, shape, mid2

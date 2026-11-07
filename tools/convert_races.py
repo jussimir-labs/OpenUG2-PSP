@@ -1699,7 +1699,7 @@ def route_levels(route, city):
     return [first if v is None else v for v in out]
 
 
-DRAG_OTHER_ROUTES = False   # the other routes' lanes (other_lanes): off until the AI follows a road that leaves the course (Bayview Bridge's right-hand one: 15-25 m off and under it; in the sim the rival on it stalled at s = 1045)
+DRAG_OTHER_ROUTES = True   # the other routes' lanes (other_lanes): Bayview Bridge's side road, 15-25 m off and under the middle one, taken by the lanes the middle one lacks, as the original (AIGoal::DecideEquivalentSignpostInDragRace; the PS2's car left in the right-hand lane: reports/beta-drag-rota)
 DRAG_OTHER_REACH = 30.0  # m off the course another of the event's routes may give a drag lane from (drag_lanes)
 DRAG_SAME_LANE = 2.0     # m: another route's lane this close to one of the nearest route's, on its level, is that lane
 DRAG_SAME_LEVEL = 3.0    # m of height: on the same road
@@ -1809,7 +1809,9 @@ def drag_lanes(pts, samples, info, shapes, city, others=(), identity=None, permi
                 if any(abs(o - e[0]) < DRAG_SAME_LANE and abs(lv - e[1]) < DRAG_SAME_LEVEL for e in extra):
                     continue
                 extra.append((o, lv))
-            for o, lv in extra:
+            # (left to right: nearest first, the two swapped slots where the
+            # side road crosses under the middle one, 4 m a frame)
+            for o, lv in sorted(extra):
                 if None not in r_row:
                     break
                 s = r_row.index(None)

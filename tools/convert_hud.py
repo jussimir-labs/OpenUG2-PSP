@@ -262,7 +262,11 @@ STREET_ENGAGE_TEXTURES = (
     'SHOP_ICON_CAR_LOT', 'SHOP_ICON_PERFORMANCE', 'SHOP_ICON_BODY',
     'SHOP_ICON_GRAPHIC', 'SHOP_ICON_INTERIORS', 'SHOP_ICON_CRIB',
     'MODE_ICON_WORLD_CHALLENGE')   # a timed showcase's start (EventIndicator 0x12)
-SMS_INDICATOR_TEXTURES = ('ENGAGE_CINGULAR_ICON',)
+# the indicator's centre at rest; a new message's envelope in its colour
+# category's texture (SMSGetEnvelopeImageHashAndColour, beta issue 122)
+SMS_INDICATOR_TEXTURES = ('ENGAGE_CINGULAR_ICON', 'ENGAGE_SMS_RACHEL_MESSAGE', 'ENGAGE_SMS_OPPONENT_MESSAGE',
+                          'ENGAGE_SMS_SPECIAL_EVENT_MESSAGE', 'ENGAGE_SMS_OUTRUN_MESSAGE', 'ENGAGE_SMS_SHOP_MESSAGE',
+                          'ENGAGE_SMS_TIPS_MESSAGE', 'ENGAGE_SMS_RACE_MESSAGE')
 
 FREE_GROUPS = {
     'getaway': 0x8ca76279,
@@ -647,6 +651,23 @@ def damage_textures(src, path):
     return 2
 
 
+def rvm_textures(src, path):
+    """rvm.n2tx: the rearview mirror's mask (GLOBAL\\INGAMECOMMON.LZC,
+    RVM_MASK, the texture DisplayRVMs lays the mirror's view through: its
+    alpha the mirror's rounded trapezoid), 128 x 64. 'N2RV', u32 version 1,
+    u32 width, u32 height; w x h u32 (the PSP's ABGR). A PS2-authored alpha
+    (0x80 full) is doubled."""
+    import numpy as np
+    t = src.image(0, 'RVM_MASK.tga')
+    if t is None:
+        raise ValueError('RVM_MASK missing')
+    a = np.frombuffer(bytes(t.rgba()), np.uint8).reshape(t.h, t.w, 4).astype(float)
+    if a[..., 3].max() <= 128:
+        a[..., 3] = np.minimum(255, a[..., 3] * 2)
+    path.write_bytes(struct.pack('<4s3I', b'N2RV', 1, t.w, t.h) + a.clip(0, 255).astype(np.uint8).tobytes())
+    return 1
+
+
 SKIDS = ('SKID_ROAD', 'SKID_DIRT')   # psp-viewer/terrain.h's SKID_TEX_* (SKID_GRASS is SKID_DIRT's art)
 
 
@@ -779,7 +800,8 @@ DROP_GROUP_OF = {'EA Messenger'}
 # (hash -> its package, None: any)
 SHOWN_BY_CODE = {0x25b79b9f: None,   # the dyno chart's Max Torque / Max Power box
                  0x1c7fcf8b: 'UI_PostRaceStats.fng', 0x35e8f0b2: 'UI_PostRaceStats.fng',   # Post Race Stats' Triangle Back
-                 0x812a09d4: 'UI_postrace.fng', 0x6a218478: 'UI_postrace.fng'}   # Post Race's Back and Select
+                 0x812a09d4: 'UI_postrace.fng', 0x6a218478: 'UI_postrace.fng',   # Post Race's Back and Select
+                 0xd5c52251: 'UI_SMS_Mailbox.fng'}   # the mailbox's Triangle before Return to Gameplay (the PS2 shows it; beta issue 122)
 
 
 def visible(pkg, drop=False):
@@ -1128,7 +1150,7 @@ CUSTOMIZE_ICONS = ('VISUAL_PART_HYDRAULICS', 'VISUAL_PART_PAINT', 'VISUAL_PART_V
                    'DECAL_ZONE_RIGHTPANEL',
                    # the Car Shop's own (default.xbe 0x11d690), the Graphics Shop's and the paint parts'
                    'VISUAL_PART_FRONT_BUMPE', 'VISUAL_PART_REAR_BUMPER', 'VISUAL_PART_SIDE_SKIRT', 'VISUAL_PART_ROOF_SCOOP',
-                   'VISUAL_PART_MUFFLERTIP', 'VISUAL_PART_CUSTOM_HUDS', 'VISUAL_PART_SPINNERS', 'VISUAL_PART_WIDE_BODY_KIT', 'VISUAL_PART_SIDE_MIRRORS', 'VISUAL_PART_CARBON_FIBRE', 'VISUAL_PART_SCISSOR_DOORS', 'VISUAL_PART_TRUNK_AUDIO', 'NEON_ICON_CABIN', 'NEON_ICON_ENGINE', 'NEON_ICON_TRUNK', 'U2_OL_LOCKICON',
+                   'VISUAL_PART_MUFFLERTIP', 'VISUAL_PART_CUSTOM_HUDS', 'VISUAL_PART_SPINNERS', 'VISUAL_PART_WIDE_BODY_KIT', 'VISUAL_PART_SIDE_MIRRORS', 'VISUAL_PART_CARBON_FIBRE', 'VISUAL_PART_SCISSOR_DOORS', 'VISUAL_PART_TRUNK_AUDIO', 'VISUAL_PART_HEAD_LIGHT_', 'VISUAL_PART_NOS_PURGE', 'VISUAL_PART_SPLIT_HOODS', 'NEON_ICON_CABIN', 'NEON_ICON_ENGINE', 'NEON_ICON_TRUNK', 'U2_OL_LOCKICON',
                    'SHOP_ICON_BODY', 'SHOP_ICON_PERFORMANCE', 'SHOP_ICON_GRAPHIC', 'SHOP_ICON_INTERIORS', 'CRIB_ICON_TEST_TRACK',
                    'VISUAL_PART_DECALS', 'PAINT_MOD_BASE', 'PAINT_MOD_PART_SPOILER', 'PAINT_MOD_PART_RIMS', 'PAINT_MOD_PART_BRAKE_CA')
 # the paint shop's other parts (ChoosePaintScreen: roof scoop, mirrors,
@@ -1204,13 +1226,19 @@ SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS
            ('igmap.n2ui', 'UI_InGame_WorldMap.fng', 'GLOBAL/GLOBALB.LZC',
             ('MINIMAP_ICON_TICK', 'MINIMAP_ICON_CIRCUIT', 'MINIMAP_ICON_SAFE_HOUSE', 'MINIMAP_GPS_SELECTOR')),
            ('sponsor.n2ui', 'UI_Sponsorship_new.fng', 'GLOBAL/INGAMERACE.BUN', 'SPONSOR_ICONS'),   # the sponsors' logos (DECAL_ICON_<NAME>: uiSponsorsMain)
-           ('sms.n2ui', 'UI_SMS_Mailbox.fng', 'GLOBAL/INGAMECOMMON.LZC', ()),
+           ('sms.n2ui', 'UI_SMS_Mailbox.fng', 'GLOBAL/INGAMECOMMON.LZC', ('ENGAGE_SMS_READ_MESSAGE',)),   # a read message's open envelope (SMSMailboxViewer::SyncCurrentButton)
            ('title.n2ui', 'UG_LS_Splash.fng', 'FRONTEND/FRONTB.LZC', ()),     # the title screen (its "Press START" text is the game's)
            ('loading.n2ui', 'Loading.fng', 'GLOBAL/GLOBALB.LZC', ()),        # LOADING over the title's art, its blocks lit in turn
            ('loadctl.n2ui', 'Loading_Controller.fng', 'GLOBAL/GLOBALB.LZC', ()),
            ('optctl.n2ui', 'UI_OptionsController.fng', 'FRONTEND/FRONTB.LZC', ()),
            ('keyboard.n2ui', 'UI_VirtualKeyboard.fng', 'FRONTEND/FRONTB.LZC', ()),   # the profile's name (Create User Name)
            ('gdialog.n2ui', 'GenericDialog_LARGE.fng', 'FRONTEND/FRONTB.LZC', ()),   # the profile's Yes / No questions
+           # the two-button questions as DialogInterface::ShowTwoButtons picks them: in the
+           # menus GenericDialog_SMALL/MED/LARGE by the message's length, in the game
+           # UI_InGameDialog (pause, Post Race: Quit, Restart, Return to Explore Mode)
+           ('gdialogs.n2ui', 'GenericDialog_SMALL.fng', 'FRONTEND/FRONTB.LZC', ()),
+           ('gdialogm.n2ui', 'GenericDialog_MED.fng', 'FRONTEND/FRONTB.LZC', ()),
+           ('igdialog.n2ui', 'UI_InGameDialog.fng', 'GLOBAL/INGAMECOMMON.LZC', ()),
            ('helps.n2ui', 'HelpDialog_SMALL.fng', 'FRONTEND/FRONTB.LZC', ()),   # Circle's help, by its lines: up to 3, 5, more
            ('helpm.n2ui', 'HelpDialog_MED.fng', 'FRONTEND/FRONTB.LZC', ()),
            ('helpl.n2ui', 'HelpDialog_LARGE.fng', 'FRONTEND/FRONTB.LZC', ()),   # Options > Controls: the PSP's buttons in the pad's place   # a race's load: the controls (the port's own rows over the pad's place)
@@ -1259,16 +1287,19 @@ def help_first(exe):
     if score >= 8:
         return best
     raise ValueError(f'{exe.path.name}: the help table (UI_Main.fng) not found')
-# the PSP's icons for the tokens: the stick and the pad's (Left/Right: the
-# pad's arrows, Up/Down its up-and-down); the right stick has no PSP twin
+# the PSP's icons for the tokens (Left/Right: the pad's arrows, Up/Down its
+# up-and-down). The menus' sticks: the PSP's one turns the car (the right
+# stick's Rotate Car, menu_orbit_input), so it does not move the menus as
+# the left stick does on the consoles: those tokens go (beta issue 29)
 HELP_ICONS = {'$JOY_EVENT_FENG_PAD_LEFT$': 'PS2_DPADL', '$JOY_EVENT_FENG_PAD_UP$': 'PS2_DPADUPDOWN',
-              '$JOY_EVENT_FENG_PAD_LEFT_ALTERNATE$': 'PS2_LEFTANALOG', '$JOY_EVENT_FENG_PAD_UP_ALTERNATE$': 'PS2_LEFTANALOG',
+              '$JOY_EVENT_FENG_PAD_RIGHT_ALTERNATE$': 'PS2_LEFTANALOG',
               '$JOY_EVENT_FENG_SELECT$': 'PS2_CROSS', '$JOY_EVENT_FENG_CANCEL$': 'PS2_TRIANGLE',
               '$JOY_EVENT_FENG_BUTTON1$': 'PS2_SQUARE', '$JOY_EVENT_FENG_BUTTON2$': 'PS2_TRIANGLE',
               '$JOY_EVENT_FENG_LTRIGGER$': 'PSP_L', '$JOY_EVENT_FENG_RTRIGGER$': 'PSP_R'}
-# what the port's screens do not do: the right stick turning the car, and
-# on the quick race's car the filter and the customizing
-HELP_DROP = ('$JOY_EVENT_FENG_PAD_RIGHT_ALTERNATE$', 'Toggle Car Filter', 'Customize / Edit Car', 'Switch Players')
+HELP_GONE = ('$JOY_EVENT_FENG_PAD_LEFT_ALTERNATE$', '$JOY_EVENT_FENG_PAD_UP_ALTERNATE$')   # tokens dropped from their lines
+# what the port's screens do not do: on the quick race's car the filter and
+# the customizing
+HELP_DROP = ('Toggle Car Filter', 'Customize / Edit Car', 'Switch Players')
 HELP_ONLY = {'optctl.n2ui': ('Change Selection', 'Back to Previous Menu')}   # the PSP's Controls: one row (Control Type), no rows to move through
 
 
@@ -1303,6 +1334,8 @@ def help_texts(game, table, path, language=None):
                 continue
             line = theirs[k]
             line = line.replace('$ICON_SPACER$', '')
+            for token in HELP_GONE:
+                line = line.replace(token, '')
             for token, icon in HELP_ICONS.items():
                 line = line.replace(token, ICON_CODE[icon] + (ICON_CODE['PS2_DPADR'] if icon == 'PS2_DPADL' else ''))
             acts.append(re.sub(' +', ' ', line).strip(' '))   # not split(): it takes the icons' codes 0x1c-0x1f for spaces
@@ -1355,7 +1388,7 @@ def gps_arrow(game, src, path):
             from n2formats import ps2_world
             verts, psubs = ps2_world(leaves)
             ids, draws = [], []
-            for sub, ti in psubs:
+            for sub, ti, _ in psubs:
                 draws.append((len(sub), ti, len(ids)))
                 ids += sub
         else:
@@ -1489,6 +1522,7 @@ def main():
     print('rain.n2tx', rain_textures(src, args.out / 'rain.n2tx'), 'textures')
     print('skids.n2tx', skid_textures(src, args.out / 'skids.n2tx'), 'textures')
     print('damage.n2tx', damage_textures(src, args.out / 'damage.n2tx'), 'textures')
+    print('rvm.n2tx', rvm_textures(src, args.out / 'rvm.n2tx'), 'textures')
     # every player car's logo (SECONDARY_LOGO_<MODEL>, TPK names cut at 23)
     globalb = load(args.game, 'GLOBAL/GLOBALB.BUN')
     recs = convert_physics.records(globalb)

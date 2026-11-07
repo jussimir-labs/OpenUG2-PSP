@@ -58,10 +58,22 @@ class Stream:
         return self.cache[name]
 
 
+# A submesh the game draws over the wet road's reflection (the strip's
+# flag 0x40: the GameCube's eDataRender picks the reflecting shader by it;
+# the Xbox's 64-byte submesh record holds it in its word at +0x20, the
+# PS2's batch record in its first byte). Without it a submesh stays dry,
+# whatever its texture: the undersides of bridges and tunnels, walls and
+# kerbs share the street's asphalt textures.
+REFLECTS = 0x40
+
+
 class WorldObject:
-    """verts: (x,y,z,colour BGRA u32,u,v); subs: (indices, texkey)."""
-    def __init__(self, name, key, flags, verts, subs):
+    """verts: (x,y,z,colour BGRA u32,u,v); subs: (indices, texkey);
+    reflect: per sub, whether the original reflects the wet street on it
+    (REFLECTS)."""
+    def __init__(self, name, key, flags, verts, subs, reflect=None):
         self.name, self.key, self.flags, self.verts, self.subs = name, key, flags, verts, subs
+        self.reflect = reflect if reflect is not None else [False] * len(subs)
 
 
 def section_objects(data):
@@ -76,8 +88,9 @@ def section_objects(data):
         if 0x134a02 in leaves:      # the PS2's VIF strips, prelit throughout
             verts, psubs = ps2_world(leaves)
             tex = [a for a, b in struct.iter_unpack('<II', leaves[0x134012])] if 0x134012 in leaves else []
-            subs = [(tuple(ids), tex[ti] if tex else 0) for ids, ti in psubs if ids]
-            out[key] = WorldObject(name, key, flags, verts, subs)
+            subs = [(tuple(ids), tex[ti] if tex else 0) for ids, ti, _ in psubs if ids]
+            reflect = [bool(f & REFLECTS) for ids, _, f in psubs if ids]
+            out[key] = WorldObject(name, key, flags, verts, subs, reflect)
             continue
         if 0x134b01 not in leaves:
             continue
@@ -94,7 +107,7 @@ def section_objects(data):
                 verts.append((x, y, z, 0xff000000 | lum * 0x010101, u, v))
         ids = struct.unpack('<' + str(len(ib)//2) + 'H', ib)
         tex = [a for a, b in struct.iter_unpack('<II', leaves[0x134012])] if 0x134012 in leaves else []
-        subs, expected = [], 0
+        subs, reflect, expected = [], [], 0
         for at in range(0, len(sb), 64):
             w = struct.unpack_from('<16I', sb, at)
             count, ti, first = w[6], w[7], w[9]
@@ -104,7 +117,8 @@ def section_objects(data):
             # 31 shipped objects index past their vertices; drop those ranges.
             if max(ids[first:first+count], default=0) < len(verts):
                 subs.append((ids[first:first+count], tex[ti] if tex else 0))
-        out[key] = WorldObject(name, key, flags, verts, subs)
+                reflect.append(bool(w[8] & REFLECTS))
+        out[key] = WorldObject(name, key, flags, verts, subs, reflect)
     return out
 
 

@@ -100,6 +100,15 @@ u8 tournament group (0 = none). Entries are in career order. Then:
   (version 14) the event dialog's texts: u32 n, n x u32 the bodies (offsets
     in the text block), u32 rows, rows x 16 bytes: u32 its subject, its type
     line, its sender (offsets), u16 its first body and how many to draw from;
+  (version 15) u32 n, n x 4 bytes per SMS: u8 its mailbox (1 Inbox, 2 Game
+    Tips, 3 Special Events, 4 Rachel, 5 Unlocks), u8 1 if it opens by
+    itself in the free roam (the original's autopopup), u8 its envelope's
+    colour (SMSGetEnvelopeImageHashAndColour's category), u8 pad;
+  (version 16) u32 n, n x 8 bytes per showcase (the showcases' order): f32
+    GU y of its star and of the place its countdown leads to (the trigger
+    zones' heights, race_zones; a shop's, its marker's; NaN unknown): the
+    GPS's target is 3-D (UnlockedTriggerZone::GetGPSPosition,
+    PathfindingNode::CloseEnoughToGoal within 4 m of height);
   u32 size, the text block (zero-terminated strings).
 """
 import argparse
@@ -229,19 +238,27 @@ ENGAGE = {1: ('ENGAGE_VISUAL_GENERIC', 3, 0x48157d57), 2: ('ENGAGE_PERF_GENERIC'
           4: ('ENGAGE_SHOWCASE_GENERIC', 5, 0xe5b2c887)}   # (rand() % 3 or 5: the visual ones' 4 and 5 unused)
 
 
-def show_target(sec, h, where, shop_at):
+def show_target(sec, h, where, shop_at, heights):
     """Where a showcase's countdown leads (default.xbe 0x13f620, 0x121820):
     its +0xc is a shop's name hash (0x34A12's +0x38: a unique part's, the
     shop's place) or its magazine cover's (0x34A16's +0x20, the name's), and
     the cover's +0x2c the city marker of type 0xd where the photographer
-    waits; GU x z, None if not found."""
+    waits; GU x y z (heights: the zones' by name hash, race_zones; NaN
+    unknown), None if not found."""
     if h in shop_at:
         return shop_at[h]
     for k in range(len(sec[0x34a16]) // 64):
         name, _, _, at = struct.unpack_from('<4I', sec[0x34a16], 64 * k + 0x20)
         if name == h and at in where:
-            return where[at]
+            return zone_at(where, heights, at)
     return None
+
+
+def zone_at(where, heights, h):
+    """A type 0xd marker's GU x y z: its square's centre (markers) and its
+    zone's height (race_zones' +0x14); NaN when the zone is not found."""
+    x, z = where[h]
+    return (x, heights[h][1] if h in heights else float('nan'), z)
 
 
 PERF_SHOWCASE = {1: 3, 2: 7, 3: 5, 4: 2, 5: 1, 6: 0, 7: 8, 8: 6, 9: 4, 10: 9}   # a showcase's byte: 0x34A15's category (0x112f30)
@@ -387,7 +404,7 @@ def career_world(game, globalb, rows, races, language=None, written=None):
                     for k in range(len(sec[0x34a12]) // 0xa0)}
     late = []
     for k in range(len(sec[0x34a17]) // 20):
-        off, typ, box, popup, data, money, sender = struct.unpack_from('<hBBB3xIiI', sec[0x34a17], 20 * k)
+        off, typ, box, popup, envelope, data, money, sender = struct.unpack_from('<hBBBB2xIiI', sec[0x34a17], 20 * k)
         name = pooled(off)
         subject, body = lang.get(game_hash(name + '_SUBJECT')), lang.get(game_hash(name + '_BODY')) or lang.get(game_hash(name))
         show = 'STAGE_' + name[9:] if name.startswith('SMS_MAG_S') and not name.startswith('SMS_MAG_STAGE') else name[8:]
@@ -427,7 +444,8 @@ def career_world(game, globalb, rows, races, language=None, written=None):
             tip_sms[data] = len(sms)    # an engage tip's: the marker's hash
             tip_popup[data] = popup     # +4: the SMS opens itself (SMSMessageQueue::AnyUnseenAutoPopups); the rest only reach the mailbox
         (late if new else mag_sms if typ == 13 and name.startswith('SMS_MAG_') else sms).append(
-            dict(name=name, type=typ, stage=stage, cond=cond, money=money, sender=lang.get(sender, 'Rachel'), subject=subject, body=body))
+            dict(name=name, type=typ, stage=stage, cond=cond, money=money, sender=lang.get(sender, 'Rachel'), subject=subject, body=body,
+                 box=box, envelope=envelope, popup=popup))
     sms += mag_sms + late   # (after the others: a save's sent and read bits are by the message's place; the ones new in version 9 last)
     # Legacy shop/map positions from animated instances; entry geometry is
     # the distinct original TrackPathZone in shopzones.n2sz, never this point.
@@ -442,7 +460,7 @@ def career_world(game, globalb, rows, races, language=None, written=None):
         name = r[:32].split(b'\0')[0].decode()
         marker = struct.unpack_from('<I', r, 0x3c)[0]
         if marker in where:
-            shop_at[struct.unpack_from('<I', r, 0x38)[0]] = (where[marker][1], where[marker][0])   # by its name's hash: GU x z
+            shop_at[struct.unpack_from('<I', r, 0x38)[0]] = (where[marker][1], where[marker][2], where[marker][0])   # by its name's hash: GU x y z
         kind = SHOP_KIND.get(r[0x40:0x50].split(b'\0')[0].decode().split('.')[0])
         if marker not in where or kind is None:
             continue
@@ -493,6 +511,7 @@ def career_world(game, globalb, rows, races, language=None, written=None):
     # 0x140580/0x140630 open them, 0x140390 puts their marker in the city)
     from n2feng import bin_hash
     where = {h: (gy, gx) for h, gx, gy, r in markers(game, 0xd)}
+    heights = race_zones(game)   # the same zones' heights, by the same name hash
     cover_of = {v['name']: k for k, v in enumerate(covers)}   # its magazine cover: <name>_PICTURE
     magazine_of = {sec[0x34a16][64 * k:64 * k + 32].split(b'\0')[0].decode(): struct.unpack_from('<I', sec[0x34a16], 64 * k + 0x28)[0]
                    for k in range(len(sec[0x34a16]) // 64)}   # the cover's magazine (+0x28: its setup's, show_cameras)
@@ -519,8 +538,8 @@ def career_world(game, globalb, rows, races, language=None, written=None):
             time, sub = struct.unpack_from('<IB', sec[0x34a1b], 24 * k + 16)
             says, n_says, subject = ENGAGE.get(sub, ENGAGE[4])
             shows.append(dict(name=pooled(a), stage=stage, kind=kind, wins=wins, opens=opens, perf=perf,
-                              cover=cover_of.get(pooled(a) + '_PICTURE', -1), pos=where[trigger], magazine=mag, cameras=cams, pose=pose,
-                              to=show_target(sec, struct.unpack_from('<I', sec[0x34a1b], 24 * k + 12)[0], where, shop_at) or where[trigger],
+                              cover=cover_of.get(pooled(a) + '_PICTURE', -1), pos=zone_at(where, heights, trigger), magazine=mag, cameras=cams, pose=pose,
+                              to=show_target(sec, struct.unpack_from('<I', sec[0x34a1b], 24 * k + 12)[0], where, shop_at, heights) or zone_at(where, heights, trigger),
                               time=time, says=[put(lang.get(game_hash(f'{says}_{n}_BODY'))) for n in range(1, n_says + 1) if lang.get(game_hash(f'{says}_{n}_BODY'))],
                               subject=put(lang.get(subject, ''))))
     # the DVD covers' sessions (the game's showcase subtype 3, "DVD Cover
@@ -539,15 +558,15 @@ def career_world(game, globalb, rows, races, language=None, written=None):
         mag, cams = setups.get(key, ('', []))
         mag, pose = (mag, []) if mag else studio.get(key, ('', []))
         shows.append(dict(name=name, stage=int(name.split('_')[1]), kind=3, wins=0, opens=0, perf=0, cover=cover_of[name],
-                          pos=where[at], magazine=mag, cameras=cams, pose=pose, to=where[at], time=0, says=[],
+                          pos=zone_at(where, heights, at), magazine=mag, cameras=cams, pose=pose, to=zone_at(where, heights, at), time=0, says=[],
                           subject=put(lang.get(0xbf178f39, ''))))   # ("Subjec: DVD Cover Opportunity", the game's)
     out += struct.pack('<I', len(shows))
     for v in shows:
         cams = [x for c in v['cameras'] for x in c] + [0.0] * (21 - 7 * len(v['cameras']))
         says = (v['says'] + [0] * 5)[:5]
-        out += struct.pack('<4BhH2f24s8s21f10f', v['stage'], v['kind'], v['wins'], v['opens'], v['cover'], v['perf'], *v['pos'], v['name'].encode()[:23],
+        out += struct.pack('<4BhH2f24s8s21f10f', v['stage'], v['kind'], v['wins'], v['opens'], v['cover'], v['perf'], v['pos'][0], v['pos'][2], v['name'].encode()[:23],
                            v['magazine'].encode()[:7], *cams, *(v['pose'] or [0.0] * 10))
-        out += struct.pack('<2fHBx6I', *v['to'], v['time'], min(5, len(v['says'])), *says, v['subject'])
+        out += struct.pack('<2fHBx6I', v['to'][0], v['to'][2], v['time'], min(5, len(v['says'])), *says, v['subject'])
     # version 9: per row, its record (the rows' parallel table), then the
     # stages' rules
     records = []
@@ -640,6 +659,16 @@ def career_world(game, globalb, rows, races, language=None, written=None):
         engage.append(struct.pack('<3I2H', put(lang.get(subject, '')), put(lang.get(kind_line, '')), put(sender), first, count))
     out += struct.pack('<I', len(bodies)) + b''.join(struct.pack('<I', o) for o in bodies)
     out += struct.pack('<I', len(engage)) + b''.join(engage)
+    # version 15: per SMS (the SMS table's order) its SmsData bytes 3-5:
+    # the mailbox it is filed in once read (SMSMailboxViewer::
+    # CanDisplayMessageInCurrentList: 1 Inbox, 2 Game Tips, 3 Special
+    # Events, 4 Rachel, 5 Unlocks), whether it opens by itself in the free
+    # roam (SMSMessageQueue::AnyUnseenAutoPopups) and its envelope's colour
+    # (SMSGetEnvelopeImageHashAndColour's category)
+    out += struct.pack('<I', len(sms)) + b''.join(struct.pack('<4B', v['box'], v['popup'], v['envelope'], 0) for v in sms)
+    # version 16: per showcase, the heights of its star and of its goal
+    # (the GPS's 3-D target: UnlockedTriggerZone::GetGPSPosition)
+    out += struct.pack('<I', len(shows)) + b''.join(struct.pack('<2f', v['pos'][1], v['to'][1]) for v in shows)
     text.extend(bytes((-len(text)) % 4))
     out += struct.pack('<I', len(text)) + bytes(text)
     report = dict(stages=stages, rules=rules, sponsors=sponsors, covers=covers, shops=shops, tips=[dict(sms=sms[v['sms']]['name'], pos=v['pos']) for v in tips], cash=cash, shows=shows,
@@ -738,7 +767,7 @@ def main():
     for x in rows:
         if x['reward'] == 1:
             x['flags'] |= 8      # a sponsor race: its purse goes to the signed sponsor's contract
-    out = struct.pack('<4s2I', b'N2CA', 14, len(rows))
+    out = struct.pack('<4s2I', b'N2CA', 16, len(rows))
     for x in rows:
         out += struct.pack('<HBBiBBBB', x['id'], x['stage'], x['type'], x['money'], x['reward'], x['laps'], x['flags'],
                            x['group'])

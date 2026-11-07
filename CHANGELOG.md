@@ -16,6 +16,311 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+### Changed
+
+- The "game stopped responding" screen now waits 15 seconds instead of 2, so a long load no
+  longer brings it up: it stays for a game that has really stopped. Pauses of 2 seconds or more
+  are still counted, on the debug overlay (`P1:4s`: one pause, the longest 4 s) and in the bug
+  mark (L+R+SELECT).
+
+## [0.3.0] - 2026-11-05 — Back on a Mission
+
+EA Trax: *Back on a Mission*, Cirrus.
+
+Bayview's shops open their whole catalogue: the Car Specialties Shop gets Lights, Nitrous Purge
+and Split Hoods, Trunk Audio fills its slots, and every shop lists only what your career has
+unlocked, as the original does. Hydraulics work on the street again, SPRAY SHOW is back, the
+World Map lets you pick a place and set the GPS on it, street racers roll up riced out, Rachel's
+350Z finally sounds like her tuned car, the menus keep the console's widescreen proportions, and
+a math slip or a quick exit from a shop can no longer switch off your PSP.
+
+**The generator now updates itself, starting with this version.** Download v0.3.0 by hand once,
+as before. From then on, the generator checks for a newer beta each time you open it and asks
+before downloading anything; no account or sign-in is needed. Earlier generators (v0.2.6 and older) do not have this, so they will
+not offer v0.3.0 on their own.
+
+A new game executable and new converted game data. Update your 0.2.x output folder with the 0.3.0
+generator (same ISO), or generate into a new folder, and install the complete result. Updating
+from 0.2.6 converts all 81 steps again (the data formats changed), so it takes as long as a
+complete generation; generating into a new folder gives the same result.
+
+### Added
+
+- Hydraulics work while you drive, as in the original. Under 10 mph, hold the handbrake button
+  and push the stick up or down to raise or drop the front or the rear (LVL 2 and 3 also lift a
+  side); on LVL 3, tap it twice and hold to bounce the car off its springs. Working the rams pays
+  **Hydros** points and every bounce pays **Bounce** (25 points, up to 20 a race), and both
+  refill your nitrous. Over 30 mph, and in drift and Street X races, the rams come back down
+  ([#132]).
+- The generator now keeps itself up to date. Each time you open it, it looks for a newer beta and
+  asks `vX.Y.Z available: update?` before downloading anything, with no account or sign-in
+  needed. Every download is checked against the checksum published with the release,
+  your current version stays in place until the new one opens, and if the new one does not start
+  you are back on the previous one. After an update, the generator offers to update the game you
+  generated before, converting only what changed; if that update cannot be verified, it tells you
+  to generate the game from scratch in a new folder. Download this version by hand once: from then
+  on, updates come through the generator.
+- The Car Specialties Shop has the original's full line-up: Lights, Nitrous Purge and Split
+  Hoods join Custom Gauges, Neon, Window Tint, Hydraulics, Trunk Audio, Spinners and Doors, in
+  the original's order ([#54]).
+  - **Lights**: the 14 headlight bulbs, from Xenon to Bright Yellow. The car's headlights light
+    up in the bulbs you browse, and the ones you install colour the beam on the road and the
+    glow of your lamps on the street.
+  - **Nitrous Purge**: the free Type 1 kit, then the Type 2 and Type 3 kits with their nozzle
+    layouts and colours, from Sky Blue to Magenta & Blue. Hit the nitrous while you're stopped
+    or off the throttle and the kit blows from the hood and in front of the wheels instead of
+    the exhaust flames; the car shows it off in the shop.
+  - **Split Hoods**: Trap, Copperhead, Velocity, Cobra and Gato now live here instead of the
+    Body Shop's Hoods, and open in two halves in the shop.
+  - They open as in the original: Xenon and the Type 1 purge from the start, the rest with
+    later stages and shops; Trap with its showcase. Trunk Audio still opens with the
+    second stage's Car Specialties Shop, as in the original.
+- Trunk Audio is complete. With a trunk layout installed, the Car Specialties Shop's Trunk Audio
+  opens on Audio Components and Trunk Layout, as in the original. Each layout has its own Trunk
+  Slots (two in the Standard Layout, four in the Tuned, five or six in the Custom, up to twelve in
+  the Hummer H2, Escalade and Navigator), and each slot takes the components of its size: Kicker,
+  MTX, JL Audio, Clarion and NFSU subs, JL Audio, Kenwood, Alpine and Kicker amps, LCD screens,
+  crossovers and NOS or Nitrous Express bottles, 56 in all. They sit on the layout's own mounts,
+  count toward your Visual Rating and open with the layouts' shops; installing another layout
+  empties its slots, as the original does. Trunk Neon now asks for the Custom Layout ("You must
+  upgrade your trunk to CUSTOM LAYOUT in order to install trunk neon."), and Engine Neon for the
+  level 3 Engine, ECU and Turbo, as in the original; the trunk's tubes light up only in the Custom
+  Layout, the only one built for them. The Subaru WRX STi and the Mitsubishi Lancer Evolution VIII
+  get their three trunk layouts, which their long model names had hidden from the shop ([#69]).
+- Options > Controls has a **Stick Dead Zone** setting for steering with the
+  analog stick, for worn or loose PSP sticks that rest off-centre. Default keeps
+  the current feel; **PS2 (16%)** uses the dead zone of the PS2 version with a
+  DualShock 2, and the other steps go from 0% to 40%. Outside the dead zone the
+  stick is stretched back over its full travel, as in the original, so steering
+  still starts gently and reaches full lock. The d-pad is unchanged ([#123]).
+- A fourth **Control Type** puts the handbrake on R and nitrous on L, as on the
+  PS2's default layout; Control Type 1 stays the default ([#123]).
+- Options > Video > Widescreen now does something: On (the default) keeps the
+  console's widescreen layout, with the menus in the middle of the screen and the
+  HUD out at its edges; Off stretches the menus across the whole screen, as in
+  v0.2.5 and earlier. The choice applies at once and is saved ([#119]).
+
+### Changed
+
+- Menus, pause screens and prompts now use the console's Widescreen layout, as on
+  the PS2 with Widescreen switched on: every screen keeps its original proportions
+  in the middle of the PSP's wide display, so car logos, icons, the stat bars and
+  the panel frames are no longer stretched sideways, and the garage's stats no longer
+  run over the turntable. The EA Trax song card sits inside the menu frame, and the
+  event and shop prompts no longer show an extra highlight between Accept and
+  Decline ([#119]).
+- The debug overlay's top line now shows how the city is streaming in, next to the version:
+  `Q` the pieces of the city waiting to load, `C` the nearby blocks still shown in their
+  plainer far-away version, `H` the blocks in view with nothing loaded yet, then how long one
+  read from your Memory Stick took over the last second and how fast it read. If Bayview
+  looks low-detail after a loading screen, a photo with this line visible tells us whether
+  the card is slow or the game is behind ([#65]).
+
+### Fixed
+
+- Bayview Bridge drags can always be finished. The right-hand lanes now follow the side road at
+  the fork, under the bridge and back, as in the original, for you and for your rivals. Before, the
+  car in those lanes ran into the divider and got stuck on the road below, which could stop the
+  career. When your lane ends, the car also moves to the nearest lane that is still there, as in
+  the original, so a lane ending right at a train or a barrier is still yours to leave in time.
+
+- The GPS arrow stays on your road: on ramps and overpasses it no longer dives toward the street
+  below, it keeps its way when you drive back along a road, and a route to a race now leads you to
+  the start line, ending on the race's own street.
+- The rain caught in your headlights is far more see-through.
+- Rachel holds her calls until you are back on the Bayview streets, as in the original: her
+  lines no longer start at the finish line or over the results. The career save now runs in
+  the background as you cross the line, instead of freezing the race right there ([#146]).
+- Headlights in the garage and shops are bright again, as in the console versions, with no striped
+  texture over the lens. In a game generated from the PS2 disc, the reflections on every car in those
+  screens are also the right way up now.
+- Street racers roll up riced out again, as in the original: every random rival is dressed
+  for the upgrades its performance reached, with body kits, hoods, spoilers, roof scoops,
+  exhausts, mirrors, custom lights, window tint, aftermarket rims and their paint, neon,
+  Gloss to Pearlescent paint jobs and up to three vinyl layers. The better tuned a rival's
+  car, the wilder its look, so Bayview's grids get louder as your career goes on. Caleb
+  and his crew keep their own cars. On the PSP-1000 the rivals keep their stock bodies but
+  wear their paint jobs and neon ([#71]).
+- The Car Specialties Shop's neon and trunk audio now charge the price they show ([#54]).
+- Engine Accents now show. With the level 2 or 3 Engine, ECU and Turbo, the garage shows the
+  upgraded engine under the hood, as the original swaps it in, and its hoses wear the Engine
+  Accents colour you bought in the Graphics Shop; before, the colour was saved but the stock
+  engine bay stayed on screen ([#66]).
+- Browsing Hydraulics in the Car Specialties Shop now shows them off as the original does:
+  LVL 1 and LVL 2 pump the nose and the tail up and down, and LVL 3 bounces the car hard
+  enough to lift its wheels off the turntable. The car settles back when you leave the
+  category and is at rest when you drive off. The category also shows its own icon, and the shop's marble floor
+  no longer turns black ([#70]).
+- The EA TRAX song card fits the song again, as on the PS2: songs with short names, like
+  Chingy's "I Do" or Terror Squad's "Lean Back", get the short card, mid-length ones like
+  Xzibit's "LAX" the middle one, and only the longest names, like Riders on the Storm, the
+  full card. Before, every song used the long card ([#118]).
+- The Cingular SMS system works like the PS2's. The HUD's envelope no longer shows an
+  unread count (the "x9" that did not go down as you read); a new message's envelope flashes
+  in its colour, yellow for Rachel's, blue for the shops' news, pale green for special
+  events, green for tips, and asks for SELECT. With a single unread message, SELECT opens it
+  straight away. The mailbox has its five boxes on L1/R1, Inbox, Game Tips, Special Events,
+  Rachel and Unlocks, with the bar at the top following them; each message is listed as
+  "Subject: ..." beside its coloured envelope, open once read, and Square deletes one after
+  a Yes/No question. Read messages leave the Inbox for their own box once you are back on
+  the street ([#122]).
+- Pausing while driving around Bayview now hides the minimap, speedometer, Bank and
+  the other HUD pieces, as the race pause already did, leaving only the pause menu on
+  screen ([#116]).
+- Yes/No and OK/Cancel questions, such as Transmission, Quit to Main Menu, Restart
+  and buying a part, use the original dialog box: dimmed background, grey message
+  panel and rounded buttons, centred on screen ([#117]).
+- Knocked-over crash barrels and other roadside props now collide with each other, with the
+  props still standing and with the walls. Hit the barrel group in front of a divider and the
+  barrels pile up and roll away instead of sliding into the divider, sinking into one another
+  or hanging in mid-air; a barrel thrown high falls back to the street ([#96]).
+- The turbo gauge reads as in the original game when you back up. With your foot down in
+  reverse the boost now builds with the revs instead of sinking into vacuum, and it drops back
+  to idle when you lift off ([#101]).
+- Your car's wheels roll during Drift replays again, as in every other replay,
+  instead of standing still for the whole replay ([#129]).
+- Improved lane keeping after drag-race finishes. The post-race driver now checks for
+  parked rivals and traffic ahead, and uses a clear lane when the road allows it ([#94]).
+- The new career's airport intro ends as in the original game. On "Well, welcome to Bayview",
+  the last shot zooms in on Rachel's 350Z, comes to a stop and holds the picture for half a
+  second before you take the wheel; before, the zoom kept going until the camera ran into the
+  car ([#130]).
+- POWER SLIDE and DRAFTING now show their points only once they count, as in the original game.
+  Before, a short slide flashed a growing "+20" that then disappeared without filling your
+  nitrous: a slide pays only after it builds up 50 points (over 40 mph, sideways, all four wheels
+  down), and the original hides it until then. Every bonus you see on screen now goes into your
+  nitrous, 1% of a tank for every 15 points. In free roam the game shows no bonus words, as on
+  the PS2, but the slides that make the grade still top up your nitrous ([#132]).
+- Street X in the Parkade puts up all of its own barriers again. Parkade Tracks 1 to 4 (and two
+  of the Industrial Park tracks) share many barrier spots, and each race lost the barriers it
+  shared with another, up to half of them: gaps between the pillars and missing stretches of the
+  yellow and black wall. Rivals coming up the Parkade ramps no longer drop through the floor and
+  vanish under the track ([#127]).
+- Wet streets only mirror the city on the surfaces the original game makes reflective,
+  and only from above. Overpass decks over your head, tunnel ceilings, walls and kerbs
+  that share the road's asphalt stay dry, so driving under an overpass at night no
+  longer shows the world reflected over your head ([#113]).
+- Street lights on the distant hills and the lit windows of the far skyline glow as
+  light again, instead of showing up as black boxes on the mountains ([#115]).
+- The distant skyline across the bay fades into the night rain's haze, as the rest of
+  the city does, instead of standing out as dark cut-outs against the grey sky ([#105]).
+- On the PSP-1000 memory profile, the skyline across the bay now loads in free roam
+  and the career when there is room for it, so from the shore the island has its
+  ground again. As in the original, it is the first thing let go when the city
+  needs the memory, and what stands on it goes with it: no more palm trees
+  floating over the water ([#105]).
+- The Rearview Mirror option in the Gameplay settings now works. As on the PS2, the mirror sits
+  at the top of the screen in the Bumper and Hood cameras and shows the road and the cars behind
+  you; it stays hidden in the chase cameras and while you look back. To keep the race smooth on
+  the PSP, the mirror refreshes up to 15 times a second (less often on the busiest streets) and
+  shows the buildings up to about 64 m behind you (the cars much farther), where the PS2 shows
+  more of the skyline. The Hood camera also got lighter: the parts of your car it cannot see are
+  no longer drawn ([#131]).
+- On the PSP-1000 the streets no longer freeze for 8 seconds at a time, again and again, when
+  the city runs out of memory: the game now makes room for the road ahead instead of waiting
+  for it. When the game does stop responding, a panel now names what it is waiting for; please
+  send a photo of it with your report ([#44]).
+- The Underground 2 logo at the top of the Main Menu and The Garage now lines up with the
+  left edge of the menu bar under it, as on the PS2, instead of sitting about 20 pixels in
+  from it. The small white dot on that bar is the menu's position marker: it sits at the
+  left end on Career and moves along the bar as you pick the next option, as in the
+  original; with four options on the PSP it takes longer steps than on the PS2 ([#133]).
+- Outrun rivals in free roam now drive as real cars whenever they are near you, as in the
+  original game, instead of gliding along their route until something hits them. Within about
+  60 m they steer, brake for corners, weave round the traffic and back off when stuck with the
+  same driver the race opponents use, and take bumps from you, the traffic and the walls like
+  any other car. They no longer treat you as an obstacle to dodge while they pace you, so they
+  hold your speed beside you and the challenge comes up again. Further away they keep cruising
+  along their route ([#72], [#74]).
+- Menus stop at their first and last option, as in the original game: pressing Right on Options
+  in the Main Menu no longer jumps back to Career, and the same goes for every menu and car list.
+  Turning the car with the analog stick now turns its turntable with it, stops the moment you let
+  go instead of sliding on, and pushing the stick up or down raises or lowers the camera, as the
+  consoles' right stick does. The Circle help lists the stick's Rotate Car again. In the Car
+  Lot, the garage's Car Select and the Quick Race car select, the white dot on the bar above the
+  cars now moves to the car you are on instead of staying put near the right end ([#29]).
+- Steam rises again from the manhole on the left of the street behind the menus, drifting up
+  beside your car as in the original. In the menus' icon bars the left arrow is hidden on the
+  first option and the right arrow on the last, as in the original, so no arrow points at an
+  empty slot ([#128]).
+- The minimap's map now fills its whole round frame, as on the PS2, GameCube and PC. Before,
+  a thick black ring sat between the map and the grey outline, and the map showed a little
+  less of the streets around you ([#84]).
+- The exhaust tips now follow the rear bumper you fit in the body shop, as in the original
+  game: each bumper and wide body kit puts the tips in its own outlets, with as many tips as it
+  has outlets. Before, they stayed in the stock bumper's spot under every kit, hidden inside the
+  new bumper or out of line with its outlets. The stock Focus, 240SX, Golf, RSX and Skyline also
+  lose a second tip, borrowed from another kit's bumper, that sat next to their own ([#51]).
+- Freeways and raised roads over a street: fewer invisible bumps at the edge of the deck. Where
+  the road surface stops just short of the barrier, the game's collision map only knew the
+  street below there, so a car up on the deck could catch the street's own wall, 12 m down, in
+  front of the barrier it saw, and stop dead while scraping along it. There the car now meets
+  the barrier at its own height, as in the original game. The generator converts the city's
+  walls again ([#75]).
+- A wide body kit now takes the place of the bumpers and side skirts, as in the original game:
+  the front and rear bumpers and skirts you bought no longer poke through the kit's own shell.
+  They stay in your garage and come back if you take the kit off ([#137]).
+- On the PSP-1000, the Event Results screen no longer shows a stray "45 sec" timer and a
+  "WWWWWWWWWWWW DISCONNECTED" line over Race Stats from your second race on. Those leftovers
+  of the online mode now stay hidden after every race, not just the first one ([#134]).
+- Traffic merging onto a bridge stays on the road. Where a street joins a bridge on a ramp,
+  the traffic cars dipped for half a second into the grass bank under the deck, a few metres
+  below the road, and popped back up onto the bridge. The same happened on two other ramps of
+  the city, where the traffic briefly dropped to the street under the ramp. Traffic now climbs
+  these ramps on the road surface, as racers do ([#138]).
+- Opening the doors in the Car Specialties Shop shows them as the original does: each door
+  swings open with its inner panel and its door decals, the side mirror rides along with the
+  door instead of floating where it was, and the door frame shows in the opening. Closed, the
+  doors look as before ([#139]).
+- Accepting a photo shoot or a unique part's challenge now turns the GPS on to its destination
+  every time, as in the original, and a star picked on the World Map gets its route too.
+  The GPS used to look for the photographer's road at your car's height, so when the shoot
+  waited high on a hillside road or down under a freeway, far above or below the star, it found
+  none and stayed off, by itself and from the map. 11 of the 28 timed events did that, the
+  first of them in the second stage. The generator now stores the height of every star and
+  destination; please regenerate your game data with this version's generator. With older data
+  the GPS still finds the road, at whatever height it is ([#140]).
+- The hazard lamp on the ROAD CLOSED barrier behind the menus is orange and blinks again, as in
+  the original, instead of glowing a steady yellow ([#141]).
+- The World Map navigates as in the original. L and R switch between the Full Map and the areas
+  of Bayview you have opened so far (City Core, Beacon Hill, Jackson Heights, Coal Harbor East
+  and Coal Harbor West), with the area's name over the map. On a row, Left and Right step
+  through its places on the map, top to bottom, under the pulsing blue marker, so you can pick
+  any shop, race or star of that kind instead of always the nearest; X asks "Are you sure you
+  want to engage the GPS system?" and Yes closes the map with the route on. With the GPS already
+  on, X turns it off first. During a photo shoot's or a unique part's countdown the map shows
+  only its destination's star, and the challenge's own route stays as it is. The white squares
+  on the map's list are gone too: empty rows are plain and each kind shows its own icon ([#143]).
+- Leaving a shop quickly no longer freezes and switches off the PSP. On your second exit in a
+  row from Car Specialties (or any city shop), the camera kept the first exit's position at the
+  door and landed exactly on your car. That turned into a math error that stops a real PSP
+  outright, without even the "game stopped responding" screen ([#103], [#108]).
+- A math slip anywhere in the game can no longer switch off the PSP. The PSP's processor
+  stops the whole console on a division by zero, where the GameCube and the PS2 simply carry
+  on; the game now carries on too, and counts each case on the debug overlay and in the bug
+  mark, so we can still fix them ([#103], [#108]).
+- The "game stopped responding" screen no longer flashes up while the game starts from the
+  memory stick: the start's loading is not a freeze ([#103]).
+- Leaving a shop now shows the loading screen while the street loads, as the original does,
+  instead of holding the shop's last frame. On the PSP-1000 that frozen frame lasted long
+  enough to bring up the "game stopped responding" screen at every shop exit ([#103]).
+- Rachel's 350Z now sounds like her tuned car, as in the original: it plays the level 2
+  engine, with its own exhaust note and its own shift sounds, instead of a stock 350Z's.
+  On every car, the engine note now follows the parts you fit the way the original picks it:
+  the Performance Exhaust, the Cat Back Exhaust System and Blueprint the Block choose the
+  engine sound, and the transmission parts its shift sounds, even before the whole package
+  is installed ([#88], [#142]).
+- The shops now list only the parts you can buy, as in the original game: locked bumpers, skirts,
+  spoilers, hoods, lights, mirrors, exhaust tips, wide body kits, rims and vinyls stay out of the
+  list until your career opens them. A rim brand or vinyl group with nothing on offer yet shows
+  as locked ([#137]).
+- SPRAY SHOW is back: hit the nitrous with your foot off the gas, or under 5 mph, and the purge
+  earns 100 style points once a race, a free 6.7% of a tank, as on the PS2 ([#132]).
+- Upshifts no longer leave the engine note hanging: after the short wobble that follows a
+  shift into second, third or fourth, the pitch used to stay put and then jump back up to the
+  revs, about a second after the shift. It now rises with the revs straight away, as on the
+  PS2 ([#142]).
+
 ## [0.2.6] - 2026-11-04 — Rush Hour at the Rail Yard
 
 EA Trax: *Rush Hour*, Christopher Lawrence ([official channel](https://www.youtube.com/djcltv)).
@@ -633,7 +938,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.6...HEAD
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.6...v0.3.0
 [0.2.6]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.5...v0.2.6
 [0.2.4]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...v0.2.3
@@ -741,3 +1047,38 @@ throughout the game were still pending.
 
 [#121]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/121
 [#110]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/110
+[#54]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/54
+[#69]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/69
+[#71]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/71
+[#70]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/70
+[#123]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/123
+[#118]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/118
+[#122]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/122
+[#116]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/116
+[#117]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/117
+[#119]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/119
+[#96]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/96
+[#101]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/101
+[#129]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/129
+[#130]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/130
+[#132]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/132
+[#127]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/127
+[#105]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/105
+[#113]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/113
+[#115]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/115
+[#131]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/131
+[#133]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/133
+[#128]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/128
+[#84]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/84
+[#51]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/51
+[#65]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/65
+[#137]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/137
+[#134]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/134
+[#138]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/138
+[#139]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/139
+[#140]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/140
+[#141]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/141
+[#143]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/143
+[#103]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/103
+[#142]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/142
+[#146]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/146

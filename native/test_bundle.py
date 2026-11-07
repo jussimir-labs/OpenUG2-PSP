@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import socket
 import struct
 import subprocess
 import sys
@@ -17,6 +18,7 @@ import urllib.error
 import zipfile
 
 from release_guard import require_clean
+from build_bundle import package_member
 
 
 def fixture_probe(root):
@@ -217,6 +219,8 @@ def fixture_probe(root):
 def archive_package(original):
     original = Path(original)
     manifest = json.loads((original / "bundle.json").read_text())
+    manifest["files"] = {name: digest for name, digest in manifest["files"].items()
+                         if package_member(name)}
     manifest["files"]["native-qa.json"] = hashlib.sha256((original / "native-qa.json").read_bytes()).hexdigest()
     (original / "bundle.json").write_text(json.dumps(manifest, indent=2) + "\n")
     require_clean(original)
@@ -225,7 +229,7 @@ def archive_package(original):
     try:
         with zipfile.ZipFile(staged, "w", zipfile.ZIP_DEFLATED, compresslevel=6, strict_timestamps=False) as archive:
             for file in sorted(original.rglob("*")):
-                if file.is_file() and ".tools" not in file.relative_to(original).parts:
+                if file.is_file() and package_member(file.relative_to(original)):
                     archive.write(file, original.name + "/" + file.relative_to(original).as_posix())
         require_clean(staged)
         staged.replace(zipped)
@@ -254,6 +258,8 @@ def test(root, archive=False):
             PYTHONHOME="invalid-global-python",
             PYTHONPATH="invalid-global-modules",
             VIRTUAL_ENV="invalid-global-venv",
+            # Package QA never asks GitHub for a newer release.
+            NFSU2_UPDATES="0",
         )
         clean["PATH"] = (
             str(root / "runtime/bin")
@@ -354,16 +360,35 @@ def test(root, archive=False):
                 b"<!DOCTYPE html" in response.read()
                 or b"<!doctype html" in request("/").read()
             )
-        duplicate = subprocess.run(
-            [exe, "serve", "--no-browser"],
-            env=clean,
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
-        assert duplicate.returncode == 0 and "already open" in duplicate.stdout, (
+        def update_state():
+            # launcher.lock is the running launcher's lease: Windows keeps it
+            # locked against reads, and its bytes are not update state.
+            return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                    for p in (root / '.updates').rglob('*') if p.is_file() and p.name != 'launcher.lock'}
+        before_duplicate = update_state()
+        # A listening local sentinel records even a connection attempt; it
+        # serves no credentials and requires no external network access.
+        with socket.socket() as sentinel:
+            sentinel.bind(('127.0.0.1', 0)); sentinel.listen(); sentinel.settimeout(.05)
+            endpoint = 'http://127.0.0.1:' + str(sentinel.getsockname()[1])
+            duplicate = subprocess.run(
+                [exe, "serve", "--no-browser"],
+                env=dict(clean, NFSU2_UPDATES='1', NFSU2_UPDATE_API=endpoint,
+                         NFSU2_UPDATE_WEB=endpoint, NFSU2_GITHUB_CLIENT_ID='test-client'),
+                capture_output=True, text=True, timeout=30,
+            )
+            try:
+                connection, _ = sentinel.accept()
+            except socket.timeout:
+                pass
+            else:
+                connection.close()
+                raise AssertionError('Busy second instance attempted an update connection')
+        assert duplicate.returncode == 76 and "BUSY:" in duplicate.stderr, (
             duplicate.stdout + duplicate.stderr
         )
+        assert update_state() == before_duplicate, 'Busy second instance mutated update state'
+        results['second_instance'] = 'BUSY/76; update state unchanged; no update connection'
         with request("/api/prepare", {}) as response:
             assert response.status == 200
         until = time.monotonic() + 90

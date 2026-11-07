@@ -30,11 +30,22 @@ near plane; in the shops' rooms only near the car (their backdrops reach
 340 m: cut whole into 6 m pieces, the car lot's took 1.9 MB), farther ones
 to a length growing with their distance (the showroom's as it was).
 
+The showroom's texture animation (chunk 0xb0300100, as the stream's,
+convert_worldanim.texture_anims: a name, frames, frames a second, the
+clock, then the frames' keys): SFX_BLINKORANGELIGHT, the hazard lamp on
+the ROAD CLOSED barrier, bright, half, dark, half at 10 a second. Its
+texture is opaque (AlphaBlendType +0x32 0, as convert_world.draw_mode
+reads it), the lamp's orange its own and its vertices': added over the
+street, as the other SFX_ glows, it read yellow and never blinked (beta
+issue 141).
+
 showroom.n2sc: 'N2SC', u32 version 1, u32 textures, u32 batches; a
 texture: u16 w, u16 h, 12 pad, 1024-byte CLUT (RGBA), w*h swizzled T8 indices; a
 batch: u16 texture, u16 flags (1 alpha-tested, 2 blended, 3 added; 4 the
 turntable's glossy top, over the car's reflection; 8 the platform's
-three turntables, which turn when the menus' car arrives), u32 vertices,
+three turntables, which turn when the menus' car arrives; 0x10 an animated
+texture: bits 8-11 its frames, the textures from the batch's on, bits 12-15
+frames a second), u32 vertices,
 then triangles as vertices of 24 bytes: f32 u, v, u32 colour (ABGR), f32
 x, y, z.
 """
@@ -43,7 +54,7 @@ import math
 from pathlib import Path
 import struct
 
-from n2formats import archived, FlatTPK
+from n2formats import archived, chunks, unpad, FlatTPK
 import n2world
 from convert_hud import texture_blob
 import n2source
@@ -82,11 +93,32 @@ def split_near(tri, limit):
     return out
 
 
+def texture_anims(d):
+    """{first frame's key: (frames' keys, frames a second)} of the
+    file's 0xb0300100 (convert_worldanim.texture_anims' records)."""
+    out = {}
+    for t, p, n in chunks(d):
+        if t != 0xb0300100:
+            continue
+        leaves = {tt: unpad(d[o:o + s]) for tt, o, s in chunks(d, p, p + n) if not tt & 0x80000000}
+        recs, keys = leaves.get(0x30300102, b''), leaves.get(0x30300103, b'')
+        at = 0
+        for r in range(0, len(recs) - 0x33, 0x34):
+            count, fps, _clock = struct.unpack_from('<3I', recs, r + 0x1c)
+            ks = [struct.unpack_from('<I', keys, at + 16 * i)[0] for i in range(count)]
+            at += 16 * count
+            if not 1 < count <= 15 or not 0 < fps <= 15:
+                raise SystemExit(f'texture animation {recs[r:r + 24]!r}: {count} frames at {fps} do not fit the batch flags')
+            out[ks[0]] = (ks, fps)
+    return out
+
+
 def scene(game, name='SHOWROOM'):
     d = archived(game, f'FRONTEND/PLATFORMS/{name}.BIN')
     split = n2world.tessellate if name == 'SHOWROOM' else split_near
     objs = n2world.section_objects(d)
     tpk = FlatTPK(d)
+    anims = texture_anims(d)
     textures, tex_of, batches = [], {}, []
     for o in objs.values():
         if o.name not in KEEP:
@@ -98,16 +130,32 @@ def scene(game, name='SHOWROOM'):
                     continue
                 a = t.rgba()[3::4]
                 holes = sum(1 for v in a if v < 16) / len(a)
-                # the shops' turntables' tops (GRG_, PRF_, PRTSHP_, AUD_SUBDISK)
-                # and floors are the showroom's gloss too
-                gloss = t.name in GLOSS or t.name.endswith('_SUBDISK') or o.name == 'BACKDROP_FLOOR'
-                mode = (-1 if t.name.startswith('SHD_') else 0 if gloss
-                        else 3 if t.name.startswith('SFX_') or t.name == 'LIGHT' else 1 if holes > .05 else 0)
-                if t.name.endswith('_SUBDISK'):
-                    mode |= 4   # the turntable's top: glossy, over the car's reflection
-                tex_of[key] = (len(textures), mode)
+                usage, blend = tpk.records[key][1][0x31], tpk.records[key][1][0x32]
+                glow = (t.name.startswith('SFX_') or t.name == 'LIGHT') and (usage, blend) != (0, 0)   # an opaque SFX_ (the blinking lamp) is not a glow
+                anim = 0
+                if key in anims:   # its frames right after it
+                    ks, fps = anims[key]
+                    anim = 0x10 | len(ks) << 8 | fps << 12
+                tex_of[key] = (len(textures), t.name, holes, glow, anim)
                 textures.append(texture_blob(t, 128))
-            ti, mode = tex_of[key]
+                for k in anims.get(key, ((),))[0][1:]:
+                    f = tpk.get(k)
+                    if f is None:
+                        raise SystemExit(f'{name}: animation frame {k:#x} missing')
+                    textures.append(texture_blob(f, 128))
+            ti, tname, holes, glow, anim = tex_of[key]
+            # the shops' turntables' tops (GRG_, PRF_, PRTSHP_, AUD_SUBDISK)
+            # and floors are the showroom's gloss too. By the object, not
+            # the texture alone: the car specialties' marble is also on its
+            # BACKDROP, cut out there; taken from it, the floor was
+            # alpha-tested away by its gloss and left the room black
+            # under the turntable (beta issue 70).
+            gloss = tname in GLOSS or tname.endswith('_SUBDISK') or o.name == 'BACKDROP_FLOOR'
+            mode = (-1 if tname.startswith('SHD_') else 0 if gloss
+                    else 3 if glow else 1 if holes > .05 else 0)
+            if tname.endswith('_SUBDISK'):
+                mode |= 4   # the turntable's top: glossy, over the car's reflection
+            mode |= anim   # an animated texture (beta issue 141)
             if mode < 0:
                 continue
             tris = []

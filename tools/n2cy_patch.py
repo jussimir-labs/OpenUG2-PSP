@@ -59,8 +59,10 @@ def read_archive(path, keep=False):
 
 
 def _layers_end(blob):
-    terrain = struct.unpack_from('<I', blob, 8)[0]
-    return terrain if terrain else len(blob)
+    """Where the grid's layers end: the terrain section or the layers'
+    shapes (their offset at +12), whichever comes first, else the blob's end."""
+    ends = [x for x in struct.unpack_from('<2I', blob, 8) if x]
+    return min(ends) if ends else len(blob)
 
 
 def _fields(blob, end):

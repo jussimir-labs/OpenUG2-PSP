@@ -1,5 +1,17 @@
-//! Offline CLI supervisor. The browser UI and conversion engine use only the
-//! private runtime shipped beside this executable. No setup/package manager.
+//! CLI supervisor and launcher. The browser UI and conversion engine use only
+//! the private runtime shipped beside this executable. No setup/package manager.
+//! At each start it offers the newest beta release and installs it beside
+//! this package (see `layout`).
+mod config;
+mod credentials;
+mod github;
+mod install;
+mod layout;
+mod lease;
+mod semver;
+mod updater;
+
+use layout::{helper_name, Layout, Target, RESTART};
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::{
@@ -10,7 +22,7 @@ use std::{
     process::{self, Command, Stdio},
     sync::{
         atomic::{AtomicBool, Ordering},
-        Arc,
+        Arc, OnceLock,
     },
     thread,
     time::{Duration, Instant},
@@ -21,7 +33,24 @@ struct Manifest {
     schema: u32,
     platform: String,
     python: String,
+    #[serde(default)]
+    generator_version: String,
+    #[serde(default)]
+    launcher_protocol: u32,
     files: BTreeMap<String, String>,
+}
+fn file_sha256(path: &Path) -> io::Result<String> {
+    let mut f = fs::File::open(path)?;
+    let mut h = Sha256::new();
+    let mut buf = [0u8; 65536];
+    loop {
+        let n = f.read(&mut buf)?;
+        if n == 0 {
+            break;
+        }
+        h.update(&buf[..n]);
+    }
+    Ok(format!("{:x}", h.finalize()))
 }
 fn safe_path(root: &Path, relative: &str) -> Result<PathBuf, String> {
     let p = Path::new(relative);
@@ -39,7 +68,7 @@ fn safe_path(root: &Path, relative: &str) -> Result<PathBuf, String> {
     }
     Ok(resolved)
 }
-fn platform() -> &'static str {
+pub(crate) fn platform() -> &'static str {
     if cfg!(all(target_os = "macos", target_arch = "aarch64")) {
         "macos-arm64"
     } else if cfg!(all(target_os = "macos", target_arch = "x86_64")) {
@@ -52,7 +81,7 @@ fn platform() -> &'static str {
         "unsupported"
     }
 }
-fn verify(root: &Path) -> Result<Manifest, String> {
+pub(crate) fn verify(root: &Path) -> Result<Manifest, String> {
     let data = fs::read(root.join("bundle.json")).map_err(|_| {
         "bundle.json missing. Keep the executable inside the complete extracted package."
             .to_string()
@@ -100,17 +129,7 @@ fn verify(root: &Path) -> Result<Manifest, String> {
     }
     for (name, expected) in &m.files {
         let path = safe_path(root, name)?;
-        let mut f = fs::File::open(path).map_err(|e| e.to_string())?;
-        let mut h = Sha256::new();
-        let mut buf = [0u8; 65536];
-        loop {
-            let n = f.read(&mut buf).map_err(|e| e.to_string())?;
-            if n == 0 {
-                break;
-            }
-            h.update(&buf[..n]);
-        }
-        if format!("{:x}", h.finalize()) != *expected {
+        if file_sha256(&path).map_err(|e| e.to_string())? != *expected {
             return Err(format!(
                 "Bundle file changed or corrupted: {name}. Extract the original package again."
             ));
@@ -129,6 +148,17 @@ fn local_url(s: &str) -> bool {
         && token.len() == 64
         && token.bytes().all(|b| b.is_ascii_hexdigit())
 }
+fn interface_ready(url: &str) -> bool {
+    if !local_url(url) {
+        return false;
+    }
+    let Some((base, token)) = url.split_once("/#token=") else { return false };
+    let agent = ureq::AgentBuilder::new().redirects(0).timeout(Duration::from_secs(2)).build();
+    agent.get(&format!("{base}/api/state")).set("X-NFSU2-Token", token).call()
+        .ok().and_then(|r| r.into_string().ok())
+        .and_then(|s| serde_json::from_str::<serde_json::Value>(&s).ok())
+        .is_some_and(|v| v.get("status").is_some_and(|s| s.is_string()) && v.get("busy").is_some_and(|b| b.is_boolean()))
+}
 fn browser(url: &str) -> io::Result<()> {
     if !local_url(url) {
         return Err(io::Error::new(
@@ -136,6 +166,16 @@ fn browser(url: &str) -> io::Result<()> {
             "Invalid local URL",
         ));
     }
+    open_url(url)
+}
+/// GitHub's sign-in page, the only remote page the launcher opens.
+pub(crate) fn open_web(url: &str) -> io::Result<()> {
+    if url != format!("{}/login/device", config::WEB) {
+        return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unexpected address"));
+    }
+    open_url(url)
+}
+fn open_url(url: &str) -> io::Result<()> {
     #[cfg(target_os = "macos")]
     {
         Command::new("/usr/bin/open").arg(url).spawn()?;
@@ -169,10 +209,18 @@ fn browser(url: &str) -> io::Result<()> {
     #[allow(unreachable_code)]
     Ok(())
 }
-fn runtime_command(root: &Path, m: &Manifest) -> Result<Command, String> {
+fn runtime_command(root: &Path, m: &Manifest, layout: &Layout) -> Result<Command, String> {
+    layout.authority().map_err(|e| e.to_string())?;
+    // Record the first generation even when update checks were skipped or
+    // unavailable. A future launcher can then offer to update that game.
+    fs::create_dir_all(&layout.updates).map_err(|e| format!("Cannot create the generator state folder ({e})"))?;
     let mut cmd = Command::new(safe_path(root, &m.python)?);
     cmd.current_dir(root)
         .env("NFSU2_BUNDLE_ROOT", root)
+        // Outputs and the last generation are kept beside the extracted
+        // package, so an update never moves or deletes them.
+        .env("NFSU2_LAUNCHER_ROOT", &layout.root)
+        .env("NFSU2_LAUNCHER_STATE", &layout.updates)
         .env("PYTHONNOUSERSITE", "1")
         .env("PYTHONDONTWRITEBYTECODE", "1")
         .env("PYTHONUTF8", "1")
@@ -185,6 +233,8 @@ fn runtime_command(root: &Path, m: &Manifest) -> Result<Command, String> {
         "NFSU2_DIST",
         "NFSU2_CJPEGLI",
         "NFSU2_MAC_SLOTS_DIR",
+        "NFSU2_UPDATED_FROM",
+        "NFSU2_SESSION_STDIN",
         "DYLD_LIBRARY_PATH",
         "LD_LIBRARY_PATH",
         "LD_PRELOAD",
@@ -239,50 +289,265 @@ impl Drop for Job {
         }
     }
 }
-fn main_result() -> Result<i32, String> {
-    let args: Vec<String> = env::args().skip(1).collect();
-    if args.iter().any(|a| a == "--help" || a == "-h") {
-        println!("NFSU2 PSP native helper\n\n  nfsu2-generator [serve] [--no-browser] [--port PORT]\n  nfsu2-generator doctor\n\nKeep this executable in the extracted bundle. No Python/WSL/Homebrew/distribution package is needed.\nThe ISO and generated game files stay on this computer.");
-        return Ok(0);
+static INTERRUPTS: OnceLock<Arc<AtomicBool>> = OnceLock::new();
+/// Ctrl+C is handled from here on: the helper stops its children itself.
+fn interrupts() -> Result<Arc<AtomicBool>, String> {
+    if let Some(f) = INTERRUPTS.get() {
+        return Ok(f.clone());
     }
-    let mut mode = "serve";
-    let mut no_browser = false;
-    let mut port = None;
+    let flag = Arc::new(AtomicBool::new(false));
+    let f = flag.clone();
+    ctrlc::set_handler(move || f.store(true, Ordering::SeqCst)).map_err(|e| e.to_string())?;
+    let _ = INTERRUPTS.set(flag.clone());
+    Ok(flag)
+}
+pub(crate) fn interrupted() -> bool {
+    INTERRUPTS.get().is_some_and(|f| f.load(Ordering::SeqCst))
+}
+#[derive(Clone, Copy, PartialEq)]
+enum Mode {
+    Serve,
+    Doctor,
+    Update,
+    Login,
+    Logout,
+}
+#[derive(Clone)]
+struct Args {
+    mode: Mode,
+    no_browser: bool,
+    port: Option<u16>,
+    no_update: bool,
+    yes: bool,
+    raw: Vec<String>,
+}
+const HELP: &str = "NFSU2 PSP native helper
+
+  nfsu2-generator [serve] [--no-browser] [--port PORT] [--no-update] [--yes]
+  nfsu2-generator doctor
+  nfsu2-generator update [--yes]
+  nfsu2-generator login | logout
+
+Keep this executable in the extracted bundle. No Python/WSL/Homebrew/distribution package is needed.
+The ISO and generated game files stay on this computer.
+At each start it offers the newest beta release (`--no-update` skips the check); `--yes`
+accepts without asking. The GitHub sign-in is kept in this computer's password store;
+`logout` removes it.";
+fn parse_args() -> Result<Option<Args>, String> {
+    let raw: Vec<String> = env::args().skip(1).collect();
+    if raw.iter().any(|a| a == "--help" || a == "-h") {
+        println!("{HELP}");
+        return Ok(None);
+    }
+    let mut a = Args { mode: Mode::Serve, no_browser: false, port: None, no_update: false, yes: false, raw: raw.clone() };
     let mut i = 0;
-    while i < args.len() {
-        match args[i].as_str() {
-            "serve" => mode = "serve",
-            "doctor" => mode = "doctor",
-            "--no-browser" => no_browser = true,
+    while i < raw.len() {
+        match raw[i].as_str() {
+            "serve" => a.mode = Mode::Serve,
+            "doctor" => a.mode = Mode::Doctor,
+            "update" => a.mode = Mode::Update,
+            "login" => a.mode = Mode::Login,
+            "logout" => a.mode = Mode::Logout,
+            "--no-browser" => a.no_browser = true,
+            "--no-update" => a.no_update = true,
+            "--yes" => a.yes = true,
             "--port" => {
                 i += 1;
-                port = Some(
-                    args.get(i)
+                a.port = Some(
+                    raw.get(i)
                         .ok_or("Missing port")?
                         .parse::<u16>()
                         .map_err(|_| "Invalid port")?,
                 );
             }
-            a => return Err(format!("Unknown argument: {a}")),
+            x => return Err(format!("Unknown argument: {x}")),
         };
         i += 1;
     }
-    let root = env::current_exe()
+    Ok(Some(a))
+}
+fn bundle_version(root: &Path) -> Option<semver::Version> {
+    #[derive(Deserialize)]
+    struct V {
+        generator_version: String,
+    }
+    let v: V = serde_json::from_slice(&fs::read(root.join("bundle.json")).ok()?).ok()?;
+    semver::Version::parse(&v.generator_version)
+}
+/// Runs an installed version. Its executable must be the one its own
+/// `bundle.json` lists, which was checked against the release on install.
+fn delegate(layout: &Layout, here: &Path, dir: &Path, args: &[String], skip_update: bool) -> Result<i32, String> {
+    layout.authority().map_err(|e| e.to_string())?;
+    if !layout.lease.owns_version_dir(dir) { return Err("The selected version belongs to another folder".into()); }
+    let exe = dir.join(helper_name());
+    let manifest = fs::read(dir.join("bundle.json")).ok()
+        .and_then(|d| serde_json::from_slice::<Manifest>(&d).ok())
+        .ok_or("its manifest cannot be read")?;
+    if manifest.launcher_protocol != 2 { return Err("its launcher does not support the protected handoff".into()); }
+    let listed = manifest.files.get(&helper_name()).cloned();
+    if listed.is_none() || listed != file_sha256(&exe).ok() {
+        return Err("its files changed".into());
+    }
+    // Ctrl+C reaches the version that runs: it stops its own children.
+    interrupts()?;
+    let session = credentials::session();
+    let mut command = Command::new(&exe);
+    command.args(args)
+        .current_dir(dir)
+        .env("NFSU2_LAUNCHER_ROOT", &layout.root)
+        .env("NFSU2_SKIP_UPDATE", if skip_update { "1" } else { "0" });
+    let session = session.map(serde_json::to_value).transpose().map_err(|_| "Cannot pass the session sign-in")?;
+    let mut child = layout.lease.spawn(&mut command, true, session, here).map_err(|e| e.to_string())?;
+    #[cfg(windows)]
+    let _job = match Job::attach(&child) {
+        Ok(j) => j,
+        Err(e) => {
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(e);
+        }
+    };
+    let status = child.wait().map_err(|e| e.to_string())?;
+    Ok(status.code().unwrap_or(130))
+}
+fn main_result() -> Result<i32, String> {
+    let Some(mut args) = parse_args()? else {
+        return Ok(0);
+    };
+    // After going back from a version that did not start, this launch does
+    // not offer it again.
+    args.no_update |= env::var("NFSU2_SKIP_UPDATE").is_ok_and(|v| v == "1");
+    let here = env::current_exe()
         .map_err(|e| e.to_string())?
         .parent()
         .ok_or("Missing bundle directory")?
         .canonicalize()
         .map_err(|e| e.to_string())?;
+    // Installed helpers are entered only through the root's verified handoff.
+    // Derive the root from the canonical layout, never from an env assertion.
+    let installed_root = here.parent().filter(|p| p.file_name().is_some_and(|n| n == layout::UPDATES))
+        .and_then(|p| p.parent()).filter(|r| r.join("bundle.json").is_file())
+        .filter(|_| here.file_name().and_then(|n| n.to_str()).is_some_and(|n| semver::Version::parse(n).is_some()));
+    if installed_root.is_some() && env::var("NFSU2_ROOT_LEASE_PIPE").as_deref() != Ok("1") {
+        return Err("Open nfsu2-generator from the extracted package's root folder.".into());
+    }
+    let root = installed_root.unwrap_or(&here);
+    let (guard, session) = lease::RootLease::enter(root)?;
+    credentials::accept_session(session)?;
+    let layout = Layout::new(root, guard);
+    if installed_root.is_some() { return run_package(&here, &layout, &args, true); }
+    // Administrative commands authenticate through the extracted package;
+    // they do not boot, count attempts, confirm, clean or roll back a pending
+    // installed runtime. Only a real probe/ready interface can confirm it.
+    if matches!(args.mode, Mode::Login | Mode::Logout) {
+        return run_package(&here, &layout, &args, false);
+    }
+    let Some(own) = bundle_version(&here) else {
+        return run_package(&here, &layout, &args, false);
+    };
+    for _ in 0..4 {
+        let rolled_back = |layout: &Layout, args: &mut Args, why: &str| {
+            let _ = layout.roll_back_current(why);
+            args.no_update = true;
+        };
+        let target = layout.resolve(&own).unwrap_or_else(|e| {
+            eprintln!("The installed updates could not be read ({e}).");
+            Target::Root
+        });
+        let code = match target {
+            Target::Root => run_package(&here, &layout, &args, false)?,
+            Target::Version(dir) => {
+                let name = dir.file_name().unwrap_or_default().to_string_lossy().into_owned();
+                match delegate(&layout, &here, &dir, &args.raw, args.no_update) {
+                    Ok(code) => {
+                        let pending = layout.pointer().is_some_and(|p| p.version == name && p.state == "pending");
+                        if pending && ![RESTART, 130].contains(&code) {
+                            rolled_back(&layout, &mut args, "did not open");
+                            continue;
+                        }
+                        code
+                    }
+                    Err(e) => {
+                        rolled_back(&layout, &mut args, &format!("cannot start ({e})"));
+                        continue;
+                    }
+                }
+            }
+        };
+        if code != RESTART {
+            return Ok(code);
+        }
+    }
+    Ok(1)
+}
+fn run_package(here: &Path, layout: &Layout, args: &Args, delegated: bool) -> Result<i32, String> {
+    if args.mode == Mode::Logout {
+        updater::logout(here, layout)?;
+        return Ok(0);
+    }
     println!("Checking the included runtime and converters...");
-    let m = verify(&root)?;
-    let mut cmd = runtime_command(&root, &m)?;
-    cmd.arg(root.join("generator.py"));
-    if mode == "doctor" {
-        let status = cmd.arg("--probe").status().map_err(|e| e.to_string())?;
+    let m = verify(here)?;
+    // The version name this one has among the installed updates.
+    let mine = delegated.then(|| m.generator_version.clone());
+    let updated_from = layout
+        .pointer()
+        .filter(|p| Some(&p.version) == mine.as_ref() && p.state == "pending")
+        .map(|p| p.from);
+    if let Some(from) = &updated_from {
+        println!("Updated to v{} (from v{from}).", m.generator_version);
+    }
+    if args.mode == Mode::Login {
+        updater::explicit_login(here, layout)?;
+        return Ok(0);
+    }
+    // A version that was just installed does not check again.
+    if updated_from.is_none() && !args.no_update && matches!(args.mode, Mode::Update | Mode::Serve) {
+        let opts = updater::Options { interactive: updater::interactive(), yes: args.yes, explicit: args.mode == Mode::Update };
+        match updater::check(here, layout, &m.generator_version, &opts) {
+            Ok(updater::Outcome::Installed) => {
+                // Keep the session alive through the version switch, including
+                // when this process itself was delegated by an older launcher.
+                let p = layout.pointer().ok_or("The installed update was not selected")?;
+                let result = delegate(layout, here, &layout.version_dir(&p.version), &args.raw, true);
+                if matches!(result, Ok(130)) || layout.pointer().is_some_and(|selected| selected.version == p.version && selected.state == "confirmed") {
+                    return result;
+                }
+                layout.roll_back_current("did not open").map_err(|e| e.to_string())?;
+                let mut retry = args.clone();
+                retry.no_update = true;
+                return run_package(here, layout, &retry, delegated);
+            }
+            Ok(updater::Outcome::Current) => {}
+            Err(e) => println!("Update check skipped: {e}"),
+        }
+    }
+    if args.mode == Mode::Update {
+        if updated_from.is_some() {
+            let mut probe = runtime_command(here, &m, layout)?;
+            probe.arg(here.join("generator.py")).arg("--probe");
+            let status = layout.lease.spawn_runtime(&mut probe).map_err(|e| e.to_string())?.wait().map_err(|e| e.to_string())?;
+            if !status.success() {
+                return Ok(status.code().unwrap_or(1));
+            }
+            layout.confirm(mine.as_deref());
+        }
+        return Ok(0);
+    }
+    let mut cmd = runtime_command(here, &m, layout)?;
+    if let Some(from) = &updated_from {
+        cmd.env("NFSU2_UPDATED_FROM", from);
+    }
+    cmd.arg(here.join("generator.py"));
+    if args.mode == Mode::Doctor {
+        cmd.arg("--probe");
+        let status = layout.lease.spawn_runtime(&mut cmd).map_err(|e| e.to_string())?.wait().map_err(|e| e.to_string())?;
+        if status.success() {
+            layout.confirm(mine.as_deref());
+        }
         return Ok(status.code().unwrap_or(1));
     }
     cmd.arg("--no-browser");
-    if let Some(p) = port {
+    if let Some(p) = args.port {
         cmd.args(["--port", &p.to_string()]);
     }
     cmd.stdin(Stdio::null())
@@ -293,31 +558,35 @@ fn main_result() -> Result<i32, String> {
         use std::os::unix::process::CommandExt;
         cmd.process_group(0);
     }
-    let interrupted = Arc::new(AtomicBool::new(false));
-    let flag = interrupted.clone();
-    ctrlc::set_handler(move || flag.store(true, Ordering::SeqCst)).map_err(|e| e.to_string())?;
-    let mut child = cmd
-        .spawn()
+    let interrupted = interrupts()?;
+    let mut child = layout.lease.spawn_runtime(&mut cmd)
         .map_err(|e| format!("Included Python could not start: {e}"))?;
     #[cfg(windows)]
     let _job = match Job::attach(&child) {
         Ok(j) => j,
         Err(e) => {
             let _ = child.kill();
+            let _ = child.wait();
             return Err(e);
         }
     };
     let stdout = child.stdout.take().ok_or("No helper output")?;
-    thread::spawn(move || {
+    let no_browser = args.no_browser;
+    let opened = Layout::new(&layout.root, layout.lease.clone());
+    let output = thread::spawn(move || {
         for line in io::BufReader::new(stdout).lines().map_while(Result::ok) {
             if let Some(url) = line.strip_prefix("NFSU2_GENERATOR_URL=") {
-                if local_url(url) {
+                if interface_ready(url) {
                     println!("Local interface: {url}");
+                    // This version opened: the previous one is no longer needed.
+                    opened.confirm(mine.as_deref());
                     if !no_browser {
                         if let Err(e) = browser(url) {
                             eprintln!("Open the local URL above in your browser ({e}).")
                         }
                     }
+                } else {
+                    eprintln!("The local interface did not answer; this update is not confirmed.");
                 }
             } else {
                 println!("{line}")
@@ -327,6 +596,7 @@ fn main_result() -> Result<i32, String> {
     let mut stopping = None;
     loop {
         if let Some(status) = child.try_wait().map_err(|e| e.to_string())? {
+            let _ = output.join();
             return Ok(status.code().unwrap_or(130));
         }
         if interrupted.load(Ordering::SeqCst) {
@@ -360,7 +630,7 @@ fn main() {
         Ok(code) => process::exit(code),
         Err(e) => {
             eprintln!("NFSU2 PSP: {e}");
-            process::exit(1)
+            process::exit(if e.starts_with("BUSY:") { lease::BUSY } else { 1 })
         }
     }
 }

@@ -108,6 +108,7 @@ class HelperTests(Fixture):
         def runner(cmd,env=None):
             self.assertNotIn('--fresh',cmd);self.assertNotIn('--skip-movies',cmd)
             self.assertNotIn('--accept-unknown-iso',cmd)
+            self.assertEqual('--update' in cmd, g.previous_generation(self.out))
             self.out.mkdir(exist_ok=True)
             if report is not None:(self.out/'relatorio.json').write_text(json.dumps(report))
             return code
@@ -125,6 +126,59 @@ class HelperTests(Fixture):
 
     def test_missing_report_never_shows_success(self):
         self.assertEqual(self.work_fixture(0,None)['status'],'failed')
+
+    def previous_generation(self):
+        (self.out/'PSP/GAME/NFSU2VIEW').mkdir(parents=True)
+        (self.out/'PSP/GAME/NFSU2VIEW/EBOOT.PBP').write_bytes(b'PBP')
+        (self.out/'.nfsu2-psp-build').write_text('{}')
+
+    def test_failed_update_asks_for_a_fresh_generation(self):
+        self.previous_generation()
+        s=self.work_fixture(2,{'reference_verified':False})
+        self.assertEqual(s['status'],'diagnostic');self.assertTrue(s['update_failed'])
+        self.assertIn('from scratch',s['message'])
+        self.assertTrue((self.out/'PSP/GAME/NFSU2VIEW/EBOOT.PBP').is_file())
+
+    def test_first_generation_mismatch_is_not_an_update_failure(self):
+        self.assertFalse(self.work_fixture(2,{'reference_verified':False})['update_failed'])
+
+    def test_verified_game_is_offered_to_the_next_version(self):
+        state=self.base/'pkg/.updates'; state.mkdir(parents=True)
+        self.app.data['build']['version']='0.2.6'
+        with patch.object(g,'LAUNCHER_STATE',state):
+            self.assertEqual(self.work_fixture(0,{'reference_verified':True})['status'],'complete')
+        self.previous_generation()
+        offer=g.suggested_update('0.2.7',state)
+        self.assertEqual((offer['output'],offer['iso'],offer['from_version'],offer['to_version']),(str(self.out),str(self.iso),'0.2.6','0.2.7'))
+        self.assertIsNone(g.suggested_update('0.2.6',state))
+        self.iso.unlink()
+        self.assertIsNone(g.suggested_update('0.2.7',state))
+
+    def test_offered_game_update_keeps_iso_and_previous_output(self):
+        self.previous_generation()
+        state=self.base/'launcher/.updates'; state.mkdir(parents=True)
+        before_iso=self.iso.read_bytes()
+        before_game=(self.out/'PSP/GAME/NFSU2VIEW/EBOOT.PBP').read_bytes()
+        g.remember_generation(dict(iso=str(self.iso),output=str(self.out),source='xbox'),'0.2.6',state)
+        offer=g.suggested_update('0.2.7',state)
+        self.assertEqual(offer['output'],str(self.out))
+        self.app.data['build']['version']='0.2.7'
+        with patch.object(g,'LAUNCHER_STATE',state):
+            result=self.work_fixture(0,{'reference_verified':True,'update':{'reused':4,'rerun':{'hud':'changed'}}})
+        self.assertEqual(result['status'],'complete')
+        self.assertTrue(result['update_mode'])
+        self.assertEqual(result['result']['update']['reused'],4)
+        self.assertIsNone(g.suggested_update('0.2.7',state))
+        self.assertEqual(self.iso.read_bytes(),before_iso)
+        self.assertEqual((self.out/'PSP/GAME/NFSU2VIEW/EBOOT.PBP').read_bytes(),before_game)
+
+    def test_launcher_outputs_live_beside_the_package(self):
+        pkg=self.base/'pkg'; (pkg/'.updates').mkdir(parents=True)
+        with patch.object(g,'LAUNCHER_ROOT',pkg):
+            self.assertEqual(g.Application(self.root).data['default_output'],str(pkg/'output'))
+            self.assertEqual(g.validate_paths(str(self.iso),str(pkg/'output'),self.root)[1],pkg/'output')
+            for out in (pkg, pkg/'.updates/0.2.7/output', pkg/'other'):
+                with self.assertRaises(g.UserError):g.validate_paths(str(self.iso),str(out),self.root)
 
     def test_single_job(self):
         self.app.data['busy']=True

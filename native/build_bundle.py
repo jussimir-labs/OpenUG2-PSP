@@ -53,6 +53,17 @@ def sha(path):
         return hashlib.file_digest(f, "sha256").hexdigest()
 
 
+def finder_metadata(path):
+    """Finder rewrites this metadata independently of the package contents."""
+    return Path(path).name == ".DS_Store"
+
+
+def package_member(relative):
+    """Operational state stays on disk, outside any distributable package."""
+    path = Path(relative)
+    return not finder_metadata(path) and path.parts[0] not in {'.tools', '.updates'}
+
+
 def run(command, **kw):
     print("+", " ".join(map(str, command)), flush=True)
     return subprocess.run(list(map(str, command)), check=True, **kw)
@@ -445,10 +456,12 @@ def seal(out, target, py, runtime_source):
     files = {
         p.relative_to(out).as_posix(): sha(p)
         for p in sorted(out.rglob("*"))
-        if p.is_file() and not p.is_symlink()
+        if p.is_file() and not p.is_symlink() and package_member(p.relative_to(out))
+        and p.relative_to(out).as_posix() != 'bundle.json'
     }
     manifest = {
         "schema": 1,
+        "launcher_protocol": 2,
         "generator_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
@@ -491,13 +504,15 @@ def build_from(args):
     require_clean(out)
     shutil.copytree(prev / "runtime", out / "runtime", symlinks=False)
     ext = ".exe" if target.startswith("windows") else ""
-    shutil.copy2(prev / ("nfsu2-generator" + ext), out / ("nfsu2-generator" + ext))
+    # A new launcher (--helper) over the earlier runtime, or the earlier helper.
+    helper = Path(args.helper) if args.helper else prev / ("nfsu2-generator" + ext)
+    shutil.copy2(helper, out / ("nfsu2-generator" + ext))
     for p in list(out.rglob("__pycache__")):
         if p.is_dir():
             shutil.rmtree(p)
     manifest = seal(out, target, old["python"], old["runtime_source"])
     same = sum(1 for k, v in manifest["files"].items() if k.startswith("runtime/") and old["files"].get(k) == v)
-    if same != sum(1 for k in old["files"] if k.startswith("runtime/")):
+    if same != sum(1 for k in old["files"] if k.startswith("runtime/") and not finder_metadata(k)):
         raise RuntimeError("The copied runtime differs from the earlier package's.")
     print(json.dumps({"package": str(out), "platform": target, "files": len(manifest["files"]),
                       "runtime_from": str(prev)}), flush=True)
@@ -686,10 +701,12 @@ def build(args):
     files = {
         p.relative_to(out).as_posix(): sha(p)
         for p in sorted(out.rglob("*"))
-        if p.is_file() and not p.is_symlink()
+        if p.is_file() and not p.is_symlink() and package_member(p.relative_to(out))
+        and p.relative_to(out).as_posix() != 'bundle.json'
     }
     manifest = {
         "schema": 1,
+        "launcher_protocol": 2,
         "generator_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
         ).strip(),
@@ -746,7 +763,7 @@ if __name__ == "__main__":
     p.add_argument("--cache", default=ROOT / "native/.cache")
     p.add_argument("--tools")
     p.add_argument("--helper")
-    p.add_argument("--runtime-from", help="an extracted earlier package of the same platform: its runtime and helper")
+    p.add_argument("--runtime-from", help="an extracted earlier package of the same platform: its runtime, and its helper unless --helper is given")
     args = p.parse_args()
     if not args.helper and not args.runtime_from:
         p.error("--helper is required without --runtime-from")
