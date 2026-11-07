@@ -23,7 +23,7 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
   are still counted, on the debug overlay (`P1:4s`: one pause, the longest 4 s) and in the bug
   mark (L+R+SELECT).
 
-## [0.3.0] - 2026-11-05 — Back on a Mission
+## [0.3.0] - 2026-11-07 — Back on a Mission
 
 EA Trax: *Back on a Mission*, Cirrus.
 
