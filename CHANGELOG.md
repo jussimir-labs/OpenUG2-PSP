@@ -16,7 +16,7 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
-## [0.3.1] - 2026-11-13 — That'z My Name
+## [0.3.1] - 2026-11-14 — That'z My Name
 
 EA Trax: *That'z My Name*, Sly Boogy.
 
