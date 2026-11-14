@@ -54,6 +54,24 @@ class GraphTests(unittest.TestCase):
             bg.restore(0,g,{'rerun':{},'cached':{},'files':{name:(source,0,None)}},work)
             self.assertEqual((work/path).read_bytes(),source.read_bytes())
 
+    def test_restore_keeps_what_the_step_removes_and_writes_again(self):
+        """An update that reuses track L4RD: its bar-4402.n2cy (convert_city.py
+        unlinks it, then writes it) restored and left in place."""
+        data=sg.load(ROOT/'manifests/steps.json')
+        track=next(n for n in data['steps'] if n['name']=='track L4RD')
+        path=D+'bar-4402.n2cy'
+        self.assertIn(path,track['writes']);self.assertIn(path,track['removes'])
+        g=sg.Graph({'track L4RD':track},['track L4RD'])
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);source=root/'bar-4402.n2cy';source.write_bytes(b'N2CY barrier fixture')
+            work=root/'work'
+            stale=work/D/'stale.n2cy';stale.parent.mkdir(parents=True);stale.write_bytes(b'old')
+            node=dict(track,removes=list(track['removes'])+[D+'stale.n2cy'])
+            g=sg.Graph({'track L4RD':node},['track L4RD'])
+            bg.restore(0,g,{'rerun':{},'cached':{},'files':{'bar-4402.n2cy':(source,0,None)}},work)
+            self.assertEqual((work/path).read_bytes(),source.read_bytes())
+            self.assertFalse(stale.exists())
+
     def test_native_trunk_passes_existing_package_filters(self):
         import ms_package as mp
         import ppsspp_run

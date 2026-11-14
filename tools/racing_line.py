@@ -621,9 +621,15 @@ def main():
     order = sorted(range(len(courses)), key=lambda k: -sum(math.dist(a, b) for a, b in zip(courses[k]['pts'], courses[k]['pts'][1:])))
     # a process per course: a QP given up on (min_curv.solve_qp) spins on
     # in its thread until its process ends
+    build_one = functools.partial(mac_slots.call, 'racing_line', build_in, str(args.out / 'city.n2cy'))
+    done = {}
+    print(f"Racing lines: 0/{len(courses)} events complete", flush=True)
     with concurrent.futures.ProcessPoolExecutor(args.jobs, max_tasks_per_child=1) as ex:
-        done = dict(zip(order, ex.map(functools.partial(mac_slots.call, 'racing_line', build_in, str(args.out / 'city.n2cy')),
-                                      [courses[k] for k in order])))
+        pending = {ex.submit(build_one, courses[k]): k for k in order}
+        for future in concurrent.futures.as_completed(pending):
+            k = pending[future]
+            done[k] = future.result()
+            print(f"Racing lines: {len(done)}/{len(courses)} events complete (event {courses[k]['id']})", flush=True)
     built = [done[k] for k in range(len(courses))]
     for c, (line, kappa, side, bounds, crest) in zip(courses, built):
         table.append((c['id'], c['circuit'], len(line), len(blob)))

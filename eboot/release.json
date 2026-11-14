@@ -1,13 +1,13 @@
 {
-  "candidate": "beta-v0.3.0",
-  "candidate_id": "beta-v0.3.0-ac7a4b67",
-  "release_tag": "v0.3.0",
-  "version": "0.3.0",
-  "game_version": "0.3.0",
-  "eboot_sha256": "5d4596799fb7ccb59b0a592407f6bf9b2408fd81bad7b4292850bedf17d652ee",
-  "eboot_bytes": 4047322,
-  "build_id": "2736440a7e",
-  "source_commit": "2736440a7e70c8dcab3cc7bea3564086ca9dd27f",
+  "candidate": "beta-v0.3.1",
+  "candidate_id": "beta-v0.3.1-137692e2",
+  "release_tag": "v0.3.1",
+  "version": "0.3.1",
+  "game_version": "0.3.1",
+  "eboot_sha256": "9903da3ab66460c1337cc4ec210b41efb9c59064ae19f3c54721a25e8f6d9f4e",
+  "eboot_bytes": 4221762,
+  "build_id": "f22e0b4944",
+  "source_commit": "f22e0b49444ce187d313d06c26ebc2fb5d36f36f",
   "build_flags": [
     "PGO=use (RC21 profile)",
     "LTO=1",
@@ -19,11 +19,11 @@
     "ps2"
   ],
   "publication_status": "CLOSED_BETA_CANDIDATE",
-  "quality_approval": "Version 0.3.0 for the closed beta, prepared on Jussimir's direction to ship the gameplay, career and shop fixes integrated since 0.2.6, with the same rules as 0.2.6, once it passes PPSSPP. The Profile Manager (#136) is held back for 0.3.1. Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
+  "quality_approval": "Version 0.3.1 for the closed beta, prepared on Jussimir's direction to ship the Profile Manager (#136), the original Options pages (#145), the mountain drifts on the PSP-1000 (#171), the street saves and shop parts on the PSP-1000 (#166, #156), the Movie Aspect option with smoother movie starts, the menus' rounded panel corners, the post-race menu sounds, dry street chimes in tunnels, the street song held in the pause pages, the title screen's EA band, the paint's Visual Rating, the Rims lists, the Car Specialties underglow meter and Scissor doors, the bumper camera's roll, the GPS prompt's OK button and the GPS route to shops under overpasses and the fixes integrated since 0.3.0, with the same rules as 0.3.0, once it passes PPSSPP. Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
   "known_issues": [
     "No physical PSP-1000 has run this build: the compact profile was measured on a PSP-3000 limited to the PSP-1000 memory and in PPSSPP set to the PSP-1000.",
-    "On PSP-1000, a Drift right after a city race may use the previous drift handling when memory is tight (a notice says so).",
     "Stable 30 fps throughout the game is not yet established (University Hill and the densest city areas drop frames in both profiles).",
+    "On PSP-1000, the city can pause to load right after the World Map turns the GPS on (seen in PPSSPP; it happens on 0.3.0 too).",
     "Full-career completion and all save/reload paths are not qualified.",
     "Drag 4401 rivals may become stuck in repeated recovery.",
     "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
@@ -38,20 +38,20 @@
     "ps2": 164
   },
   "source_data_ids": {
-    "xbox": "b66e",
-    "ps2": "36b3"
+    "xbox": "3994",
+    "ps2": "17a1"
   },
-  "data_compatibility": "Install the complete output of this generator (update a 0.2.x folder with the same ISO, or generate into a new folder). 0.3.0 changes EBOOT.PBP and converted data (the data formats, the shops' catalogue, the city's barriers, the menus' widescreen layout); copying only the EBOOT leaves old data that this executable does not expect. Do not mix Xbox and PS2 output.",
-  "elf_sha256": "54cab1862c2e251e7c0db7eeebee32ec65abb144523c631f284da4c9a3181075",
-  "prx_sha256": "c0d82dd9f1eb8c6ec243bb5bbe14ddf355d8e0de3acbedd5308964d5a8a6d7ab",
+  "data_compatibility": "Install the complete output of this generator (update a 0.2.x or 0.3.0 folder with the same ISO, or generate into a new folder). 0.3.1 changes EBOOT.PBP and converted data (the main menu, Career, Profile Manager and Options screens, the rounded panel corners of every menu, the city's road heights and traffic lanes); copying only the EBOOT leaves old data that this executable does not expect. Do not mix Xbox and PS2 output.",
+  "elf_sha256": "84c9631cc902f9e6936cf127a1e2649fa724e5dde184306fae0eafee371e311e",
+  "prx_sha256": "ca55dfc776806baac6dab925cea104a5f988996cdcb07485e71e0b448242cf0a",
   "debug_overlays": true,
   "tester_invitations_sent_by_this_release": false,
   "qualification_receipts": [],
   "source_candidate": {
-    "id": "2aa0ca34d4b34456961b1d5f15887a14",
-    "version": "0.3.0-rc.4",
-    "path": "reports/releases/2aa0ca34d4b34456961b1d5f15887a14",
-    "final_build": "GAME_VERSION=0.3.0 from the frozen source of 0.3.0-rc.4 (reports/release-v0.3.0/eboot-rc4)",
-    "rc4_eboot_sha256": "851f5d1682700b602f1f5143ad7a41655f0e5f5587e31c74fb29707438c239f3"
+    "id": "96a248f74a3143e7aae414e2042bbe2d",
+    "version": "0.3.1-rc.6",
+    "path": "reports/releases/96a248f74a3143e7aae414e2042bbe2d",
+    "final_build": "GAME_VERSION=0.3.1 from the frozen source of 0.3.1-rc.6 (reports/release-v0.3.1/eboot-rc6)",
+    "rc6_eboot_sha256": "55c787ff13dd6886e746add4c8a14c5dcd6ac5749071937012cf5eb388c16396"
   }
 }

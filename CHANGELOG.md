@@ -16,12 +16,122 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-13 — That'z My Name
+
+EA Trax: *That'z My Name*, Sly Boogy.
+
+Every career now has a name on it: the main menu gets the original's Profile Manager, each profile
+keeps its own career and its own My Cars on the Memory Stick, and the XMB lists them by name.
+Outrun rivals fight back once you pass them, the mountain drifts and the shops stop running out of
+memory on the PSP-1000, Bayview's ramps keep the GPS on the right road, the movies get a Movie
+Aspect choice and start smoothly, and the menus' panels get their rounded corners back.
+
+A new game executable and new converted game data. Update your 0.3.0 output folder with the 0.3.1
+generator (same ISO), or generate into a new folder, and install the complete result. Updating
+from 0.3.0 converts 47 of the 81 steps again. The v0.3.0 generator checks for this version when
+you open it and asks before downloading anything.
+
+### Added
+
+- Several profiles, as in the original game. The main menu now has the Profile Manager
+  (between Customize Car and Options), with Create, Load, Save and Delete. Each profile is a
+  save of its own on the Memory Stick, with its own career and its own My Cars, picked from the
+  PSP's own scrolling list of saves. Up to eight fit, and the XMB shows each one under its
+  profile's name ([#136]).
+- Options > Video has a new Movie Aspect row for the movies (the EA logo, the intro, the story's
+  scenes with Rachel and the tutorials): **Stretched** fills the PSP's wide screen with the whole
+  picture, **4:3** shows it at its original shape between black bars, as before, and **Cropped**
+  fills the screen at the right shape and trims the top and bottom, never through a line of text:
+  the EA logo keeps its brand line, and the story's comic-book scenes, with captions and speech
+  balloons at every edge, play stretched instead. Stretched is the default; the choice is saved
+  with your other options.
+
 ### Changed
 
-- The "game stopped responding" screen now waits 15 seconds instead of 2, so a long load no
-  longer brings it up: it stays for a game that has really stopped. Pauses of 2 seconds or more
-  are still counted, on the debug overlay (`P1:4s`: one pause, the longest 4 s) and in the bug
-  mark (L+R+SELECT).
+- Career opens its own menu, as in the original: Resume Career, Start New Career and Load
+  Game. Start New Career now creates a new profile in a slot of its own and leaves your other
+  careers on the Memory Stick instead of replacing the one you had. The garage no longer has a
+  New Career item. As on the PS2, a career needs a profile: answering No to "create a new
+  profile?" takes you back to the menu. Your current save opens as before, with nothing to do on
+  your part, and keeps the cars in My Cars; it stays the first profile on the list. A career you
+  played without a profile is still there: pick it with Load Game, give it a name, and it goes
+  on where you left it ([#136]).
+- Options > Video drops Screen X and Screen Y. On the PS2 they nudge the picture to fit inside
+  an old TV's edges; the PSP screen always shows the whole frame, so they did nothing. Frame Rate
+  is available in PPSSPP with the expanded memory profile. PSP and PS Vita via Adrenaline
+  target 30 fps. Your saved settings stay as they were ([#145]).
+
+### Fixed
+
+- The Audio and Video pages of Options look like the original again: the picked row sits in its
+  rounded dark bar with the round arrows on either side, the sliders end in the round tab with
+  rounded green fills, the names and values are dark on the light panel with the picked one
+  pulsing green, and the volume numbers that spilled past the panel are gone, as on the PS2
+  ([#145]).
+- GPS guidance uses the original road heights on Bayview's ramps and overpasses, including the
+  U-turn by the airport, where the route used to dip toward the street below ([#106]).
+- Career races no longer freeze at the finish line while a new lap record waits for the
+  Memory Stick ([#146]).
+- Outrun rivals now race you once you pass them: they find a way to the street you are on,
+  follow you through the turns at full racing pace and try to take the lead back, instead of
+  carrying on down the road they were on. In the lead they keep the original's outrun pace.
+  ([#155])
+- On the PSP-1000, the downhill drifts in the mountains no longer fall back to "Low memory:
+  previous drift handling". The original game's drift handling now keeps only the stretch of
+  Bayview's road around the run, as the original streams it, instead of the whole city's, and
+  takes a fraction of the memory on every PSP. ([#171])
+- The prompts of races, shops and the garage open on Decline (or Cancel), as in the original:
+  press Left to pick Accept, Right to go back to Decline, then X. Before, Accept came already
+  selected, so the X that followed took you straight in, and Up or Down also swapped the
+  buttons ([#179]).
+- The steep concrete ramp up to the deck in City Core can be climbed at full speed again, at
+  any angle. When the wheels left the ramp for a moment on the way up, the game took its
+  steepest part for a row of steps and stopped the car dead against them, an invisible wall
+  that only let you through slowly ([#189], first reported in [#73]).
+- Spinners in the Car Specialties Shop no longer freeze the game or switch off the PSP. Early in
+  the career, before any Spinners are on sale, the category now shows its padlock and stays shut,
+  as in the original, instead of opening an empty list. ([#148])
+- On the PSP-1000, picking up cash or a tip on the street no longer makes Bayview reload around
+  your car. Like the original, the game keeps that progress in memory while you drive and writes
+  it to the Memory Stick at your next stop: a pause, the map, a race or a shop ([#166]).
+- On the PSP-1000, trying parts in the shops no longer stops with "Not enough memory to show the
+  parts on the car" and the stock car. The car on display now makes room for the part you are
+  looking at before it is put together, as the original does ([#156]).
+- Movies start smoothly from the Memory Stick. The EA logo could skip frames in its first
+  moments right after launching from the XMB, because its sound started before its first
+  pictures had loaded. Each movie now holds a black screen for a moment while its first pictures
+  load, then starts its sound with the first picture, and reads ahead as it plays.
+- The rounded panels of the menus, the garage, the shops and the Memory Stick questions have all
+  four corners rounded again, as on the PS2. Two of the corners showed the wrong piece, leaving a
+  small dark notch at the top right and bottom left of the light box, and a faint line ran down the
+  left end of the No button.
+- The menu after a race plays its sounds again: moving between Restart, Quit and the other
+  choices, taking one and backing out sound as they do on the PS2, and so does the OK/Cancel
+  question that follows ([#150]).
+- The cash, SMS, shop and event chimes no longer echo in tunnels and under the railway. The
+  street's own sounds keep the tunnel's echo; the chimes play dry, as the menus' sounds do
+  ([#164]).
+- The street's song no longer plays on while you change the settings in the pause menu: it
+  holds its place on every page and carries on when you go back to the road ([#163]).
+- The title screen's Electronic Arts band and copyright line sit where they do on the US PS2,
+  a little higher on the screen than before ([#162]).
+- A car's factory paint no longer counts toward its Visual Rating. Trying a new body colour
+  raises the rating on the meter, and the new colour keeps it once bought, by the original's
+  paint table ([#170]).
+- Browsing the Rims shop no longer drops the frame rate: the brand and style lists are built
+  once per page instead of over and over while they are on screen ([#149]).
+- In the Car Specialties Shop, the red underglow shows the Visual Rating meter while you try
+  it, the next category keeps its own icon, and Scissor doors open with the original's motion
+  on the cars that have it ([#157]).
+- The bumper camera no longer leans into the turns: it follows the car's body roll, without
+  the extra tilt the car's own picture gets while steering ([#160]).
+- The "GPS deactivated" message shows a single, centred OK button, as on the PS2, and its
+  panel has its rounded corners like the other questions ([#177]).
+- The GPS route to a shop that sits under an overpass, such as the body shop in City Core, now
+  ends on the street with the shop's entrance instead of on the road above it ([#106]).
+- The pause menu's panel has its four rounded corners, as on the PS2 ([#116]).
+- The generator lists each finished event while it computes the racing lines, so a long
+  generation shows its progress ([#159]).
 
 ## [0.3.0] - 2026-11-07 — Back on a Mission
 
@@ -102,6 +212,10 @@ complete generation; generating into a new folder gives the same result.
 
 ### Changed
 
+- The "game stopped responding" screen now waits 15 seconds instead of 2, so a long load no
+  longer brings it up: it stays for a game that has really stopped. Pauses of 2 seconds or more
+  are still counted, on the debug overlay (`P1:4s`: one pause, the longest 4 s) and in the bug
+  mark (L+R+SELECT).
 - Menus, pause screens and prompts now use the console's Widescreen layout, as on
   the PS2 with Widescreen switched on: every screen keeps its original proportions
   in the middle of the PSP's wide display, so car logos, icons, the stat bars and
@@ -938,7 +1052,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.6...v0.3.0
 [0.2.6]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.5...v0.2.6
 [0.2.4]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...v0.2.4
@@ -1033,10 +1148,8 @@ throughout the game were still pending.
 [#108]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/108
 [#104]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/104
 [#100]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/100
-[#106]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/106
 [#109]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/109
 
-[#94]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/94
 
 [#124]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/124
 [#125]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/125
@@ -1080,5 +1193,25 @@ throughout the game were still pending.
 [#141]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/141
 [#143]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/143
 [#103]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/103
+[#136]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/136
 [#142]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/142
 [#146]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/146
+[#155]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/155
+[#171]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/171
+[#148]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/148
+[#166]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/166
+[#156]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/156
+[#179]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/179
+[#189]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/189
+[#73]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/73
+[#145]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/145
+[#150]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/150
+[#159]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/159
+[#162]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/162
+[#163]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/163
+[#164]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/164
+[#170]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/170
+[#149]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/149
+[#157]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/157
+[#160]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/160
+[#177]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/177

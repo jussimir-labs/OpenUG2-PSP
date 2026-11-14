@@ -716,8 +716,11 @@ def restore(i, graph, plan, work):
         # the date of now, in the steps' order, as a conversion gives it
         # (convert_mips.py --if-stale compares the archives' dates)
         os.utime(dst)
+    # what the step removes and writes again (convert_city.py unlinks each
+    # bar-ID.n2cy before it writes it) stays: the restored copy is its output
+    written = set(node['writes'])
     for p in node['removes']:
-        if (work / p).is_file():
+        if p not in written and (work / p).is_file():
             (work / p).unlink()
     return 0.0
 

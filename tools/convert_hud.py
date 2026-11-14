@@ -386,6 +386,17 @@ def z_angle(q):
     return math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z))
 
 
+def turned_over(q):
+    """A rotation that shows the quad's back: FEng turns a piece with a whole
+    quaternion (FEQuaternion::GetMatrix) under an orthographic projection, so
+    a half turn about the screen's x or y axis is a mirror (the panels'
+    corners: one picture, its four corners by turning it over). Its picture
+    on the screen, the rotation matrix's upper 2x2, is z_angle's turn of the
+    quad with its local y reversed when that 2x2 reverses the orientation."""
+    x, y, z, w = q
+    return (1 - 2 * (y * y + z * z)) * (1 - 2 * (x * x + z * z)) - 4 * (x * y - w * z) * (x * y + w * z) < 0
+
+
 # ------------------------------------------------------------------ preview
 
 EXTRA_ANGLE = {}     # object hash -> radians added (preview of the game's needle)
@@ -412,7 +423,10 @@ def preview(pkg, src, fnts, path, W=640, H=480, everything=False):
         st = state(o)
         sx, sy = st.get('size', (1, 1, 1))[:2]
         px, py, pz = st.get('position', (0, 0, 0))
-        a = z_angle(st.get('rotation', (0, 0, 0, 1))) + EXTRA_ANGLE.get(o['hash'], 0)
+        q = st.get('rotation', (0, 0, 0, 1))
+        a = z_angle(q) + EXTRA_ANGLE.get(o['hash'], 0)
+        if turned_over(q):
+            sy = -sy
         c, s = math.cos(a), math.sin(a)
         m = (c * sx, -s * sy, px, s * sx, c * sy, py)
         col = [v / 255 for v in st.get('color', (255, 255, 255, 255))]
@@ -521,7 +535,8 @@ def preview(pkg, src, fnts, path, W=640, H=480, everything=False):
 #   objects (88 B): u32 hash, s16 parent, u8 type (1 image, 2 text, 5
 #     group), u8 group (GROUPS order + 1; screens 1), s16 texture or font, u16 flags
 #     (1 additive, 2..3 anchor: 0 centre, 1 left, 2 right, 8 a panel's
-#     piece: widens with a widened screen), u16 first
+#     piece: widens with a widened screen, 16 turned over: its local y
+#     reversed, turned_over), u16 first
 #     script, u16 scripts, u16 text offset, u16 text length, u16 format,
 #     u16 pad, f32 colour RGBA (0-255), pivot xy, position xyz, angle (rad,
 #     about the screen axis), size xy, uv u0 v0 u1 v1
@@ -899,6 +914,8 @@ def write(pkg, src, fnts, path, citymap=None, screen=False, extra=(), drop=False
                     flags |= 1
                 if stem.startswith(PANEL_PARTS):
                     flags |= 8
+                if turned_over(d.get('rotation', (0, 0, 0, 1))):
+                    flags |= 16   # a corner mirrored from another's picture (the panels' four from one)
         elif kind == 2:
             ti = font(FONT_CHUNKS[name.upper()])
         rx = root(o)['data']['position'][0]
@@ -1177,7 +1194,13 @@ SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS
             ('INGAME_ICON_RESTART_RAC.tga', 'INGAME_ICON_STATS.tga', 'INGAME_ICON_REPLAY.tga', 'INGAME_ICON_QUIT_TO_FE.tga',
              'INGAME_ICON_RESUME_RACE.tga', 'INGAME_ICON_EXPLORE.tga')),   # the career's Next Race and Return to Explore Mode (PostRaceMenu::SetupRace)
            ('main.n2ui', 'UI_Main.fng', 'FRONTEND/FRONTB.LZC',
-            ('MAIN_ICON_CAREER', 'MAIN_ICON_QUICK_RACE', 'MAIN_ICON_OPTIONS', 'MAIN_ICON_CUSTOMIZE_CAR')),
+            ('MAIN_ICON_CAREER', 'MAIN_ICON_QUICK_RACE', 'MAIN_ICON_OPTIONS', 'MAIN_ICON_CUSTOMIZE_CAR', 'MAIN_ICON_PROFILE_MANAG')),
+           # beta #136: Career's own menu (UIStartCareer: Resume Career, Start New Career, Load Game)
+           # and the Profile Manager (UIProfileManager: Create, Load, Save, Delete)
+           ('startcareer.n2ui', 'UI_StartCareer.fng', 'FRONTEND/FRONTB.LZC',
+            ('CRIB_ICON_RESUME_CAREER', 'MAIN_ICON_NEW_CAREER', 'MAIN_ICON_LOAD_CAREER')),
+           ('profiles.n2ui', 'UI_ProfileManager.fng', 'FRONTEND/FRONTB.LZC',
+            ('ONLINE_ICON_CREATE_NEW', 'GENERIC_ICON_LOAD', 'GENERIC_ICON_SAVE', 'GENERIC_REMOVE')),
            ('qrmode.n2ui', 'UI_QRModeSelect.fng', 'FRONTEND/FRONTB.LZC',
             ('TRACK_ICON_CIRCUIT', 'TRACK_ICON_SPRINT', 'TRACK_ICON_SHORT_TRACK', 'TRACK_ICON_DRAG',
              'TRACK_ICON_DRIFT', 'TRACK_ICON_U_RACING_LEA', 'GENERIC_LOCK_ICON')),

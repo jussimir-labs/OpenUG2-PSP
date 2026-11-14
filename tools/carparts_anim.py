@@ -1,4 +1,4 @@
-"""Original car-part hinge and raw quaternion keys -> trunk-anim.n2ta.
+"""Original car-part hinges and raw keys for the trunk and Scissor doors.
 
 GameCube GUGE69 GetMarkerPosition selects +0x310 in chunk 0x37100 for
 the trunk. GetCarPartAnimMatrix evaluates <CAR>_ZAM_TRUNK_REG_q/t.
@@ -56,6 +56,51 @@ def trunk(game, model):
     return pivot, raw_trunk(data, symbols, model)
 
 
+def scissor(game, model):
+    from convert_nis import elf_data
+    blob = archived(game, f'CARS/{model}/PARTS_ANIMATIONS.BIN')
+    marker = next(p for tag, p, _ in chunks(blob) if tag == 0x37100)
+    marker = (marker + 15) & ~15
+    sides = []
+    for side, offset in (('LEFT', 0x1d0), ('RIGHT', 0x290)):
+        prefix = f'{model}_ZAM_{side}_DOOR_SCISSOR_'
+        needle = (prefix + 'q').encode() + b'\0'
+        matrix = struct.unpack_from('<16f', blob, marker + offset)
+        bank = next(blob[p:p+n] for tag, p, n in chunks(blob) if tag == 0xe34010 and needle in blob[p:p+n])
+        data, symbols = elf_data(bank)
+        header = struct.unpack_from('<8I', data, symbols['__AnimationBank:::bank'])
+        ptrs = struct.unpack_from(f'<{header[1]}I', data, header[4])
+        names = struct.unpack_from(f'<{header[1]}I', data, header[5])
+        tracks = {data[n:data.index(b'\0', n)].decode(): p for n, p in zip(names, ptrs)}
+        q = struct.unpack_from('<4I', data, tracks[prefix + 'q'])
+        t = struct.unpack_from('<4I', data, tracks[prefix + 't'])
+        frames = q[2] >> 16
+        if q[0] != 0x1400000f or t[0] != q[0] or (q[2] & 0xffff) != 1 or t[2] != q[2] or not 2 <= frames <= 64:
+            raise ValueError('unsupported scissor animation container')
+        if struct.unpack_from('<8I', data, q[3]) != (0x14000000, 2, 4, frames, 1, 0, 1, 0):
+            raise ValueError('unsupported scissor quaternion encoding')
+        if struct.unpack_from('<8I', data, t[3]) != (0x14000000, 2, 3, frames, 1, 2, 1, 2):
+            raise ValueError('unsupported scissor translation encoding')
+        if matrix[:12] != (1,0,0,0,0,1,0,0,0,0,1,0) or matrix[15] != 1:
+            raise ValueError('unsupported scissor rest basis')
+        pivot = (matrix[13], matrix[14], matrix[12])  # game Y,Z,X -> GU X,Y,Z
+        if not all(math.isfinite(v) and abs(v) < 10 for v in pivot):
+            raise ValueError('invalid scissor pivot')
+        samples = []
+        for i in range(frames):
+            x, y, z, w = struct.unpack_from('<4f', data, q[3] + 32 + 16*i)
+            tx, ty, tz = struct.unpack_from('<3f', data, t[3] + 32 + 12*i)
+            if not all(math.isfinite(v) for v in (x,y,z,w,tx,ty,tz)) or abs(x)>1e-6 or abs(z)>1e-6 or abs(y*y+w*w-1)>1e-4:
+                raise ValueError('unsupported scissor rotation axis')
+            if abs(tx-pivot[2])>1e-5 or abs(tz-pivot[1])>1e-5 or abs(ty-pivot[0])>1:
+                raise ValueError('unsupported scissor translation axis')
+            samples.append((y,w,ty-pivot[0]))
+        if samples[0][:2] != (0,1) or abs(samples[0][2])>1e-5:
+            raise ValueError('scissor rest pose disagrees with marker')
+        sides.append(struct.pack('<3fI', *pivot, frames) + b''.join(struct.pack('<3f', *key) for key in samples))
+    return struct.pack('<16s', model.encode()) + b''.join(sides)
+
+
 def write(game, out, models):
     """Missing ZDIR entries/unsupported encodings are per-model fallbacks.
 
@@ -63,8 +108,13 @@ def write(game, out, models):
     they indicate incomplete/unreadable source data, not an unsupported car.
     Do not catch OSError and silently publish an incomplete animation table.
     """
+    scissor_records = []
     records, unsupported = [], {}
     for model in models:
+        try:
+            scissor_records.append(scissor(game, model))
+        except (ValueError, KeyError, StopIteration, struct.error):
+            pass  # absent or unsupported source uses the existing door pose
         try:
             pivot, keys = trunk(game, model)
         except (ValueError, KeyError, StopIteration, struct.error) as exc:
@@ -76,4 +126,6 @@ def write(game, out, models):
     # then count x (q_y, q_w). The game caches one car, without allocations.
     (out / 'trunk-anim.n2ta').write_bytes(struct.pack('<4s2I', b'N2TA', 1, len(records)) + b''.join(records))
     (out / 'trunk-anim.json').write_text(json.dumps({'supported':len(records), 'unsupported':unsupported}, indent=2)+'\n')
+    # N2DA v1: name, then pivot/count and (q_y, q_w, lateral delta) keys for each side.
+    (out / 'scissor-anim.n2da').write_bytes(struct.pack('<4s2I', b'N2DA', 1, len(scissor_records)) + b''.join(scissor_records))
     return len(records)

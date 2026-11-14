@@ -3,13 +3,18 @@
 
 TRACKS/ROUTESL4RA/RoutesFreeRoam.bin leaf 0x34121 (Xbox layout verified:
 8-byte header; records with name @+8, u16 point counts @+44/+46, points
-from +128 every 56 bytes with world X/Y f32 @+4/+8 and two u16 lateral
-extents @+24/+26 (/256 m); next record after 140+56*N bytes).
+from +128 every 56 bytes with world X/Y f32 @+4/+8, two u16 lateral
+extents @+24/+26 (/256 m) and the height as s16 @+22 (/8 m: the game's
+TrackRoutePoint::GetForwardPosition); next record after 140+56*N bytes).
 
 Points of a record are linked in order; record ends are welded to any
-point within WELD metres, which forms the junctions. Heights come from the
-city collision (tools/convert_city.py), following the layer that keeps
-each route continuous across bridges.
+point within WELD metres, which forms the junctions. The city GPS uses
+the points' own heights. Closed tracks keep the collision-derived heights
+used to build their race courses and checkpoints. A city routes file with
+no heights also falls back to collision (tools/convert_city.py), following
+the layer that keeps each route continuous across bridges. This previously
+put 37 of the city's 10,577 points on the wrong layer, including the
+U-turn off the airport's ramp 23 m below its actual height.
 
 roads.n2rd: magic, version, nodes, links; nodes x 20 B (GU x y z f32,
 u16 left/right extent in cm, u16 first link, u16 link count); links u16.
@@ -44,15 +49,16 @@ ROOT = Path(__file__).resolve().parents[1]
 WELD = 9.0
 
 
-def read_routes(game, track='L4RA', meta=None):
+def read_routes(game, track='L4RA', meta=None, zs=None):
     """Points (x, y, left, right) of each route; meta, when given, gets
-    per kept route its number and its points' forward directions."""
+    per kept route its number and its points' forward directions; zs, per
+    kept route its points' heights (game z, m)."""
     d = archived(game, f'TRACKS/ROUTES{track}/ROUTESFREEROAM.BIN')
     leaf = [d[p:p+n] for t, p, n in chunks(d) if t == 0x34121][0]
     at, routes = 8, []
     while at + 140 <= len(leaf):
         n = struct.unpack_from('<H', leaf, at + 44)[0]
-        pts, dirs = [], []
+        pts, dirs, hs = [], [], []
         for k in range(n):
             p = at + 128 + 56 * k
             if p + 56 > len(leaf):
@@ -60,11 +66,14 @@ def read_routes(game, track='L4RA', meta=None):
             x, y = struct.unpack_from('<2f', leaf, p + 4)
             wl, wr = struct.unpack_from('<HH', leaf, p + 24)
             pts.append((x, y, wl / 256, wr / 256))
+            hs.append(struct.unpack_from('<h', leaf, p + 22)[0] / 8)
             dirs.append(tuple(v / 32767 for v in struct.unpack_from('<2h', leaf, p + 28)))
         if len(pts) >= 2:
             routes.append(pts)
             if meta is not None:
                 meta.append((struct.unpack_from('<H', leaf, at + 2)[0], dirs))
+            if zs is not None:
+                zs.append(hs)
         at += 140 + 56 * n
     return routes
 
@@ -166,13 +175,14 @@ def main():
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--track', default='L4RA', help='L4RA the city (roads.n2rd); another: roads-<track>.n2rd')
     args = ap.parse_args()
-    meta = []
-    routes = read_routes(args.game, args.track, meta)
-    world = 'city.n2cy' if args.track == 'L4RA' else f'track-{args.track}.n2cy'
-    city = CityCollision(args.out / world)   # the v2 collision blobs (base + unit header)
+    meta, own = [], []
+    routes = read_routes(args.game, args.track, meta, own)
+    if args.track != 'L4RA' or not any(z for zs in own for z in zs):
+        world = 'city.n2cy' if args.track == 'L4RA' else f'track-{args.track}.n2cy'
+        city = CityCollision(args.out / world)   # the v2 collision blobs (base + unit header)
+        own = [heights(route, city) for route in routes]
     nodes, links, ends = [], collections.defaultdict(set), []
-    for route in routes:
-        zs = heights(route, city)
+    for route, zs in zip(routes, own):
         base = len(nodes)
         for (x, y, wl, wr), z in zip(route, zs):
             nodes.append((x, y, z, wl, wr))
