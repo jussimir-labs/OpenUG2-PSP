@@ -19,7 +19,7 @@ use the game's cover art, trailers and EA Trax music, and come with the executab
 Your ISO stays on your computer.
 
 [Release notes](RELEASE_NOTES.md) · [Changelog](CHANGELOG.md) · [Known issues](KNOWN_ISSUES.md) ·
-[Testing and bug reports](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Roadmap](ROADMAP.md)
+[Testing and bug reports](docs/TESTING.md) · [Contributing](CONTRIBUTING.md) · [Build the PSP game](docs/GAME_SOURCE.md) · [Roadmap](ROADMAP.md)
 
 ## Before you begin
 

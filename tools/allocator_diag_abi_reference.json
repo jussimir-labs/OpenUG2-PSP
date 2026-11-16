@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "av_bytes": 1032,
+  "private_offsets": [
+    1972,
+    1976,
+    1980
+  ],
+  "functions": {
+    "_malloc_r": {
+      "size": 2352,
+      "sha256_normalized": "c3c991fb8e890cfbfa498991752900564de598b85095f931d47f24919ccf5859"
+    },
+    "_mallinfo_r": {
+      "size": 144,
+      "sha256_normalized": "4b64cdd7f5b558793bac6d4e5815d9ee2d334abaa9fdb6faa5928a80e31e7261"
+    },
+    "__malloc_update_mallinfo": {
+      "size": 124,
+      "sha256_normalized": "06c9f6dd3643cef5cec3f0bc21e7a421df4c4ae2a4fb643e3263e60d32cde3d6"
+    },
+    "__malloc_lock": {
+      "size": 12,
+      "sha256_normalized": "ae45453f6506a106476e5ceffba9b620a21d8c1fdf0d19e04de019b468c6312a"
+    },
+    "__malloc_unlock": {
+      "size": 12,
+      "sha256_normalized": "d2074da8cc69cc1eb4c448d762370b0d530ef4f1b37762535b17c434e55fac58"
+    },
+    "_sbrk": {
+      "size": 420,
+      "sha256_normalized": "2ea3eba655a3c6a713e00e5917a685c1c2967df6755e57312f282fd2e8c2e057"
+    },
+    "_sbrk_r": {
+      "size": 96,
+      "sha256_normalized": "b4e8394278765cb3b9c74c8ffa4a1090958b7df55ea58f503a7cf44b6bf43e4c"
+    },
+    "__retarget_lock_acquire_recursive": {
+      "size": 12,
+      "sha256_normalized": "dd2e350e050cf4048a3f6737f7adb8249c4f1b10fe6f40884a536b0a7c7a9c9f"
+    },
+    "__retarget_lock_release_recursive": {
+      "size": 8,
+      "sha256_normalized": "e1b0128b1a4f880d1620d9c3b8d2203b0bc9ae0af723955b0e55ae4b781c72bd"
+    },
+    "__locks_init": {
+      "size": 276,
+      "sha256_normalized": "bcf5f783aee9659e05723f70288afbd214e4c3aa344726a7423dcb24a3a9c7d2"
+    }
+  }
+}

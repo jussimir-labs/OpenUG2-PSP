@@ -10,9 +10,10 @@ trademarks. This is a fan project with no affiliation with EA or Sony.
 
 | Item | Origin | License | Redistribution |
 |---|---|---|---|
+| Original PSP port code and its build support | OpenUG2-PSP | MIT | yes, with the notice ([`psp-viewer/LICENSE`](psp-viewer/LICENSE)) |
 | `eboot/EBOOT.PBP` | the compiled port | project code, plus the libraries listed below | yes, with the notices in `licenses/` |
-| inside the EBOOT: physics ported from [OpenUG2](https://github.com/whoismept/OpenUG2) (`physics_ug2.c`) | OpenUG2 contributors | MIT | yes, with the notice (`licenses/OpenUG2.txt`) |
-| inside the EBOOT: ORCA ported from [RVO2](https://github.com/snape/RVO2) | Univ. of North Carolina | Apache 2.0 | yes, with the license (`licenses/RVO2-Apache-2.0.txt`) |
+| in the PSP source and EBOOT: physics ported from [OpenUG2](https://github.com/whoismept/OpenUG2) (`physics_ug2.c`) | OpenUG2 contributors | MIT | yes, with the notice (`licenses/OpenUG2.txt`) |
+| in the PSP source and EBOOT: ORCA ported from [RVO2](https://github.com/snape/RVO2) | Univ. of North Carolina | Apache 2.0 | yes, with the license (`licenses/RVO2-Apache-2.0.txt`) |
 | inside the EBOOT: [PSPSDK](https://github.com/pspdev/pspsdk) (libpspgu, libpspaudio, libpspmp3, libpspjpeg…) | pspdev | BSD | yes, with the notice (`licenses/PSPSDK.txt`) |
 | inside the EBOOT: newlib (libc, libm) | various | BSD and similar | yes, with the notices (`licenses/newlib.txt`) |
 | inside the EBOOT: zlib | Jean-loup Gailly, Mark Adler | zlib | yes (`licenses/zlib.txt`) |
