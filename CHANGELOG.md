@@ -1,6 +1,7 @@
 # Changelog
 
-All notable changes to the NFSU2 PSP closed beta are listed here, newest first.
+All notable changes to the NFSU2 PSP beta are listed here, newest first. It was a closed beta
+up to 0.3.1; 0.4.0 is the first open beta.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
 version numbers follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 
@@ -15,6 +16,194 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 `0.2.0-rc.1`.
 
 ## [Unreleased]
+
+## [0.4.0] - 2026-11-16 — Celebration Song
+
+EA Trax: *The Celebration Song*, Unwritten Law.
+
+**The first open beta.** Anyone can download the generator, make the game from their own disc and
+report what they find; no invitation is needed. Up to 0.3.1 this was a closed beta.
+
+Based on [OpenUG2](https://github.com/whoismept/OpenUG2) by whoismept and the OpenUG2 contributors (MIT).
+
+A new game executable and new converted game data: update your 0.3.1 output folder with the 0.4.0
+generator (same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW`
+folder. An update from 0.3.1 converts 70 of the 81 steps again. Saves move to version 16 the first
+time 0.4.0 writes them.
+
+### Added
+
+- The game has its own look in the XMB: an icon video, a background and a theme by
+  BananaSplitGamer, the same whether you generated the game from the PS2 or the Xbox disc.
+  Highlight NFSU2 PSP under Game → Memory Stick to see the video and hear the theme. Generate the
+  game again (or update your folder) to get it ([#205]).
+- The GPS chimes when it finds your way, as in the original game: once when it locks on to your
+  destination, and again each time it works out a new way after you leave the route. Needs the
+  converted game data from this version's generator ([#106]).
+- Options > Video has a Brightness slider, right under Widescreen. The page's calibration test
+  tells you to lower your television's brightness until the Need for Speed Underground 2 logo
+  disappears; the PSP's screen has no such knob, so the game now has one. Slide it left until the
+  logo sinks into its black box, or right to lift the shadows on a dark night in Bayview. The
+  middle, the default, leaves the picture exactly as before, and the choice is saved with your
+  other options. In an emulator, where the page has one more row (Frame Rate), the list scrolls.
+- Options has a Debug page of its own, with its own icon, after the original's pages, both in the
+  main menu and in the pause menu. It holds the two switches below.
+- Options > Debug has a Debug Overlay switch. It is On by default: the
+  frame rate and the debug lines stay at the top of the screen as before, so your photos for bug
+  reports still show them. Switch it Off for a clean screen with just the race HUD, ready for a
+  shot of your ride under Bayview's neon. The choice is saved with your other options, the game
+  keeps writing its bug report files either way, and the version stays on the title screen.
+- Two extra chase cameras, Close (PC) and Far (PC), after the PS2's four. They sit where the PS2's
+  Close and Far do, but look through the wider lens of the PC version, so your car takes a little
+  less of the PSP's small screen: its rear bumper stays in the picture through hard corners, and
+  more of Bayview fits around it. The PS2's Close and Far are unchanged and Far is still the
+  default. Press Up while driving to reach them (Close, Close (PC), Far (PC), then back to Far),
+  or pick one in Options > Player > Camera to start every race in it ([#161]).
+- Options > Debug has an Open Bayview switch ([#203]). Off by default, the
+  city opens area by area as your career goes on, as in the original. Switch it On and the red
+  barriers come down: cruise from City Core to Jackson Heights and Coal Harbor whenever you like.
+  Only the barriers go. Your career stays where it is: no races, shops or messages from areas
+  you have not reached yet, and nothing extra goes into your save. Change it from the pause menu
+  and the barriers come down or go back up right there; caught behind them, use Jump to Garage.
+- Performance Tuning / Dyno works the way it does on the console. From the garage, the Performance
+  Shop or the Car Shop the game first asks "Do you wish to Performance Tune / Dyno your car?", then
+  lets you pick the race mode you are tuning for (Circuit, Drag, Drift, Street X or URL Race). The
+  car does a dyno run: flat out up to third gear, the power and torque curves draw in as the revs
+  climb toward the redline, and the visit's first run stays faintly behind them to compare against.
+  The results put this run next to the one before it and the first. The Dyno's own menu then offers
+  Tune Settings, Test Run, another Dyno Run, Mode Select and Quit Tuning. ([#144])
+- The Dyno is a place again: say yes and the game loads the Speedway, your car rolls into the dyno
+  garage and stops on the rollers, and the Dyno's screens come up over it there, with the engine
+  revving through the gears and the wheels turning on the rollers during a Dyno Run. The analog
+  stick swings the camera round the car, and L and R move it in and out. Pick Test Run
+  and the car backs off the platform, swings round in a J-turn and heads out to the course; Return
+  to Dyno from the test's pause drives it back in. ([#144])
+- Test Run takes your tuned car out alone on the Speedway's test courses: Circuit and URL tunes on
+  Speedway Industrial, Drift and Street X tunes on the SW Drift/StreetX Tune course, ten laps each,
+  and Drag tunes for one pass down the SW Drag Tune strip. When the laps are done it simply starts
+  again. Its pause has Resume Test Run, Restart, Tune Settings, Return to Dyno, Options and Quit
+  Tuning, so you can tweak and go straight back out. ([#144])
+
+### Fixed
+
+- The Body Shop browses like the original game: the categories (Front Bumpers, Rear Bumpers, Side
+  Skirts...) sit on the carousel at the top and each category's parts in a vertical list beside
+  the car, instead of the parts on the carousel. Rims and Carbon Fiber keep their own screens. This
+  covers point 6 of [#29]; the part-by-part camera and its other points stay open.
+- Customize Car looks like the original game's Customize Car Select: no labels or button hints
+  over the car and its stats, no empty bar under the car list, no lone X in the bottom bar, and the
+  list's name up between the L and R tabs. It opens on All Cars (the stock cars, then your My
+  Cars), with Stock Cars and My Cars a press of R away, as on the PS2. In the Car Lot, "Do you want
+  this stock ...?" and the trade-in question come up in the game's usual Yes / No window. This
+  covers part of [#173] (the menu items); its other points stay open.
+- Your bank shows the cash the way the original game does: no dollar sign, with commas
+  ("12,345"), in the bottom bar of the menus and in the street's bank indicator. Cash picked up in
+  the street reads "Bank Reward: 1,000" ([#200]).
+- Skipping the movie that plays after you leave the title screen alone now brings you back to
+  the title screen, with Riders on the Storm from the top, as on the PS2; the button you skipped
+  with no longer takes you straight to the main menu ([#187]).
+- The World Map's list (Your Car, Circuit, Sprint, Car Lot...) and the event list of the garage's
+  map stop at their first and last entries instead of jumping to the other end, as in the
+  original game. Picking a place for the GPS and changing the map's area still go round, as they
+  do there ([#135]).
+- L and R on Quick Race's car list click as they switch between All Cars, Stock Cars and My
+  Cars, as on the PS2 ([#176]).
+- With Menu Music Volume turned all the way down, the menus play the original's background
+  instead of silence: the crowd, engines and snippets you hear on the PS2, in the main menu, Quick
+  Race, the options, My Cars, the career's garage and each shop with its own ([#176]). Generate the game
+  again (or update your folder) to get the new music file.
+- The turbo gauge drops and the blow-off valve opens at every gear change, even with the
+  throttle held down, as on the PS2 ([#178]).
+- A car with a level 2 or 3 turbo backfires when it drops into reverse, neutral or first, so
+  tapping reverse pops the exhaust each time, as on the PS2 ([#178]).
+- A division by zero somewhere in the game no longer freezes and switches off the PSP. That was
+  how the Spinners hang fixed in 0.3.1 ended: the PSP itself carries on after one, as the GameCube
+  version does, but the game stopped the console on purpose. Now it carries on too, and the
+  debug overlay shows a red `DIV` count for the ones it can catch, so a photo of the screen still
+  tells us where to look ([#148]).
+- Leaving a closed-course race for Free Roam (Street X, Drift, the first URL race) no longer
+  freezes the game on "THE GAME STOPPED RESPONDING". The game only remembered where to put you
+  back in Bayview if your car stood right on the event's marker with room all around it, so the
+  way back could be lost and the trip back to the city was then refused with the game stuck.
+  Like the original, the game now keeps the spot you entered the event from, and if that spot is
+  blocked when you come back, it puts you in the nearest clear one ([#195], [#152]).
+- A game folder with a missing file no longer leaves the game on a black screen at startup. If
+  the title screen's file is not there (a generation or a copy that was cut short), the game now
+  says which file is missing and asks you to generate the game again and copy the whole output
+  folder ([#172]).
+- The post-race menus no longer pause the game. Start does nothing there, as in the original,
+  and the race's ending keeps rolling behind Race Stats and Post Race ([#154], [#191]).
+- Winning a drift plays the winner's ending scene again: the drift's winner is whoever banked the
+  most points, not the first car over the line. The downhill drifts end without a scene, as in
+  the original ([#191]).
+- A drift lost to a crash shows its points in red for a second, as in the original, instead of a
+  "Drift Lost" message ([#191]).
+- Without a turbo, the drift HUD's slip angle sits by the tachometer on its own short backing, as
+  in the original, instead of beside an empty boost gauge frame ([#191]).
+- A chain of near misses shows as "+100x2", "+100x3" and so on, as in the original, instead of
+  "+200", "+300". The nitrous it pays is unchanged ([#132]).
+- Drift races hold 30 fps more often. The drift handling looks up the track under each wheel
+  much faster, with exactly the same result, so your car drives as before.
+- The green arrow for your car on the World Map now turns with the car and points where you are
+  headed, as in the original game; it used to point the same way whatever your heading
+  ([#201]).
+- The bank in the Free Roam HUD sits on its dark grey strip again, as on the PS2, and so does the
+  showcase's clock. Picking up bank cash now shows "Bank Reward: 1,000" under your balance, popping
+  in and then sliding up into it, as in the original, instead of a plain message in the middle of
+  the screen ([#182]). Needs the converted game data from this version's generator.
+- The distant palm trees no longer show black edges round their fronds as you drive toward
+  them: their far sprite is cut out of its black background cleanly, without the dark rim
+  ([#167]). Needs the converted game data from this version's generator.
+- Scrolling and pulsing textures move at the original's speed: the airport runway's pulsing
+  lights in the URL and drag races, the water, the waterfalls and the neon signs ran four times
+  too fast ([#192]).
+- The Twister hood's air ducts are carbon like the rest of the hood, as on the PS2: on Rachel's
+  350Z they showed the green paint and purple flames of her vinyl through them. A carbon fibre
+  hood you fit in the Car Specialties Shop gets carbon ducts too ([#183]). Rachel's car needs the
+  converted game data from this version's generator.
+- In an outrun, the arrow that points at the rival once they get far ahead is orange again, as
+  in the original game, instead of the GPS's blue ([#186]). Needs the converted game data from
+  this version's generator.
+- Games generated from the PS2 disc play the menu sounds, the street's chimes (new mail, the
+  event icon, bank cash) and the hydraulics' bounce at their original pitch; they played about
+  one and a half semitones too high. Games generated from the Xbox disc already had the right
+  pitch ([#158]).
+- Triangle on the main menu, where there is nothing to go back to, no longer plays the "back"
+  sound, as in the original ([#174]).
+- The SMS mailbox clicks when L or R changes the mailbox and when Up or Down moves through the
+  messages, as on the PS2, and the D-pad's Left and Right no longer change mailboxes ([#181]).
+- Jump to Garage in the pause menu takes you to your garage with its own menu, inside the garage,
+  as in the original. Before, the garage menu came up over the main menu's background. The main
+  menu's Career shows the same garage once the prologue is over. Resume Career then drives you
+  out where you paused, instead of out of the garage door ([#199]).
+- The career remembers where you left your car, as on the PS2. Quit to Main Menu from Explore Mode,
+  come back with Resume Career, and you start where you stopped, not at the garage door or back
+  at the airport. Drive into your garage and quit from its menu, and you drive back out of its
+  door. During the prologue, Resume Career puts Rachel's 350Z back on the street, with no stop in
+  a garage you have not visited yet. A save from an earlier version resumes as before the first
+  time, then keeps your place from then on ([#184]).
+- Return to Explore Mode, after a race or halfway through one, puts you back at the race's
+  marker in Bayview, where you accepted it. Before, a city race left you at its line, or wherever
+  you were when you quit ([#198]).
+- Once you pick your first car at the car lot, the prologue's three races close and only the garage
+  is left to visit, as in the original. Hidden races, like the prologue's circuit in El Norte, no
+  longer show on the minimap or the World Map, even after you find them; you still race one by
+  driving into it ([#180]).
+- A new stage opens in the original's order. Rachel's text about the new area pops up on its own
+  once you are back in Explore Mode, and her call about it comes 15 seconds later. The Pick a
+  Sponsor! screen now waits for your first win in a world race of the new stage, as on the PS2,
+  instead of showing up right after the last race of the stage before. Her call about the
+  sponsor's terms follows once you are back on the street ([#202]).
+- Stage 5's final race now comes up once you have won the stage's world races. The 35th could
+  stay off the map for good: a hidden race on the same course, still waiting to be found, kept it
+  away, so the World Event Wins stopped at 34/35 with nothing left to race. The original has no
+  such rule; both races now share the course, each at its own marker ([#204]).
+- The street's shop dialog speaks as in the original: before your first visit each shop greets you
+  with its own welcome ("Welcome to the Bayview Body Shop, Beacon Hill East store...") and the
+  parts it opens, and only then asks "Would you like to enter the Shop?". The welcome stays until
+  you go in. The "Found: Body Shop" message that popped up when you came near a hidden shop, which
+  the original doesn't have, is gone ([#188]). Needs the converted game data from this version's
+  generator.
 
 ## [0.3.1] - 2026-11-14 — That'z My Name
 
@@ -1052,166 +1241,199 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.3.1...HEAD
-[0.3.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.6...v0.3.0
-[0.2.6]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.5...v0.2.6
-[0.2.4]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.3...v0.2.4
-[0.2.3]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.2...v0.2.3
-[0.2.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.1...v0.2.2
-[0.2.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.2...v0.2.0
-[0.1.2]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.1...v0.1.2
-[0.1.1]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.0
-[#12]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/12
-[#13]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/13
-[#14]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/14
-[#15]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/15
-[#16]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/16
-[#17]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/17
-[#18]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/18
-[#19]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/19
-[#20]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/20
-[#21]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/21
-[#22]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/22
-[#23]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/23
-[#24]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/24
-[#25]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/25
-[#26]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/26
-[#27]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/27
-[#28]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/28
-[#29]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/29
-[#30]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/30
-[#31]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/31
-[#32]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/32
-[#33]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/33
-[#34]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/34
-[#35]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/35
-[#36]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/36
-[#37]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/37
-[#38]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/38
-[#39]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/39
-[#40]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/40
-[#41]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/41
-[#42]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/42
-[#43]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/43
-[#45]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/45
-[#46]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/46
-[#47]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/47
-[#48]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/48
-[#49]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/49
-[#50]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/50
-[#55]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/55
-[#61]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/61
-[#66]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/66
-[#58]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/58
-[#53]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/53
-[#57]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/57
-[#60]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/60
-[#56]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/56
-[#59]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/59
-[#44]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/44
-[#62]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/62
-[#63]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/63
-[#67]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/67
-[#68]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/68
-[#64]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/64
-[#72]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/72
-[#74]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/74
-[#75]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/75
-[#76]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/76
-[#77]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/77
-[#78]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/78
-[#79]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/79
-[#80]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/80
-[#82]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/82
-[#83]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/83
-[#85]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/85
-[#87]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/87
-[#88]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/88
-[#89]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/89
-[0.2.5]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/compare/v0.2.4...v0.2.5
-[#86]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/86
-[#95]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/95
-[#90]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/90
-[#91]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/91
-[#93]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/93
-[#106]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/106
-[#114]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/114
+[Unreleased]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.6...v0.3.0
+[0.2.6]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.5...v0.2.6
+[0.2.4]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.3...v0.2.4
+[0.2.3]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.2...v0.2.3
+[0.2.2]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.1.2...v0.2.0
+[0.1.2]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.1.0
+[#12]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/12
+[#13]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/13
+[#14]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/14
+[#15]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/15
+[#16]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/16
+[#17]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/17
+[#18]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/18
+[#19]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/19
+[#20]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/20
+[#21]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/21
+[#22]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/22
+[#23]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/23
+[#24]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/24
+[#25]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/25
+[#26]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/26
+[#27]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/27
+[#28]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/28
+[#29]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/29
+[#30]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/30
+[#31]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/31
+[#32]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/32
+[#33]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/33
+[#34]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/34
+[#35]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/35
+[#36]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/36
+[#37]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/37
+[#38]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/38
+[#39]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/39
+[#40]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/40
+[#41]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/41
+[#42]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/42
+[#43]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/43
+[#45]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/45
+[#46]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/46
+[#47]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/47
+[#48]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/48
+[#49]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/49
+[#50]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/50
+[#55]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/55
+[#61]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/61
+[#66]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/66
+[#58]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/58
+[#53]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/53
+[#57]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/57
+[#60]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/60
+[#56]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/56
+[#59]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/59
+[#44]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/44
+[#62]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/62
+[#63]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/63
+[#67]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/67
+[#68]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/68
+[#64]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/64
+[#72]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/72
+[#74]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/74
+[#75]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/75
+[#76]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/76
+[#77]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/77
+[#78]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/78
+[#79]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/79
+[#80]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/80
+[#82]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/82
+[#83]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/83
+[#85]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/85
+[#87]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/87
+[#88]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/88
+[#89]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/89
+[0.2.5]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.4...v0.2.5
+[#86]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/86
+[#95]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/95
+[#90]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/90
+[#91]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/91
+[#93]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/93
+[#106]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/106
+[#114]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/114
 
-[#92]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/92
-[#94]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/94
-[#97]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/97
-[#98]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/98
-[#99]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/99
-[#108]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/108
-[#104]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/104
-[#100]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/100
-[#109]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/109
+[#92]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/92
+[#94]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/94
+[#97]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/97
+[#98]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/98
+[#99]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/99
+[#108]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/108
+[#104]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/104
+[#100]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/100
+[#109]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/109
 
 
-[#124]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/124
-[#125]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/125
-[#126]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/126
-[#111]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/111
-[#112]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/112
-[#120]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/120
+[#124]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/124
+[#125]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/125
+[#126]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/126
+[#111]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/111
+[#112]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/112
+[#120]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/120
 
-[#121]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/121
-[#110]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/110
-[#54]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/54
-[#69]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/69
-[#71]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/71
-[#70]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/70
-[#123]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/123
-[#118]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/118
-[#122]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/122
-[#116]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/116
-[#117]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/117
-[#119]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/119
-[#96]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/96
-[#101]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/101
-[#129]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/129
-[#130]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/130
-[#132]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/132
-[#127]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/127
-[#105]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/105
-[#113]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/113
-[#115]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/115
-[#131]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/131
-[#133]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/133
-[#128]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/128
-[#84]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/84
-[#51]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/51
-[#65]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/65
-[#137]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/137
-[#134]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/134
-[#138]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/138
-[#139]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/139
-[#140]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/140
-[#141]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/141
-[#143]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/143
-[#103]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/103
-[#136]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/136
-[#142]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/142
-[#146]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/146
-[#155]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/155
-[#171]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/171
-[#148]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/148
-[#166]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/166
-[#156]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/156
-[#179]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/179
-[#189]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/189
-[#73]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/73
-[#145]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/145
-[#150]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/150
-[#159]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/159
-[#162]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/162
-[#163]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/163
-[#164]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/164
-[#170]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/170
-[#149]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/149
-[#157]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/157
-[#160]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/160
-[#177]: https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/177
+[#121]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/121
+[#110]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/110
+[#54]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/54
+[#69]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/69
+[#71]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/71
+[#70]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/70
+[#123]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/123
+[#118]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/118
+[#122]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/122
+[#116]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/116
+[#117]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/117
+[#119]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/119
+[#96]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/96
+[#101]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/101
+[#129]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/129
+[#130]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/130
+[#132]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/132
+[#127]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/127
+[#105]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/105
+[#113]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/113
+[#115]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/115
+[#131]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/131
+[#133]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/133
+[#128]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/128
+[#84]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/84
+[#51]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/51
+[#65]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/65
+[#137]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/137
+[#134]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/134
+[#138]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/138
+[#139]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/139
+[#140]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/140
+[#141]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/141
+[#143]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/143
+[#103]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/103
+[#136]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/136
+[#142]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/142
+[#146]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/146
+[#155]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/155
+[#161]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/161
+[#171]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/171
+[#148]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/148
+[#166]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/166
+[#156]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/156
+[#179]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/179
+[#180]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/180
+[#184]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/184
+[#189]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/189
+[#73]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/73
+[#145]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/145
+[#150]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/150
+[#159]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/159
+[#162]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/162
+[#163]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/163
+[#164]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/164
+[#170]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/170
+[#149]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/149
+[#157]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/157
+[#160]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/160
+[#177]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/177
+[#195]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/195
+[#154]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/154
+[#191]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/191
+[#186]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/186
+[#201]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/201
+[#158]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/158
+[#174]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/174
+[#181]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/181
+[#198]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/198
+[#199]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/199
+[#202]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/202
+[#152]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/152
+[#172]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/172
+[#135]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/135
+[#187]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/187
+[#200]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/200
+[#188]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/188
+[#204]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/204
+[#178]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/178
+[#176]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/176
+[#203]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/203
+[#205]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/205
+[#173]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/173
+[#182]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/182
+[#167]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/167
+[#192]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/192
+[#144]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/144
+[#183]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/183
+
+[0.4.0]: https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.4.0

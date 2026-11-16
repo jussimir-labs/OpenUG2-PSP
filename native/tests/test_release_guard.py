@@ -148,6 +148,29 @@ class GuardTests(unittest.TestCase):
             value = zipped({'nested.zip': value})
         self.assertTrue(self.inspect('package.zip', value))
 
+    def test_eboot_with_game_art_is_refused(self):
+        def pbp(**parts):
+            names = guard.PBP_SECTIONS
+            offsets, at = [], 40
+            for name in names:
+                offsets.append(at)
+                at += len(parts.get(name, b''))
+            return b'\0PBP' + struct.pack('<I8I', 0x10000, *offsets) + b''.join(parts.get(n, b'') for n in names)
+        sfo, prx = b'\0PSF' + b'\0' * 16, b'~PSP' + b'\0' * 64
+        self.assertEqual(self.inspect('eboot/EBOOT.PBP', pbp(**{'PARAM.SFO': sfo, 'DATA.PSP': prx})), [])
+        for section in guard.PBP_ART:
+            found = self.inspect('eboot/EBOOT.PBP', pbp(**{'PARAM.SFO': sfo, section: png(), 'DATA.PSP': prx}))
+            self.assertEqual([f['kind'] for f in found], ['game-art'], section)
+            self.assertIn(section, found[0]['detail'])
+        art = pbp(**{'PARAM.SFO': sfo, 'ICON0.PNG': png(), 'PIC1.PNG': png(), 'DATA.PSP': prx})
+        self.assertIn('game-art', [f['kind'] for f in self.inspect('package.zip', zipped({'kit/eboot/EBOOT.PBP': art}))])
+        bad = b'\0PBP' + struct.pack('<I8I', 0x10000, 40, 30, 40, 40, 40, 40, 40, 40)
+        self.assertEqual([f['kind'] for f in self.inspect('EBOOT.PBP', bad)], ['unreadable'])
+
+    def test_kit_eboot_has_no_game_art(self):
+        result = guard.Checker().check([ROOT/'eboot/EBOOT.PBP'])
+        self.assertTrue(result['passed'], result['findings'])
+
     def test_archive_fixture_policy_and_checker_check_themselves(self):
         result = guard.Checker().check([ROOT/'native/release_guard.py', ROOT/'native/release_policy.json', Path(__file__)])
         self.assertTrue(result['passed'], result['findings'])

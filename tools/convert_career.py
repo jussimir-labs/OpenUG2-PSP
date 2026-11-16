@@ -109,6 +109,9 @@ u8 tournament group (0 = none). Entries are in career order. Then:
     zones' heights, race_zones; a shop's, its marker's; NaN unknown): the
     GPS's target is 3-D (UnlockedTriggerZone::GetGPSPosition,
     PathfindingNode::CloseEnoughToGoal within 4 m of height);
+  (version 17) u32 n, n x 8 bytes per shop (the shops' order): u32 its
+    dialog's header and its first visit's welcome (offsets in the text
+    block; an empty string: none), EngageShopDialog::Setup's texts;
   u32 size, the text block (zero-terminated strings).
 """
 import argparse
@@ -465,7 +468,15 @@ def career_world(game, globalb, rows, races, language=None, written=None):
         if marker not in where or kind is None:
             continue
         gx, gy, gz = where[marker]
-        shops.append(dict(name=name, kind=kind, stage=r[0x9d], hidden=r[0x51], pos=(gy, gz, gx)))
+        # the street's shop dialog (EngageShopDialog::Setup): its header by
+        # the record's type (+0x50; CC_MEGALOW's own), and before its first
+        # visit the shop's own welcome, <NAME>_BODY, when the language has
+        # one (ShopDataDesc::GetEngageDialogHeader/Body; none: the generic
+        # question, the car lots and the garage). Beta issue 188.
+        header = lang.get(0x6aa654c5 if struct.unpack_from('<I', r, 0x38)[0] == 0x7fc8d0d0 else
+                          {0: 0x7ce21662, 1: 0xa5f04bd7, 2: 0xb9253e9, 3: 0xaf258ee8, 4: 0x4dc0a646, 5: 0xa4e5ee6c}.get(r[0x50], 0)) or ''
+        body = lang.get(game_hash(name + '_BODY')) or '' if r[0x50] != 0 else ''
+        shops.append(dict(name=name, kind=kind, stage=r[0x9d], hidden=r[0x51], pos=(gy, gz, gx), header=header, body=body))
     out = struct.pack('<I', len(stages))
     for v in stages:
         out += struct.pack('<BBH5B5Bbx', v['stage'], sum(1 for s in v['sponsors'] if s != 255), v['stakes'], *v['sponsors'],
@@ -669,6 +680,9 @@ def career_world(game, globalb, rows, races, language=None, written=None):
     # version 16: per showcase, the heights of its star and of its goal
     # (the GPS's 3-D target: UnlockedTriggerZone::GetGPSPosition)
     out += struct.pack('<I', len(shows)) + b''.join(struct.pack('<2f', v['pos'][1], v['to'][1]) for v in shows)
+    # version 17: per shop (the shops' order) its dialog's header and its
+    # first visit's welcome (text offsets; an empty string: none)
+    out += struct.pack('<I', len(shops)) + b''.join(struct.pack('<2I', put(v['header']), put(v['body'])) for v in shops)
     text.extend(bytes((-len(text)) % 4))
     out += struct.pack('<I', len(text)) + bytes(text)
     report = dict(stages=stages, rules=rules, sponsors=sponsors, covers=covers, shops=shops, tips=[dict(sms=sms[v['sms']]['name'], pos=v['pos']) for v in tips], cash=cash, shows=shows,
@@ -767,7 +781,7 @@ def main():
     for x in rows:
         if x['reward'] == 1:
             x['flags'] |= 8      # a sponsor race: its purse goes to the signed sponsor's contract
-    out = struct.pack('<4s2I', b'N2CA', 16, len(rows))
+    out = struct.pack('<4s2I', b'N2CA', 17, len(rows))
     for x in rows:
         out += struct.pack('<HBBiBBBB', x['id'], x['stage'], x['type'], x['money'], x['reward'], x['laps'], x['flags'],
                            x['group'])

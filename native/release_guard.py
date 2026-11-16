@@ -2,6 +2,9 @@
 """Fail-closed checks for English project text and neutral release metadata.
 
 Check an extracted distribution or the actual ZIP and every attached text file.
+An EBOOT.PBP must carry no XMB art (icon, pictures, animation or sound): the
+kit ships the executable alone and the generator adds the art from each
+player's own disc.
 Policy signatures avoid reproducing restricted vocabulary in published source.
 This is a deterministic vocabulary check, not an unrestricted language model.
 """
@@ -30,6 +33,8 @@ TEXT = {'.py', '.rs', '.c', '.h', '.cpp', '.js', '.ts', '.css', '.html', '.md',
         '.txt', '.json', '.yaml', '.yml', '.toml', '.sh', '.bat', '.command', '.xml', '.csv'}
 WORDS = re.compile(r'[^\W_]+', re.UNICODE)
 PRINTABLE = re.compile(rb'[\x20-\x7e]{4,}')
+PBP_SECTIONS = ('PARAM.SFO', 'ICON0.PNG', 'ICON1.PMF', 'PIC0.PNG', 'PIC1.PNG', 'SND0.AT3', 'DATA.PSP', 'DATA.PSAR')
+PBP_ART = ('ICON0.PNG', 'ICON1.PMF', 'PIC0.PNG', 'PIC1.PNG', 'SND0.AT3')
 
 
 @lru_cache(maxsize=131072)
@@ -56,6 +61,7 @@ class Checker:
         self.hints = set(data['phrase_hints'])
         self.paths = set(data['blocked_path_components'])
         self.restricted_paths = set(data['restricted_path_components'])
+        self.xmb = {row['section']: row['sha256'] for row in data.get('reviewed_xmb_art', [])}
         self.exceptions = data['reviewed_files']
         self.max_file, self.max_total = max_file, max_total
         self.total = self.files = 0
@@ -169,6 +175,8 @@ class Checker:
                     raise ReleaseCheckError('Compressed stream exceeds inspection limit')
                 self.member(path[:-len(suffix)], expanded, depth + 1)
                 return
+            if data.startswith(b'\0PBP'):
+                self.pbp(path, data)
             if data.startswith(b'\x89PNG\r\n\x1a\n'):
                 self.png(path, data, allowed, project)
                 return
@@ -226,6 +234,24 @@ class Checker:
                     self.text(path + f':byte-{match.start()}', match.group().decode(encoding), allowed, project, True)
         except Exception as exc:
             self.issue(path, 'unreadable', f'Cannot complete inspection: {exc}')
+
+    def pbp(self, path, data):
+        """An EBOOT.PBP: its XMB art sections must be empty (the game's art
+        comes from the player's disc, never from the kit)."""
+        if len(data) < 40:
+            raise ReleaseCheckError('Truncated EBOOT.PBP header')
+        offsets = list(struct.unpack_from('<8I', data, 8)) + [len(data)]
+        if offsets[0] < 40 or any(b < a for a, b in zip(offsets, offsets[1:])):
+            raise ReleaseCheckError('EBOOT.PBP section offsets out of order')
+        present = {name: hashlib.sha256(data[offsets[i]:offsets[i + 1]]).hexdigest() for i, name in enumerate(PBP_SECTIONS)
+                   if name in PBP_ART and offsets[i + 1] > offsets[i]}
+        if present and present == self.xmb:   # the reviewed kit XMB (beta issue #205), exactly
+            return
+        art = [f'{name} ({offsets[i + 1] - offsets[i]} bytes)' for i, name in enumerate(PBP_SECTIONS)
+               if name in PBP_ART and offsets[i + 1] > offsets[i]]
+        if art:
+            self.issue(path, 'game-art', 'EBOOT.PBP carries XMB art: ' + ', '.join(art)
+                       + '; the kit executable must have none (tools/pbp.py strip)')
 
     def png(self, path, data, allowed, project):
         pos = 8

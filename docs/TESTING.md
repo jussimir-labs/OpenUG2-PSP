@@ -34,7 +34,7 @@ is more useful than a long description without the device, location or actions.
 It does not take a screenshot. Zip that file before attaching it to GitHub.
 Do not include your ISO, entire generated game folder, passwords or personal files.
 
-[Open the English bug form](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml)
+[Open the English bug form](https://github.com/jussimir-labs/OpenUG2-PSP/issues/new?template=bug_report.yml)
 or read the [illustrated guide](bug-reporting-guide-EN.pdf).
 
 If the game freezes, note the last visible screen/action and whether sound continues.

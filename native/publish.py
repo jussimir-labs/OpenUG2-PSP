@@ -17,7 +17,7 @@ import tempfile
 
 from release_guard import ReleaseCheckError, require_clean
 
-REPOSITORY = 'jussimir-labs/pessoal-nfsu2-psp-beta'
+REPOSITORY = 'jussimir-labs/OpenUG2-PSP'
 # Public, package-only release page the launcher reads without a sign-in
 # (native/launcher.json). Its release for each tag is created by hand, and
 # its files carry neutral names: <UPDATES_PREFIX>-<platform>.zip.

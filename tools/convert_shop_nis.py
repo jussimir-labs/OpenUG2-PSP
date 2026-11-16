@@ -31,6 +31,18 @@ shopnis.n2sh (little endian): 'N2SH', u32 1, then
     frames to get there);
   u32 n, n x shop (char name[24], f32 game x, y, z of its marker, u16 the
     marker's angle, u16 pad, u32 its door's instance id, 0 none).
+
+The dyno's scenes (beta #144) -> dynonis.n2sh, the same layout: the car
+driving into the Speedway's dyno garage onto the rollers (DynoEnter, the
+dyno race's start scene: CAnimChooser picks it for track 0x1262, 4706
+"Speedway Dyno Testing") and backing off them, a J-turn, out to the test
+course (DynoExit, the dyno race's end, Race::SimulateRaceFinish on Test
+Run). Their cameras are GLOBAL\\INGAMERACE.BUN's (0x8003b201, a track each);
+the engine's rev patterns RevDynoEnter and RevDynoLeave come with their
+CAR_AUDIO_PATTERN events (revpat.n2rp, convert_intro_nis.py). One record,
+"DYNO": event 4706's start line marker in TRACKS\\ROUTESL4RG\\
+TRACKPOSMARKERSALL.BIN (0x34146; the eight grid slots stand on the same
+spot, a quarter turn on), no door.
 """
 import argparse
 import struct
@@ -45,6 +57,9 @@ import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
 SCENES = ('ShopEnter1', 'ShopExit1')
+DYNO_SCENES = ('DynoEnter', 'DynoExit')
+DYNO_EVENT = 4706
+DYNO_MARKER = 0x6a56b90a   # the event's one marker beside its grid slots (0x8e55c895, a quarter turn on)
 DOOR_EVENT = 12   # NIS_EV_DOOR (nisscene.h): the game's WORLD_MESSAGE, DOOR_POSITION
 
 
@@ -114,6 +129,40 @@ def shops(game):
     return out
 
 
+def dyno_marker(game):
+    """Event 4706's marker: (game x, y, z, binary angle)."""
+    mk = archived(game, 'TRACKS/ROUTESL4RG/TRACKPOSMARKERSALL.BIN')
+    for t, o, s in chunks(mk):
+        if t != 0x34146:
+            continue
+        p = (o + 15) & ~15
+        for i in range((o + s - p) // 48):
+            r = mk[p + 48 * i:p + 48 * i + 48]
+            if struct.unpack_from('<I', r, 8)[0] == DYNO_MARKER and struct.unpack_from('<I', r, 36)[0] == DYNO_EVENT:
+                return (*struct.unpack_from('<3f', r, 16), struct.unpack_from('<H', r, 32)[0])
+    raise ValueError(f'no marker for event {DYNO_EVENT}')
+
+
+def dyno_scenes(game, out):
+    """dynonis.n2sh (beta #144): DynoEnter and DynoExit at event 4706's marker."""
+    groups = ce.camera_groups(game)
+    blob = bytearray(struct.pack('<4sI', b'N2SH', 1))
+    blob += struct.pack('<I', len(DYNO_SCENES))
+    for name in DYNO_SCENES:
+        data = archived(game, f'NIS/Scene_{name}_BundleB.bun')
+        cars = ce.car_paths(data)
+        cams = [ce.camera_track(t) for t in groups[nis.h33(name)]]
+        evs = scene_events(archived(game, f'NIS/Scene_{name}_EvtTrk.txt').decode('latin-1'), name)
+        blob += ce.scene_block(0, data, cars, cams, evs)
+        print(dict(scene=name, times=[round(v, 2) for v in ce.scene_times(data)], cars=len(cars),
+                   car_frames=[len(c) for c in cars], cameras=len(cams), events=evs))
+    x, y, z, ang = dyno_marker(game)
+    blob += struct.pack('<I', 1) + struct.pack('<24s3fH2xI', b'DYNO', x, y, z, ang, 0)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / 'dynonis.n2sh').write_bytes(bytes(blob))
+    print(dict(dyno=(round(x, 1), round(y, 1), round(z, 1), ang), bytes=len(blob)))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     n2source.game_args(ap)
@@ -137,6 +186,7 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / 'shopnis.n2sh').write_bytes(bytes(blob))
     print(dict(shops=len(rows), with_door=sum(1 for r in rows if r[-1]), bytes=len(blob)))
+    dyno_scenes(args.game, args.out)
 
 
 if __name__ == '__main__':

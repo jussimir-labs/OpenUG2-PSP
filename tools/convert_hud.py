@@ -222,7 +222,10 @@ GROUPS = {
     'map_border': 0x382d2fc9,   # minimap ring (four quarters)
     'map_north': 0xf2a54430,
     'wrongway': 0xc82fa200,
-    'bank': 0x3f8644ca,         # "Bank: $" (free roam)
+    # PickedUpBankIndicator: "Bank:" and the balance (Cash_header, Cash_data),
+    # and Cash_Bank, "Bank Reward: $N", which its Cash_Animate plays under the
+    # balance and into it (FEngHud::ShowPickedUpBank; beta issue 182)
+    'bank': (0x3f8644ca, 0x192f96d9),
     'turbo': 0xc5d551b7,        # the boost gauge by the tachometer (cars with a turbo)
     'sms': (0x4b9b8f5a, 0x668c9cd6),  # EventIndicator: envelope and static unread count
     'style': (0x27754c7f, 0x15d0e247),   # a style bonus's word and points ("HEAD START"), right, in green
@@ -289,7 +292,17 @@ FREE_GROUPS = {
 }
 # Groups numbered after FREE_GROUPS (main.c: FEHUD_HURRY 26), in the mode
 # HUDs that have them: "Hurry!" and the drift's time left (HUD_Drift)
-LATE_GROUPS = ('hurry',)
+LATE_GROUPS = ('hurry', 'showcase')
+# 'showcase': the group of Show_case_backing (0x9a4e84a9, black at alpha 109,
+# 249.6 x 32), which PickedUpBankIndicator and ShowcaseCountdown both
+# register: the dark strip behind the bank and behind the challenge's clock
+# (beta issue 182). Its texts ("Time:", the clock, "Preview") come along;
+# main.c hides them.
+FREE_EXTRA = {'showcase': 0x30d59b88}
+# roots that their scripts place away from their package position, by the
+# anchor of where they play: Cash_Bank's Cash_Animate at x 283, under the
+# balance in a right-edge group (x 0 in the package)
+ANCHOR = {0x192f96d9: 2}
 # HUD_Drift.fng (GLOBAL/INGAMEDRIFT.BUN): the race HUD's groups under the
 # same hashes, the laps and the time's backings at the root, and its own:
 # the points (Total, Best, the multiplier and what gains the next), the
@@ -918,9 +931,10 @@ def write(pkg, src, fnts, path, citymap=None, screen=False, extra=(), drop=False
                     flags |= 16   # a corner mirrored from another's picture (the panels' four from one)
         elif kind == 2:
             ti = font(FONT_CHUNKS[name.upper()])
-        rx = root(o)['data']['position'][0]
+        top = root(o)
+        rx = top['data']['position'][0]
         if not screen:
-            flags |= (1 if rx < -80 else 2 if rx > 80 else 0) << 1
+            flags |= ANCHOR.get(top['hash'], 1 if rx < -80 else 2 if rx > 80 else 0) << 1
         first = len(scripts)
         for sc in o['scripts']:
             ft = len(tracks)
@@ -1182,6 +1196,11 @@ PARTS_ICONS = CUSTOMIZE_ICONS + ('VISUAL_PART_FRONT_BUMPE', 'VINYL_REMOVE', 'NEO
 PERF_ICONS = ('PERFORMANCE_ENGINE', 'PERFORMANCE_ECU', 'PERFORMANCE_TURBO', 'PERFORMANCE_TRANSMISSIO',
               'PERFORMANCE_SUSPENSION', 'PERFORMANCE_NITROUS', 'PERFORMANCE_TIRES', 'PERFORMANCE_BRAKES',
               'PERFORMANCE_WEIGHT_REDU', 'PERFORMANCE_DYNO_RUN')
+# The dyno's menu (Tune Settings, Test Run, Dyno Run, Mode Select, Save Profile, Quit Tuning) and the
+# test track's pause (Resume Test Run, Restart); the modes a tuning is for (Circuit, Drag, Drift, Street X, URL)
+DYNO_MENU_ICONS = ('PERFORMANCE_ICON_TUNE_S', 'PERFORMANCE_ICON_TEST_R', 'PERFORMANCE_DYNO_RUN', 'PERFORMANCE_ICON_MODE_S',
+                   'PERFORMANCE_ICON_SAVE_P', 'INGAME_ICON_QUIT_TO_FE', 'INGAME_ICON_RESUME_RACE', 'INGAME_ICON_RESTART_RAC')
+TUNING_MODE_ICONS = ('MODE_ICON_CIRCUIT', 'MODE_ICON_DRAG', 'MODE_ICON_DRIFT', 'MODE_ICON_STREET_CROSS', 'MODE_ICON_U_RACING_LEAG')
 SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS),
            ('results.n2ui', 'UI_PostRaceResults.fng', 'GLOBAL/INGAMERACE.BUN', ()),
            ('reward.n2ui', 'UI_PostRaceReward.fng', 'GLOBAL/INGAMERACE.BUN', ()),
@@ -1217,6 +1236,10 @@ SCREENS = [('pause.n2ui', 'UI_pause.fng', 'GLOBAL/INGAMECOMMON.LZC', PAUSE_ICONS
            ('perfcat.n2ui', 'UI_ChoosePerformanceCategory.fng', 'FRONTEND/FRONTB.LZC', PERF_ICONS),
            ('dynochart.n2ui', 'UI_PerformanceDyno_Chart.fng', 'GLOBAL/INGAMEPERFORMANCETUNING.BUN', ()),   # the dyno's chart
            ('dynoresults.n2ui', 'UI_PerformanceDyno_Results.fng', 'GLOBAL/INGAMEPERFORMANCETUNING.BUN', ()),   # its results: 0-60, 0-100, top speed, peaks
+           # beta #144: the dyno's own menu (CarTunePauseScreen::SetupDynoPause, "Dyno Shop") and its Mode Select
+           # (ChooseTuningSetting::Setup), the original's icons by the IconOptions' hashes (GLOBALB's TPK, the quit's InGameCommon)
+           ('dynomain.n2ui', 'UI_PerformanceDyno_MAIN.fng', 'GLOBAL/INGAMEPERFORMANCETUNING.BUN', DYNO_MENU_ICONS),
+           ('tunesetting.n2ui', 'UI_PerformanceTuning_Setting.fng', 'GLOBAL/INGAMEPERFORMANCETUNING.BUN', TUNING_MODE_ICONS),
            ('perfpkg.n2ui', 'UI_ChoosePerformancePackage.fng', 'FRONTEND/FRONTB.LZC',
             ('GENERIC_STOCK', 'GENERIC_LEVEL1', 'GENERIC_LEVEL2', 'GENERIC_LEVEL3', 'GENERIC_LOCK_ICON') + PERF_ICONS),   # the category's own: its parts one by one
            ('parts.n2ui', 'UI_GenericParts_Browser.fng', 'FRONTEND/FRONTB.LZC', PARTS_ICONS),
@@ -1385,26 +1408,36 @@ def credits_text(game, path):
     return len(lines)
 
 
+GPS_ARROWS = ('MARKER_GPS_AID', 'MARKER_DIRECTION_AID')   # the GPS's (blue), the getaway's (orange)
+
+
 def gps_arrow(game, src, path):
-    """The GPS's 3D arrow (GLOBAL\\INGAMECOMMON.LZC, the solid MARKER_GPS_AID:
+    """The street's 3D arrows (GLOBAL\\INGAMECOMMON.LZC, solid models:
     24-byte vertices, position, ARGB colour, UV): gps.n2gp, "N2GP", version
-    2, submesh count, then each submesh's texture size (w, h), triangle
-    vertex count, draw mode, the texture (CLUT8 as the screens' textures)
-    and its triangles unrolled (u, v, ABGR, x, y, z: the GU's vertex order).
-    Two submeshes: the arrow (ARROW_MARKERA, opaque) and its neon rim
-    (SFX_NEONBARA, two bevelled bands above and below the outline), whose
-    texture record asks for additive blending (usage 2, blend 2), as the
-    game draws it (eSetBlendMode: source alpha + one, no depth write). The
-    mode: 0 opaque, 1 alpha blended, 2 additive. Model axes: x across, y
-    the plate's normal, the tip toward -z (Player::RenderArrow turns z
-    from the target to the arrow, y up)."""
+    3, the first model's submesh count and submeshes, then the second's
+    count and submeshes (version 2 stopped after the first: older readers
+    still do). The first is MARKER_GPS_AID, the GPS's (Player::RenderGPSArrow,
+    blue); the second MARKER_DIRECTION_AID, the outrun's getaway arrow
+    toward the leader (Player::RenderGetAwayArrow, the same textures with
+    orange vertices; beta issue 186). Each submesh: its texture size (w, h),
+    triangle vertex count, draw mode, the texture (CLUT8 as the screens'
+    textures) and its triangles unrolled (u, v, ABGR, x, y, z: the GU's
+    vertex order). Two submeshes each: the arrow (ARROW_MARKERA, opaque) and
+    its neon rim (SFX_NEONBARA, two bevelled bands above and below the
+    outline), whose texture record asks for additive blending (usage 2,
+    blend 2), as the game draws it (eSetBlendMode: source alpha + one, no
+    depth write). The mode: 0 opaque, 1 alpha blended, 2 additive. Model
+    axes: x across, y the plate's normal, the tip toward -z
+    (Player::RenderArrow turns z from the target to the arrow, y up)."""
     from n2formats import chunks as ck, unpad
     d = load(game, 'GLOBAL/INGAMECOMMON.LZC')
+    models = {}
     for tag, p, n in ck(d):
         if tag != 0x80134010:
             continue
         leaves = {t: d[o:o + s] for t, o, s in ck(d, p, p + n) if not t & 0x80000000}
-        if unpad(leaves[0x134011])[164:].split(b'\0')[0] != b'MARKER_GPS_AID':
+        name = unpad(leaves[0x134011])[164:].split(b'\0')[0].decode('latin-1')
+        if name not in GPS_ARROWS or name in models:
             continue
         keys = [a for a, _ in struct.iter_unpack('<II', leaves[0x134012])]
         if 0x134a02 in leaves:      # the PS2's VIF strips
@@ -1419,7 +1452,7 @@ def gps_arrow(game, src, path):
             verts = [struct.unpack_from('<3fI2f', vb, 24 * i) for i in range(len(vb) // 24)]
             ids = struct.unpack(f'<{len(ib) // 2}H', ib)
             draws = [(w[6], w[7], w[9]) for w in (struct.unpack_from('<16I', sb, at) for at in range(0, len(sb), 64))]
-        out = bytearray(b'N2GP' + struct.pack('<II', 2, len(draws)))
+        out = bytearray()
         for count, ti, first in draws:
             tpk = next(t for t in src.flat if keys[ti] in t.records)
             blend = tpk.records[keys[ti]][1][0x32]   # the record's AlphaBlendType (convert_world.draw_mode)
@@ -1430,9 +1463,13 @@ def gps_arrow(game, src, path):
                 x, y, z, argb, u, v = verts[i]
                 abgr = argb & 0xff00ff00 | (argb >> 16 & 0xff) | (argb & 0xff) << 16
                 out += struct.pack('<2fI3f', u, v, abgr, x, y, z)
-        path.write_bytes(out)
-        return len(draws)
-    raise SystemExit('MARKER_GPS_AID not found')
+        models[name] = (len(draws), bytes(out))
+    missing = [m for m in GPS_ARROWS if m not in models]
+    if missing:
+        raise SystemExit(f'{", ".join(missing)} not found')
+    gps, getaway = (models[m] for m in GPS_ARROWS)
+    path.write_bytes(b'N2GP' + struct.pack('<II', 3, gps[0]) + gps[1] + struct.pack('<I', getaway[0]) + getaway[1])
+    return gps[0] + getaway[0]
 
 
 def event_records(path):
@@ -1472,8 +1509,9 @@ def resample(rgba, w, x0, y0, cw, ch, W, H):
 def eboot_art(src, out):
     """The XMB's art for the EBOOT (and the savedata's icon), from the
     game's loading screen: pic1.png 480 x 272, its splash (LS_SPLASH, 512 x
-    256) scaled to cover the screen; icon0.png 144 x 80, the chrome logo
-    (NFSU_LOGO_CHROME) over a darkened crop of the splash's street."""
+    256) fitted to cover the screen, its top cut and the rest stretched
+    taller; icon0.png 144 x 80, the chrome logo (NFSU_LOGO_CHROME) over a
+    darkened crop of the splash's street."""
     def tex(name):
         for t in src.flat:
             x = t.by_name(name)
@@ -1482,8 +1520,14 @@ def eboot_art(src, out):
         raise ValueError(f'{name} missing')
     splash, logo = tex('LS_SPLASH'), tex('NFSU_LOGO_CHROME')
     srgba, lrgba = splash.rgba(), logo.rgba()
+    # The splash's width as before (its height's scale, centred); its top
+    # 11.4% (the sky over the skyline) left out and the rest stretched to
+    # the screen's height, so the scene stands taller and less squashed than
+    # at one scale (Jussimir's framing, 12/11: the same picture fitted at
+    # x 30.1-481.9, y 29.1-256 of the 512 x 256 splash).
     scale = 272 / splash.h
-    pic = resample(srgba, splash.w, (splash.w - 480 / scale) / 2, 0, 480 / scale, splash.h, 480, 272)
+    top = splash.h * .1137
+    pic = resample(srgba, splash.w, (splash.w - 480 / scale) / 2, top, 480 / scale, splash.h - top, 480, 272)
     for i in range(3, len(pic), 4):
         pic[i] = 255
     write_png(out / 'pic1.png', 480, 272, pic)
@@ -1526,17 +1570,17 @@ def main():
         args.out.mkdir(parents=True, exist_ok=True)
         print('hud', write(pkg, src, fnts, args.out / 'hud.n2ui', map_texture(args.game),
                            extra=('ICON_RANDOM_ENCOUNTER', 'MINIMAP_ICON_CROSS', 'ENGAGE_PHONE_ICON') + STREET_ENGAGE_TEXTURES + SMS_INDICATOR_TEXTURES,
-                           groups={**GROUPS, **FREE_GROUPS, **RACE_EXTRA}))
+                           groups={**GROUPS, **FREE_GROUPS, **RACE_EXTRA, **FREE_EXTRA}))
         return
     print('eboot', eboot_art(src, args.out))
-    print('hud', write(pkg, src, fnts, args.out / 'hud.n2ui', map_texture(args.game), extra=('ICON_RANDOM_ENCOUNTER', 'MINIMAP_ICON_CROSS', 'ENGAGE_PHONE_ICON') + STREET_ENGAGE_TEXTURES + SMS_INDICATOR_TEXTURES, groups={**GROUPS, **FREE_GROUPS, **RACE_EXTRA}))
+    print('hud', write(pkg, src, fnts, args.out / 'hud.n2ui', map_texture(args.game), extra=('ICON_RANDOM_ENCOUNTER', 'MINIMAP_ICON_CROSS', 'ENGAGE_PHONE_ICON') + STREET_ENGAGE_TEXTURES + SMS_INDICATOR_TEXTURES, groups={**GROUPS, **FREE_GROUPS, **RACE_EXTRA, **FREE_EXTRA}))
     drag = hud_package(args.game, 'HUD_Drag.fng', 'GLOBAL/INGAMEDRAG.BUN')
     localise(drag, strings(args.game))
     print('hud_drag', write(drag, src, fnts, args.out / 'hud_drag.n2ui', groups=DRAG_GROUPS, extra=DRAG_SCALES))   # the drag's own HUD
     drift = hud_package(args.game, 'HUD_Drift.fng', 'GLOBAL/INGAMEDRIFT.BUN')
     localise(drift, strings(args.game))
     print('hud_drift', write(drift, src, fnts, args.out / 'hud_drift.n2ui', map_texture(args.game), groups=DRIFT_GROUPS))
-    print('gps.n2gp', gps_arrow(args.game, src, args.out / 'gps.n2gp'), 'submeshes')
+    print('gps.n2gp', gps_arrow(args.game, src, args.out / 'gps.n2gp'), 'submeshes (the GPS\'s and the getaway\'s arrows)')
     print('credits.txt', credits_text(args.game, args.out / 'credits.txt'), 'lines')
     print('help.txt', help_texts(args.game, table, args.out / 'help.txt'), 'screens')
     print('style.n2st', style_table(load(args.game, 'GLOBAL/GLOBALB.BUN'), table, args.out / 'style.n2st'), 'style bonuses')

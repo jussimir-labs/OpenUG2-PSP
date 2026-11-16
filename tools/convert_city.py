@@ -1181,10 +1181,47 @@ KEYED_BLACK = {0x543079ca}
 
 
 def keyed_black(t):
-    px = bytearray(t.rgba())
-    for i in range(0, len(px), 4):
-        if px[i] + px[i+1] + px[i+2] < 24:
-            px[i+3] = 0
+    """The palm as it was painted over black (premultiplied on black): each
+    texel's alpha its brightness up to the palm's own (the 80th percentile
+    of the brightest channel among the painted texels), its colour divided
+    by that alpha, and the see-through texels in their nearest painted
+    neighbour's colour. A plain cut of the near-black texels kept the
+    painting's soft dark rim round the fronds, and the GE's bilinear filter
+    pulled the black between the texels into it: black edges round the far
+    palms (beta issue 167)."""
+    src = bytes(t.rgba())
+    w, h = t.w, t.h
+    n = w * h
+    peak = [max(src[4*i], src[4*i+1], src[4*i+2]) for i in range(n)]
+    painted = sorted(v for v in peak if v >= 8)
+    full = max(24, painted[int(len(painted) * .8)] if painted else 24)
+    px = bytearray(src)
+    for i in range(n):
+        a = min(1.0, peak[i] / full)
+        if a * 255 <= 96:   # under the street's alpha test (main.c, world.c): cut
+            px[4*i+3] = 0
+            continue
+        for c in range(3):
+            px[4*i+c] = min(255, int(src[4*i+c] / a + .5))
+        px[4*i+3] = 255
+    # the cut texels take their nearest kept neighbour's colour, ring by ring
+    # (alpha stays 0): the filter blends leaf into leaf, not into black
+    kept = [px[4*i+3] == 255 for i in range(n)]
+    for _ in range(max(w, h)):
+        grow = []
+        for i in range(n):
+            if kept[i]:
+                continue
+            x, y = i % w, i // w
+            near = [j for j in ((y*w + x-1) if x else -1, (y*w + x+1) if x < w-1 else -1,
+                                ((y-1)*w + x) if y else -1, ((y+1)*w + x) if y < h-1 else -1) if j >= 0 and kept[j]]
+            if near:
+                grow.append((i, tuple(sum(px[4*j+c] for j in near) // len(near) for c in range(3))))
+        if not grow:
+            break
+        for i, rgb in grow:
+            px[4*i:4*i+3] = bytes(rgb)
+            kept[i] = True
 
     class Keyed:
         name, w, h, fmt, palette = t.name, t.w, t.h, t.fmt, None

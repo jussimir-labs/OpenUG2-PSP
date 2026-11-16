@@ -206,6 +206,30 @@ class PlanTests(unittest.TestCase):
             self.assertFalse((work/D/'music.mp3').exists(),'changed audio is not reused')
             self.assertEqual((game/'music.mp3').read_bytes(),b'old music.mp3','previous game unchanged')
 
+    def test_update_plan_ignores_the_previous_eboot_only(self):
+        """A previous folder whose EBOOT.PBP is not its reference's (the reference rewritten to the EBOOT
+        without XMB art) is still updated; any other file that differs still refuses the update."""
+        import argparse
+        with tempfile.TemporaryDirectory() as tmp:
+            base=Path(tmp); out=base/'output'; game=out/'PSP/GAME/NFSU2VIEW'
+            game.mkdir(parents=True)
+            for name in ['EBOOT.PBP','city.n2cy','races.n2rc','music.mp3','lines.n2rl','hud.n2ui']:
+                (game/name).write_bytes(('old '+name).encode())
+            refs=base/'reference'; (refs/'manifests').mkdir(parents=True)
+            files={p.name:sg.sha256(p) for p in game.iterdir()}; files['EBOOT.PBP']='0'*64
+            (refs/'manifests/fixture-ps2.json').write_text(json.dumps({'files':files}))
+            old=dict(source='ps2',iso_sha256='aa',movies=True,candidate='fixture',tools_sha256='old-tools')
+            g=graph(); before=['stamp-'+name for name in g.names]
+            state=out/bg.STATE; state.parent.mkdir(parents=True,exist_ok=True)
+            state.write_text(json.dumps(dict(tools_sha256='old-tools',disc='ps2:aa',stamps=dict(zip(g.names,before)))))
+            args=(argparse.Namespace(name='ps2'),argparse.Namespace(skip_movies=False),'ps2:aa')
+            with patch.object(bg,'HERE',refs):
+                plan, why=bg.update_plan(out,old,g,before,*args)
+                self.assertIsNone(why); self.assertEqual(plan['rerun'],{})
+                (game/'hud.n2ui').write_bytes(b'changed')
+                plan, why=bg.update_plan(out,old,g,before,*args)
+            self.assertIsNone(plan); self.assertIn('hud.n2ui',why)
+
     def plan(self, changed, files):
         g = graph()
         rerun = {i: 'changed' for i in changed}

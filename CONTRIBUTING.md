@@ -1,4 +1,4 @@
-# Contributing to the closed beta
+# Contributing to the open beta
 
 Thank you for helping improve NFSU2 PSP! The beta repository contains the
 generator, conversion tools, documentation, tests, and a prebuilt game
@@ -17,20 +17,20 @@ Before publishing attachments, follow the required content check in
 
 ## Before you start
 
-- Accept your invitation to the private beta repository.
+- Anyone can take part: the beta is open, and a free GitHub account is enough to open
+  issues and pull requests.
 - Search the existing issues and pull requests. For a substantial change, open
   an issue first so we can discuss the approach and avoid duplicated work.
-- Keep the beta private and share it only with people already authorized to
-  access it. Do not make a separate public copy of the repository.
+- Share links to this repository and its releases, not copies of files you
+  generated: those come from your own game disc.
 - Never commit or attach ISOs, original game assets, extracted or generated game
   files, saves, credentials, or other private information. Use synthetic test
   data where possible, and check logs and screenshots before sharing them.
 
 ## Send a pull request
 
-1. On the beta repository page, select **Fork** and create a private fork in
-   your personal GitHub account. The fork stays private. If **Fork** is
-   unavailable, ask a maintainer whether private forks are enabled.
+1. On the beta repository page, select **Fork** to create a fork in your
+   personal GitHub account.
 2. Clone your fork and create a branch for your change. Make a focused change
    and commit it to that branch. Push the branch to your fork.
 3. Open a pull request from your fork's branch to the beta repository's `main`

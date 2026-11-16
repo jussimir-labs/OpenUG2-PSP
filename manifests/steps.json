@@ -3120,6 +3120,7 @@
     "dist/PSP/GAME/NFSU2VIEW/customize.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/damage.n2tx",
     "dist/PSP/GAME/NFSU2VIEW/dynochart.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/dynomain.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/dynoresults.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/engage.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/fopts.n2ui",
@@ -3168,6 +3169,7 @@
     "dist/PSP/GAME/NFSU2VIEW/popts.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/poptsm.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/postrace.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/profiles.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/qrcar.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/qrmode.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/qropts.n2ui",
@@ -3185,6 +3187,7 @@
     "dist/PSP/GAME/NFSU2VIEW/sms.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/sponsor.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/sponsorpop.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/startcareer.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/stats.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/statusc.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/statusd.n2ui",
@@ -3195,6 +3198,7 @@
     "dist/PSP/GAME/NFSU2VIEW/tournres.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/tournstand.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/trax.n2ui",
+    "dist/PSP/GAME/NFSU2VIEW/tunesetting.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/vlayer.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/vrating.n2ui",
     "dist/PSP/GAME/NFSU2VIEW/worldmap.n2ui"
@@ -3671,6 +3675,7 @@
     "tools"
    ],
    "writes": [
+    "dist/PSP/GAME/NFSU2VIEW/dynonis.n2sh",
     "dist/PSP/GAME/NFSU2VIEW/shopnis.n2sh"
    ],
    "removes": [],

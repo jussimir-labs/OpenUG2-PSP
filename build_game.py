@@ -3,9 +3,10 @@
 
     python3 build_game.py PATH/TO/ISO [--output FOLDER] [--source xbox|ps2]
 
-The executable is included in eboot/EBOOT.PBP. This tool verifies the ISO,
-extracts its files, runs the converters in tools/, and assembles the memory
-card package in FOLDER/PSP/GAME/NFSU2VIEW. All generated files stay inside
+The executable is included in eboot/EBOOT.PBP, without any of the game's
+art. This tool verifies the ISO, extracts its files, runs the converters in
+tools/, and assembles the memory card package in FOLDER/PSP/GAME/NFSU2VIEW,
+its EBOOT.PBP with the XMB icon and background made from the ISO. All generated files stay inside
 FOLDER: temporary extraction and conversion files in .trabalho (removed on
 success unless --keep-work is set), and step logs in registros.
 
@@ -664,6 +665,10 @@ def update_plan(out, old, graph, stamps, source, args, disc):
         return None, 'no previous-version reference is available to verify the folder'
     say('  checking the previous folder against its reference')
     _, _, differ, missing, extra = compare(game, manifest)
+    # the previous folder's EBOOT.PBP is always replaced, and the published references of older
+    # versions may carry that version's EBOOT without its XMB art (the beta repository's history
+    # was rewritten so): a different EBOOT does not make the previous folder unusable
+    differ = [n for n in differ if n != 'EBOOT.PBP']
     if differ or missing or extra:
         return None, ('the previous folder was changed or is incomplete (different: ' + ', '.join(differ[:5] or ['none'])
                       + '; missing: ' + ', '.join(missing[:5] or ['none']) + ')')
@@ -772,14 +777,16 @@ def set_aside(out):
 def package(work, out, logs, env):
     """The card's folder (tools/ms_package.py make --release --pack, as the
     reference package): no converters' reports, no test files, the small
-    files in pack.n2pk, the barriers' collision as patches."""
+    files in pack.n2pk, the barriers' collision as patches, and the kit's
+    EBOOT with the XMB icon and background that tools/convert_hud.py made
+    from this ISO (--xmb-art: the kit's EBOOT carries no game art)."""
     dist = work / 'dist/PSP/GAME/NFSU2VIEW'
     stage = work / 'pacote'
     if stage.exists():
         shutil.rmtree(stage)
     with open(logs / 'pacote.log', 'w') as f:
         r = subprocess.run([sys.executable, 'tools/ms_package.py', 'make', str(stage), '--dist', str(dist), '--eboot', str(EBOOT),
-                            '--release', '--pack', '--whole-bars'], cwd=work, env=env, stdout=f, stderr=subprocess.STDOUT)
+                            '--release', '--pack', '--whole-bars', '--xmb-art'], cwd=work, env=env, stdout=f, stderr=subprocess.STDOUT)
     if r.returncode:
         raise Failure(f'the package assembly failed: see {logs / "pacote.log"}')
     shutil.move(str(stage / 'PSP'), str(out / 'PSP'))
@@ -976,6 +983,8 @@ def main():
                   'files': len(list(game.iterdir())), 'bytes': size, 'work_bytes_peak': work_bytes,
                   'seconds': round(time.monotonic() - t_start), 'step_seconds': times,
                   'verification': 'no-reference', 'approved': False, 'eboot_sha256': release['eboot_sha256'],
+                  # the card's EBOOT: the kit's with this ISO's XMB art (its own hash per source)
+                  'card_eboot_sha256': sha256(game / 'EBOOT.PBP') if (game / 'EBOOT.PBP').is_file() else None,
                   'reference_verified': False,
                   'quality_approval': release.get('quality_approval', 'not-assessed'),
                   'known_issues': release.get('known_issues', [])}

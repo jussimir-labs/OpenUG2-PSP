@@ -528,6 +528,11 @@ class Builder:
             # material in the original; unpainted red, as the stock
             # calipers' and as the PC shows Rachel's (beta #59)
             return None, (180, 20, 20, 255), 0, 1.0
+        if carbon_hood and tex in self.skins and mat not in (CHROME, MAGCHROME, EXHAUST_TIP):
+            # a carbon hood's own pieces on the skin (the TWISTER's ducts:
+            # PLAINNOTHING on <CAR>_SKIN1): carbon as the hood, as the PS2
+            # shows Rachel's; on the skin they showed her vinyl (beta #183)
+            return CARBONFIBRE_TEX, white, F_CARBON, 3.0
         if tex in self.skins and self.textures.get(tex) is None and mat not in (CHROME, MAGCHROME, EXHAUST_TIP):
             # another material on the composite skin, unpainted: its art
             # as it is (it was the flat fallback, the 350Z's reverse lamps

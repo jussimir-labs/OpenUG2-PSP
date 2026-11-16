@@ -1,4 +1,31 @@
-# NFSU2 PSP closed beta — release notes
+# NFSU2 PSP beta — release notes
+
+## 0.4.0 — The Celebration Song (Open Beta, November 2026)
+
+EA Trax: *The Celebration Song*, Unwritten Law.
+
+**The first open beta.** Anyone can download the generator, make the game from their own disc and
+report what they find; no invitation is needed. Up to 0.3.1 this was a closed beta.
+
+A new game executable and new game data: update your earlier output folder with this generator
+(same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
+Saves move to version 16 the first time 0.4.0 writes them.
+
+- **New:** a Debug page in Options, with the Debug Overlay switch (the FPS and build lines can now be
+  turned off) and Open Bayview (#203); Brightness in Options > Video; two extra chase cameras; the
+  Dyno and its Test Runs on the Speedway (#144); the GPS chimes (#106); the game's own XMB icon video,
+  background and theme, by BananaSplitGamer (#205).
+- **Career:** Jump to Garage and Resume Career as in the original, the race markers and the way back
+  to Bayview (#195, #198, #199, #184), the prologue, the stage order, the sponsor and the Final Race
+  (#180, #202, #204), and the shops' welcome (#188).
+- **Racing and menus:** the post-race menus (#154, #191), drift wins, points and slip angle (#191),
+  the World Map and outrun arrows (#201, #186), the Body Shop and Customize Car (#29, #173), the
+  menu and street sounds (#158, #174, #176, #178, #181), and division by zero no longer stopping
+  the PSP (#148).
+- **Looks:** the HUD's bank strip (#182), the distant palm trees (#167), the scrolling textures (#192)
+  and the Twister hood (#183).
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
 
 ## 0.2.6 — Rush Hour at the Rail Yard (4 November 2026)
 
@@ -171,7 +198,7 @@ movies per source. These are not six complete races or a full save/performance q
 Jussimir's later manual beta acceptance is recorded separately from those automated checks.
 
 Package SHA-256 values are provided in `SHA256SUMS.txt` on the release. The executable hash is
-`ff35c0a14190edf67de263259bfb9fa3831a75363ee2c7b7ee332196bb29df39`.
+`42d252dfb8a5f5f8d195027ad816ac0fa661fe3194e1de20f72a3ed29f436a95`.
 Xbox data ID: `bfaa`; PS2 data ID: `804e`.
 
 Please report one problem per issue using **Closed Beta 1 — RC21** as the version.

@@ -27,7 +27,8 @@
   which the playlist skips (gain 0). Songs play at their own level, as the
   original's music channel plays them: one gain for all, the mean of the
   gains that would bring each to -10 dBFS RMS (the PS2's music against its
-  engine, measured, agrees with that mean). The 8 ambiences of the city's zones (about two minutes each) are kept,
+  engine, measured, agrees with that mean). The ambiences of the city's zones and of the frontend's (the menus'
+  and the shops', played with the menu music at 0; about two minutes each) are kept,
   at 64 kbit/s (44.1 kHz kept: LAME would go down to 24), made to loop
   without a seam: resampled to 44.1 kHz as
   three copies end to end (the middle one free of the resampler's edges),
@@ -161,12 +162,15 @@ SFX = {
     # (SMSMessageQueue::DoAutopopup), 14 the HUD's engage icon coming in (a
     # race's, a shop's, a showcase's, an outrun's), 15 the icon settling a
     # second later, 16 new mail's envelope, 17 bank cash picked up
-    # (FEngHud::ShowPickedUpBank); kept at 24 kHz (beta issue 120)
+    # (FEngHud::ShowPickedUpBank), 18 the GPS's way found (MinimapWrapper::
+    # UpdateGPS, PlayUISoundFX 0x12: beta issue 106); the Xbox's 48 kHz halved
+    # to 24, the PS2's kept (beta issues 120, 158)
     'chime_popup':  (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 13, False, 2),
     'chime_engage': (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 14, False, 2),
     'chime_settle': (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 15, False, 2),
     'chime_sms':    (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 16, False, 2),
     'chime_bank':   (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 17, False, 2),
+    'chime_gps':    (r'SOUND\GLOBAL\FE_COMMON_MB.abk', 18, False, 2),
 }
 
 
@@ -527,6 +531,16 @@ def pt_header(b, at):
     return fields
 
 
+def pt_rate(f):
+    """A sound's rate: its header's (tag 0x84), else the platform's default.
+    The PS2's banks leave it out for 22050 Hz (FE_COMMON_MB's menu sounds
+    and chimes, a hydraulics bounce): their tones at 22050 match the Xbox's
+    same sounds at its stated 48 kHz to 0.02 semitone, and a PCSX2 recording
+    of the menus has the accept at ~22.3 kHz, never at 24 kHz (beta issue
+    158; OpenUG2's ABK reader takes 22050 too). The Xbox's state theirs."""
+    return f.get(0x84, 22050 if f['platform'] == 5 else 24000)
+
+
 def decode_ima(data, nsamples):
     """Xbox IMA: 36-byte mono blocks: s16 predictor, u8 index, pad, then
     32 bytes = 64 nibbles, low nibble first."""
@@ -664,7 +678,7 @@ def bank_streams(game, path):
             streams.append(None)
             continue
         f = pt_header(d, slot + off)
-        rate = f.get(0x84, 24000)
+        rate = pt_rate(f)
         if f['platform'] == 5:      # the PS2's: VAG, its channels mixed down
             streams.append((rate, stream_pcm(d, bnk, f, path), 1))
             continue
@@ -1236,10 +1250,10 @@ def music(game, out):
         at += n
     levels = [track_rms(data, t) for t in tracks]
     gains = [10 ** ((MUSIC_TARGET - r) / 20) if r > SONG_RMS else 0. for r in levels]
-    from convert_envsound import xbe_tables   # the city's zones (0-21; the shops' are the frontend's, not played)
-    events = pathfinder_ambience(game)
+    from convert_envsound import xbe_tables   # the city's zones (0-21) and the frontend's (22-30: its menus' and shops',
+    events = pathfinder_ambience(game)        # EAXS_PFController::GetAmbientZone; with the menu music at 0, beta issue 176)
     from convert_envsound import exe_of
-    ambient = sorted({events[e] for e in xbe_tables(exe_of(game))[0][:22] if e in events})
+    ambient = sorted({events[e] for e in xbe_tables(exe_of(game))[0] if e in events})
     song_gain = sum(gains) / max(1, sum(1 for g in gains if g))
     gains = [song_gain if g else 0. for g in gains]   # one gain: each song at its own level
     with tempfile.TemporaryDirectory(prefix='nfsu2-music-') as tmp:

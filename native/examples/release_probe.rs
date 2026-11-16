@@ -45,7 +45,7 @@ fn run() -> Result<(), String> {
     let cfg = config::load(&root)?.ok_or("Missing update configuration")?;
     if cfg.test
         || cfg.client_id != "Iv23liOsr0uvsTwiZDZG"
-        || cfg.repository != "jussimir-labs/pessoal-nfsu2-psp-beta"
+        || cfg.repository != "jussimir-labs/OpenUG2-PSP"
     {
         return Err("The real proof requires the reviewed App/repository configuration".into());
     }

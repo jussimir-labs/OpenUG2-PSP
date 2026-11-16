@@ -123,7 +123,7 @@ Setup, once, by the organization owner (Jussimir):
    secret to refresh a token obtained through Device Flow. If renewal is refused or the refresh
    token expires, the launcher asks the user to sign in again through Device Flow. See
    [GitHub's refresh documentation](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/refreshing-user-access-tokens).
-7. **Install App → jussimir-labs → Only select repositories → `pessoal-nfsu2-psp-beta`.**
+7. **Install App → jussimir-labs → Only select repositories → `OpenUG2-PSP`.**
 8. Copy the **Client ID** (not a client secret: none is needed, never add one) into `client_id` of
    `native/launcher.json` and commit it. Packages built from then on check for updates; with an
    empty `client_id` the check is silently off.
@@ -198,6 +198,25 @@ The builder preserves third-party licenses and corresponding native-tool sources
 library dependencies, and records file hashes in `bundle.json`. Output ZIPs and SHA-256 files
 are release assets. Never put game ISOs, game data, access keys or private sign-up data in a release.
 
+## The XMB icon and background
+
+The kit's `eboot/EBOOT.PBP` carries none of the game's art: only its `PARAM.SFO` and the
+game's PRX (`DATA.PSP`), with the icon, pictures, animation and sound sections of the PBP
+empty. Like the rest of the game, the XMB art is made from each player's own disc:
+`tools/convert_hud.py` (`eboot_art`) writes `icon0.png` (144 x 80, the chrome logo over the
+loading screen's street) and `pic1.png` (480 x 272, the loading screen's splash) from the PS2 or
+Xbox ISO, and the package step (`tools/ms_package.py make --xmb-art`, called by `build_game.py`)
+writes the card's `EBOOT.PBP` as the kit's with those two as `ICON0.PNG` and `PIC1.PNG`. The
+`PARAM.SFO` and the PRX stay byte for byte; `icon0.png` also stays in `pack.n2pk`, where the game
+reads the saves' icon. So each source has its own `EBOOT.PBP` hash in its reference manifest
+(`manifests/<candidate>-<source>.json`), and `relatorio.json` records it as `card_eboot_sha256`
+beside the kit's `eboot_sha256`.
+
+`tools/pbp.py` handles the PBP: `info`, `strip EBOOT OUT` (a build's EBOOT without its art, the
+kit's), `check-kit EBOOT` (fails when it carries art) and `check-card GAME KIT` (a generated
+folder's EBOOT is the kit's with that folder's own `icon0.png` and `pic1.png`).
+`release_guard.py` refuses any `EBOOT.PBP` with art in the package (finding `game-art`).
+
 ## Validation scope
 
 `native-qa.json` records the checks actually run for each package:
@@ -253,7 +272,8 @@ Hosted workflows must invoke the same content check immediately before upload.
 For an independent check, run
 `python native/release_guard.py PACKAGE.zip --report report.json`. The check inspects project text, decoded source/JSON
 strings, image metadata, PDF text/metadata/attachments, binary strings, and
-nested ZIP/TAR/compressed streams. Missing PDF support, unreadable or encrypted
+nested ZIP/TAR/compressed streams. It also refuses an `EBOOT.PBP` that carries the
+game's XMB art (see [The XMB icon and background](#the-xmb-icon-and-background)). Missing PDF support, unreadable or encrypted
 content, unsafe archive paths, and inspection limits block publication.
 Checks use explicit vocabulary and context signatures; they are not a proof
 that every possible sentence is English. Review new prose and screenshots as
@@ -269,6 +289,14 @@ historical quotations use exact file hashes, paths and token signatures in
 exemptions or disable the check to resolve a finding. Review the reported file,
 fix unintended text, and update a narrow exception only when the original
 credit, fixture or quotation must be preserved.
+
+The kit's executable normally carries no XMB art. From 0.4.0 it carries one reviewed set: the
+icon video (ICON1.PMF), background (PIC1.PNG), icon (ICON0.PNG) and theme (SND0.AT3) made by
+BananaSplitGamer for beta issue #205, included on Jussimir's decision of 15/11/2026, which accepts
+that this fan art uses the game's cover art, trailers and EA Trax music. Only these four sections,
+by their exact SHA-256 in `reviewed_xmb_art` of `release_policy.json` (and `KIT_XMB` in
+`tools/pbp.py`), may be in `EBOOT.PBP`; any other art, or any change to them, is refused. With this
+XMB in the kit, the generator keeps it and the card's EBOOT is the kit's for every source.
 
 The policy stores fingerprints so it does not reproduce the restricted words
 in distributed files. `python native/release_guard.py --fingerprint TOKEN`

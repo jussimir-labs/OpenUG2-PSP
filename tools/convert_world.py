@@ -50,11 +50,12 @@ def draw_mode(tpk, key):
 def scroll_flags(tpk, key):
     """The record's scroll as F_SCROLL_* bits, 0 when still: ScrollType
     +0x2e (1 smooth, 2 snap), then from +0x34 s16 ScrollTimeStep (1/256 s),
-    ScrollSpeedS, ScrollSpeedT (1/256 of the texture a second). Snap moves
-    the UV by speed x time, time counted in whole steps: the race
-    barriers' neon chevrons (OBJ_TRACKBARRIERB_NEON_, S -320 every 76)
-    jump 0.37 of a panel forward every 0.3 s, as on the PS2. Every
-    scrolling texture of the game moves along one axis."""
+    ScrollSpeedS, ScrollSpeedT (1/1024 of the texture a second, or a step:
+    TextureInfo::GetScroll in the GameCube's eDataRender). Snap moves the
+    UV by speed x the whole steps gone: the race barriers' neon chevrons
+    (OBJ_TRACKBARRIERB_NEON_, S -320 every 76) jump 0.31 of a panel
+    forward every 0.3 s. Every scrolling texture of the game moves along
+    one axis (psp-viewer/world.c scroll_of)."""
     info = tex_info(tpk, key)
     kind = info[0x2e]
     step, speed_s, speed_t = struct.unpack_from('<3h', info, 0x34)

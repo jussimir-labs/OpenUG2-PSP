@@ -20,6 +20,11 @@
       ms-runs.txt (no measurement runs), none of the dist's tools and test
       files (PSPLink's PRX, the ARK's notes, the tests' control files), the
       PARAM.SFO's MEMSIZE=1 checked, and a README for the player.
+      --xmb-art: the EBOOT's XMB icon and background put in from the dist's
+      icon0.png and pic1.png (tools/convert_hud.py eboot_art, from the
+      player's disc): the beta's kit carries its EBOOT without the game's
+      art and its generator packages with this (tools/pbp.py); PARAM.SFO
+      and the PRX stay byte for byte.
   tools/ms_package.py push VOLUME OUT [--fresh]
       the package onto the card the XMB's USB connection mounts (VOLUME,
       e.g. /Volumes/PSP): the one way to copy it. rsync with no extended
@@ -170,7 +175,7 @@ def pack_names(path):
     return names
 
 
-def make(out, dist, eboot, runs, patch_bars=True, pack=False, release=False):
+def make(out, dist, eboot, runs, patch_bars=True, pack=False, release=False, xmb_art=False):
     dest = Path(out) / 'PSP/GAME/NFSU2VIEW'
     if dest.exists():
         sys.exit(f'{dest} already exists: choose another folder')
@@ -204,8 +209,23 @@ def make(out, dist, eboot, runs, patch_bars=True, pack=False, release=False):
             shutil.copy2(src, dest / p.name)
         n += 1
         size += src.stat().st_size
-    shutil.copy2(eboot, dest / 'EBOOT.PBP')
-    size += Path(eboot).stat().st_size
+    if xmb_art and __import__('pbp').kit_xmb(Path(eboot).read_bytes()):
+        # the kit carries its own XMB (pbp.KIT_XMB, from 0.4.0): the card's EBOOT is the kit's
+        shutil.copy2(eboot, dest / 'EBOOT.PBP')
+    elif xmb_art:
+        # the art from the player's own disc (the kit's EBOOT has none):
+        # read before --pack moves icon0.png and pic1.png into pack.n2pk
+        import pbp
+        art = {n: Path(dist) / n for n in ('icon0.png', 'pic1.png')}
+        missing = [n for n, p in art.items() if not p.is_file()]
+        if missing:
+            sys.exit(f'--xmb-art: {", ".join(missing)} missing in {dist} (tools/convert_hud.py writes them)')
+        (dest / 'EBOOT.PBP').write_bytes(pbp.with_art(Path(eboot).read_bytes(), art['icon0.png'].read_bytes(),
+                                                      art['pic1.png'].read_bytes()))
+        shutil.copystat(eboot, dest / 'EBOOT.PBP')
+    else:
+        shutil.copy2(eboot, dest / 'EBOOT.PBP')
+    size += (dest / 'EBOOT.PBP').stat().st_size
     if runs:
         lines = [f'{t} {RUNS[t]}' for t in runs]
         (dest / 'ms-runs.txt').write_text('# NFSU2VIEW: each start from the XMB runs the next line (ms-done.txt counts them)\n'
@@ -521,6 +541,8 @@ def main():
     m.add_argument('--whole-bars', action='store_true', help='the barriers as in the dist (an EBOOT from before N2CY v3)')
     m.add_argument('--pack', action='store_true', help='the files under 1 MB in pack.n2pk, not loose (an EBOOT that reads it: main.c pack_load)')
     m.add_argument('--release', action='store_true', help="the players' package: no runs, no tools' or tests' files, MEMSIZE=1 checked")
+    m.add_argument('--xmb-art', action='store_true',
+                   help="the EBOOT's XMB icon and background from the dist's icon0.png and pic1.png (the beta's kit EBOOT has none)")
     c = sub.add_parser('collect')
     c.add_argument('card')
     c.add_argument('tag')
@@ -544,7 +566,7 @@ def main():
         bad = [r for r in runs if r not in RUNS]
         if bad:
             ap.error(f'unknown runs: {bad} (available: {", ".join(RUNS)})')
-        make(a.out, a.dist, a.eboot, runs, not a.whole_bars, a.pack, a.release)
+        make(a.out, a.dist, a.eboot, runs, not a.whole_bars, a.pack, a.release, a.xmb_art)
     elif a.cmd == 'push':
         sys.exit(push(a.volume, a.package, a.fresh))
     elif a.cmd == 'put':

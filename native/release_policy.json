@@ -954,5 +954,27 @@
   ],
   "restricted_path_components": [
     "86ec294931340f570836bfc869c51a392d83145c5d62133dd69ffe871126d041"
+  ],
+  "reviewed_xmb_art": [
+    {
+      "section": "ICON0.PNG",
+      "sha256": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+      "reason": "The kit's XMB from 0.4.0: icon video, background and theme by BananaSplitGamer (beta issue #205), included on Jussimir's decision of 15/11/2026, which accepts the third-party content in it. Only these exact sections pass."
+    },
+    {
+      "section": "ICON1.PMF",
+      "sha256": "c8d4b2b0c9990c00eb6f5805484a49de21b4570ba9fbdfda730047556d36b1c9",
+      "reason": "The kit's XMB from 0.4.0: icon video, background and theme by BananaSplitGamer (beta issue #205), included on Jussimir's decision of 15/11/2026, which accepts the third-party content in it. Only these exact sections pass."
+    },
+    {
+      "section": "PIC1.PNG",
+      "sha256": "cb6d6bc57d2442575231dbf246d1412911c1fd3011ac8d74c91180bac52867a9",
+      "reason": "The kit's XMB from 0.4.0: icon video, background and theme by BananaSplitGamer (beta issue #205), included on Jussimir's decision of 15/11/2026, which accepts the third-party content in it. Only these exact sections pass."
+    },
+    {
+      "section": "SND0.AT3",
+      "sha256": "cb995ed7e8a8bffeb7c9dbb2d10b31e6460ec2c299e4a82234fa410a00442e7c",
+      "reason": "The kit's XMB from 0.4.0: icon video, background and theme by BananaSplitGamer (beta issue #205), included on Jussimir's decision of 15/11/2026, which accepts the third-party content in it. Only these exact sections pass."
+    }
   ]
 }

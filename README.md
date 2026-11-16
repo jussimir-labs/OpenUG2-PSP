@@ -1,18 +1,21 @@
-# NFSU2 PSP — Closed Beta, version 0.2.6
+# NFSU2 PSP — Open Beta, version 0.4.0
 
-Welcome to the first closed beta of the native PSP port of *Need for Speed Underground 2*.
-Thank you for helping test it on real devices.
+Welcome to the first open beta of the native PSP port of *Need for Speed Underground 2*.
+Anyone can download it, play it on a real PSP and report what they find. Thank you for helping test it.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[v0.2.6 release](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.2.6).
+[v0.4.0 release](https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.4.0).
 Windows x64, Linux x86-64, Apple Silicon and Intel Mac use separate downloads. The original
-[RC21 source kit](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/releases/tag/v0.1.0)
+[RC21 source kit](https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.1.0)
 remains available with its older setup requirements.
-Please keep this beta and its generated files within the selected test group.
+Do not share the files you generate: they come from your own disc. Point people to this page instead.
 
 This kit contains the prebuilt PSP executable and a local game-data generator.
-**No ISO, original game assets or saves are included.** Use a dump of your own game disc.
+**No ISO, original game data or saves are included.** Use a dump of your own game disc.
+The one exception is the game's look in the XMB: its icon video, background and theme, by
+BananaSplitGamer ([#205](https://github.com/jussimir-labs/OpenUG2-PSP/issues/205)),
+use the game's cover art, trailers and EA Trax music, and come with the executable.
 Your ISO stays on your computer.
 
 [Release notes](RELEASE_NOTES.md) · [Changelog](CHANGELOG.md) · [Known issues](KNOWN_ISSUES.md) ·
@@ -109,7 +112,7 @@ desktop's file dialog (KDE or GNOME); without one, paste full paths into the fie
 2. Choose your ISO and a **new, empty output folder**. Keep source detection on **Automatic**.
    The folder picker creates `NFSU2-PSP` inside the selected folder; a typed path is used as entered.
 3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
-   assets including all 28 movies, and compares the result against the 0.2.6 reference.
+   assets including all 28 movies, and compares the result against the 0.4.0 reference.
 4. Wait for successful identity verification. The game is in `<output>/PSP/GAME/NFSU2VIEW`.
    On Windows, Linux and Intel Macs some movies, audio, geometry and racing-line files are reported as
    **equivalent**: the same structure, with bytes rounded differently by an x86 processor. That
@@ -133,14 +136,14 @@ previous generation** (the folder that contains `PSP`). The generator then updat
   that made your folder, and extracts your ISO again only if one of those steps reads it;
   every other file is reused from your folder. A release that only changes the game's
   `EBOOT.PBP` updates in seconds; one that changes converters takes as long as those steps.
-  An update from 0.2.5 to 0.2.6 reuses 10 of the 81 steps and converts the rest again (the
-  city, its race tracks, the cars, the movies, the menus and the audio all changed), so it
-  takes about as long as a complete generation; one from 0.2.0 to 0.2.4 converts at least as
-  many. It still checks your folder and keeps it until the new one is verified. Folders made with the Windows
+  An update from 0.3.1 to 0.4.0 reuses 11 of the 81 steps and converts the other 70 again (the
+  city, the cars, the HUD, the career data, the music and the audio all changed), so it takes
+  almost as long as a complete generation. It still checks your folder and keeps it until the new one is verified. Folders made with the Windows
   or macOS 0.1.x packages also convert everything again, and a 0.1.0 source-kit folder is
   generated again;
-- it installs the new `EBOOT.PBP` and verifies the complete result against the new reference,
-  exactly as a full generation does;
+- it installs the new `EBOOT.PBP`, with the game's XMB icon video, background and theme, and
+  verifies the complete result against
+  the new reference, exactly as a full generation does;
 - your previous `PSP` folder is kept (in `.anterior` inside the output folder) until the new one
   passes verification, and is restored if it does not.
 
@@ -169,7 +172,7 @@ Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface w
    **Game → Memory Stick** in the XMB.
 
 **Updating an older beta:** update your previous output folder (above) or generate in a new one, and install the complete result.
-0.2.6 changes `EBOOT.PBP` and converted data (the rail yard's drag lanes, races and special events, the HUD and World Map icons, the garage, the city's routes and sounds). Copying only the executable leaves older data that it does not expect.
+0.4.0 changes `EBOOT.PBP` (now with its own XMB icon video, background and theme) and converted data (the HUD, the city and the cars, the career data, the Dyno screens, the music, the GPS and menu sounds). Copying only the executable leaves older data that it does not expect. Saves move to version 16 the first time 0.4.0 writes them.
 Never mix Xbox and PS2 output, and do not delete `PSP/SAVEDATA` when updating.
 
 ## 4. Test and report
@@ -178,25 +181,29 @@ Follow the [first-session checklist](docs/TESTING.md). Stability Control **On** 
 original game. Keep the FPS/build overlays visible in evidence: the top line shows the version and
 the memory in use against the profile's budget.
 This is an unfinished beta, with known gameplay, visual, audio and performance limitations.
+You do not need an invitation: a free GitHub account is enough to open an issue.
 
-Report one problem per [GitHub issue](https://github.com/jussimir-labs/pessoal-nfsu2-psp-beta/issues/new?template=bug_report.yml).
-Include the version (**0.2.6**, on the title screen and above the debug lines), device/firmware, game source, car/mode/track, steps, expected
+Report one problem per [GitHub issue](https://github.com/jussimir-labs/OpenUG2-PSP/issues/new?template=bug_report.yml).
+Include the version (**0.4.0**, on the title screen and above the debug lines; the debug lines can be turned on in **Options → Debug**), device/firmware, game source, car/mode/track, steps, expected
 and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
 technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.
 See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
 ## Build identity
 
-| Item | 0.2.6 value |
+| Item | 0.4.0 value |
 | --- | --- |
-| Version | `0.2.6` (executable `0.2.6`) |
-| Embedded build | `570bd23fb9` |
-| EBOOT SHA-256 | `8b19d3bca3902e09b8e1c9ba37219c11adaef7c0c50b96222a23c86354c6877a` |
-| Xbox data ID | `e59c` |
-| PS2 data ID | `3207` |
+| Version | `0.4.0` (executable `0.4.0`) |
+| Embedded build | `a41f909d22` |
+| EBOOT SHA-256 (the download's) | `c38e3e1fcfbbc70769f52d45ed0f698a147f9103eb86c783bff9b120844a29a8` |
+| Xbox data ID | `69f3` |
+| PS2 data ID | `3651` |
 | Memory profile | Chosen at boot: extended (32 MB or more) or compact (PSP-1000) |
 
 These values identify the kit; you do not need to calculate hashes to report a bug.
+XMB icon video, background and theme by BananaSplitGamer.
+Based on [OpenUG2](https://github.com/whoismept/OpenUG2) by whoismept and the OpenUG2 contributors (MIT; notice in
+[licenses/OpenUG2.txt](licenses/OpenUG2.txt)).
 See [the changelog](CHANGELOG.md) and
 [third-party notices](THIRD_PARTY.md). The instructions on this page are authoritative for the native packages. The original RC21 ZIP retains its original setup instructions.
 
