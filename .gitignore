@@ -17,3 +17,8 @@ __pycache__/
 /nfsu2-generator.exe
 /native/tools/
 /.updates/
+
+# Local game development inputs and reports.
+/game/
+/dist/
+/reports/

@@ -1,0 +1,13 @@
+/local-data/
+/pgo/
+/.div0diag/
+/.cflags
+/.sfo
+/*.d
+/*.elf
+/*.map
+/*.o
+/*.prx
+/allocator-diag-abi.json
+/EBOOT.PBP
+/PARAM.SFO

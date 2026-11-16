@@ -1,10 +1,9 @@
 # Contributing to the open beta
 
-Thank you for helping improve NFSU2 PSP! The beta repository contains the
-generator, conversion tools, documentation, tests, and a prebuilt game
-executable. The game's main source code is not in this repository. Contributions
-here can improve the generator, tools, documentation, and testing; please use an
-issue to report or discuss game bugs.
+Thank you for helping improve NFSU2 PSP! This repository accepts changes to
+the PSP game, the generator, and the supporting tools, tests and documentation.
+For gameplay, rendering and other PSP code changes, start with the
+[game source build guide](docs/GAME_SOURCE.md). Use an issue to report a game bug.
 
 ## Language and published files
 

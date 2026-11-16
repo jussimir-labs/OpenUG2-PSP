@@ -19,4 +19,4 @@ jobs:
       - name: Verify release content regression tests
         run: python -m unittest discover -s native/tests -v
       - name: Check current public sources
-        run: python native/release_guard.py native tools sources web docs tests art presets manifests third_party licenses *.py *.md requirements.txt eboot/release.json
+        run: python native/release_guard.py native tools sources web docs tests art presets manifests third_party licenses psp-viewer *.py *.md VERSION requirements.txt eboot/release.json
