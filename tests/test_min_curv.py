@@ -3,6 +3,7 @@ import math
 from pathlib import Path
 import sys
 import unittest
+import weakref
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
@@ -46,6 +47,37 @@ class MinCurv(unittest.TestCase):
 
     def test_open(self):
         self.check(False, 150, 9.0)
+
+    def test_curvature_retry_reuses_geometry_and_matches_fresh_bound(self):
+        from unittest import mock
+
+        P = track(180, True, 6.0)
+        _, _, A, nv = tph.calc_splines.calc_splines(path=np.vstack([P, P[:1]]))
+        ref = np.column_stack((P, np.full(len(P), 2.5), np.full(len(P), 2.5)))
+        inputs = dict(reftrack=ref, normvectors=nv, A=A, w_veh=0.0)
+        expected, _ = min_curv.opt_min_curv(**inputs, kappa_bound=1.0)
+        solve = min_curv.solve_qp
+        invert = np.linalg.inv
+        inverted = []
+
+        def capture_inverse(matrix):
+            inverse = invert(matrix)
+            inverted.append(weakref.ref(inverse))
+            return inverse
+
+        def first_infeasible(*args):
+            self.assertEqual(len(inverted), 1)
+            self.assertIsNone(inverted[0](), 'dense inverse is still resident when solving the QP')
+            if attempts.call_count == 1:
+                raise ValueError('infeasible constraint')
+            return solve(*args)
+
+        with mock.patch.object(min_curv, 'solve_qp', side_effect=first_infeasible) as attempts, \
+             mock.patch.object(np.linalg, 'inv', side_effect=capture_inverse) as inversions:
+            result, _ = min_curv.opt_min_curv(**inputs, kappa_bound=.125, retry_kappa_bound=1.0)
+        self.assertEqual(attempts.call_count, 2)
+        self.assertEqual(inversions.call_count, 1)
+        self.assertEqual(expected.tobytes(), result.tobytes())
 
     def test_time_limit(self):
         """A QP past its time limit raises QPTimeout instead of holding the

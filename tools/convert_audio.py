@@ -446,7 +446,7 @@ def turbo_bank(game, name):
     return struct.pack('<4sI', b'N2SF', len(entries)) + b''.join(struct.pack('<16s4I', *e) for e in entries) + blob
 
 
-def car_sound(game, out):
+def car_sound(game, out, jobs=8):
     """The cars' engines as the original picks and mixes them (EAXCar::
     CarPreSetup): carsnd.n2cs, the tables (sound_tables) with the car types'
     order; engine-<GIN>.n2en, each engine's Ginsu sweep; aems-NN.n2ab, the
@@ -492,7 +492,7 @@ def car_sound(game, out):
         data, info = sweep(game, g)
         (out / f'engine-{g[4:]}.n2en').write_bytes(data)
         return g, dict(rpm=info['rpm'], bytes=len(data))
-    with concurrent.futures.ThreadPoolExecutor(8) as pool:
+    with concurrent.futures.ThreadPoolExecutor(jobs) as pool:
         report['gins'] = dict(pool.map(lambda g: mac_slots.call('convert_audio', one_gin, g), gins))
     for n in sorted({e['aems'] for e in t['engines']}):
         data, info = aems_bank(game, n)
@@ -753,7 +753,7 @@ def seamless_loop(pcm, n=1024):
     return body
 
 
-def speech(game, out):
+def speech(game, out, jobs=8):
     """speech.big and its index, speech.n2sp. The game's own tables:
     - UG2_SPEECH.EVT: u32 at +4 the offset of the event names, 32 bytes
       each (name offset, 0x721e | hash << 16), their strings after them:
@@ -837,7 +837,7 @@ def speech(game, out):
             for event_lines in lines_of.values():
                 for start, ns, *_ in event_lines:
                     firsts.setdefault(start, ns)
-            with concurrent.futures.ThreadPoolExecutor(max(1, min(8, os.cpu_count() or 1))) as pool:
+            with concurrent.futures.ThreadPoolExecutor(min(jobs, os.cpu_count() or 1)) as pool:
                 coded = dict(zip(firsts, pool.map(lambda item: line_xa(*item), firsts.items())))
             for event_lines in lines_of.values():
                 for i, line in enumerate(event_lines):
@@ -1128,6 +1128,7 @@ def main():
     ap.add_argument('--music', action='store_true', help='music.mp3 and music.idx alone')
     ap.add_argument('--music-gains', action='store_true', help='music.idx\'s gains alone, in place (the songs at their own level)')
     ap.add_argument('--cars', action='store_true', help='the cars\' engines alone (carsnd.n2cs, engine-*, aems-*, gear-*, turbo-*)')
+    ap.add_argument('--jobs', type=int, default=8, help='maximum audio conversion workers')
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     if args.nos:
@@ -1139,21 +1140,21 @@ def main():
                               driveby=write_driveby(args.game, args.out), skid_banks=skid_banks(args.game, args.out)), indent=1))
         return
     if args.music:
-        print(json.dumps(music(args.game, args.out)))
+        print(json.dumps(music(args.game, args.out, args.jobs)))
         return
     if args.music_gains:
         print(json.dumps(music_gains(args.out)))
         return
     if args.cars:
-        print(json.dumps(car_sound(args.game, args.out)))
+        print(json.dumps(car_sound(args.game, args.out, args.jobs)))
         return
-    report = {'cars': car_sound(args.game, args.out)}
+    report = {'cars': car_sound(args.game, args.out, args.jobs)}
     report['sfx'] = write_sfx(args.game, args.out)
     report['stitches'] = write_stitches(args.game, args.out)
     report['driveby'] = write_driveby(args.game, args.out)
     report['skid_banks'] = skid_banks(args.game, args.out)
-    report['music'] = music(args.game, args.out)
-    report['speech'] = speech(args.game, args.out)
+    report['music'] = music(args.game, args.out, args.jobs)
+    report['speech'] = speech(args.game, args.out, args.jobs)
     (args.out / 'audio.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report))
 
@@ -1227,7 +1228,7 @@ def music_gains(out):
     return dict(songs=len(songs), gain=round(mean, 4), was=[round(min(songs), 4), round(max(songs), 4)])
 
 
-def music(game, out):
+def music(game, out, jobs=8):
     """music.mp3 and music.idx (the module's doc)."""
     z = (game / 'ZDIR.BIN').read_bytes()
     entry = [e for e in struct.iter_unpack('<6I', z) if e[0] == game_hash(r'SOUND\PFDATA\MUSICSFX.MUS')][0]
@@ -1274,7 +1275,7 @@ def music(game, out):
                 raise ValueError(f'track {k}: not a bare MP3 stream')
             return mp3, len(pcm) // 4, 0, 0
         songs = [k for k in range(len(tracks)) if gains[k]]
-        with concurrent.futures.ThreadPoolExecutor(8) as pool:
+        with concurrent.futures.ThreadPoolExecutor(jobs) as pool:
             # each song's decoder and encoder: a core from the Mac's queue (tools/mac_slots.py)
             done = dict(zip(songs + ambient, pool.map(lambda k: mac_slots.call('convert_audio', encode, k), songs + ambient)))
     blob, places, loops = bytearray(), [], b''

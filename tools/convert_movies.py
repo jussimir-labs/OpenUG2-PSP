@@ -253,6 +253,7 @@ def main():
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--only', nargs='*', help='these movies only (default: the catalog\'s on the disc)')
     ap.add_argument('--missing', action='store_true', help='only the movies not yet converted')
+    ap.add_argument('--jobs', type=int, default=max(1, (os.cpu_count() or 2) // 2), help='maximum movies converted at once')
     ap.add_argument('--h264', action='store_true', help='experimental: H.264 (version 2), which froze the PSP-3000\'s Media Engine')
     args = ap.parse_args()
     if not args.h264 and not CJPEGLI.is_file():
@@ -268,7 +269,7 @@ def main():
     todo = args.only or [m for m in movies if not (args.missing and current(m))]
     helper = Path(tempfile.gettempdir()) / 'nfsu2-movie-audio'
     helper = runtime_helper('movie_audio', helper, [ROOT / 'tools/movie_audio.c'])
-    with concurrent.futures.ThreadPoolExecutor(max(1, (os.cpu_count() or 2) // 2)) as pool:
+    with concurrent.futures.ThreadPoolExecutor(args.jobs) as pool:
         # each movie's ffmpeg and encoder: two cores from the Mac's queue (tools/mac_slots.py)
         for name, frames, secs, kb in pool.map(lambda n: mac_slots.call('convert_movies', convert, args.game, args.out, n, helper,
                                                                         args.h264, weight=2), todo):

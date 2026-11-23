@@ -1,6 +1,6 @@
-# NFSU2 PSP open beta 0.4.0: known issues
+# NFSU2 PSP open beta 0.4.1: known issues
 
-0.4.0 is the first open-beta release. It does not establish full-game completion,
+0.4.1 is an open-beta release. It does not establish full-game completion,
 all-device compatibility, physical PSP-1000 support or stable 30 fps throughout the game.
 
 ## Before testing
@@ -12,10 +12,12 @@ all-device compatibility, physical PSP-1000 support or stable 30 fps throughout 
   PPSSPP combinations need their own reports.
 - **PSP-1000 and Drift:** a Drift right after a city race may use the previous drift handling
   when memory is tight (a notice says so).
-- **Updates:** update your earlier output folder with the 0.4.0 generator (same ISO) or generate
-  into a new folder, and install the complete result. 0.4.0 changes `EBOOT.PBP` and converted data;
-  an executable-only update keeps old data that the new executable does not expect. Saves move to
-  version 16 the first time 0.4.0 writes them.
+- **Updates:** update your earlier output folder with the 0.4.1 generator (same ISO) or generate
+  into a new folder, and install the complete result. 0.4.1 changes `EBOOT.PBP` and converted data;
+  an executable-only update keeps old data that the new executable does not expect. Saves stay at
+  version 16.
+- **PSP ISO:** the generator's ISO uses the disc layout that opened from the XMB on a PSP-3000 with
+  ARK; other custom firmware, ISO drivers, the PSP Go and Vita/Adrenaline are not yet confirmed.
 - Back up your saves. Broad physical save/reload and full-career coverage remain pending.
 - **Xbox source button icons:** the PSP prompts use the PS2 disc's pad icons. A game generated
   from the Xbox ISO uses the port's own drawn icons instead (same buttons, slightly different look).

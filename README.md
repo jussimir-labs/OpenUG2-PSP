@@ -1,11 +1,11 @@
-# NFSU2 PSP — Open Beta, version 0.4.0
+# NFSU2 PSP — Open Beta, version 0.4.1
 
 Welcome to the first open beta of the native PSP port of *Need for Speed Underground 2*.
 Anyone can download it, play it on a real PSP and report what they find. Thank you for helping test it.
 
 **Start here:** use the **native generator ZIP for your computer**, extract the entire folder,
 and follow the steps below. The packages are on the
-[v0.4.0 release](https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.4.0).
+[v0.4.1 release](https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.4.1).
 Windows x64, Linux x86-64, Apple Silicon and Intel Mac use separate downloads. The original
 [RC21 source kit](https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.1.0)
 remains available with its older setup requirements.
@@ -112,7 +112,7 @@ desktop's file dialog (KDE or GNOME); without one, paste full paths into the fie
 2. Choose your ISO and a **new, empty output folder**. Keep source detection on **Automatic**.
    The folder picker creates `NFSU2-PSP` inside the selected folder; a typed path is used as entered.
 3. Click **Generate PSP game**. The tool validates the source, extracts it locally, converts the
-   assets including all 28 movies, and compares the result against the 0.4.0 reference.
+   assets including all 28 movies, and compares the result against the 0.4.1 reference.
 4. Wait for successful identity verification. The game is in `<output>/PSP/GAME/NFSU2VIEW`.
    On Windows, Linux and Intel Macs some movies, audio, geometry and racing-line files are reported as
    **equivalent**: the same structure, with bytes rounded differently by an x86 processor. That
@@ -136,8 +136,8 @@ previous generation** (the folder that contains `PSP`). The generator then updat
   that made your folder, and extracts your ISO again only if one of those steps reads it;
   every other file is reused from your folder. A release that only changes the game's
   `EBOOT.PBP` updates in seconds; one that changes converters takes as long as those steps.
-  An update from 0.3.1 to 0.4.0 reuses 11 of the 81 steps and converts the other 70 again (the
-  city, the cars, the HUD, the career data, the music and the audio all changed), so it takes
+  An update from 0.4.0 to 0.4.1 reuses 30 of the 81 steps and converts the other 51 again (the
+  city, the event tracks and their barriers, the physics and road data and the career data changed), so it takes
   almost as long as a complete generation. It still checks your folder and keeps it until the new one is verified. Folders made with the Windows
   or macOS 0.1.x packages also convert everything again, and a 0.1.0 source-kit folder is
   generated again;
@@ -152,6 +152,21 @@ output cannot be reused: a different ISO or source, a modified or incomplete `PS
 generator version it does not know, or different movie options. Nothing derived from the game is
 downloaded: every converted file still comes from your own ISO, on your computer. After updating,
 copy the complete `PSP/GAME/NFSU2VIEW` folder to the card again (section 3).
+
+Conversion diagnostics stay on your computer in `registros`: `computer-*.json` records the
+OS version, CPU model, logical processor count, RAM total and available, destination disk
+space and conversion recipe for each attempt. `racing-lines/` records each worker's PID,
+UTC start time, stages, elapsed and CPU time, with RAM/disk samples every 30 seconds.
+A stage lasting 120 seconds also gets a Python stack dump; it does not stop the conversion.
+Unavailable counters are marked unknown. These files are not uploaded automatically.
+
+Repeating an unfinished step preserves its previous log. Restarting with `--fresh`, or
+starting an update, moves previous logs and working data into `.nfsu2-psp-history/` inside
+the output folder. This uses a move rather than a second copy; the retained data still uses
+disk space and is not deleted automatically. If reporting a conversion problem, include a
+ZIP of `registros` and, if relevant, the earlier attempt's `registros` from that history.
+Keep `.nfsu2-psp-build` and `.trabalho` until the problem has been investigated. Stack dumps
+can contain local paths; review diagnostic files before sharing them publicly.
 
 Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface without opening a tab; `./nfsu2-generator doctor` checks the included tools. On Windows, use `nfsu2-generator.exe` instead; on Linux and Mac, run these from the extracted folder. Developer/source-only CLI: use your Python environment to run `build_game.py --help`. The interface, converter logs, CLI help and documentation are in English.
 
@@ -172,8 +187,25 @@ Advanced CLI: `./nfsu2-generator serve --no-browser` starts the same interface w
    **Game → Memory Stick** in the XMB.
 
 **Updating an older beta:** update your previous output folder (above) or generate in a new one, and install the complete result.
-0.4.0 changes `EBOOT.PBP` (now with its own XMB icon video, background and theme) and converted data (the HUD, the city and the cars, the career data, the Dyno screens, the music, the GPS and menu sounds). Copying only the executable leaves older data that it does not expect. Saves move to version 16 the first time 0.4.0 writes them.
+0.4.1 changes `EBOOT.PBP` and converted data (the city, the event tracks and their barriers, the original physics and road data, and the career data). Copying only the executable leaves older data that it does not expect. Saves stay at version 16.
 Never mix Xbox and PS2 output, and do not delete `PSP/SAVEDATA` when updating.
+
+### Install as an ISO
+
+With **Also create a PSP ISO** on (the default), the generator also writes `NFSU2-PSP.iso` in the
+output folder, next to `PSP`, after the folder passes verification. It holds the same verified game
+files as the folder, laid out as a PSP disc, and it is read back and checked after it is written.
+On the command line, add `--psp-iso` to `build_game.py`.
+
+1. Copy `NFSU2-PSP.iso` (about 2 GB) to the card's `ISO` folder (create `ISO` at the card's root if needed). On
+   macOS, copy it with Finder or `cp`; a single file leaves no `._` files in the game.
+2. Eject the card and launch **NFSU2 ISO** under **Game → Memory Stick**. Loading ISOs needs custom
+   firmware with an ISO driver (tested with ARK on a PSP-3000).
+3. The ISO keeps options, records, saves and bug reports on the Memory Stick, like the folder does.
+
+Use one of the two at a time: the folder under `PSP/GAME/NFSU2VIEW` or the ISO. They share the same
+saves. To update the ISO, generate again (or update your output folder) with the option on and copy
+the new file over the old one.
 
 ## 4. Test and report
 
@@ -184,20 +216,20 @@ This is an unfinished beta, with known gameplay, visual, audio and performance l
 You do not need an invitation: a free GitHub account is enough to open an issue.
 
 Report one problem per [GitHub issue](https://github.com/jussimir-labs/OpenUG2-PSP/issues/new?template=bug_report.yml).
-Include the version (**0.4.0**, on the title screen and above the debug lines; the debug lines can be turned on in **Options → Debug**), device/firmware, game source, car/mode/track, steps, expected
+Include the version (**0.4.1**, on the title screen and above the debug lines; the debug lines can be turned on in **Options → Debug**), device/firmware, game source, car/mode/track, steps, expected
 and actual behavior, and a photo or short video when possible. **L + R + SELECT** writes a
 technical bug file, not a screenshot. Zip the generated `bug-N.n2bug` before attaching it.
 See the [illustrated English guide](docs/bug-reporting-guide-EN.pdf).
 
 ## Build identity
 
-| Item | 0.4.0 value |
+| Item | 0.4.1 value |
 | --- | --- |
-| Version | `0.4.0` (executable `0.4.0`) |
-| Embedded build | `a41f909d22` |
-| EBOOT SHA-256 (the download's) | `c38e3e1fcfbbc70769f52d45ed0f698a147f9103eb86c783bff9b120844a29a8` |
-| Xbox data ID | `69f3` |
-| PS2 data ID | `3651` |
+| Version | `0.4.1` (executable `0.4.1`) |
+| Embedded build | `ce40f0bbdc` |
+| EBOOT SHA-256 (the download's) | `6910255ab0389d1ee29a5c9c493f5998eec0aa031d05ea9716193abc1c43945e` |
+| Xbox data ID | `223f` |
+| PS2 data ID | `c86e` |
 | Memory profile | Chosen at boot: extended (32 MB or more) or compact (PSP-1000) |
 
 These values identify the kit; you do not need to calculate hashes to report a bug.

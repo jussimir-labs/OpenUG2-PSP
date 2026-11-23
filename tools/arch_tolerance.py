@@ -153,6 +153,35 @@ def equivalent(name, data, ref):
     return same_shape and abs(len(data) - ref['size']) <= TOLERANCE[k] * ref['size']
 
 
+def mismatch_details(name, data, ref):
+    """Report the differences needed to diagnose a refused reference check."""
+    if name == PACK and ref and 'entries' in ref:
+        try:
+            entries = pack_entries(data)
+        except (ValueError, struct.error):
+            return {'invalid_pack': True}
+        reference = ref['entries']
+        changed = []
+        for member in sorted(entries.keys() & reference.keys()):
+            contents = entries[member]
+            if hashlib.sha256(contents).hexdigest() != reference[member] and not equivalent(
+                    member, contents, ref.get('tolerant', {}).get(member)):
+                changed.append(member)
+        return {'different_entries': changed, 'missing_entries': sorted(reference.keys() - entries.keys()),
+                'extra_entries': sorted(entries.keys() - reference.keys())}
+    if name.endswith('.n2rl') and ref and 'size' in ref:
+        result = {'bytes': len(data), 'reference_bytes': ref['size']}
+        if len(data) >= 12:
+            magic, version, count = struct.unpack_from('<4s2I', data)
+            if magic == b'N2RL' and version == 1 and count < 1024 and 12 + count * 12 <= len(data):
+                result['event_samples'] = [
+                    {'id': eid, 'circuit': circuit, 'points': points}
+                    for eid, circuit, points, _ in struct.iter_unpack('<2H2I', data[12:12 + count * 12])
+                ]
+        return result
+    return None
+
+
 def main():
     if len(sys.argv) != 4 or sys.argv[1] != 'describe':
         raise SystemExit(__doc__)

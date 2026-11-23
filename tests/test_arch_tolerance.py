@@ -118,6 +118,25 @@ class EquivalenceTests(unittest.TestCase):
             (game / "races.n2rc").write_bytes(b"s")
             self.assertEqual(build_game.compare(game, manifest)[2], ["races.n2rc"])
 
+    def test_report_identifies_a_pack_member_and_lines_without_approving(self):
+        with tempfile.TemporaryDirectory() as d:
+            game, manifest = Path(d) / "game", Path(d) / "manifest.json"
+            game.mkdir()
+            lines = struct.pack('<4s2I2H2I', b'N2RL', 1, 1, 4024, 0, 2, 24) + bytes(40)
+            altered = struct.pack('<4s2I2H2I', b'N2RL', 1, 1, 4024, 0, 3, 24) + bytes(60)
+            originals = {"lines.n2rl": lines, "pack.n2pk": pack({"checks.n2ui": b"1234", "track.mp3": b"abcd"})}
+            manifest.write_text(json.dumps({
+                "files": {name: hashlib.sha256(data).hexdigest() for name, data in originals.items()},
+                "equivalence": {name: t.describe(name, data) for name, data in originals.items()},
+            }))
+            (game / "lines.n2rl").write_bytes(altered)
+            (game / "pack.n2pk").write_bytes(pack({"checks.n2ui": b"1235", "track.mp3": b"wxyz"}))
+            details = {}
+            self.assertEqual(build_game.compare(game, manifest, diagnostics=details)[2], ["lines.n2rl", "pack.n2pk"])
+            self.assertEqual(details["pack.n2pk"]["different_entries"], ["checks.n2ui"])
+            self.assertEqual(details["lines.n2rl"]["reference_bytes"], len(lines))
+            self.assertEqual(details["lines.n2rl"]["event_samples"], [{"id": 4024, "circuit": 0, "points": 3}])
+
 
 if __name__ == "__main__":
     unittest.main()

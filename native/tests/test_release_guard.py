@@ -171,6 +171,21 @@ class GuardTests(unittest.TestCase):
         result = guard.Checker().check([ROOT/'eboot/EBOOT.PBP'])
         self.assertTrue(result['passed'], result['findings'])
 
+    def test_candidate_xmb_and_edited_video(self):
+        names = guard.PBP_SECTIONS
+        art = ROOT.parent / 'reports/beta-issue-205/kit'
+        parts = {p.name: p.read_bytes() for p in art.iterdir() if p.name in guard.PBP_ART}
+        parts.update({'PARAM.SFO': b'\0PSF' + b'\0'*16, 'DATA.PSP': b'~PSP' + b'\0'*64})
+        def pack(values):
+            offsets, at = [], 40
+            for name in names:
+                offsets.append(at)
+                at += len(values.get(name, b''))
+            return b'\0PBP' + struct.pack('<I8I', 0x10000, *offsets) + b''.join(values.get(n, b'') for n in names)
+        self.assertEqual(self.inspect('EBOOT.PBP', pack(parts)), [])
+        parts['ICON1.PMF'] += b'x'
+        self.assertIn('game-art', [f['kind'] for f in self.inspect('EBOOT.PBP', pack(parts))])
+
     def test_archive_fixture_policy_and_checker_check_themselves(self):
         result = guard.Checker().check([ROOT/'native/release_guard.py', ROOT/'native/release_policy.json', Path(__file__)])
         self.assertTrue(result['passed'], result['findings'])

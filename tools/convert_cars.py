@@ -219,10 +219,11 @@ def main():
     n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--table-only', action='store_true', help='only cars.n2cl (packs already converted)')
+    ap.add_argument('--jobs', type=int, default=8, help='maximum cars converted at once')
     args = ap.parse_args()
     rows = build_table(args.game, args.out)
     if not args.table_only:
-        with concurrent.futures.ThreadPoolExecutor(8) as pool:
+        with concurrent.futures.ThreadPoolExecutor(args.jobs) as pool:
             list(pool.map(lambda r: convert(args.game, args.out, r), rows))
     (args.out / 'cars.json').write_text(json.dumps(rows, indent=1) + '\n')
     for x in rows:

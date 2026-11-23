@@ -62,6 +62,7 @@ class Checker:
         self.paths = set(data['blocked_path_components'])
         self.restricted_paths = set(data['restricted_path_components'])
         self.xmb = {row['section']: row['sha256'] for row in data.get('reviewed_xmb_art', [])}
+        self.xmb_sets = [self.xmb] + [row['sections'] for row in data.get('reviewed_xmb_sets', [])]
         self.exceptions = data['reviewed_files']
         self.max_file, self.max_total = max_file, max_total
         self.total = self.files = 0
@@ -245,7 +246,7 @@ class Checker:
             raise ReleaseCheckError('EBOOT.PBP section offsets out of order')
         present = {name: hashlib.sha256(data[offsets[i]:offsets[i + 1]]).hexdigest() for i, name in enumerate(PBP_SECTIONS)
                    if name in PBP_ART and offsets[i + 1] > offsets[i]}
-        if present and present == self.xmb:   # the reviewed kit XMB (beta issue #205), exactly
+        if present and present in self.xmb_sets:   # the reviewed kit XMB (beta issue #205), exactly
             return
         art = [f'{name} ({offsets[i + 1] - offsets[i]} bytes)' for i, name in enumerate(PBP_SECTIONS)
                if name in PBP_ART and offsets[i + 1] > offsets[i]]

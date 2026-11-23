@@ -27,6 +27,7 @@ import threading
 
 import numpy as np
 import quadprog
+from generator_diagnostics import stage
 
 # Seconds one QP may take. quadprog's Goldfarb-Idnani loop has no iteration
 # cap: on a near-degenerate problem a rounding can make it add and drop the
@@ -54,6 +55,7 @@ def solve_qp(H, a, C, b, seconds=None):
         except BaseException as e:            # noqa: B036 - handed to the caller
             out['e'] = e
 
+    stage('quadprog-solve', points=len(a), timeout_seconds=seconds)
     t = threading.Thread(target=run, name='quadprog', daemon=True)
     t.start()
     t.join(seconds)
@@ -94,7 +96,7 @@ def _dm(d, m):
 
 def opt_min_curv(reftrack: np.ndarray, normvectors: np.ndarray, A: np.ndarray, kappa_bound: float, w_veh: float,
                  closed: bool = True, psi_s: float = None, psi_e: float = None, fix_s: bool = False,
-                 fix_e: bool = False) -> tuple:
+                 fix_e: bool = False, *, retry_kappa_bound: float | None = None) -> tuple:
     """opt_min_curv() of trajectory_planning_helpers: the lateral shift of
     every reference point (alpha) minimising the summed curvature inside the
     track's widths, curvature within kappa_bound. Returns (alpha, 0.0)."""
@@ -117,9 +119,14 @@ def opt_min_curv(reftrack: np.ndarray, normvectors: np.ndarray, A: np.ndarray, k
     if not closed:
         A_ex_c[-1, -4:] = np.array([0, 0, 2, 6])
 
+    stage('invert-spline-matrix', rows=A.shape[0], matrix_bytes=A.nbytes)
     A_inv = np.linalg.inv(A)
+    stage('build-qp-matrices', points=no_points)
     T_c = _rows(A_ex_c, A_inv, closed)
     T_b = _rows(A_ex_b, A_inv, closed)
+    # The selected rows own their data. Release the dense inverse before
+    # constructing the Hessian and inequality matrices.
+    del A_inv, A_ex_b, A_ex_c
 
     M_x = np.zeros((no_splines * 4, no_points))
     M_y = np.zeros((no_splines * 4, no_points))
@@ -186,9 +193,6 @@ def opt_min_curv(reftrack: np.ndarray, normvectors: np.ndarray, A: np.ndarray, k
     Q_y = _dd(curv_part, x_prime)
     E_kappa = _dm(Q_y, T_ny) - _dm(Q_x, T_nx)
     k_kappa_ref = _dm(Q_y, np.matmul(T_c, q_y)) - _dm(Q_x, np.matmul(T_c, q_x))
-    con_ge = np.ones((no_points, 1)) * kappa_bound - k_kappa_ref
-    con_le = -(np.ones((no_points, 1)) * -kappa_bound - k_kappa_ref)
-    con_stack = np.append(con_ge, con_le)
 
     dev_max_right = reftrack[:, 2] - w_veh / 2
     dev_max_left = reftrack[:, 3] - w_veh / 2
@@ -200,8 +204,22 @@ def opt_min_curv(reftrack: np.ndarray, normvectors: np.ndarray, A: np.ndarray, k
         dev_max_right[-1] = 0.05
     if np.any(-dev_max_right > dev_max_left) or np.any(-dev_max_left > dev_max_right):
         raise RuntimeError("Problem not solvable, track might be too small to run with current safety distance!")
-    G = np.vstack((np.eye(no_points), -np.eye(no_points), E_kappa, -E_kappa))
-    h = np.append(dev_max_right, dev_max_left)
-    h = np.append(h, con_stack)
-    alpha_mincurv = solve_qp(H, -f, -G.T, -h)
+    C = -np.vstack((np.eye(no_points), -np.eye(no_points), E_kappa, -E_kappa)).T
+    a = -f
+    widths = np.append(dev_max_right, dev_max_left)
+    unit = np.ones((no_points, 1))
+
+    def solve(bound):
+        con_ge = unit * bound - k_kappa_ref
+        con_le = -(unit * -bound - k_kappa_ref)
+        return solve_qp(H, a, C, -np.concatenate((widths, con_ge[:, 0], con_le[:, 0])))
+
+    # Relaxing the bound changes only the right-hand sides. The Python
+    # quadprog binding copies its inputs before passing them to the solver.
+    try:
+        alpha_mincurv = solve(kappa_bound)
+    except ValueError:
+        if retry_kappa_bound is None:
+            raise
+        alpha_mincurv = solve(retry_kappa_bound)
     return alpha_mincurv, 0.0

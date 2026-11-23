@@ -127,8 +127,16 @@ def suggested_update(version, state=None):
 
 
 def default_jobs():
-    """Conversion processes: the computer's cores, 2 to 8."""
-    return max(2, min(8, os.cpu_count() or 4))
+    """Leave one logical CPU free from the conversion worker budget when possible."""
+    get_affinity = getattr(os, 'sched_getaffinity', None)
+    if get_affinity is not None:
+        try:
+            available = len(get_affinity(0))
+        except OSError:
+            available = os.cpu_count() or 4
+    else:
+        available = os.cpu_count() or 4
+    return max(1, min(8, available - 1))
 
 
 def probe(root=ROOT):
@@ -262,10 +270,10 @@ class Application:
             self.data['logs'].append(line)
             self.data['logs'] = self.data['logs'][-2000:]
         self.save_log(line)
-        stages = {'1': 'iso', '2': 'extraction', '3': 'conversion', '4': 'conversion', '5': 'verification'}
-        match = re.match(r'^([1-5])\. ', line)
+        stages = {'1': 'iso', '2': 'extraction', '3': 'conversion', '4': 'conversion', '5': 'verification', '6': 'verification'}
+        match = re.match(r'^([1-6])\. ', line)
         if match:
-            self.update(stage=stages[match[1]], progress=None, progress_kind='none', message={'1':'Checking the ISO…','2':'Extracting source files…','3':'Converting game files…','4':'Assembling the PSP folder…','5':'Verifying output identity…'}[match[1]])
+            self.update(stage=stages[match[1]], progress=None, progress_kind='none', message={'1':'Checking the ISO…','2':'Extracting source files…','3':'Converting game files…','4':'Assembling the PSP folder…','5':'Verifying output identity…','6':'Writing the PSP ISO…'}[match[1]])
         match = re.search(r'\[\s*(\d+)\s*/\s*(\d+)\]\s*(\d+)%\s*(.+)', line)
         if match:
             self.update(stage='conversion', progress=min(99, int(match[3])), progress_kind='estimated', message='Converting files (step ' + match[1] + ' of ' + match[2] + ')')
@@ -299,7 +307,7 @@ class Application:
                 source = values.get('source', 'auto')
                 if source not in ('auto', 'xbox', 'ps2'):
                     raise UserError('Invalid source.')
-                self.data['job'] = dict(iso=str(disc), output=str(out), source=source)
+                self.data['job'] = dict(iso=str(disc), output=str(out), source=source, psp_iso=values.get('psp_iso') is not False)
             self.cancelled.clear()
             self.log_broken = False
             self.started = time.monotonic()
@@ -416,7 +424,8 @@ class Application:
             self.update(status='running', stage='iso', message='Checking your ISO and the previous generation…' if update else 'Checking your ISO…')
             timestamp = time.time()
             code = self.run([py, '-u', str(self.root / 'build_game.py'), job['iso'], '--output', str(out),
-                             '--source', source, '--jobs', str(default_jobs())] + (['--update'] if update else []))
+                             '--source', source, '--jobs', str(default_jobs())] + (['--update'] if update else [])
+                            + (['--psp-iso'] if job.get('psp_iso', True) else []))
             report = None
             path = out / 'relatorio.json'
             if path.is_file() and path.stat().st_mtime >= timestamp - 1:

@@ -42,12 +42,21 @@ PNG = b'\x89PNG\r\n\x1a\n'
 # made by BananaSplitGamer (beta issue #205). These exact sections, and nothing else, may be
 # in the kit's EBOOT; the generator then keeps them, and the card's EBOOT is the kit's for
 # every source (beta/native/release_policy.json holds the same hashes for the release check).
+# From 0.4.1 the icon video is the contributor's realigned video of 16/11 re-encoded at 144x80
+# (tools/xmb_icon_pmf.py), targeting the official XMB; physical playback is still pending.
+# The 0.4.0 art remains accepted for its unchanged historical kit.
 KIT_XMB = {
     'ICON0.PNG': '9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a',
-    'ICON1.PMF': 'c8d4b2b0c9990c00eb6f5805484a49de21b4570ba9fbdfda730047556d36b1c9',
+    'ICON1.PMF': '1f2c54f0a7fe21887a7b4361af9ac90e2e181a92e9c033574eae21c1100edd80',
     'PIC1.PNG': 'cb6d6bc57d2442575231dbf246d1412911c1fd3011ac8d74c91180bac52867a9',
     'SND0.AT3': 'cb995ed7e8a8bffeb7c9dbb2d10b31e6460ec2c299e4a82234fa410a00442e7c',
 }
+
+# Preserve the exact reviewed 0.4.0 kit until the next release replaces it.
+LEGACY_KIT_XMB = dict(KIT_XMB, **{
+    "ICON1.PMF": "c8d4b2b0c9990c00eb6f5805484a49de21b4570ba9fbdfda730047556d36b1c9",
+})
+REVIEWED_KIT_XMB = (KIT_XMB, LEGACY_KIT_XMB)
 
 
 def sections(data):
@@ -79,13 +88,13 @@ def kit_xmb(data):
     """True when data's XMB art is exactly the reviewed kit XMB (KIT_XMB), section by section."""
     parts = sections(data)
     have = {name: hashlib.sha256(parts[name]).hexdigest() for name in ART if parts[name]}
-    return have == KIT_XMB
+    return have in REVIEWED_KIT_XMB
 
 
 def with_xmb(data, files):
     """data with the kit XMB {section: bytes} (KIT_XMB's sections, their exact hashes) and no other
     art; the PRX and PARAM.SFO as they were."""
-    if {n: hashlib.sha256(v).hexdigest() for n, v in files.items()} != KIT_XMB:
+    if {n: hashlib.sha256(v).hexdigest() for n, v in files.items()} not in REVIEWED_KIT_XMB:
         raise ValueError('not the reviewed kit XMB (KIT_XMB)')
     parts = sections(data)
     parts.update({name: b'' for name in ART})

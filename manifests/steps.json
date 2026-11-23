@@ -1666,6 +1666,7 @@
     ]
    ],
    "code": [
+    "tools/generator_diagnostics.py",
     "tools/min_curv.py",
     "tools/n2city.py",
     "tools/n2cy_patch.py",
@@ -1796,6 +1797,7 @@
    ],
    "code": [
     "tools/convert_races.py",
+    "tools/generator_diagnostics.py",
     "tools/line_forks.py",
     "tools/line_speeds.py",
     "tools/min_curv.py",
@@ -3985,7 +3987,11 @@
     "dist/PSP/GAME/.original-source-ykicukjm/topology",
     "dist/PSP/GAME/NFSU2VIEW/original-physics.n2og",
     "dist/PSP/GAME/NFSU2VIEW/road-L4RA.n2tr",
-    "dist/PSP/GAME/NFSU2VIEW/road-L4RC.n2tr"
+    "dist/PSP/GAME/NFSU2VIEW/road-L4RB.n2tr",
+    "dist/PSP/GAME/NFSU2VIEW/road-L4RC.n2tr",
+    "dist/PSP/GAME/NFSU2VIEW/road-L4RD.n2tr",
+    "dist/PSP/GAME/NFSU2VIEW/road-L4RF.n2tr",
+    "dist/PSP/GAME/NFSU2VIEW/road-L4RG.n2tr"
    ],
    "removes": [
     "dist/PSP/GAME/.original-source-10r50ui7/.original-physics.n2og-1vxz7gxl",

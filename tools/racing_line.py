@@ -30,6 +30,7 @@ import struct
 
 import mac_slots
 from n2city import CityCollision
+from generator_diagnostics import EventTrace, memory, stage
 
 ROOT = Path(__file__).resolve().parents[1]
 STEP = 3.0          # m between line points
@@ -288,6 +289,7 @@ def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trus
     point right of travel, as ours). pin_to and pin_from (m along) hold the
     ends in place. None without the helpers or a solution."""
     try:
+        stage('import-numerical-libraries')
         import numpy as np
         import trajectory_planning_helpers as tph
         import min_curv   # their opt_min_curv without the dense products by selections and diagonals: the same alpha
@@ -309,6 +311,7 @@ def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trus
             nv = np.vstack([nv, nv[-1:]])
         return A, nv, ps, pe
 
+    stage('initial-splines', points=len(P))
     A, nv, ps, pe = splines(P)
     keep = HALF_CAR + MARGIN
     # the room at each point and halfway to the next: each point takes the
@@ -317,6 +320,7 @@ def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trus
     # 4083's at 3.2 km, where the rivals scraped it in every run)
     def room(g, nn):
         return free_extent(city, g, nn, 1), free_extent(city, g, nn, -1)
+    stage('measure-corridor', points=len(P))
     m = len(P)
     at_pt, half = [], []
     for k in range(m):
@@ -349,24 +353,24 @@ def optimise_tph(city, pts, circuit, kappa_max=1 / 8.0, step=6.0, iters=10, trus
             held |= along >= pin_from - .1
         wr[held], wl[held] = .01, .01
     for it in range(iters):
+        stage('optimization-pass', iteration=it + 1, points=len(P))
         track = np.column_stack((P, np.clip(wr, -trust, trust), np.clip(wl, -trust, trust)))
-        alpha = None
-        for kb in (kappa_max, 1.0):
-            try:
-                alpha, _ = min_curv.opt_min_curv(reftrack=track, normvectors=nv, A=A, kappa_bound=kb, w_veh=0.0,
-                                                 closed=bool(circuit), psi_s=ps, psi_e=pe)
-                break
-            except ValueError:
-                continue                           # inconsistent: relax the curvature, then give up
-            except min_curv.QPTimeout as e:        # stuck (no iteration cap): the line of the passes before
-                print(f'{name}: {e}; pass {it + 1} of {iters} given up'
-                      + (f', the line of the {it} before kept' if it else ', the elastic band instead'), flush=True)
-                break
-        if alpha is None:
+        try:
+            alpha, _ = min_curv.opt_min_curv(reftrack=track, normvectors=nv, A=A, kappa_bound=kappa_max, w_veh=0.0,
+                                             closed=bool(circuit), psi_s=ps, psi_e=pe, retry_kappa_bound=1.0)
+        except ValueError:
+            break                                  # inconsistent even with relaxed curvature
+        except min_curv.QPTimeout as e:
+            print(f'{name}: {e}; pass {it + 1} of {iters} given up'
+                  + (f', the line of the {it} before kept' if it else ', the elastic band instead'), flush=True)
             break
         P = P + nv * alpha[:, None]
         wr, wl = wr - alpha, wl + alpha            # the boundaries stay where they are
         moved = True
+        # The next spline solve allocates another dense matrix of the
+        # same dimensions. It does not need the previous matrix.
+        del A
+        stage('update-splines', iteration=it + 1, points=len(P))
         A, nv, ps, pe = splines(P)
         if np.max(np.abs(alpha)) < .05:
             break
@@ -560,6 +564,7 @@ def tightest_radius():
 
 
 def build(course, city):
+    stage('prepare-course')
     pts = reference(city, resample(despike(course['pts'], course['circuit'], city=city), course['circuit']), course['circuit'])
     pts = despike(pts, course['circuit'], city=city)
     try:
@@ -568,29 +573,48 @@ def build(course, city):
         print('event', course['id'], 'QP failed:', e, flush=True)
         tph_line = None
     if tph_line:
+        stage('final-corridor')
         # the free room around the final line, measured afresh
         line = tph_line
         nrms = normals(line, course['circuit'])
         bounds = corridor(city, line, nrms)
         off = [min(max(0.0, lo), hi) for lo, hi in bounds]
     else:                                     # without the helpers: the elastic band
+        stage('elastic-band')
         nrms = normals(pts, course['circuit'])
         bounds = corridor(city, pts, nrms)
         off = band(pts, nrms, bounds, course['circuit'])
         line = [(p[0] + n[0] * o, p[1], p[2] + n[1] * o) for p, n, o in zip(pts, nrms, off)]
         bounds = [(lo - o, hi - o) for (lo, hi), o in zip(bounds, off)]   # around the line
         off = [0.0] * len(line)
+    stage('ground-heights')
     ys = ground_heights(city, line)
     line = [(p[0], y, p[2]) for p, y in zip(line, ys)]
+    stage('curvature')
     kappa = curvature(line, course['circuit'])
     side = [(o - lo, hi - o) for o, (lo, hi) in zip(off, bounds)]   # room left, right of the line
+    stage('crest-speeds')
     return line, kappa, side, bounds, crest_speeds(line, side, course['circuit'])
 
 
 def build_in(city_path, course):
     # the city with the event's own barriers (convert_city.py's bar-<id>.n2cy)
-    city = CityCollision(city_path)
-    return build(course, city.with_overlay(Path(city_path).parent / f"bar-{course['id']}.n2cy"))
+    with EventTrace(course['id'], Path(city_path).parent):
+        stage('load-city')
+        city = CityCollision(city_path)
+        stage('load-barriers')
+        return build(course, city.with_overlay(Path(city_path).parent / f"bar-{course['id']}.n2cy"))
+
+
+def line_workers(requested, available_bytes):
+    if available_bytes is None:
+        return requested
+    # A long course measured 2.13 GiB for one worker and the pool parent.
+    # Budget 2.5 GiB per worker and leave 2 GiB of available memory for
+    # the OS and the other conversion steps. A single course can still run.
+    worker_budget = 2560 * 1024**2
+    reserve = 2 * 1024**3
+    return min(requested, max(1, (available_bytes - reserve) // worker_budget))
 
 
 def main():
@@ -616,20 +640,30 @@ def main():
     import concurrent.futures
     import functools
     import os
-    for var in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS', 'MKL_NUM_THREADS'):
-        os.environ.setdefault(var, '1')
+    # Workers import the numerical libraries after spawn. An inherited BLAS
+    # setting must not multiply the worker budget selected by --jobs.
+    for var in ('OPENBLAS_NUM_THREADS', 'OMP_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS', 'MKL_NUM_THREADS', 'BLIS_NUM_THREADS'):
+        os.environ[var] = '1'
     order = sorted(range(len(courses)), key=lambda k: -sum(math.dist(a, b) for a, b in zip(courses[k]['pts'], courses[k]['pts'][1:])))
     # a process per course: a QP given up on (min_curv.solve_qp) spins on
     # in its thread until its process ends
     build_one = functools.partial(mac_slots.call, 'racing_line', build_in, str(args.out / 'city.n2cy'))
     done = {}
+    available = memory()['available_bytes']
+    workers = line_workers(args.jobs, available)
+    if workers < args.jobs:
+        print(f"Racing lines: using {workers} of {args.jobs} requested workers "
+              f"with {available / 1024**3:.1f} GiB of available memory", flush=True)
     print(f"Racing lines: 0/{len(courses)} events complete", flush=True)
-    with concurrent.futures.ProcessPoolExecutor(args.jobs, max_tasks_per_child=1) as ex:
-        pending = {ex.submit(build_one, courses[k]): k for k in order}
-        for future in concurrent.futures.as_completed(pending):
-            k = pending[future]
-            done[k] = future.result()
-            print(f"Racing lines: {len(done)}/{len(courses)} events complete (event {courses[k]['id']})", flush=True)
+    with EventTrace('pool', args.out):
+        stage('start-process-pool', workers=workers, requested_workers=args.jobs, events=len(courses))
+        with concurrent.futures.ProcessPoolExecutor(workers, max_tasks_per_child=1) as ex:
+            pending = {ex.submit(build_one, courses[k]): k for k in order}
+            stage('wait-for-events', pending=len(pending))
+            for future in concurrent.futures.as_completed(pending):
+                k = pending[future]
+                done[k] = future.result()
+                print(f"Racing lines: {len(done)}/{len(courses)} events complete (event {courses[k]['id']})", flush=True)
     built = [done[k] for k in range(len(courses))]
     for c, (line, kappa, side, bounds, crest) in zip(courses, built):
         table.append((c['id'], c['circuit'], len(line), len(blob)))

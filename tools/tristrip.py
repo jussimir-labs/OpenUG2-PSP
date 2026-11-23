@@ -10,17 +10,130 @@ The viewer draws with face culling off, so a strip's alternating winding
 does not matter: pieces are joined without parity fixes and a piece may
 be grown from both ends.
 
-stripify reorders the triangles for long strips (~2 vertices a triangle in
-the city); in_order keeps their order (~3), for blends, whose overlaps
-depend on it.
+stripify reorders the triangles for long strips; in_order keeps their order
+(~3 vertices a triangle), for blends, whose overlaps depend on it.
+
+A strip leaves a triangle a, b, c by its edge b-c. Where no triangle is left
+on that edge but one is on a-c, stripify turns: a, b, a, c (a repeated: a
+triangle with no area, +1 vertex) and goes on from a-c, instead of ending
+the piece there (a join and a new piece's first two vertices: +4). On the
+city's batches drawn without culling (9 in 10 of its vertices) the strips
+came to 2.03 vertices a triangle without turns and 1.67 with them, the same
+triangles (check): a sixth less for the GE to transform, to load and to keep.
+stripify_plain is the one without turns; oriented cuts stripify's pieces by
+the triangles' windings (culled batches: 2.5 vertices a triangle before).
 """
 from collections import Counter, defaultdict
 
 
+def _components(tris):
+    """The triangles in groups joined by shared edges (a strip never leaves one)."""
+    parent = list(range(len(tris)))
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    seen = {}
+    for k, (a, b, c) in enumerate(tris):
+        for e in ((a, b), (b, c), (c, a)):
+            e = (min(e), max(e))
+            if e in seen:
+                parent[find(k)] = find(seen[e])
+            else:
+                seen[e] = k
+    groups = defaultdict(list)
+    for k, t in enumerate(tris):
+        groups[find(k)].append(t)
+    return list(groups.values())
+
+
+def _turning(tris, thin):
+    """Strip pieces with turns. thin: turn also where the triangle aside has
+    fewer free neighbours than the one ahead (left for later it would end a
+    piece); else only where nothing is ahead."""
+    edges = defaultdict(list)
+    for k, (a, b, c) in enumerate(tris):
+        for e in ((a, b), (b, c), (c, a)):
+            edges[min(e), max(e)].append(k)
+    used = bytearray(len(tris))
+
+    def free_neighbours(k):
+        a, b, c = tris[k]
+        return sum(1 for e in ((a, b), (b, c), (c, a)) for m in edges[min(e), max(e)] if m != k and not used[m])
+
+    def take(a, b):
+        """The unused triangle on edge a-b with the fewest free neighbours, and that count."""
+        best, score = None, 4
+        for m in edges[min(a, b), max(a, b)]:
+            if not used[m]:
+                s = free_neighbours(m)
+                if s < score:
+                    best, score = m, s
+        return best, score
+
+    def grow(seq):
+        while True:
+            a, b, c = seq[-3], seq[-2], seq[-1]
+            ahead, s1 = take(b, c)
+            aside, s2 = take(a, c)
+            if ahead is None and aside is None:
+                return seq
+            if ahead is None or (thin and aside is not None and s2 < s1):
+                if len(seq) == 3:
+                    seq[0], seq[1] = b, a      # the piece's only triangle so far: turned round, no vertex more
+                else:
+                    seq.insert(len(seq) - 1, a)   # ..., a, b, a, c
+                m, a, b = aside, seq[-2], seq[-1]
+            else:
+                m, a, b = ahead, b, c
+            used[m] = 1
+            seq.append(next(v for v in tris[m] if v != a and v != b))
+
+    pieces = []
+    # Start where the mesh is thinnest (fewest neighbours): the strips then
+    # run along it instead of leaving lone triangles behind.
+    for k in sorted(range(len(tris)), key=free_neighbours):
+        if used[k]:
+            continue
+        used[k] = 1
+        a, b, c = tris[k]
+        # the rotation whose far edge has a free neighbour, so it grows
+        for x, y, z in ((a, b, c), (b, c, a), (c, a, b)):
+            if take(y, z)[0] is not None:
+                break
+        seq = grow([x, y, z])
+        seq.reverse()
+        pieces.append(grow(seq))
+    return pieces
+
+
 def stripify(tris):
     """tris: [(a, b, c)] vertex ids. Returns the strip pieces, each a list
-    of vertex ids whose every 3 consecutive ids are a triangle. Triangles
-    with a repeated id (no area) are left out."""
+    of vertex ids: every 3 consecutive ids are a triangle of the list, or
+    a turn's (a, b, a: no area). Triangles with a repeated id (no area) are
+    left out. Each group of triangles joined by edges gets the shortest of
+    three tries (no turns, turns where nothing is ahead, turns towards the
+    thinner triangle): a regular grid does best without turns (1.05
+    vertices a triangle against 1.17), the city's patches with them."""
+    tris = [t for t in tris if t[0] != t[1] and t[1] != t[2] and t[0] != t[2]]
+    pieces = []
+    for group in _components(tris):
+        best = None
+        for make in (stripify_plain, lambda g: _turning(g, False), lambda g: _turning(g, True)):
+            got = make(group)
+            if best is None or sum(len(x) + 2 for x in got) < sum(len(x) + 2 for x in best):
+                best = got
+            if len(best) == 1 and len(best[0]) == len(group) + 2:
+                break   # one piece, no turn: none shorter
+        pieces += best
+    return pieces
+
+
+def stripify_plain(tris):
+    """stripify without turns: every 3 consecutive ids of a piece are a
+    triangle of the list (oriented reads them so)."""
     tris = [t for t in tris if t[0] != t[1] and t[1] != t[2] and t[0] != t[2]]
     edges = defaultdict(list)
     for k, (a, b, c) in enumerate(tris):
@@ -112,9 +225,10 @@ def wound(strip, k):
 def oriented(tris):
     """Strip pieces for a batch drawn with culling: each triangle keeps its
     winding as the GE reads a strip (the odd ones turned). stripify's
-    pieces, cut where one would turn a triangle; a piece that starts turned
-    starts on an odd place (its first id twice: a triangle with no area).
-    Triangles with a repeated id are left out."""
+    pieces, turns and all (a turn keeps the windings of a mesh wound one
+    way), cut where one would turn a triangle over; a piece that starts
+    turned starts on an odd place (its first id twice: a triangle with no
+    area). Triangles with a repeated id are left out."""
     want = {}
     for t in tris:
         if len(set(t)) == 3:
@@ -123,20 +237,29 @@ def oriented(tris):
 
     def first(tri):
         return list(tri) if _turn(tri) == want[tuple(sorted(tri))] else [tri[0]] + list(tri)
+
+    def close(cur):
+        while len(cur) > 3 and len(set(cur[-3:])) < 3:   # a turn left hanging at the cut
+            cur.pop()
+        pieces.append(cur)
     for piece in stripify(tris):
         cur = None
         for k in range(len(piece) - 2):
             tri = tuple(piece[k:k + 3])
+            if len(set(tri)) < 3:   # a turn's: no area, no winding
+                if cur is not None:
+                    cur.append(piece[k + 2])
+                continue
             if cur is None:
                 cur = first(tri)
                 continue
             cur.append(piece[k + 2])
-            if _turn(wound(cur, len(cur) - 3)) != want[tuple(sorted(tri))]:
+            if tuple(cur[-3:]) != tri or _turn(wound(cur, len(cur) - 3)) != want[tuple(sorted(tri))]:
                 cur.pop()
-                pieces.append(cur)
+                close(cur)
                 cur = first(tri)
         if cur:
-            pieces.append(cur)
+            close(cur)
     return pieces
 
 

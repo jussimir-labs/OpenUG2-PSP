@@ -32,6 +32,7 @@ from sources import SOURCES, SourceError  # noqa: E402
 sys.path.insert(0, str(HERE / 'tools'))
 import native_runtime
 import step_graph
+import generator_diagnostics as diagnostics
 
 EBOOT = HERE / 'eboot/EBOOT.PBP'
 RELEASE = HERE / 'eboot/release.json'
@@ -64,6 +65,17 @@ def human(seconds):
     if seconds < 3600:
         return f'{seconds // 60} min {seconds % 60:02d} s'
     return f'{seconds // 3600} h {seconds // 60 % 60:02d} min'
+
+
+# Each converter on this list accepts the worker count assigned by the
+# scheduler. The other steps use one slot.
+POOLED = {'tools/convert_city.py', 'tools/convert_garage.py', 'tools/racing_line.py', 'tools/convert_races.py',
+          'tools/convert_hud.py', 'tools/convert_vinyls.py', 'tools/convert_rims.py', 'tools/convert_movies.py',
+          'tools/convert_audio.py', 'tools/convert_cars.py'}
+
+
+def step_workers(command, jobs):
+    return max(1, jobs // 2) if command and command[0] in POOLED else 1
 
 
 # The conversion, in tools/build.sh's order (the reference build's): each
@@ -141,9 +153,8 @@ def steps(game_dir, movies=True, jobs=4):
             add(f'opponent car {preset.stem}', 30, 'tools/convert_car.py', '--preset', f'presets/{group}/{preset.name}',
                 '--tag', f'opp-{preset.stem}')
     for _, _, command in out:
-        if command[0] in ('tools/convert_city.py', 'tools/convert_garage.py', 'tools/racing_line.py', 'tools/convert_races.py',
-                          'tools/convert_hud.py'):
-            command.extend(['--jobs', str(jobs)])
+        if command[0] in POOLED:
+            command.extend(['--jobs', str(step_workers(command, jobs))])
     return out
 
 
@@ -261,6 +272,29 @@ def build_identity(digest, source, args, release):
             'tools_sha256': hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(',', ':')).encode()).hexdigest()}
 
 
+def preserve_attempt(out, fresh=False):
+    """Move prior evidence/work on the same volume, before a restart deletes
+    anything. A normal resume keeps its work in place and unique logs intact.
+    Historical data is never an input to a new conversion or auto-deleted.
+    """
+    names = [p for p in out.iterdir() if p.name != '.nfsu2-psp-history'] if fresh else [
+        out / name for name in ('.trabalho', 'registros', '.nfsu2-psp-build', 'relatorio.json', '.anterior') if (out / name).exists()]
+    if not names:
+        return
+    history = out / '.nfsu2-psp-history'
+    if history.is_symlink() or (hasattr(history, 'is_junction') and history.is_junction()):
+        raise Failure('diagnostic history is a linked folder; choose another output folder.')
+    saved = history / diagnostics.attempt_id()
+    saved.mkdir(parents=True)
+    for path in names:
+        # The active marker must remain valid even if a later move fails.
+        if path.name == '.nfsu2-psp-build':
+            shutil.copy2(path, saved / path.name)
+        else:
+            path.rename(saved / path.name)
+    say(f'Previous logs and working data preserved in {saved}')
+
+
 def prepare_out(out, fresh, identity):
     """Only our output, bound to the same disc and exact conversion recipe."""
     marker = out / '.nfsu2-psp-build'
@@ -278,12 +312,14 @@ def prepare_out(out, fresh, identity):
         if fresh:
             if any(p.is_dir() for p in out.rglob('SAVEDATA')) or any(out.rglob('*.sav')):
                 raise Failure('the output contains saves. Preserve them and choose another output folder.')
-            for path in out.iterdir():
-                if path.name != marker.name:
-                    shutil.rmtree(path) if path.is_dir() and not path.is_symlink() else path.unlink()
+            preserve_attempt(out, fresh=True)
     out.mkdir(parents=True, exist_ok=True)
     if (out / 'PSP').exists():
         raise Failure(f'{out / "PSP"} already exists: choose another output or use --fresh to generate again.')
+    if marker.exists():
+        logs = out / 'registros'
+        logs.mkdir(exist_ok=True)
+        shutil.copy2(marker, logs / f'build-marker-{diagnostics.attempt_id()}.json')
     marker.write_text(json.dumps(identity, sort_keys=True) + '\n')
 
 
@@ -404,13 +440,19 @@ def tree_rss(pid):
     return total
 
 
+def preserve_log(log):
+    if log.exists():
+        log.rename(log.with_name(log.stem + '-previous-' + diagnostics.attempt_id() + log.suffix))
+
+
 def run_step(i, name, secs, cmd, work, logs, env):
     log = logs / f'{i:02d}-{name.replace(" ", "-")}.log'
+    preserve_log(log)
     t0 = time.monotonic()
     # each step its own temporary folder: steps run side by side
     tmp = work / 'tmp' / f'{i:02d}'
     tmp.mkdir(parents=True, exist_ok=True)
-    env = dict(env, TMPDIR=str(tmp), TEMP=str(tmp), TMP=str(tmp))
+    env = dict(env, TMPDIR=str(tmp), TEMP=str(tmp), TMP=str(tmp), NFSU2_DIAGNOSTICS_DIR=str(logs.resolve()))
     if TRACE:
         trace = Path(TRACE) / f'{i:02d}'
         trace.parent.mkdir(parents=True, exist_ok=True)
@@ -423,6 +465,8 @@ def run_step(i, name, secs, cmd, work, logs, env):
             f.write('$ ' + ' '.join(['python'] + c) + '\n')
             f.flush()
             p = subprocess.Popen(queued(name, [sys.executable] + c, env), cwd=work, env=env, stdout=f, stderr=subprocess.STDOUT)
+            f.write(f'\nStarted at {diagnostics.utc()}, pid={p.pid}\n')
+            f.flush()
             last = time.monotonic()
             while p.poll() is None:
                 time.sleep(0.5)
@@ -430,7 +474,11 @@ def run_step(i, name, secs, cmd, work, logs, env):
                     peak = max(peak, tree_rss(p.pid))
                 if time.monotonic() - last > 30:
                     last = time.monotonic()
+                    f.write('\nComputer sample: ' + json.dumps(diagnostics.snapshot(work)) + '\n')
+                    f.flush()
                     say(f'           … {name}: {human(time.monotonic() - t0)} (esperado ~{human(secs)})')
+            f.write(f'\nEnded at {diagnostics.utc()}, pid={p.pid}, exit={p.returncode}, elapsed={time.monotonic() - t0:.3f}s\n')
+            f.flush()
             if p.returncode:
                 tail = log.read_text(errors='replace').splitlines()[-25:]
                 raise Failure(f'step "{name}" failed (exit code {p.returncode}). Last lines from {log}:\n'
@@ -449,6 +497,7 @@ def run_step(i, name, secs, cmd, work, logs, env):
 
 GRAPH = HERE / 'manifests/steps.json'
 UPDATE_FROM = HERE / 'manifests/update-from'
+PSP_ISO = 'NFSU2-PSP.iso'      # step 6 (--psp-iso): the verified folder as a PSP ISO, tools/psp_iso.py
 STATE = '.nfsu2-psp-steps.json'     # in the output: each step's stamp, the base of a later update
 CACHE = '.nfsu2-psp-cache'          # in the output: the steps' files a later step reads that the card's folder leaves out
 DIST = 'dist/PSP/GAME/NFSU2VIEW/'
@@ -508,11 +557,6 @@ def free_memory_gb():
         return None
 
 
-# the steps that run processes or threads of their own (--jobs or the cores):
-# each counts as half the processes allowed
-POOLED = {'tools/convert_city.py', 'tools/convert_garage.py', 'tools/racing_line.py', 'tools/convert_races.py',
-          'tools/convert_hud.py', 'tools/convert_vinyls.py', 'tools/convert_rims.py', 'tools/convert_movies.py',
-          'tools/convert_audio.py', 'tools/convert_cars.py'}
 MIN_FREE_GB = 1.5    # another step starts only with this much memory free (one runs anyway)
 
 
@@ -532,7 +576,7 @@ def run_steps(todo, graph, jobs, finished, run_one):
     rank = [0.0] * n
     for i in reversed(range(n)):
         rank[i] = expected[i] + max((rank[k] for k in succ[i]), default=0.0)
-    weight = [max(1, jobs // 2) if todo[i][2] and todo[i][2][0] in POOLED else 1 for i in range(n)]
+    weight = [step_workers(command, jobs) for _, _, command in todo]
     total = sum(expected) or 1
     done = set(i for i in range(n) if todo[i][0] in finished)
     pending = [i for i in range(n) if i not in done]
@@ -558,9 +602,12 @@ def run_steps(todo, graph, jobs, finished, run_one):
             if not errors:
                 ready = sorted((i for i in pending if preds[i] <= done), key=lambda i: (-rank[i], i))
                 for i in ready:
-                    if running and (sum(running.values()) + weight[i] > jobs
-                                    or (free_memory_gb() or MIN_FREE_GB) < MIN_FREE_GB):
-                        break
+                    if running:
+                        if sum(running.values()) + weight[i] > jobs:
+                            break
+                        free = free_memory_gb()
+                        if free is not None and free < MIN_FREE_GB:
+                            break
                     pending.remove(i)
                     running[i] = weight[i]
                     started += 1
@@ -784,6 +831,7 @@ def package(work, out, logs, env):
     stage = work / 'pacote'
     if stage.exists():
         shutil.rmtree(stage)
+    preserve_log(logs / 'pacote.log')
     with open(logs / 'pacote.log', 'w') as f:
         r = subprocess.run([sys.executable, 'tools/ms_package.py', 'make', str(stage), '--dist', str(dist), '--eboot', str(EBOOT),
                             '--release', '--pack', '--whole-bars', '--xmb-art'], cwd=work, env=env, stdout=f, stderr=subprocess.STDOUT)
@@ -792,7 +840,7 @@ def package(work, out, logs, env):
     shutil.move(str(stage / 'PSP'), str(out / 'PSP'))
 
 
-def compare(game, manifest_path):
+def compare(game, manifest_path, *, diagnostics=None):
     """The package against the reference build's hashes (manifests/):
     verifies output identity; gameplay qualification is separate. A file
     whose bytes differ only by another CPU's rounding (tools/arch_tolerance.py:
@@ -808,10 +856,16 @@ def compare(game, manifest_path):
             continue
         if sha256(have[name]) == digest:
             same.append(name)
-        elif arch_tolerance.equivalent(name, have[name].read_bytes(), records.get(name)):
-            equivalent.append(name)
         else:
-            differ.append(name)
+            data, reference = have[name].read_bytes(), records.get(name)
+            if arch_tolerance.equivalent(name, data, reference):
+                equivalent.append(name)
+            else:
+                differ.append(name)
+                if diagnostics is not None:
+                    details = arch_tolerance.mismatch_details(name, data, reference)
+                    if details:
+                        diagnostics[name] = details
     missing = sorted(set(ref) - set(have))
     extra = sorted(set(have) - set(ref))
     return same, equivalent, differ, missing, extra
@@ -829,6 +883,8 @@ def main():
     ap.add_argument('--cjpegli', type=Path, help='cjpegli path when it is not in .tools/jpegli')
     ap.add_argument('--accept-unknown-iso', action='store_true',
                     help='allow an unknown ISO hash when extracted files match')
+    ap.add_argument('--psp-iso', action='store_true',
+                    help=f'also write the verified game as a PSP ISO, {PSP_ISO} in the output folder (for ms0:/ISO)')
     ap.add_argument('--check-only', action='store_true', help='check the ISO and prerequisites without converting')
     ap.add_argument('--update', action='store_true',
                     help='update the previous --output generation: rerun only changed steps (same ISO)')
@@ -881,20 +937,23 @@ def main():
         if args.update:
             old = previous_generation(out)
             # an update starts afresh (a full generation's steps done are not this one's)
-            if work.exists():
-                shutil.rmtree(work)
-            if logs.exists():
-                shutil.rmtree(logs)
+            preserve_attempt(out)
         else:
             prepare_out(out, args.fresh, identity)
+        work.mkdir(exist_ok=True)
+        logs.mkdir(exist_ok=True)
+        try:
+            attempt = diagnostics.write_computer(logs, identity, args.jobs)
+        except OSError as exc:
+            say(f'Computer diagnostics unavailable: {type(exc).__name__}')
+            attempt = diagnostics.attempt_id()
         free = disk_free_gb(out)
         if free < DISK_NEEDED_GB:
             raise Failure(f'low disk space: {free:.0f} GB free at {out}; conversion needs about {DISK_NEEDED_GB} GB.')
-        work.mkdir(exist_ok=True)
-        logs.mkdir(exist_ok=True)
         done_file = work / 'etapas-feitas.txt'
         done = set(done_file.read_text().splitlines()) if done_file.exists() else set()
         env = step_env(work, source)
+        env['NFSU2_DIAGNOSTICS_ATTEMPT'] = attempt
 
         game_dir = work / 'game' / source.name
         game_rel = source.game_root(game_dir).relative_to(work)
@@ -989,11 +1048,14 @@ def main():
                   'quality_approval': release.get('quality_approval', 'not-assessed'),
                   'known_issues': release.get('known_issues', [])}
         if manifest.exists():
-            same, equivalent, differ, missing, extra = compare(game, manifest)
+            mismatch = {}
+            same, equivalent, differ, missing, extra = compare(game, manifest, diagnostics=mismatch)
             report.update(same=len(same), equivalent=equivalent, differ=differ, missing=missing, extra=extra,
                           verification='mismatch' if differ or missing or extra else
                           'equivalent-reference' if equivalent else 'exact-reference',
                           approved=not (differ or missing or extra))
+            if mismatch:
+                report['mismatch_details'] = mismatch
             # `approved` is retained for existing report readers: file identity,
             # or equivalence by another CPU's rounding. It never overrides known
             # issues or the release's quality status.
@@ -1032,8 +1094,26 @@ def main():
                                                      stamps=dict(zip(graph.names, stamps))), indent=0) + '\n')
         if not args.keep_work:
             shutil.rmtree(work)
+        # after the work folder is gone: the ISO's 2 GB never add to the conversion's peak
+        if getattr(args, 'psp_iso', False):
+            say(f'\n6. Writing the PSP ISO ({PSP_ISO})')
+            sys.path.insert(0, str(HERE / 'tools'))
+            import psp_iso
+            try:
+                assets, disc_files, iso_bytes = psp_iso.export(game, out / PSP_ISO)
+            except (OSError, ValueError) as e:
+                report['psp_iso'] = {'error': str(e)}
+                (out / 'relatorio.json').write_text(json.dumps(report, indent=1, ensure_ascii=False) + '\n')
+                raise Failure(f'the PSP ISO could not be written: {e}. The verified folder is in {game}.')
+            report['psp_iso'] = {'file': PSP_ISO, 'bytes': iso_bytes, 'assets': assets, 'disc_files': disc_files, 'read_back_verified': True}
+            (out / 'relatorio.json').write_text(json.dumps(report, indent=1, ensure_ascii=False) + '\n')
+            say(f'  {PSP_ISO}: {disc_files} files, {iso_bytes / 2**30:.1f} GB, read back and checked.')
+        elif (out / PSP_ISO).exists():
+            say(f'  Note: {PSP_ISO} in the output folder is from an earlier generation; generate with the PSP ISO option to replace it.')
         say(f'\nFinished in {human(time.monotonic() - t_start)}: {game}')
         say(f'  {report["files"]} files, {size / 2**30:.1f} GB. For PSP installation, see README.md, "Install on PSP".')
+        if 'psp_iso' in report:
+            say(f'  PSP ISO: {out / PSP_ISO} (copy it to ms0:/ISO; see README.md, "Install as an ISO").')
         if report['known_issues']:
             say('  Known beta limitations: see KNOWN_ISSUES.md.')
         return 0

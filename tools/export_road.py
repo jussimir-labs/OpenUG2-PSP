@@ -7,7 +7,7 @@ import argparse,struct,json,hashlib,math,tempfile,shutil
 from source_data import inspect
 O=Path(__file__).parent
 sha=lambda b:hashlib.sha256(b).hexdigest()
-TRACKS=('L4RA','L4RC','L4RD','L4RF','L4RG')
+TRACKS=('L4RA','L4RB','L4RC','L4RD','L4RF','L4RG')
 def constants(path=None):
  c=json.loads(Path(path or O/'road_constants.json').read_text())
  if c['version']!=1 or c['terrain_count']!=29 or c['noise_count']!=16 or len(c['terrain_coeffs'])!=29 or any(len(r)!=6 for r in c['terrain_coeffs'])or len(c['noise_grid'])!=16:raise ValueError('canonical table shape')

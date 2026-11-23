@@ -1,16 +1,16 @@
 {
-  "candidate": "beta-v0.4.0",
-  "candidate_id": "beta-v0.4.0-c38e3e1f",
-  "release_tag": "v0.4.0",
-  "version": "0.4.0",
-  "game_version": "0.4.0",
-  "eboot_sha256": "c38e3e1fcfbbc70769f52d45ed0f698a147f9103eb86c783bff9b120844a29a8",
-  "eboot_bytes": 6303209,
+  "candidate": "beta-v0.4.1",
+  "candidate_id": "beta-v0.4.1-6910255a",
+  "release_tag": "v0.4.1",
+  "version": "0.4.1",
+  "game_version": "0.4.1",
+  "eboot_sha256": "6910255ab0389d1ee29a5c9c493f5998eec0aa031d05ea9716193abc1c43945e",
+  "eboot_bytes": 6664585,
   "xmb_art": "the kit's own XMB from 0.4.0: icon (ICON0.PNG), icon video (ICON1.PMF), background (PIC1.PNG) and theme (SND0.AT3) by BananaSplitGamer (beta issue #205), on Jussimir's decision of 15/11/2026; only these exact sections are allowed (tools/pbp.py KIT_XMB, release_policy.json reviewed_xmb_art). The generator keeps them, so the card's EBOOT.PBP is the kit's for both sources; PARAM.SFO and DATA.PSP are the build's",
-  "build_id": "a41f909d22",
-  "source_commit": "a41f909d22baaefe0f263022af9a54e2640b84ad",
+  "build_id": "ce40f0bbdc",
+  "source_commit": "ce40f0bbdc1e760a53294336ae01568018ee15eb",
   "build_flags": [
-    "PGO=use (RC21 profile)",
+    "PGO=use (profile carried from candidate 0.4.1-rc.22)",
     "LTO=1",
     "RELEASE=0",
     "PSP_LARGE_MEMORY=1"
@@ -20,42 +20,43 @@
     "ps2"
   ],
   "publication_status": "OPEN_BETA_CANDIDATE",
-  "quality_approval": "Version 0.4.0, the first open beta (the 0.3.2 candidate renamed), prepared on Jussimir's direction to ship the Brightness option, the XMB icon and background made from the player's own disc, the way back to Bayview after Street X and Drift events (#195), the post-race menus that no longer pause (#154, #191), the drift's winner scene, lost points and slip angle (#191), the World Map's heading arrow (#201), the outrun's orange arrow (#186), the PS2 disc's menu and street sounds at their pitch (#158), the menu sounds of #174 and #181, the career's garage, resume spot, race markers, prologue and stage order (#199, #184, #198, #180, #202), division by zero no longer stopping the PSP (#148), the Options Debug page with the Debug Overlay switch, the Final Race (#204), the shops' welcome (#188), Open Bayview (#203), the Dyno and its test runs (#144), All Cars in Customize (#173), the Body Shop layout (#29), the city, HUD and car visuals (#167, #182, #183, #192), the GPS and menu sounds (#106, #176, #178) and the fixes integrated since 0.3.1, with the same rules as 0.3.1, once it passes PPSSPP; its battery is 0.3.2-rc.2's plus the Debug page and the version change. Tests ran on this executable. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
+  "quality_approval": "Version 0.4.1, prepared on Jussimir's direction to ship the city's new triangle strips (about a fifth fewer vertices to draw and a smaller city file), the steadier Free Roam frame rate, the original game's handling data for the player car and the fixes integrated since 0.4.0. Checked in PPSSPP on this executable with the PS2 data of this kit: cold boot to a Quick Race in both memory profiles, cold boot to Career Free Roam, and the Free Roam, race flow, Drift, Street X, URL, Outer Ring and L4RB drag cases. The scripted drag case of event 4404 does not finish (its test driver blows the engine in third gear, with the old and the new track data alike); it is left for investigation after the release, since it may be the test driver's and not the game's. The Xbox data were generated and compared with the reference but not played. Jussimir played the PS2 output of 0.4.1-rc.24 from a Memory Stick on a physical PSP; rc.25 adds only the fix for the car's heading and wheels in the garage, shop and finish cutscenes, checked in PPSSPP on the Dyno, performance shop, garage, tuning, career and race-flow cases (the scripted shop fly-by case does not finish on rc.24 or rc.25 alike). The generator's new PSP ISO, written without mkisofs, matches the mkisofs disc of tools/psp_iso_prototype.py sector for sector apart from dates and booted in PPSSPP from a cold start to a race and back to the main menu; this release's ISO has not yet been opened from the XMB on a physical PSP. The full release battery was not run; the frame-rate figures come from a PSP-3000 on earlier builds of the same code. Not a final release, physical PSP-1000, all-device, full-game, visual-fidelity or stable-30-fps approval.",
   "known_issues": [
     "No physical PSP-1000 has run this build: the compact profile was measured on a PSP-3000 limited to the PSP-1000 memory and in PPSSPP set to the PSP-1000.",
-    "Stable 30 fps throughout the game is not yet established (University Hill and the densest city areas drop frames in both profiles).",
-    "On PSP-1000, the city can pause to load right after the World Map turns the GPS on (seen in PPSSPP; it happens on 0.3.0 too).",
+    "Stable 30 fps throughout the game is not yet established: Free Roam is much steadier than in 0.4.0, but races and the densest city areas can still drop frames in both profiles.",
+    "The city's new triangle strips were compared with the old city cell by cell and timed on a PSP-3000; the event tracks and far views rebuilt with the same strips were checked in PPSSPP only.",
     "Full-career completion and all save/reload paths are not qualified.",
     "Drag 4401 rivals may become stuck in repeated recovery.",
     "Drift audio cuts/clicks, pause sound and braking sound still need tester confirmation.",
     "Custom dyno and special presets use the earlier handling path; collisions retain port adaptations.",
     "Materials, visibility, doors, movies and all audio/camera combinations need broader testing.",
     "The original US PS2 disc image has not been independently verified; PAL and other revisions are refused.",
-    "Menu camera height on the stick, shop rooms' own lighting and the Body Shop part browser are still open."
+    "Menu camera height on the stick, shop rooms' own lighting and the Body Shop part browser are still open.",
+    "Playback of the smaller XMB icon video on a physical PSP is not confirmed (#205)."
   ],
   "reference_scope": "Full ISO conversions (Xbox and PS2) by this kit's native generator on macOS arm64; the card's EBOOT.PBP is the kit's, with its own XMB, for both sources. Output identity does not establish gameplay quality.",
   "files_by_source": {
-    "xbox": 166,
-    "ps2": 164
+    "xbox": 167,
+    "ps2": 165
   },
   "source_data_ids": {
-    "xbox": "69f3",
-    "ps2": "3651"
+    "xbox": "223f",
+    "ps2": "c86e"
   },
-  "data_compatibility": "Install the complete output of this generator (update a 0.2.x, 0.3.0 or 0.3.1 folder with the same ISO, or generate into a new folder). 0.4.0 changes EBOOT.PBP (now with the XMB art of your own disc) and converted data (the outrun arrow, the GPS models, the HUD, the city and the cars, the career data, the Dyno screens, the music, and on the PS2 disc the menu and street sounds); copying only the EBOOT leaves old data that this executable does not expect. Saves move to version 16 the first time 0.4.0 writes them. Do not mix Xbox and PS2 output.",
-  "elf_sha256": "5abace1686d1d90bd591cd4f4c386cae0d433e04d031aa321f54976f401bffed",
-  "prx_sha256": "f96a139fc0ad5c25c672bfe3c75ac7bd802556d3552ee41b61c8294e5603d03f",
+  "data_compatibility": "Install the complete output of this generator (update a 0.2.x, 0.3.x or 0.4.0 folder with the same ISO, or generate into a new folder). 0.4.1 changes EBOOT.PBP and converted data (the city, the event tracks and their barriers rebuilt with the new triangle strips, the original game's physics data and road data for the event tracks, the career data and the game data pack); copying only the EBOOT leaves old data that this executable does not expect. Saves stay at version 16. Do not mix Xbox and PS2 output.",
+  "elf_sha256": "1751370453bb153d686e2073f177e7e873000c1814f40b884ea57334922d798e",
+  "prx_sha256": "91cbffaf1cec4255f84ace601a271547068648d63ec2414499688d0f18ea5032",
   "debug_overlays": true,
   "tester_invitations_sent_by_this_release": false,
   "qualification_receipts": [],
   "source_candidate": {
-    "id": "5d5178c58f894d0aa7f2d514cc2b1e7c",
-    "version": "0.4.0-rc.3",
-    "path": "reports/releases/5d5178c58f894d0aa7f2d514cc2b1e7c",
-    "final_build": "GAME_VERSION=0.4.0 from the frozen source of 0.4.0-rc.3 (reports/release-v0.4.0/eboot)"
+    "id": "be286e6650c3424295476a80006046b1",
+    "version": "0.4.1-rc.25",
+    "path": "reports/releases/be286e6650c3424295476a80006046b1",
+    "final_build": "GAME_VERSION=0.4.1 from the frozen source of 0.4.1-rc.25 (reports/release-v0.4.1/eboot)"
   },
   "kit_eboot_from_build": {
-    "eboot_sha256": "a38ae7bb0496c8b63ed94c25f40427563bb1eb53d534b4924a3d117249efd761",
-    "note": "the GAME_VERSION=0.4.0 build of 0.4.0-rc.3 with its XMB art replaced by the kit XMB (tools/pbp.py strip, then xmb); PARAM.SFO and DATA.PSP byte for byte"
+    "eboot_sha256": "cfc5a3689cc9a2e75a2270bfe34475a3a997a47b453578cd7bff892a8baa009e",
+    "note": "the GAME_VERSION=0.4.1 build of 0.4.1-rc.25 with its XMB art replaced by the kit XMB (tools/pbp.py strip, then xmb); PARAM.SFO and DATA.PSP byte for byte"
   }
 }

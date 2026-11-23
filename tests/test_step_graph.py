@@ -84,6 +84,15 @@ class GraphTests(unittest.TestCase):
             root=Path(tmp);p=root/name;p.write_bytes(b'N2TA fixture bytes')
             self.assertEqual(bg.package_files(root)[name],(p,0,None))
 
+    def test_original_physics_declares_every_road(self):
+        """An update that reuses this step restores what it declares: all of convert_original_data's outputs."""
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+        from export_road import TRACKS
+        graph = json.loads((Path(__file__).resolve().parents[1] / 'manifests/steps.json').read_text())
+        step = next(s for s in graph['steps'] if s['name'] == 'original physics data')
+        names = {w.rsplit('/', 1)[-1] for w in step['writes'] if w.startswith('dist/PSP/GAME/NFSU2VIEW/')}
+        self.assertEqual(names, {'original-physics.n2og'} | {f'road-{t}.n2tr' for t in TRACKS})
+
     def test_order(self):
         g = graph()
         self.assertEqual(g.preds[1], {0})            # races reads city's
@@ -272,6 +281,15 @@ class PlanTests(unittest.TestCase):
 
 
 class SchedulerTests(unittest.TestCase):
+    def test_conversion_pools_use_the_reserved_slots(self):
+        for jobs in (1, 3, 4, 16):
+            planned = bg.steps(Path('/source'), movies=True, jobs=jobs)
+            for name, _, command in planned:
+                if command[0] in bg.POOLED:
+                    with self.subTest(jobs=jobs, stage=name):
+                        self.assertEqual(command[-2:], ['--jobs', str(max(1, jobs // 2))])
+                        self.assertEqual(int(command[-1]), bg.step_workers(command, jobs))
+
     def test_parallel_respects_order(self):
         g = graph()
         todo = [(n['name'], 1, ['tools/x.py']) for n in NODES]

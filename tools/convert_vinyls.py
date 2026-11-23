@@ -137,12 +137,13 @@ def main():
     n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--car', action='append', help='only these cars (default: the fleet, as tools/convert_garage.py)')
+    ap.add_argument('--jobs', type=int, help='maximum vinyl conversion workers')
     args = ap.parse_args()
     items = catalogue(args.game)
     cars = args.car or convert_physics.playable(convert_physics.records(archived(args.game, 'GLOBAL/GLOBALB.BUN')))
     args.out.mkdir(parents=True, exist_ok=True)
     total = 0
-    with concurrent.futures.ProcessPoolExecutor() as pool:
+    with concurrent.futures.ProcessPoolExecutor(args.jobs) as pool:
         # one core per car from the Mac's queue (tools/mac_slots.py)
         for car, n, size in pool.map(functools.partial(mac_slots.call, 'convert_vinyls', convert_car), *zip(*[(args.game, args.out, c, items) for c in cars])):
             print(f'{car}: {n} vinis, {size / 1e6:.1f} MB')

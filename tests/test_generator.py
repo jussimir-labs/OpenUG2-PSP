@@ -19,6 +19,36 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import generator as g
+import racing_line
+
+
+class WorkerBudgetTests(unittest.TestCase):
+    def test_racing_line_memory_restricts_pool_size(self):
+        gib = 1024**3
+        self.assertEqual(racing_line.line_workers(3, 4 * gib), 1)
+        self.assertEqual(racing_line.line_workers(3, 7 * gib), 2)
+        self.assertEqual(racing_line.line_workers(3, 16 * gib), 3)
+        self.assertEqual(racing_line.line_workers(2, 16 * gib), 2)
+        self.assertEqual(racing_line.line_workers(3, None), 3)
+
+    def test_cpu_affinity_leaves_headroom_when_possible(self):
+        with patch.object(g.os, 'cpu_count', return_value=32):
+            for available, expected in ((1, 1), (2, 1), (4, 3), (12, 8)):
+                with self.subTest(available=available), patch.object(
+                    g.os, 'sched_getaffinity', return_value=set(range(available)), create=True,
+                ) as affinity:
+                    self.assertEqual(g.default_jobs(), expected)
+                    affinity.assert_called_once_with(0)
+
+    def test_affinity_error_uses_cpu_count(self):
+        with patch.object(g.os, 'sched_getaffinity', side_effect=OSError, create=True):
+            with patch.object(g.os, 'cpu_count', return_value=6):
+                self.assertEqual(g.default_jobs(), 5)
+
+    def test_unknown_cpu_count_uses_conservative_default(self):
+        with patch.object(g.os, 'sched_getaffinity', None, create=True):
+            with patch.object(g.os, 'cpu_count', return_value=None):
+                self.assertEqual(g.default_jobs(), 3)
 
 
 class Fixture(unittest.TestCase):

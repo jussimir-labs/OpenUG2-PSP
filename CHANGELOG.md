@@ -17,6 +17,129 @@ lines; please include it when you report a problem. Test builds carry a suffix, 
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-11-22 — I Am Weightless
+
+EA Trax: *I Am Weightless*, Septembre.
+
+A lighter Bayview and a steadier Free Roam, the original game's handling data for your car, and
+the fixes from the open beta's first week of reports.
+
+A new game executable and new converted game data: update your 0.4.0 output folder with the 0.4.1
+generator (same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW`
+folder. An update from 0.4.0 converts 51 of the 81 steps again (the city, the event tracks and
+their barriers, the original physics and road data, and the career data). Saves stay at version 16.
+
+### Added
+
+- The generator can now make a PSP ISO. With **Also create a PSP ISO** on (the default), it writes
+  `NFSU2-PSP.iso` next to the `PSP` folder once the folder passes verification: the same verified
+  game files laid out as a PSP disc, read back and checked after writing, with no extra tools to
+  install. Copy it to `ISO` on your Memory Stick and launch **NFSU2 ISO** from the XMB (custom
+  firmware with an ISO driver, such as ARK). Options, records, saves and bug reports stay on the
+  Memory Stick.
+- Choose whether D-Pad Down opens the World Map or Career Statistics in Career Free
+  Roam. The other screen stays available from the pause menu ([#226]).
+- The generator records computer specifications, available RAM and disk space, plus the
+  start time, process ID, stages and elapsed time of each racing line. Long stages include
+  Python stack traces to help investigate conversions that stop progressing ([#224]).
+- Previous conversion logs and unfinished working data are preserved when restarting a
+  generation or update, so an earlier failed attempt remains available for diagnosis ([#224]).
+- When verification flags converted racing lines or the game data pack, the report
+  includes the sample count for each generated line or the affected files inside the
+  pack ([#231]).
+
+### Changed
+
+- Gameplay options now show that the units setting also changes dyno power and
+  torque. The choices list MPH / bhp / ft-lbs and KM/H / kW / Nm ([#217]).
+- Updated player-car handling with physics data and rules from the original game,
+  including separate tuning for Drift, Drag and Street X. The handbrake disengages
+  the clutch in Drift and preserves drive torque in Drag.
+- This is the game's biggest performance jump since the first closed beta build. In v0.4.0 and
+  earlier builds, many stretches of Bayview could dip below 20 fps in Free Roam, with brief drops
+  to around 5 fps in the worst spots. Free Roam now holds 30 fps much more consistently across the
+  city on both memory profiles ([#237]).
+
+  On a PSP-3000 running with the PSP-1000's memory budget, all 18 benchmark stretches met the
+  30 fps target on at least 95.8% of frames. City blocks spend less time in low detail as the
+  streets load, and races get a smaller boost from the same improvements.
+
+  The game updates car paint, highlights, and HUD elements only as needed, reuses wet-road and car
+  reflections where possible, and makes better use of the PSP's cache.
+- Bayview is lighter on the PSP's graphics chip and smaller on the Memory Stick. The
+  generator now builds the city's triangle strips with turns, so the same triangles,
+  textures and collision take about a fifth fewer vertices to draw, and the city file
+  drops from 530 MB to 442 MB (PS2 disc). On a PSP-3000 with extended memory, the four
+  heaviest Free Roam stretches we time went from 94.6-97.3% to 97.2-98.6% of their
+  frames at 30 fps. Update your game folder with the generator to get the new city.
+
+### Fixed
+
+- Hidden races show their marker on the street when you drive near one, as in the original,
+  while staying off the minimap and the world map. Stage 5's last URL tournament asks for 35
+  World Event Wins and only 34 world races ever reach the map, so the 35th has to be a hidden
+  race; without their markers they could not be found, and the final race against Caleb never
+  came. Saves already stuck at 34/35 are covered: cruise Bayview, find a hidden race, win it, and
+  the last URL tournament and then the final follow ([#204]).
+- At night, street fog blends into the regional rain color as rain sets in ([#218]).
+- The title screen plays its music and Continue sound at their default levels.
+  One saved profile loads directly and shows Load Complete. With multiple profiles,
+  the PSP save list opens on the last one you used. Your saved audio settings take
+  effect in the main menu ([#229]).
+- Circle leaves Pause, Career Statistics and World Map open. Help stays silent
+  when you press Circle or Cross. Bounded selectors in Options, Quick Race,
+  EA TRAX and the career menus only play navigation sounds when the selection
+  moves ([#214]).
+- Wet-road reflections fade in and out as the light and rain change, and return
+  gradually after camera cuts ([#219]).
+- The finish banner shows your placing above your race time or drift score ([#243]).
+- Street X starts without the extra nitrous warning ([#244]).
+- Rachel's welcome plays during the airport scene at the start of Career ([#208]).
+- The minimap fills its circular frame without clipping along the right and lower
+  edges ([#207]).
+- The World Map can restore GPS guidance to the active destination after you turn it off
+  during a timed photo shoot ([#238]).
+- Drift opponents use the speed planned for corners and traffic, carry more speed sideways
+  as they slide, and steer toward a nearer point when their target is behind a wall ([#193]).
+- Drift results show the opponents' car models alongside their names and scores ([#227]).
+- The World Map shows the same sponsorship crosses and special-event stars as the
+  minimap ([#232]).
+- Career Free Roam has a **Reset Car** option in the pause menu to recover a car
+  trapped outside the road, including after resuming a save ([#233]).
+- Quick Race loads the starting grid's collision before nearby scenery in the
+  compact memory profile, reducing loading failures before the countdown. City
+  Quick Races also load distant road physics on demand to leave room for scenery.
+- The generator leaves room for the desktop in its default CPU worker budget and
+  applies that budget to parallel steps such as vinyls, rims, movies and audio ([#225]).
+- The racing-line step releases large temporary matrices sooner and reduces
+  its worker count when available memory is low ([#225]).
+- Racing-line workers use one numerical-library thread each, even if the system
+  environment requests a larger pool ([#224]).
+- When a racing line needs a less restrictive curvature limit, the generator retries
+  the solver without rebuilding that pass's matrices ([#224]).
+- Collect unique rewards at the shop entrance. The unlock SMS arrives as soon as the
+  qualifying Outrun ends and remains in the mailbox after saving and reopening Career ([#220]).
+- Use the original game's top-gear shift point in Drag, avoiding misleading perfect
+  or over-rev cues after the last available gear. Downshifting from first also
+  returns to neutral in Drag ([#222]).
+- Allow nitrous purge during the race countdown, with the car still held on the grid
+  until the start ([#223]).
+- Re-encode the XMB icon preview at 144×80 with a smaller video and navigation data
+  for the official PSP menu. The updated logo alignment and the preview music are preserved
+  (XMB art by Zane Flynt / BananaSplitGamer). Physical XMB playback confirmation is pending ([#205]).
+- When launched from a PSP ISO, write existing diagnostics and manual bug reports to
+  `PSP/SYSTEM/NFSU2VIEW/logs` on the Memory Stick, including watchdog stall reports,
+  instead of attempting to write to the read-only disc.
+- When launched from a PSP ISO, save Options, race records and EA TRAX preferences on the
+  Memory Stick, and remember the last selected profile after restarting.
+- PSP ISO startup no longer treats the read-only disc as a development host, avoiding a
+  failed EA movie startup.
+- In Options, sliders line up with their tracks, the side marker follows the selected row,
+  and the selection and panel edges no longer look clipped ([#216]).
+- In Career Status, the progress bars and markers now follow overall, stage and visual
+  rating progress. The World Map legend lines up its labels, symbols and GPS checkmarks
+  in consistent columns ([#204]).
+
 ## [0.4.0] - 2026-11-16 — Celebration Song
 
 EA Trax: *The Celebration Song*, Unwritten Law.
@@ -1241,7 +1364,8 @@ throughout the game were still pending.
 
 - Sponsor-screen and audio-bank ownership problems found in earlier test kits.
 
-[Unreleased]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.4.1
 [0.3.1]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.6...v0.3.0
 [0.2.6]: https://github.com/jussimir-labs/OpenUG2-PSP/compare/v0.2.5...v0.2.6
@@ -1429,11 +1553,36 @@ throughout the game were still pending.
 [#176]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/176
 [#203]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/203
 [#205]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/205
+[#207]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/207
+[#208]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/208
+[#214]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/214
+[#220]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/220
+[#222]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/222
+[#229]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/229
+[#223]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/223
 [#173]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/173
 [#182]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/182
 [#167]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/167
 [#192]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/192
 [#144]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/144
 [#183]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/183
+[#216]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/216
 
 [0.4.0]: https://github.com/jussimir-labs/OpenUG2-PSP/releases/tag/v0.4.0
+
+[#224]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/224
+[#225]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/225
+[#227]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/227
+[#231]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/231
+[#232]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/232
+[#233]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/233
+[#238]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/238
+[#243]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/243
+[#244]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/244
+[#219]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/219
+[#193]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/193
+
+[#237]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/237
+[#226]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/226
+[#217]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/217
+[#218]: https://github.com/jussimir-labs/OpenUG2-PSP/issues/218

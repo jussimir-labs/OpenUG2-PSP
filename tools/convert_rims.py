@@ -154,6 +154,7 @@ def main():
     n2source.game_args(ap)
     ap.add_argument('--out', type=Path, default=ROOT / 'dist/PSP/GAME/NFSU2VIEW')
     ap.add_argument('--styles', action='store_true', help='the styles\' names alone (rimstyles.n2rs)')
+    ap.add_argument('--jobs', type=int, help='maximum rim conversion workers')
     args = ap.parse_args()
     write_styles(args.game, args.out)
     if args.styles:
@@ -161,7 +162,7 @@ def main():
     globalb = archived(args.game, 'GLOBAL/GLOBALB.BUN')
     cars = convert_physics.playable(convert_physics.records(globalb))
     mounts = {car: car_mounts(globalb, car) for car in cars}
-    with concurrent.futures.ProcessPoolExecutor() as pool:
+    with concurrent.futures.ProcessPoolExecutor(args.jobs) as pool:
         # one core per brand from the Mac's queue (tools/mac_slots.py)
         rims = dict(pool.map(functools.partial(mac_slots.call, 'convert_rims', brand_rims), [args.game] * len(BRANDS), [b for b, _ in BRANDS]))
     table, blobs, at = [], [], 0

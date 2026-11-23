@@ -126,6 +126,7 @@ from n2formats import archived, chunks
 import n2source
 
 ROOT = Path(__file__).resolve().parents[1]
+VERSION = 17   # career.n2cr's, the newest the game reads (psp-viewer/career.c); smoke_test's career cases want it
 TYPES = ['circuito', 'sprint', 'street x', 'url', 'drag', 'drift']
 
 
@@ -781,7 +782,7 @@ def main():
     for x in rows:
         if x['reward'] == 1:
             x['flags'] |= 8      # a sponsor race: its purse goes to the signed sponsor's contract
-    out = struct.pack('<4s2I', b'N2CA', 17, len(rows))
+    out = struct.pack('<4s2I', b'N2CA', VERSION, len(rows))
     for x in rows:
         out += struct.pack('<HBBiBBBB', x['id'], x['stage'], x['type'], x['money'], x['reward'], x['laps'], x['flags'],
                            x['group'])

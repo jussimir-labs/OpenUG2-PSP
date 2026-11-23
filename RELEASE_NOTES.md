@@ -1,5 +1,30 @@
 # NFSU2 PSP beta — release notes
 
+## 0.4.1 — I Am Weightless (Open Beta, November 2026)
+
+EA Trax: *I Am Weightless*, Septembre.
+
+A new game executable and new game data: update your 0.4.0 output folder with this generator
+(same ISO) or generate into a new folder, and install the complete `PSP/GAME/NFSU2VIEW` folder.
+Saves stay at version 16.
+
+- **PSP ISO:** the generator can also write the game as `NFSU2-PSP.iso` for `ms0:/ISO`, checked
+  after writing, with no extra tools (README, "Install as an ISO").
+- **Performance:** Bayview is lighter on the PSP's graphics chip and about 90 MB smaller on the
+  Memory Stick (PS2 disc), and Free Roam holds 30 fps far more steadily on both memory profiles.
+- **Handling:** your car uses the original game's physics data, with separate tuning for Drift,
+  Drag and Street X (#222, #223).
+- **Career and menus:** Reset Car in the Free Roam pause menu (#233), hidden races you can find
+  on the street, so the last URL tournament and the Final Race can be reached (#204), the World
+  Map's crosses, stars and GPS (#232, #238, #226), shop rewards and SMS (#220), Options and menu
+  sounds (#214, #216, #217, #229), and Rachel's welcome at the airport (#208).
+- **Racing:** the finish banner (#243), Street X's start (#244), drift opponents and results
+  (#193, #227), and night fog and wet-road reflections (#218, #219).
+- **Generator:** steadier racing lines on computers with little free memory, and more detail in
+  its report when something goes wrong (#224, #225, #231).
+
+The complete list is in [CHANGELOG.md](CHANGELOG.md).
+
 ## 0.4.0 — The Celebration Song (Open Beta, November 2026)
 
 EA Trax: *The Celebration Song*, Unwritten Law.

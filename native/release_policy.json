@@ -964,7 +964,7 @@
     {
       "section": "ICON1.PMF",
       "sha256": "c8d4b2b0c9990c00eb6f5805484a49de21b4570ba9fbdfda730047556d36b1c9",
-      "reason": "The kit's XMB from 0.4.0: icon video, background and theme by BananaSplitGamer (beta issue #205), included on Jussimir's decision of 15/11/2026, which accepts the third-party content in it. Only these exact sections pass."
+      "reason": "Preserve the exact reviewed 0.4.0 historical kit; this does not approve official XMB playback. No historical package changed."
     },
     {
       "section": "PIC1.PNG",
@@ -975,6 +975,17 @@
       "section": "SND0.AT3",
       "sha256": "cb995ed7e8a8bffeb7c9dbb2d10b31e6460ec2c299e4a82234fa410a00442e7c",
       "reason": "The kit's XMB from 0.4.0: icon video, background and theme by BananaSplitGamer (beta issue #205), included on Jussimir's decision of 15/11/2026, which accepts the third-party content in it. Only these exact sections pass."
+    }
+  ],
+  "reviewed_xmb_sets": [
+    {
+      "sections": {
+        "ICON0.PNG": "9ef3871cdd774a7e6d24160033ed70c1ca32f9bfaa357119322840b5566e5f1a",
+        "ICON1.PMF": "1f2c54f0a7fe21887a7b4361af9ac90e2e181a92e9c033574eae21c1100edd80",
+        "PIC1.PNG": "cb6d6bc57d2442575231dbf246d1412911c1fd3011ac8d74c91180bac52867a9",
+        "SND0.AT3": "cb995ed7e8a8bffeb7c9dbb2d10b31e6460ec2c299e4a82234fa410a00442e7c"
+      },
+      "reason": "The 0.4.1 candidate's ICON1.PMF: BananaSplitGamer (XMB art by Zane Flynt), realigned master from 16/11/2026, encoded at 144x80 by tools/xmb_icon_pmf.py for beta issue #205. User requested completing this work. Official XMB playback remains pending. Only this exact section passes."
     }
   ]
 }
